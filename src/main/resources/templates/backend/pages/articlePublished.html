@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="webkit" name="renderer">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0"
+          name="viewport">
+    <link href="/static/plugins/layuiadmin/layui/css/layui.css" media="all" rel="stylesheet">
+    <link href="/static/css/admin.css" media="all" rel="stylesheet">
+    <title>文章发布</title>
+
+</head>
+<body>
+<div class="art-main">
+    <div class="art-content">
+        <div class="articleinfo">
+            <p>撰写新文章</p>
+            <input autocomplete="off" class="layui-input" id="art-title" name="title" placeholder="键入标题" type="text"
+                   value="">
+            <label for="art-author">作者：</label><input autocomplete="off" class="layui-input" id="art-author"
+                                                      name="author"
+                                                      placeholder="请输入作者"
+                                                      type="text">
+        </div>
+        <div class="textareas">
+            <textarea id="mytextarea" name="article">
+            </textarea>
+
+        </div>
+    </div>
+    <div style="display:none;">
+        <form action="{:Url('index/index/articlePreview')}" id="form-articlePreview" method="post" target="_blank">
+            <input id="artpre-title" name="title" type="hidden">
+            <input id="artpre-author" name="author" type="hidden">
+            <input id="artpre-content" name="content" type="hidden">
+            <input id="artpre-type" name="type" type="hidden">
+        </form>
+    </div>
+    <div class="art-pub-rightsider">
+        <div class="choosetags">
+            <p>文章标签</p>
+            <div class="choosed">
+
+            </div>
+            <div></div>
+            <div class="tags">
+                <span th:each="tag:${tags}" th:inline="text">[[${tag.content}]]
+                    <span class="tags-id" style="display: none" th:text="${tag.oid}"></span>
+                </span>
+            </div>
+        </div>
+        <div class="articletyle">
+            <p>文章分类</p>
+            <label>请选择文章分类:</label>
+            <div class="select">
+                <div class="layui-card layui-form" lay-filter="component-form-element">
+                    <select lay-search lay-verify="required" name="city">
+                        <option style="font-weight: bold;color: black" value="-1"></option>
+                        <option style="color: #777" th:each="menu:${menuList}" th:text="${menu.text}"
+                                th:value="${menu.oid}"></option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+        <div class="articleimg">
+            <p>缩略图</p>
+            <div class="selimg">
+
+                <div class="layui-upload ">
+                    <button class="layui-btn" id="test1" type="button">上传图片</button>
+                    <div class="layui-upload-list imgupload">
+                        <img class="layui-upload-img" id="breimg" style="margin-left: 5px" width="270">
+                        <p id="demoText"></p>
+                        <input id="imgsrc" name="Img" style="visibility: hidden" value=""/>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="published">
+            <p>文章发布</p>
+            <div class="btns-opt">
+                <button class="layui-btn layui-btn-primary layui-btn-sm" id="save-draft">保存草稿</button>
+                <button class="layui-btn layui-btn-primary layui-btn-sm" id="articlePreview">文章预览</button>
+            </div>
+            <div></div>
+            <a><i class="iconfont">&#xe606;</i> 公开度：<span id="published-public">公开</span></a>&nbsp;
+            <a id="edit">编辑</a>
+            <form class="layui-form" lay-filter="component-form-element" method="post">
+                <div class="layui-form-item" id="ispublic-form">
+                    <div class="layui-input-block">
+                        <input checked class="ispublic-radio" id="public" lay-filter="public" name="isPublic" title="公开"
+                               type="radio" value="1">
+                        <span id="hometop1"><input id="hometop" lay-skin="primary" title="将文章置于首页顶端" type="checkbox"
+                                                   value="2"></span><br>
+                        <input class="ispublic-radio" id="passw" lay-filter="passw" name="isPublic" title="密码保护"
+                               type="radio"
+                               value="-1"><br>
+                        <input autocomplete="off" class="layui-input" id="passw-content" placeholder="密码"
+                               type="password">
+                        <input autocomplete="off" class="layui-input" id="passw-content-confirm" placeholder="确认密码"
+                               type="password">
+                        <input class="ispublic-radio" id="secret" lay-filter="secret" name="isPublic" title="私密"
+                               type="radio" value="0">
+
+                    </div>
+                    <span id="pwd-tips" style="color: red;display: none"></span>
+                    <div class="btns-opt" id="btns0" style="display: block">
+                        <button class="layui-btn layui-btn-sm" id="btn-ispublic-sure">确定</button>
+                        <button class="layui-btn layui-btn-primary layui-btn-sm" id="btn-ispublic-cancel">取消</button>
+                    </div>
+                </div>
+                <div>
+                    <div id="isComment">
+                        <input checked id="is-comment" name="isComment" title="是否可以评论" type="checkbox">
+                    </div>
+                </div>
+            </form>
+            <div></div>
+            <div id="btns1">
+                <div>
+                    <button class="layui-btn layui-btn-primary" id="cancel">取消</button>
+                    <button class="layui-btn layui-btn-danger" id="remove-del">移至回收站</button>
+                </div>
+                <div>
+                    <button class="layui-btn" id="published-sure">发布</button>
+                </div>
+            </div>
+        </div>
+        <div class="end"></div>
+    </div>
+    <div style="clear: both"></div>
+</div>
+<div></div>
+<script src="/static/plugins/layuiadmin/layui/layui.js"></script>
+<script src="/static/plugins/tinymce/tinymce.min.js" type="text/javascript"></script>
+<script src="/static/js/common.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+</script>
+<script>
+    tinymceInit("#mytextarea");
+    layui.use(['layer', 'form', 'element', 'upload'], function () {
+        var form = layui.form
+            , $ = layui.jquery
+            , upload = layui.upload;
+
+
+        spans = $('.choosetags').find('span');
+        for (var i = 0; i < spans.length; i++) {
+            var color = Math.random();
+            var r = parseInt((color * (i + 1) * 1234) % 254);
+            var g = parseInt((color * (i + 1) * 4321) % 254);
+            var b = parseInt((color * (i + 1) * 2222) % 254);
+            $(spans[i]).css("background-color", "rgba(" + r + "," + g + "," + b + ",0.1)")
+            $(spans[i]).css("border", "  1px rgba(" + r + "," + g + "," + b + ",1) solid")
+        }
+        $('.choosed').on('click', 'a', function () {
+            $(this).parent().remove();
+        })
+        $('.tags>span').click(function () {
+            var flag = 0, choosed = $('.choosed>span');
+            for (var i = 0; i < choosed.length; i++) {
+                var obj = $(choosed[i]).clone();
+                obj.find('a').remove();
+                if (obj.text() == $(this).text()) {
+                    flag = 1;
+                }
+            }
+            if (!flag) {
+                var choosed = $('.choosed');
+                var add = $('<span></span>');
+                var tagschoosed = $(this).clone();
+                tagschoosed.html($(this).html() + '<a>×</a>').appendTo(choosed);
+            }
+
+        })
+        var status1 = 0;
+        $('#edit').click(function () {
+            if (status1 == 0) {
+                $('#ispublic-form').css("display", "block");
+                status1 = 1;
+            } else if (status1 == 1) {
+                $('#ispublic-form').css("display", "none");
+                $('#pwd-tips').text('')
+                status1 = 0;
+            }
+        })
+
+
+        form.on('radio(public)', function (data) {
+            $('#hometop1').show();
+            $('#passw-content').hide();
+            $('#passw-content-confirm').hide();
+            form.render();
+        });
+        form.on('radio(secret)', function (data) {
+            $('#hometop1').show();
+            $('#passw-content').hide();
+            $('#passw-content-confirm').hide();
+            form.render();
+        });
+        form.on('radio(passw)', function (data) {
+            $('#hometop1').hide();
+            $('#passw-content').show();
+            $('#passw-content-confirm').show();
+            form.render();
+        });
+
+        layui.use('upload', function () {
+            var index;
+            var $ = layui.jquery
+                , upload = layui.upload;
+
+            //普通图片上传
+            var uploadInst = upload.render({
+                elem: '#test1'
+                , url: '/api/file/upload'
+                , before: function (obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function (index, file, result) {
+                        $('#breimg').attr('src', result); //图片链接（base64）
+                    });
+                    index = layer.load(0, {shade: false, offset: '400px'}, {time: 3000});
+                }
+                , done: function (res) {
+                    layer.close(index);
+                    // console.log(res);
+                    // //如果上传失败
+                    $('result').text(res.status);
+                    //    alert(res.status);
+                    if (res.status == '000000') {
+                        layer.msg('上传成功', {
+                            title: '提示'
+                            //不自动关闭
+                            , time: 1000
+                            , icon: 6
+                            , offset: '400px'
+                        });
+                        $('#imgsrc').val(res.file.url);
+                    }
+                    //上传成功
+                }
+                , error: function () {
+                    layer.close(index);
+                    layer.msg('上传出错：1', {
+                        title: '提示'
+                        //不自动关闭
+                        , time: 1000
+                        , icon: 5
+                        , offset: '400px'
+                    });
+                    //演示失败状态，并实现重传
+                    var demoText = $('#demoText');
+                    demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                    demoText.find('.demo-reload').on('click', function () {
+                        uploadInst.upload();
+                    });
+                }
+            });
+
+
+        });
+
+        $('#btn-ispublic-cancel').click(function () {
+            $('#ispublic-form').css("display", "none");
+            $('#pwd-tips').text('')
+            status1 = 0;
+            return false;
+
+        })
+        $('#btn-ispublic-sure').click(function () {
+            if (($('#passw-content').val() == null || $('#passw-content').val() == '') && $('#ispublic-form .ispublic-radio:checked').val() == -1) {
+                $('#pwd-tips').text('密码不能为空').css('color', 'red').css('display', 'block')
+
+            } else if (($('#passw-content').val() != $('#passw-content-confirm').val()) && $('#ispublic-form .ispublic-radio:checked').val() == -1) {
+                $('#pwd-tips').text('两次密码不一致').css('color', 'red').css('display', 'block')
+            } else if (status1 == 1) {
+                $('#ispublic-form').css("display", "none");
+                $('#pwd-tips').text('')
+                status1 = 0;
+                $('#published-public').text($('#ispublic-form .ispublic-radio:checked').attr('title'));
+
+            }
+
+            return false;
+        })
+
+        $('#published-sure,#remove-del,#save-draft').click(function () {
+            var btnstatus = null;
+            if ($(this).attr('id') === 'published-sure') {
+                btnstatus = 1;
+            } else if ($(this).attr('id') === 'save-draft') {
+                btnstatus = 0;
+            } else if ($(this).attr('id') === 'remove-del') {
+                btnstatus = -1;
+            }
+
+            if (btnstatus === 1) {
+                if (tinyMCE.activeEditor.getContent().replace(new RegExp('\n', 'g'), '') == '<!DOCTYPE html><html><head></head><body></body></html>') {
+                    alert_fail('提示', '文章不可为空！')
+                    return false;
+                }
+                if ($('#art-author').val() == null || $.trim($('#art-author').val()) == '' ||
+                    $('#art-title').val() == null || $.trim($('#art-title').val()) == '') {
+                    alert_fail('提示', '标题或作者不可为空！')
+                    return false;
+                }
+                if ($('.articletyle select').val() == null || $('.articletyle select').val() == -1) {
+                    alert_fail('提示', '请选择类别！')
+                    return false;
+
+                }
+
+            }
+            if (btnstatus === 0) {
+                if ($('#art-author').val() == null || $.trim($('#art-author').val()) == '' ||
+                    $('#art-title').val() == null || $.trim($('#art-title').val()) == '') {
+                    alert_fail('提示', '标题或作者不可为空！')
+                    return false;
+                }
+            }
+
+            // console.log($('#ispublic-form .ispublic-radio:checked').val())
+            var tagsId = [];
+            var publishTemp = 1;
+            var passw = 0;
+
+            var data = $('.choosed>span>span')
+            for (var i = 0; i < data.length; i++) {
+                console.log(data.eq(i).text())
+                tagsId[i] = data.eq(i).text();
+            }
+            var typeid = $('.articletyle select').val()
+            // console.log(typeid)
+            $('#type-id').val(typeid);
+            publishTemp = $('#ispublic-form .ispublic-radio:checked').val();
+            if ($('#ispublic-form .ispublic-radio:checked').val() == 1) {
+                // $('#hometop').click(function () {
+                if ($('#hometop').prop('checked')) {
+                    publishTemp = 2;
+
+                }
+                // })
+
+            } else if ($('#ispublic-form .ispublic-radio:checked').val() == -1) {
+                passw = $('#passw-content').val();
+            }
+            var iscomment = 0;
+            if ($('#is-comment').prop('checked')) {
+                iscomment = 1;
+
+            }
+            var title = $('#art-title').val();
+            var author = $('#art-author').val();
+            var articleContent = tinyMCE.activeEditor.getContent();
+            var tags = tagsId;
+            var type = typeid;
+            var imgSrc = $('#imgsrc').val();
+            var published = publishTemp == undefined ? 1 : publishTemp;
+            var password = passw;
+            //
+            // console.log('title\t'+title)
+            // console.log('author\t'+author)
+            // console.log('articleContent\t'+articleContent)
+            // console.log('tags\t'+tags)
+            // console.log('type\t'+type)
+            // console.log('img\t'+imgSrc)
+            // console.log('published\t'+published)
+            // console.log('password\t'+password)
+            if (btnstatus === 1) {
+                articleAjax(JSON.stringify({
+                        title: title,
+                        author: author,
+                        articleContent: articleContent,
+                        tags: tags,
+                        type: type,
+                        imgSrc: imgSrc,
+                        visitType: published,
+                        password: password,
+                        isComment: iscomment,
+                    })
+                    , '/api/admin/article/submit'
+                    , function (data) {
+                        if (data.status == '000000') {
+                            alert_success('提示', '发布成功');
+                            setTimeout(function () {
+                                tinyMCE.activeEditor.setContent(' ');
+                                $('input').val('');
+                                location.reload();
+                            }, 2000)
+
+                        } else {
+                            alert_fail('提示', data.msg);
+                        }
+                    });
+            } else if (btnstatus === 0) {
+                articleAjax(JSON.stringify({
+                        title: title,
+                        author: author,
+                        articleContent: articleContent,
+                        tags: tags,
+                        type: type,
+                        imgSrc: imgSrc,
+                        visitType: published,
+                        password: password,
+                        isComment: iscomment,
+                    })
+                    , '/api/admin/article/save/draft'
+                    , function (data) {
+                        if (data.status == '000000') {
+                            alert_success('提示', '保存成功');
+                            setTimeout(function () {
+                                tinyMCE.activeEditor.setContent(' ');
+                                $('input').val('');
+                                location.reload();
+
+                            }, 2000)
+
+                        } else {
+                            alert_fail('提示', data.msg);
+                        }
+                    });
+            } else if (btnstatus === -1) {
+                articleAjax(JSON.stringify({
+                        title: title,
+                        author: author,
+                        articleContent: articleContent,
+                        tags: tags,
+                        type: type,
+                        imgSrc: imgSrc,
+                        visitType: published,
+                        password: password,
+                        isComment: iscomment,
+                    })
+                    , '/api/admin/article/save/recycle'
+                    , function (data) {
+                        if (data.status == '000000') {
+                            alert_success('提示', '移动至回收站成功');
+                            setTimeout(function () {
+                                tinyMCE.activeEditor.setContent(' ');
+                                $('input').val('');
+                                location.reload();
+
+                            }, 2000)
+
+                        } else {
+                            alert_fail('提示', data.msg);
+                        }
+                    });
+            }
+
+
+        })
+
+        function articleAjax(datas, url, tips) {
+            $.ajax({
+                type: 'post',
+                data: datas,
+                dataType: 'json',
+                contentType: "application/json",
+                async: true,
+                url: url,
+                success: function (data) {
+                    // alert(JSON.stringify(data))
+                    // console.log(JSON.stringify(data));
+                    tips(data);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert_fail('提示', '未知错误');
+                }
+
+            })
+
+        }
+
+        $('#cancel').click(function () {
+            alert_ask('确认清除所有输入的数据，恢复初始状态?', function () {
+                tinyMCE.activeEditor.setContent(' ');
+                $('input').val('');
+            })
+        })
+        $('#articlePreview').click(function () {
+            var title = $('#art-title').val();
+            var author = $('#art-author').val();
+            var articleContent = tinyMCE.activeEditor.getContent();
+            var type = $('.articletyle select:selected').text();
+            $('#artpre-title').val(title);
+            $('#artpre-author').val(author);
+            $('#artpre-content').val(articleContent);
+            $('#artpre-type').val(type);
+
+            $('#form-articlePreview').submit();
+            window.alert = function () {
+                return false;
+            };
+        })
+    });
+
+</script>
+
+</body>
+</html>

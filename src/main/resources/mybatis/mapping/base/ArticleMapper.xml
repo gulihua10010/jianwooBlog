@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jianwoo.blog.dao.base.mapper.ArticleMapper">
+    <resultMap id="BaseResultMap" type="cn.jianwoo.blog.entity.Article">
+        <id column="OID" jdbcType="BIGINT" property="oid"/>
+        <result column="AUTHOR" jdbcType="VARCHAR" property="author"/>
+        <result column="PUSH_DATE" jdbcType="TIMESTAMP" property="pushDate"/>
+        <result column="TITLE" jdbcType="VARCHAR" property="title"/>
+        <result column="CONTENT" jdbcType="VARCHAR" property="content"/>
+        <result column="MODIFIED_DATE" jdbcType="TIMESTAMP" property="modifiedDate"/>
+        <result column="TYPE_ID" jdbcType="INTEGER" property="typeId"/>
+        <result column="READ_COUNT" jdbcType="BIGINT" property="readCount"/>
+        <result column="PRAISE_COUNT" jdbcType="BIGINT" property="praiseCount"/>
+        <result column="IS_COMMENT" jdbcType="INTEGER" property="isComment"/>
+        <result column="IMG_SRC" jdbcType="VARCHAR" property="imgSrc"/>
+        <result column="TEXT" jdbcType="VARCHAR" property="text"/>
+        <result column="VISIT_TYPE" jdbcType="INTEGER" property="visitType"/>
+        <result column="COMMENT_COUNT" jdbcType="BIGINT" property="commentCount"/>
+        <result column="STATUS" jdbcType="INTEGER" property="status"/>
+        <result column="PASSWORD" jdbcType="VARCHAR" property="password"/>
+        <result column="DEL_DATE" jdbcType="TIMESTAMP" property="delDate"/>
+        <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        OID
+        , AUTHOR, PUSH_DATE, TITLE, CONTENT, MODIFIED_DATE, TYPE_ID, READ_COUNT, PRAISE_COUNT,
+    IS_COMMENT, IMG_SRC, `TEXT`, VISIT_TYPE, COMMENT_COUNT, `STATUS`, `PASSWORD`, DEL_DATE, 
+    CREATE_DATE, UPDATE_DATE
+    </sql>
+    <select id="selectByExample" parameterType="cn.jianwoo.blog.entity.example.ArticleExample"
+            resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from article
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+        <include refid="MySQLDialectSuffix"/>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from article
+        where OID = #{oid,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from article
+        where OID = #{oid,jdbcType=BIGINT}
+    </delete>
+    <delete id="deleteByExample" parameterType="cn.jianwoo.blog.entity.example.ArticleExample">
+        delete from article
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="cn.jianwoo.blog.entity.Article">
+        insert into article (OID, AUTHOR, PUSH_DATE,
+                             TITLE, CONTENT, MODIFIED_DATE,
+                             TYPE_ID, READ_COUNT, PRAISE_COUNT,
+                             IS_COMMENT, IMG_SRC, `TEXT`,
+                             VISIT_TYPE, COMMENT_COUNT, `STATUS`,
+                             `PASSWORD`, DEL_DATE, CREATE_DATE,
+                             UPDATE_DATE)
+        values (#{oid,jdbcType=BIGINT}, #{author,jdbcType=VARCHAR}, #{pushDate,jdbcType=TIMESTAMP},
+                #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{modifiedDate,jdbcType=TIMESTAMP},
+                #{typeId,jdbcType=INTEGER}, #{readCount,jdbcType=BIGINT}, #{praiseCount,jdbcType=BIGINT},
+                #{isComment,jdbcType=INTEGER}, #{imgSrc,jdbcType=VARCHAR}, #{text,jdbcType=VARCHAR},
+                #{visitType,jdbcType=INTEGER}, #{commentCount,jdbcType=BIGINT}, #{status,jdbcType=INTEGER},
+                #{password,jdbcType=VARCHAR}, #{delDate,jdbcType=TIMESTAMP}, #{createDate,jdbcType=TIMESTAMP},
+                #{updateDate,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="cn.jianwoo.blog.entity.Article">
+        insert into article
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="oid != null">
+                OID,
+            </if>
+            <if test="author != null">
+                AUTHOR,
+            </if>
+            <if test="pushDate != null">
+                PUSH_DATE,
+            </if>
+            <if test="title != null">
+                TITLE,
+            </if>
+            <if test="content != null">
+                CONTENT,
+            </if>
+            <if test="modifiedDate != null">
+                MODIFIED_DATE,
+            </if>
+            <if test="typeId != null">
+                TYPE_ID,
+            </if>
+            <if test="readCount != null">
+                READ_COUNT,
+            </if>
+            <if test="praiseCount != null">
+                PRAISE_COUNT,
+            </if>
+            <if test="isComment != null">
+                IS_COMMENT,
+            </if>
+            <if test="imgSrc != null">
+                IMG_SRC,
+            </if>
+            <if test="text != null">
+                `TEXT`,
+            </if>
+            <if test="visitType != null">
+                VISIT_TYPE,
+            </if>
+            <if test="commentCount != null">
+                COMMENT_COUNT,
+            </if>
+            <if test="status != null">
+                `STATUS`,
+            </if>
+            <if test="password != null">
+                `PASSWORD`,
+            </if>
+            <if test="delDate != null">
+                DEL_DATE,
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE,
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="oid != null">
+                #{oid,jdbcType=BIGINT},
+            </if>
+            <if test="author != null">
+                #{author,jdbcType=VARCHAR},
+            </if>
+            <if test="pushDate != null">
+                #{pushDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedDate != null">
+                #{modifiedDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="typeId != null">
+                #{typeId,jdbcType=INTEGER},
+            </if>
+            <if test="readCount != null">
+                #{readCount,jdbcType=BIGINT},
+            </if>
+            <if test="praiseCount != null">
+                #{praiseCount,jdbcType=BIGINT},
+            </if>
+            <if test="isComment != null">
+                #{isComment,jdbcType=INTEGER},
+            </if>
+            <if test="imgSrc != null">
+                #{imgSrc,jdbcType=VARCHAR},
+            </if>
+            <if test="text != null">
+                #{text,jdbcType=VARCHAR},
+            </if>
+            <if test="visitType != null">
+                #{visitType,jdbcType=INTEGER},
+            </if>
+            <if test="commentCount != null">
+                #{commentCount,jdbcType=BIGINT},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="delDate != null">
+                #{delDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="cn.jianwoo.blog.entity.example.ArticleExample"
+            resultType="java.lang.Long">
+        select count(*) from article
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update article
+        <set>
+            <if test="record.oid != null">
+                OID = #{record.oid,jdbcType=BIGINT},
+            </if>
+            <if test="record.author != null">
+                AUTHOR = #{record.author,jdbcType=VARCHAR},
+            </if>
+            <if test="record.pushDate != null">
+                PUSH_DATE = #{record.pushDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.title != null">
+                TITLE = #{record.title,jdbcType=VARCHAR},
+            </if>
+            <if test="record.content != null">
+                CONTENT = #{record.content,jdbcType=VARCHAR},
+            </if>
+            <if test="record.modifiedDate != null">
+                MODIFIED_DATE = #{record.modifiedDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.typeId != null">
+                TYPE_ID = #{record.typeId,jdbcType=INTEGER},
+            </if>
+            <if test="record.readCount != null">
+                READ_COUNT = #{record.readCount,jdbcType=BIGINT},
+            </if>
+            <if test="record.praiseCount != null">
+                PRAISE_COUNT = #{record.praiseCount,jdbcType=BIGINT},
+            </if>
+            <if test="record.isComment != null">
+                IS_COMMENT = #{record.isComment,jdbcType=INTEGER},
+            </if>
+            <if test="record.imgSrc != null">
+                IMG_SRC = #{record.imgSrc,jdbcType=VARCHAR},
+            </if>
+            <if test="record.text != null">
+                `TEXT` = #{record.text,jdbcType=VARCHAR},
+            </if>
+            <if test="record.visitType != null">
+                VISIT_TYPE = #{record.visitType,jdbcType=INTEGER},
+            </if>
+            <if test="record.commentCount != null">
+                COMMENT_COUNT = #{record.commentCount,jdbcType=BIGINT},
+            </if>
+            <if test="record.status != null">
+                `STATUS` = #{record.status,jdbcType=INTEGER},
+            </if>
+            <if test="record.password != null">
+                `PASSWORD` = #{record.password,jdbcType=VARCHAR},
+            </if>
+            <if test="record.delDate != null">
+                DEL_DATE = #{record.delDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.createDate != null">
+                CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.updateDate != null">
+                UPDATE_DATE = #{record.updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update article
+        set OID = #{record.oid,jdbcType=BIGINT},
+        AUTHOR = #{record.author,jdbcType=VARCHAR},
+        PUSH_DATE = #{record.pushDate,jdbcType=TIMESTAMP},
+        TITLE = #{record.title,jdbcType=VARCHAR},
+        CONTENT = #{record.content,jdbcType=VARCHAR},
+        MODIFIED_DATE = #{record.modifiedDate,jdbcType=TIMESTAMP},
+        TYPE_ID = #{record.typeId,jdbcType=INTEGER},
+        READ_COUNT = #{record.readCount,jdbcType=BIGINT},
+        PRAISE_COUNT = #{record.praiseCount,jdbcType=BIGINT},
+        IS_COMMENT = #{record.isComment,jdbcType=INTEGER},
+        IMG_SRC = #{record.imgSrc,jdbcType=VARCHAR},
+        `TEXT` = #{record.text,jdbcType=VARCHAR},
+        VISIT_TYPE = #{record.visitType,jdbcType=INTEGER},
+        COMMENT_COUNT = #{record.commentCount,jdbcType=BIGINT},
+        `STATUS` = #{record.status,jdbcType=INTEGER},
+        `PASSWORD` = #{record.password,jdbcType=VARCHAR},
+        DEL_DATE = #{record.delDate,jdbcType=TIMESTAMP},
+        CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+        UPDATE_DATE = #{record.updateDate,jdbcType=TIMESTAMP}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.jianwoo.blog.entity.Article">
+        update article
+        <set>
+            <if test="author != null">
+                AUTHOR = #{author,jdbcType=VARCHAR},
+            </if>
+            <if test="pushDate != null">
+                PUSH_DATE = #{pushDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="title != null">
+                TITLE = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                CONTENT = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedDate != null">
+                MODIFIED_DATE = #{modifiedDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="typeId != null">
+                TYPE_ID = #{typeId,jdbcType=INTEGER},
+            </if>
+            <if test="readCount != null">
+                READ_COUNT = #{readCount,jdbcType=BIGINT},
+            </if>
+            <if test="praiseCount != null">
+                PRAISE_COUNT = #{praiseCount,jdbcType=BIGINT},
+            </if>
+            <if test="isComment != null">
+                IS_COMMENT = #{isComment,jdbcType=INTEGER},
+            </if>
+            <if test="imgSrc != null">
+                IMG_SRC = #{imgSrc,jdbcType=VARCHAR},
+            </if>
+            <if test="text != null">
+                `TEXT` = #{text,jdbcType=VARCHAR},
+            </if>
+            <if test="visitType != null">
+                VISIT_TYPE = #{visitType,jdbcType=INTEGER},
+            </if>
+            <if test="commentCount != null">
+                COMMENT_COUNT = #{commentCount,jdbcType=BIGINT},
+            </if>
+            <if test="status != null">
+                `STATUS` = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="password != null">
+                `PASSWORD` = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="delDate != null">
+                DEL_DATE = #{delDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where OID = #{oid,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.jianwoo.blog.entity.Article">
+        update article
+        set AUTHOR        = #{author,jdbcType=VARCHAR},
+            PUSH_DATE     = #{pushDate,jdbcType=TIMESTAMP},
+            TITLE         = #{title,jdbcType=VARCHAR},
+            CONTENT       = #{content,jdbcType=VARCHAR},
+            MODIFIED_DATE = #{modifiedDate,jdbcType=TIMESTAMP},
+            TYPE_ID       = #{typeId,jdbcType=INTEGER},
+            READ_COUNT    = #{readCount,jdbcType=BIGINT},
+            PRAISE_COUNT  = #{praiseCount,jdbcType=BIGINT},
+            IS_COMMENT    = #{isComment,jdbcType=INTEGER},
+            IMG_SRC       = #{imgSrc,jdbcType=VARCHAR},
+            `TEXT`        = #{text,jdbcType=VARCHAR},
+            VISIT_TYPE    = #{visitType,jdbcType=INTEGER},
+            COMMENT_COUNT = #{commentCount,jdbcType=BIGINT},
+            `STATUS`      = #{status,jdbcType=INTEGER},
+            `PASSWORD`    = #{password,jdbcType=VARCHAR},
+            DEL_DATE      = #{delDate,jdbcType=TIMESTAMP},
+            CREATE_DATE   = #{createDate,jdbcType=TIMESTAMP},
+            UPDATE_DATE   = #{updateDate,jdbcType=TIMESTAMP}
+        where OID = #{oid,jdbcType=BIGINT}
+    </update>
+    <sql id="MySQLDialectSuffix">
+        <if test="start != null and rows != null">
+            <![CDATA[  limit #{start},#{rows} ]]>
+        </if>
+    </sql>
+</mapper>

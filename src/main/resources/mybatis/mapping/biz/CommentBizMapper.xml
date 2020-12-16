@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.jianwoo.blog.dao.biz.mapper.CommentBizMapper">
+    <resultMap id="BaseResultMap" type="cn.jianwoo.blog.entity.Comment">
+        <id column="OID" jdbcType="BIGINT" property="oid"/>
+        <result column="ARTICLE_OID" jdbcType="BIGINT" property="articleOid"/>
+        <result column="USER" jdbcType="VARCHAR" property="user"/>
+        <result column="IP" jdbcType="VARCHAR" property="ip"/>
+        <result column="DATE" jdbcType="TIMESTAMP" property="date"/>
+        <result column="PARENT" jdbcType="BIGINT" property="parent"/>
+        <result column="PRAISE_COUNT" jdbcType="BIGINT" property="praiseCount"/>
+        <result column="QQ" jdbcType="VARCHAR" property="qq"/>
+        <result column="HEAD_IMG" jdbcType="VARCHAR" property="headImg"/>
+        <result column="ART_DEL" jdbcType="INTEGER" property="artDel"/>
+        <result column="IS_READ" jdbcType="INTEGER" property="isRead"/>
+        <result column="AREA" jdbcType="VARCHAR" property="area"/>
+        <result column="CONTENT" jdbcType="LONGVARCHAR" property="content"/>
+        <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate"/>
+    </resultMap>
+    <resultMap id="ResultMapWithExt" type="cn.jianwoo.blog.entity.extension.CommentExt">
+        <id column="OID" jdbcType="BIGINT" property="oid" javaType="java.lang.Long"/>
+        <result column="ARTICLE_OID" property="articleOid" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result column="USER" property="user" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        <result column="IP" property="ip" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        <result column="AREA" jdbcType="VARCHAR" property="area" javaType="java.lang.String"/>
+        <result column="DATE" property="date" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+        <result column="PARENT" property="parent" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result column="PRAISE_COUNT" property="praiseCount" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result column="QQ" property="qq" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        <result column="HEAD_IMG" property="headImg" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        <result column="ART_DEL" property="artDel" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+        <result column="IS_READ" property="isRead" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+        <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+        <result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+        <result column="CONTENT" property="content" jdbcType="LONGVARCHAR" javaType="java.lang.String"/>
+        <result column="TITLE" property="title" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        <result column="REPLY_TO" property="parentUserName" jdbcType="VARCHAR" javaType="java.lang.String"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        OID
+        , ARTICLE_OID, `USER`, IP, AREA, `DATE`, PARENT, PRAISE_COUNT, QQ, HEAD_IMG, ART_DEL, IS_READ,
+    CREATE_DATE, UPDATE_DATE
+    </sql>
+    <sql id="Blob_Column_List">
+        CONTENT
+    </sql>
+    <select id="selectLastComment" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from comments
+        ORDER BY OID DESC LIMIT 1;
+    </select>
+
+    <select id="selectRecentComments" parameterType="java.lang.Integer" resultMap="ResultMapWithExt">
+        SELECT C.*, A.TITLE
+        FROM COMMENTS C
+                 INNER JOIN ARTICLE A ON A.OID = C.ARTICLE_OID
+        ORDER BY C.UPDATE_DATE DESC
+            LIMIT #{limit,jdbcType=INTEGER}
+    </select>
+
+    <select id="countWithUnreadComm" resultType="int">
+        SELECT COUNT(1)
+        FROM COMMENTS
+        WHERE ART_DEL!=-1 AND IS_READ=0
+    </select>
+
+    <select id="countWithCommentByArt" resultType="int" parameterType="java.lang.Long">
+        select count(1)
+        from comments
+        where ARTICLE_OID = #{articleOid,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectCommentsExtByArticleOid" parameterType="java.lang.Long" resultMap="ResultMapWithExt">
+        SELECT C.*, A.TITLE
+        FROM COMMENTS C
+                 INNER JOIN ARTICLE A ON A.OID = C.ARTICLE_OID
+        WHERE C.ARTICLE_OID = #{articleOid,jdbcType=BIGINT}
+        ORDER BY C.UPDATE_DATE DESC
+    </select>
+
+    <select id="selectAllCommentsExt" resultMap="ResultMapWithExt"
+            parameterType="cn.jianwoo.blog.entity.query.CommentParam">
+        SELECT
+        C.OID,
+        C.USER,
+        C.DATE,
+        C.CONTENT,
+        C.ARTICLE_OID,
+        A.TITLE,
+        IF (
+        P. USER IS NULL,
+        '文章',
+        P. USER
+        ) AS REPLY_TO
+        FROM
+        COMMENTS C
+        LEFT JOIN COMMENTS P ON C.PARENT = P.OID
+        INNER JOIN ARTICLE A ON A.OID = C.ARTICLE_OID
+        <where>
+            <if test="title != null">
+                A.TITLE LIKE CONCAT('%',#{title,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="isRead != null">
+                C.IS_READ = #{isRead}
+            </if>
+        </where>
+        ORDER BY
+        A.TITLE ASC,
+        C.UPDATE_DATE DESC
+    </select>
+    <select id="selectCommentExtByOid" resultMap="ResultMapWithExt" parameterType="java.lang.Long">
+        SELECT C.*,
+               A.TITLE
+        FROM COMMENTS C
+                 INNER JOIN ARTICLE A ON A.OID = C.ARTICLE_OID
+        WHERE C.OID = #{oid,jdbcType=BIGINT}
+    </select>
+
+</mapper>

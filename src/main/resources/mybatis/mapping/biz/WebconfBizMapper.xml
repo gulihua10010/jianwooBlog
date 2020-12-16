@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.jianwoo.blog.dao.biz.mapper.WebconfBizMapper">
+    <resultMap id="BaseResultMap" type="cn.jianwoo.blog.entity.Webconf">
+        <id column="OID" jdbcType="BIGINT" property="oid"/>
+        <result column="KEY" jdbcType="VARCHAR" property="key"/>
+        <result column="STRING_VALUE" jdbcType="VARCHAR" property="stringValue"/>
+        <result column="NUM_VALUE" jdbcType="DECIMAL" property="numValue"/>
+        <result column="BOOLEAN_VALUE" jdbcType="CHAR" property="booleanValue"/>
+        <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        OID
+        , `KEY`, STRING_VALUE, NUM_VALUE, BOOLEAN_VALUE, CREATE_DATE, UPDATE_DATE
+    </sql>
+
+    <select id="selectAllWebconf" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM webconf
+    </select>
+</mapper>

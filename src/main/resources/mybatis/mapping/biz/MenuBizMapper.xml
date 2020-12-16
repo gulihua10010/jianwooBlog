@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.jianwoo.blog.dao.biz.mapper.MenuBizMapper">
+    <resultMap id="BaseResultMap" type="cn.jianwoo.blog.entity.Menu">
+        <constructor>
+            <idArg column="OID" jdbcType="BIGINT" javaType="java.lang.Long"/>
+            <arg column="NAME" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="INDEX" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="CREATE_DATE" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+            <arg column="UPDATE_DATE" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+            <arg column="TYPE" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="ICON" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="TEXT" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="URL" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="PARENT_OID" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        </constructor>
+    </resultMap>
+    <sql id="Base_Column_List">
+        OID
+        , `NAME`, `INDEX`, CREATE_DATE, UPDATE_DATE, TYPE, ICON, TEXT, URL, PARENT_OID
+    </sql>
+    <select id="countMenu" resultType="int" parameterType="java.lang.Integer">
+        select count(1)
+        from menu
+        where TYPE = #{type,jdbcType=INTEGER}
+    </select>
+    <select id="countMenuWithSameLevel" resultType="int" parameterType="java.util.Map">
+        select count(1)
+        from menu
+        where TYPE = #{type,jdbcType=INTEGER}
+          AND PARENT_OID = #{parentOid,jdbcType=BIGINT}
+    </select>
+</mapper>
