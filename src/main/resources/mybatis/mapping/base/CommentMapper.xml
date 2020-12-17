@@ -79,10 +79,9 @@
         </where>
     </sql>
     <sql id="Base_Column_List">
-        OID
-        , ARTICLE_OID, `USER`, IP, AREA, `DATE`, CONTENT, PARENT, PRAISE_COUNT, QQ, HEAD_IMG,
+    OID, ARTICLE_OID, `USER`, IP, AREA, `DATE`, CONTENT, PARENT, PRAISE_COUNT, QQ, HEAD_IMG, 
     ART_DEL, IS_READ, CREATE_DATE, UPDATE_DATE
-    </sql>
+  </sql>
     <select id="selectByExample" parameterType="cn.jianwoo.blog.entity.example.CommentExample"
             resultMap="BaseResultMap">
         select
@@ -106,35 +105,32 @@
         where OID = #{oid,jdbcType=BIGINT}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete
-        from comments
-        where OID = #{oid,jdbcType=BIGINT}
-    </delete>
+    delete from comments
+    where OID = #{oid,jdbcType=BIGINT}
+  </delete>
     <delete id="deleteByExample" parameterType="cn.jianwoo.blog.entity.example.CommentExample">
         delete from comments
         <if test="_parameter != null">
             <include refid="Example_Where_Clause"/>
         </if>
     </delete>
-    <insert id="insert" parameterType="cn.jianwoo.blog.entity.Comment">
-        insert into comments (OID, ARTICLE_OID, `USER`,
-                              IP, AREA, `DATE`, CONTENT,
-                              PARENT, PRAISE_COUNT, QQ,
-                              HEAD_IMG, ART_DEL, IS_READ,
-                              CREATE_DATE, UPDATE_DATE)
-        values (#{oid,jdbcType=BIGINT}, #{articleOid,jdbcType=BIGINT}, #{user,jdbcType=VARCHAR},
-                #{ip,jdbcType=VARCHAR}, #{area,jdbcType=VARCHAR}, #{date,jdbcType=TIMESTAMP},
-                #{content,jdbcType=VARCHAR},
-                #{parent,jdbcType=BIGINT}, #{praiseCount,jdbcType=BIGINT}, #{qq,jdbcType=VARCHAR},
-                #{headImg,jdbcType=VARCHAR}, #{artDel,jdbcType=INTEGER}, #{isRead,jdbcType=INTEGER},
-                #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP})
-    </insert>
-    <insert id="insertSelective" parameterType="cn.jianwoo.blog.entity.Comment">
+    <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.Comment"
+            useGeneratedKeys="true">
+    insert into comments (ARTICLE_OID, `USER`, IP, 
+      AREA, `DATE`, CONTENT, 
+      PARENT, PRAISE_COUNT, QQ, 
+      HEAD_IMG, ART_DEL, IS_READ, 
+      CREATE_DATE, UPDATE_DATE)
+    values (#{articleOid,jdbcType=BIGINT}, #{user,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, 
+      #{area,jdbcType=VARCHAR}, #{date,jdbcType=TIMESTAMP}, #{content,jdbcType=VARCHAR}, 
+      #{parent,jdbcType=BIGINT}, #{praiseCount,jdbcType=BIGINT}, #{qq,jdbcType=VARCHAR}, 
+      #{headImg,jdbcType=VARCHAR}, #{artDel,jdbcType=INTEGER}, #{isRead,jdbcType=INTEGER}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP})
+  </insert>
+    <insert id="insertSelective" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.Comment"
+            useGeneratedKeys="true">
         insert into comments
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="oid != null">
-                OID,
-            </if>
             <if test="articleOid != null">
                 ARTICLE_OID,
             </if>
@@ -179,9 +175,6 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="oid != null">
-                #{oid,jdbcType=BIGINT},
-            </if>
             <if test="articleOid != null">
                 #{articleOid,jdbcType=BIGINT},
             </if>
@@ -356,23 +349,23 @@
         where OID = #{oid,jdbcType=BIGINT}
     </update>
     <update id="updateByPrimaryKey" parameterType="cn.jianwoo.blog.entity.Comment">
-        update comments
-        set ARTICLE_OID  = #{articleOid,jdbcType=BIGINT},
-            `USER`       = #{user,jdbcType=VARCHAR},
-            IP           = #{ip,jdbcType=VARCHAR},
-            AREA         = #{area,jdbcType=VARCHAR},
-            `DATE`       = #{date,jdbcType=TIMESTAMP},
-            CONTENT      = #{content,jdbcType=VARCHAR},
-            PARENT       = #{parent,jdbcType=BIGINT},
-            PRAISE_COUNT = #{praiseCount,jdbcType=BIGINT},
-            QQ           = #{qq,jdbcType=VARCHAR},
-            HEAD_IMG     = #{headImg,jdbcType=VARCHAR},
-            ART_DEL      = #{artDel,jdbcType=INTEGER},
-            IS_READ      = #{isRead,jdbcType=INTEGER},
-            CREATE_DATE  = #{createDate,jdbcType=TIMESTAMP},
-            UPDATE_DATE  = #{updateDate,jdbcType=TIMESTAMP}
-        where OID = #{oid,jdbcType=BIGINT}
-    </update>
+    update comments
+    set ARTICLE_OID = #{articleOid,jdbcType=BIGINT},
+      `USER` = #{user,jdbcType=VARCHAR},
+      IP = #{ip,jdbcType=VARCHAR},
+      AREA = #{area,jdbcType=VARCHAR},
+      `DATE` = #{date,jdbcType=TIMESTAMP},
+      CONTENT = #{content,jdbcType=VARCHAR},
+      PARENT = #{parent,jdbcType=BIGINT},
+      PRAISE_COUNT = #{praiseCount,jdbcType=BIGINT},
+      QQ = #{qq,jdbcType=VARCHAR},
+      HEAD_IMG = #{headImg,jdbcType=VARCHAR},
+      ART_DEL = #{artDel,jdbcType=INTEGER},
+      IS_READ = #{isRead,jdbcType=INTEGER},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP}
+    where OID = #{oid,jdbcType=BIGINT}
+  </update>
     <sql id="MySQLDialectSuffix">
         <if test="start != null and rows != null">
             <![CDATA[  limit #{start},#{rows} ]]>

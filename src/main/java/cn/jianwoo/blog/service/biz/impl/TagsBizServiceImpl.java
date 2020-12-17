@@ -43,6 +43,7 @@ public class TagsBizServiceImpl implements TagsBizService {
         } catch (DaoException e) {
             throw TagsBizException.CREATE_FAILED_EXCEPTION.format(name).print();
         }
+
     }
 
 

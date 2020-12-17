@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.jianwoo.blog.mapper.VisitMapper">
+<mapper namespace="cn.jianwoo.blog.dao.base.mapper.VisitMapper">
     <resultMap id="BaseResultMap" type="cn.jianwoo.blog.entity.Visit">
         <id column="OID" jdbcType="BIGINT" property="oid"/>
         <result column="IP" jdbcType="VARCHAR" property="ip"/>
+        <result column="AREA" jdbcType="VARCHAR" property="area"/>
         <result column="ARTICLE_OID" jdbcType="BIGINT" property="articleOid"/>
         <result column="VISIT_DATE" jdbcType="TIMESTAMP" property="visitDate"/>
         <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate"/>
         <result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate"/>
-        <result column="AREA" jdbcType="VARCHAR" property="area"/>
     </resultMap>
     <sql id="Example_Where_Clause">
         <where>
@@ -71,9 +71,8 @@
         </where>
     </sql>
     <sql id="Base_Column_List">
-        OID
-        , IP, ARTICLE_OID, VISIT_DATE, CREATE_DATE, UPDATE_DATE, AREA
-    </sql>
+    OID, IP, AREA, ARTICLE_OID, VISIT_DATE, CREATE_DATE, UPDATE_DATE
+  </sql>
     <select id="selectByExample" parameterType="cn.jianwoo.blog.entity.example.VisitExample" resultMap="BaseResultMap">
         select
         <if test="distinct">
@@ -96,32 +95,33 @@
         where OID = #{oid,jdbcType=BIGINT}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete
-        from visit
-        where OID = #{oid,jdbcType=BIGINT}
-    </delete>
+    delete from visit
+    where OID = #{oid,jdbcType=BIGINT}
+  </delete>
     <delete id="deleteByExample" parameterType="cn.jianwoo.blog.entity.example.VisitExample">
         delete from visit
         <if test="_parameter != null">
             <include refid="Example_Where_Clause"/>
         </if>
     </delete>
-    <insert id="insert" parameterType="cn.jianwoo.blog.entity.Visit">
-        insert into visit (OID, IP, ARTICLE_OID,
-                           VISIT_DATE, CREATE_DATE, UPDATE_DATE,
-                           AREA)
-        values (#{oid,jdbcType=BIGINT}, #{ip,jdbcType=VARCHAR}, #{articleOid,jdbcType=BIGINT},
-                #{visitDate,jdbcType=TIMESTAMP}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP},
-                #{area,jdbcType=VARCHAR})
-    </insert>
-    <insert id="insertSelective" parameterType="cn.jianwoo.blog.entity.Visit">
+    <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.Visit"
+            useGeneratedKeys="true">
+    insert into visit (IP, AREA, ARTICLE_OID, 
+      VISIT_DATE, CREATE_DATE, UPDATE_DATE
+      )
+    values (#{ip,jdbcType=VARCHAR}, #{area,jdbcType=VARCHAR}, #{articleOid,jdbcType=BIGINT}, 
+      #{visitDate,jdbcType=TIMESTAMP}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+    <insert id="insertSelective" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.Visit"
+            useGeneratedKeys="true">
         insert into visit
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="oid != null">
-                OID,
-            </if>
             <if test="ip != null">
                 IP,
+            </if>
+            <if test="area != null">
+                AREA,
             </if>
             <if test="articleOid != null">
                 ARTICLE_OID,
@@ -135,16 +135,13 @@
             <if test="updateDate != null">
                 UPDATE_DATE,
             </if>
-            <if test="area != null">
-                AREA,
-            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="oid != null">
-                #{oid,jdbcType=BIGINT},
-            </if>
             <if test="ip != null">
                 #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="area != null">
+                #{area,jdbcType=VARCHAR},
             </if>
             <if test="articleOid != null">
                 #{articleOid,jdbcType=BIGINT},
@@ -157,9 +154,6 @@
             </if>
             <if test="updateDate != null">
                 #{updateDate,jdbcType=TIMESTAMP},
-            </if>
-            <if test="area != null">
-                #{area,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -178,6 +172,9 @@
             <if test="record.ip != null">
                 IP = #{record.ip,jdbcType=VARCHAR},
             </if>
+            <if test="record.area != null">
+                AREA = #{record.area,jdbcType=VARCHAR},
+            </if>
             <if test="record.articleOid != null">
                 ARTICLE_OID = #{record.articleOid,jdbcType=BIGINT},
             </if>
@@ -190,9 +187,6 @@
             <if test="record.updateDate != null">
                 UPDATE_DATE = #{record.updateDate,jdbcType=TIMESTAMP},
             </if>
-            <if test="record.area != null">
-                AREA = #{record.area,jdbcType=VARCHAR},
-            </if>
         </set>
         <if test="_parameter != null">
             <include refid="Update_By_Example_Where_Clause"/>
@@ -202,11 +196,11 @@
         update visit
         set OID = #{record.oid,jdbcType=BIGINT},
         IP = #{record.ip,jdbcType=VARCHAR},
+        AREA = #{record.area,jdbcType=VARCHAR},
         ARTICLE_OID = #{record.articleOid,jdbcType=BIGINT},
         VISIT_DATE = #{record.visitDate,jdbcType=TIMESTAMP},
         CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
-        UPDATE_DATE = #{record.updateDate,jdbcType=TIMESTAMP},
-        AREA = #{record.area,jdbcType=VARCHAR}
+        UPDATE_DATE = #{record.updateDate,jdbcType=TIMESTAMP}
         <if test="_parameter != null">
             <include refid="Update_By_Example_Where_Clause"/>
         </if>
@@ -216,6 +210,9 @@
         <set>
             <if test="ip != null">
                 IP = #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="area != null">
+                AREA = #{area,jdbcType=VARCHAR},
             </if>
             <if test="articleOid != null">
                 ARTICLE_OID = #{articleOid,jdbcType=BIGINT},
@@ -229,22 +226,19 @@
             <if test="updateDate != null">
                 UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
             </if>
-            <if test="area != null">
-                AREA = #{area,jdbcType=VARCHAR},
-            </if>
         </set>
         where OID = #{oid,jdbcType=BIGINT}
     </update>
     <update id="updateByPrimaryKey" parameterType="cn.jianwoo.blog.entity.Visit">
-        update visit
-        set IP          = #{ip,jdbcType=VARCHAR},
-            ARTICLE_OID = #{articleOid,jdbcType=BIGINT},
-            VISIT_DATE  = #{visitDate,jdbcType=TIMESTAMP},
-            CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
-            UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
-            AREA        = #{area,jdbcType=VARCHAR}
-        where OID = #{oid,jdbcType=BIGINT}
-    </update>
+    update visit
+    set IP = #{ip,jdbcType=VARCHAR},
+      AREA = #{area,jdbcType=VARCHAR},
+      ARTICLE_OID = #{articleOid,jdbcType=BIGINT},
+      VISIT_DATE = #{visitDate,jdbcType=TIMESTAMP},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP}
+    where OID = #{oid,jdbcType=BIGINT}
+  </update>
     <sql id="MySQLDialectSuffix">
         <if test="start != null and rows != null">
             <![CDATA[  limit #{start},#{rows} ]]>

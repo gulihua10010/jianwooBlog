@@ -9,7 +9,7 @@ public interface NetWorkService {
     /**
      * 根据ip获取地区域
      *
-     * @param %param name% %param description%
+     * @param ip ip地址
      * @return
      * @author gulihua
      */
