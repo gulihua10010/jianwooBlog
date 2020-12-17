@@ -15,6 +15,7 @@ import cn.jianwoo.blog.exception.CommentBizException;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.CommentBizService;
+import cn.jianwoo.blog.task.AsyncTask;
 import cn.jianwoo.blog.util.DomainUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -42,6 +43,9 @@ public class CommentBizServiceImpl implements CommentBizService {
     private ArticleTransDao articleTransDao;
     @Autowired
     private CommentTransDao commentTransDao;
+    @Autowired
+    private AsyncTask asyncTask;
+
 
     /**
      * test 1 <br/>
@@ -128,6 +132,7 @@ public class CommentBizServiceImpl implements CommentBizService {
         comment.setParent(parentOid);
         comment.setQq(qq);
         comment.setUser(username);
+
         try {
             commentTransDao.doInsert(comment);
         } catch (DaoException e) {
@@ -147,6 +152,10 @@ public class CommentBizServiceImpl implements CommentBizService {
         } catch (DaoException e) {
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(artOid).print();
         }
+
+        //执行异步任务
+        asyncTask.execCommentIpAreaTask(comment.getOid());
+
     }
 
     @Override
