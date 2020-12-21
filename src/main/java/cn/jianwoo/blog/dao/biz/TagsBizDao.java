@@ -1,7 +1,6 @@
 package cn.jianwoo.blog.dao.biz;
 
 import cn.jianwoo.blog.entity.extension.ArticleTagsExt;
-
 import java.util.List;
 
 public interface TagsBizDao {
@@ -14,4 +13,11 @@ public interface TagsBizDao {
      */
     List<ArticleTagsExt> queryTagsByArtOid(Long artOid);
 
+    /**
+     * 获取所有标签数量
+     *
+     * @return
+     * @author gulihua
+     */
+    Integer countAllTags();
 }

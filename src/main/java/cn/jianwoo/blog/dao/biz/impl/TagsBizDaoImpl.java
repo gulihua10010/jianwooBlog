@@ -23,4 +23,10 @@ public class TagsBizDaoImpl implements TagsBizDao {
         return tagsBizMapper.selectTagsByArtOid(artOid);
     }
 
+
+    @Override
+    public Integer countAllTags() {
+        return tagsBizMapper.countAllTags();
+    }
+
 }

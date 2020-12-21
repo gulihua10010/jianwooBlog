@@ -5,7 +5,6 @@ import cn.jianwoo.blog.entity.extension.CommentExt;
 import cn.jianwoo.blog.entity.query.CommentParam;
 import cn.jianwoo.blog.exception.JwBlogException;
 import com.github.pagehelper.PageInfo;
-
 import java.util.List;
 
 public interface CommentBizService {
@@ -18,6 +17,13 @@ public interface CommentBizService {
      */
     int countCommentsByArt(Long artOid);
 
+    /**
+     * 获取评论总数量
+     *
+     * @return int
+     * @author gulihua
+     */
+    int countAllComments();
 
     /**
      * 获取最近limit条记录的评论 （通过UPDATE_DATE desc排序）

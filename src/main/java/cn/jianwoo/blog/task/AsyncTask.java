@@ -35,7 +35,7 @@ public class AsyncTask {
     private CommentTransDao commentTransDao;
     @Autowired
     private VisitTransDao visitTransDao;
- 
+
 
     public Future<String> execCommentIpAreaTask(Long oid) {
         log.info(">> Start async task execCommentIpAreaTask");

@@ -2,7 +2,6 @@ package cn.jianwoo.blog.service.biz;
 
 import cn.jianwoo.blog.entity.Tags;
 import cn.jianwoo.blog.exception.JwBlogException;
-
 import java.util.List;
 
 public interface TagsBizService {
@@ -35,7 +34,6 @@ public interface TagsBizService {
      */
     String queryTagNameByOid(Long oid) throws JwBlogException;
 
-
     /**
      * 删除标签
      *
@@ -44,5 +42,13 @@ public interface TagsBizService {
      * @author gulihua
      */
     void doRemoveTags(Long oid) throws JwBlogException;
+
+    /**
+     * 获取所有标签数量
+     *
+     * @return
+     * @author gulihua
+     */
+    Integer countAllTags();
 
 }

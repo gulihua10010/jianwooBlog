@@ -3,7 +3,6 @@ package cn.jianwoo.blog.dao.biz;
 import cn.jianwoo.blog.entity.Comment;
 import cn.jianwoo.blog.entity.extension.CommentExt;
 import cn.jianwoo.blog.entity.query.CommentParam;
-
 import java.util.List;
 
 public interface CommentBizDao {
@@ -17,6 +16,13 @@ public interface CommentBizDao {
      */
     int countWithCommentByArt(Long articleOid);
 
+    /**
+     * 获取评论总数量
+     *
+     * @return int
+     * @author gulihua
+     */
+    int countAllComments();
 
     /**
      * 统计未读评论数据 (ART_DEL!=-1 AND IS_READ=0)

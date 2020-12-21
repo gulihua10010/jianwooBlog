@@ -82,4 +82,10 @@ public class TagsBizServiceImpl implements TagsBizService {
             throw TagsBizException.DELETE_FAILED_EXCEPTION.format(oid).print();
         }
     }
+
+
+    @Override
+    public Integer countAllTags() {
+        return null;
+    }
 }

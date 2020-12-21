@@ -85,12 +85,13 @@ public class CommentBizServiceImpl implements CommentBizService {
         Comment subComment = new Comment();
         subComment.setOid(4L);
         subComment.setParent(2L);
-        Map<Long, Comment> commentMap = commentList.stream()
-                .collect(Collectors.toMap(Comment::getOid, a -> a, (k1, k2) -> k1));
+        Map<Long, Comment> commentMap = commentList.stream().collect(
+                Collectors.toMap(Comment::getOid, a -> a, (k1, k2) -> k1));
         Comment partentComment = new CommentBizServiceImpl().queryTopComment(subComment, commentMap);
         System.out.println(DomainUtil.toString(partentComment));
 
     }
+
 
     @Override
     public int countCommentsByArt(Long artOid) {
@@ -100,6 +101,13 @@ public class CommentBizServiceImpl implements CommentBizService {
         return commentBizDao.countWithCommentByArt(artOid);
     }
 
+
+    @Override
+    public int countAllComments() {
+        return commentBizDao.countAllComments();
+    }
+
+
     @Override
     public List<CommentExt> queryRecentComments(Integer limit) {
         if (limit == null) {
@@ -108,10 +116,12 @@ public class CommentBizServiceImpl implements CommentBizService {
         return commentBizDao.queryRecentComments(limit);
     }
 
+
     @Override
     public int countWithUnreadComm() {
         return commentBizDao.countWithUnreadComm();
     }
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)

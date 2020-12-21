@@ -5,10 +5,11 @@ import cn.jianwoo.blog.dao.biz.mapper.CommentBizMapper;
 import cn.jianwoo.blog.entity.Comment;
 import cn.jianwoo.blog.entity.extension.CommentExt;
 import cn.jianwoo.blog.entity.query.CommentParam;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * @author GuLihua
@@ -20,9 +21,16 @@ public class CommentBizDaoImpl implements CommentBizDao {
     @Autowired
     private CommentBizMapper commentBizMapper;
 
+
     @Override
     public int countWithCommentByArt(Long articleOid) {
         return commentBizMapper.countWithCommentByArt(articleOid);
+    }
+
+
+    @Override
+    public int countAllComments() {
+        return commentBizMapper.countAllComments();
     }
 
 

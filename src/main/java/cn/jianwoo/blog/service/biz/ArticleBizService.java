@@ -5,9 +5,9 @@ import cn.jianwoo.blog.entity.extension.ArticleExt;
 import cn.jianwoo.blog.entity.query.ArticleParam;
 import cn.jianwoo.blog.exception.JwBlogException;
 import com.github.pagehelper.PageInfo;
-import org.springframework.lang.NonNull;
-
 import java.util.List;
+
+import org.springframework.lang.NonNull;
 
 public interface ArticleBizService {
     /**
@@ -109,15 +109,13 @@ public interface ArticleBizService {
      */
     void doPublishedArticle(Long id) throws JwBlogException;
 
-
     /**
      * 获取有效文章数量 (status = 0 or status = 1)
      *
      * @return
      * @author gulihua
      */
-    Integer countWithEffectiveArts() throws JwBlogException;
-
+    Integer countWithEffectiveArts();
 
     /**
      * 获取已发布文章数量 (status = 1)
@@ -125,8 +123,7 @@ public interface ArticleBizService {
      * @return
      * @author gulihua
      */
-    Integer countWithPublishArts() throws JwBlogException;
-
+    Integer countWithPublishArts();
 
     /**
      * 获取草稿文章数量 (status = 0)
@@ -134,7 +131,7 @@ public interface ArticleBizService {
      * @return
      * @author gulihua
      */
-    Integer countWithDraftArts() throws JwBlogException;
+    Integer countWithDraftArts();
 
 
     /**

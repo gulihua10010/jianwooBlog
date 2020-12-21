@@ -13,9 +13,18 @@ import cn.jianwoo.blog.entity.extension.MenuExt;
 import cn.jianwoo.blog.enums.MenuTypeEnum;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
-import cn.jianwoo.blog.service.biz.*;
+import cn.jianwoo.blog.service.biz.ArticleBizService;
+import cn.jianwoo.blog.service.biz.CommentBizService;
+import cn.jianwoo.blog.service.biz.MenuBizService;
+import cn.jianwoo.blog.service.biz.TagsBizService;
+import cn.jianwoo.blog.service.biz.VisitBizService;
+import cn.jianwoo.blog.service.biz.WebconfBizService;
 import cn.jianwoo.blog.service.bo.WebconfBO;
 import cn.jianwoo.blog.util.DomainUtil;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +32,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author GuLihua
@@ -56,8 +62,13 @@ public class AdminPageController {
     @Autowired
     private VisitBizService visitBizService;
 
+
     @RequestMapping(CommBackendPageUrlConfig.URL_INDEX)
-    public String index() {
+    public String index(Model model) {
+        int publishedArtsCount = articleBizService.countWithPublishArts();
+        int draftArtsCount = articleBizService.countWithDraftArts();
+        int commentCount = commentBizService.countAllComments();
+
         return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_INDEX;
     }
 
@@ -86,15 +97,15 @@ public class AdminPageController {
             return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_404;
         }
         Long lastCommOid = commentBizService.queryLastCommentOid();
-//        List<CommentExt> commentExtList = commentBizService.queryCommentsByArtOid(id);
+        //        List<CommentExt> commentExtList = commentBizService.queryCommentsByArtOid(id);
         model.addAttribute("tags", tags);
         model.addAttribute("menuList", menuList);
         model.addAttribute("article", article);
         model.addAttribute("artTags", artTags);
         model.addAttribute("artOid", id);
-//        model.addAttribute("commentList", commentExtList);
+        //        model.addAttribute("commentList", commentExtList);
         model.addAttribute("lastCommOid", lastCommOid);
-//        logger.info(">> article :oid({}), title({}), comment:{}", article.getOid(), article.getTitle(), commentExtList);
+        //        logger.info(">> article :oid({}), title({}), comment:{}", article.getOid(), article.getTitle(), commentExtList);
         return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_ARTICLE_EDIT;
     }
 
@@ -136,7 +147,6 @@ public class AdminPageController {
         try {
             article = articleTransDao.queryArticleByPrimaryKey(id);
         } catch (DaoException e) {
-
             logger.error(">> AdminPageController.articleQuickEdit exec failed, exception: \n", e);
             logger.error(">> Article {} cannot be found", id);
             return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_404;

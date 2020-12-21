@@ -64,22 +64,36 @@
 
     <select id="countWithUnreadComm" resultType="int">
         SELECT COUNT(1)
-        FROM COMMENTS
-        WHERE ART_DEL!=-1 AND IS_READ=0
+        FROM
+            COMMENTS
+        WHERE
+              ART_DEL != -1
+          AND IS_READ = 0
     </select>
 
     <select id="countWithCommentByArt" resultType="int" parameterType="java.lang.Long">
         select count(1)
-        from comments
-        where ARTICLE_OID = #{articleOid,jdbcType=BIGINT}
+        from
+            comments
+        where
+            ARTICLE_OID = #{articleOid,jdbcType=BIGINT}
+    </select>
+
+    <select id="countAllComments" resultType="int">
+        select count(1)
+        from
+            comments
     </select>
 
     <select id="selectCommentsExtByArticleOid" parameterType="java.lang.Long" resultMap="ResultMapWithExt">
         SELECT C.*, A.TITLE
-        FROM COMMENTS C
-                 INNER JOIN ARTICLE A ON A.OID = C.ARTICLE_OID
-        WHERE C.ARTICLE_OID = #{articleOid,jdbcType=BIGINT}
-        ORDER BY C.UPDATE_DATE DESC
+        FROM
+            COMMENTS C
+                INNER JOIN ARTICLE A ON A.OID = C.ARTICLE_OID
+        WHERE
+            C.ARTICLE_OID = #{articleOid,jdbcType=BIGINT}
+        ORDER BY
+            C.UPDATE_DATE DESC
     </select>
 
     <select id="selectAllCommentsExt" resultMap="ResultMapWithExt"
