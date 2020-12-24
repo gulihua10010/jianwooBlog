@@ -6,11 +6,6 @@ import cn.jianwoo.blog.entity.Comment;
 import cn.jianwoo.blog.entity.Visit;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.service.biz.NetWorkService;
-
-import java.util.concurrent.Future;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.Future;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author GuLihua

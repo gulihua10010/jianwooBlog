@@ -5,11 +5,10 @@ import cn.jianwoo.blog.dao.biz.mapper.CommentBizMapper;
 import cn.jianwoo.blog.entity.Comment;
 import cn.jianwoo.blog.entity.extension.CommentExt;
 import cn.jianwoo.blog.entity.query.CommentParam;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author GuLihua

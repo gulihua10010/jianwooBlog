@@ -53,6 +53,7 @@
         ,
         <include refid="Blob_Column_List"/>
         from article
+        WHERE
         <if test="status != null">
             STATUS= #{status,jdbcType=INTEGER}
         </if>

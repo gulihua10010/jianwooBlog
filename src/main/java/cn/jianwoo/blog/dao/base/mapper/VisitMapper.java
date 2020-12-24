@@ -2,11 +2,11 @@ package cn.jianwoo.blog.dao.base.mapper;
 
 import cn.jianwoo.blog.entity.Visit;
 import cn.jianwoo.blog.entity.example.VisitExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
-public interface VisitMapper
-{
+import java.util.List;
+
+public interface VisitMapper {
     long countByExample(VisitExample example);
 
     int deleteByExample(VisitExample example);

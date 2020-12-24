@@ -5,9 +5,9 @@ import cn.jianwoo.blog.entity.extension.ArticleExt;
 import cn.jianwoo.blog.entity.query.ArticleParam;
 import cn.jianwoo.blog.exception.JwBlogException;
 import com.github.pagehelper.PageInfo;
-import java.util.List;
-
 import org.springframework.lang.NonNull;
+
+import java.util.List;
 
 public interface ArticleBizService {
     /**
@@ -141,7 +141,7 @@ public interface ArticleBizService {
      * @return
      * @author gulihua
      */
-    List<Article> queryRecentPublishedArts(int n) throws JwBlogException;
+    List<Article> queryRecentPublishedArts(int n);
 
 
     /**
@@ -150,7 +150,7 @@ public interface ArticleBizService {
      * @return
      * @author gulihua
      */
-    List<Article> queryRecentDraft(int n) throws JwBlogException;
+    List<Article> queryRecentDraft(int n);
 
 
     /**
@@ -159,7 +159,7 @@ public interface ArticleBizService {
      * @return
      * @author gulihua
      */
-    List<Article> queryRecycleBinArts() throws JwBlogException;
+    List<Article> queryRecycleBinArts();
 
 
     /**

@@ -3,21 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <link href="/static/plugins/layuiadmin/layui/css/layui.css" media="all" rel="stylesheet">
+    <link href="/static/plugins/layuiadmin/style/admin.css" media="all" rel="stylesheet">
     <link href="/static/css/admin.css" media="all" rel="stylesheet">
     <title>控制台</title>
 </head>
 <body>
+
+
 <div class="admin-index">
     <p>欢迎来到简窝博客后台管理系统</p>
     <div class="index-left">
         <div class="fast-look">
             <p>快速概览</p>
             <span><i class="iconfont">&#xe633;</i> <a
-                    href="{:Url('admin/index/myArticle',['m'=>all])}">{$artsCount}篇文章</a></span>
-            <span><i class="iconfont">&#xe674;</i> <a href="{:Url('admin/index/myArticle',['m'=>draft])}">{$draftsCount}篇草稿</a></span>
-            <span><i class="iconfont">&#xe535;</i> <a href="{:Url('admin/index/commentManagement')}">{$commCount}条评论</a></span>
+                    href="/admin/my/article">[[${publishedArtsCount}]]篇文章</a></span>
+            <span><i class="iconfont">&#xe674;</i> <a href="/admin/my/article">[[${draftArtsCount}]]篇草稿</a></span>
+            <span><i class="iconfont">&#xe535;</i> <a href="/comment/management">[[${commentCount}]]条评论</a></span>
             <span><i class="iconfont">&#xe6b1;</i> <a
-                    href="{:Url('admin/index/articleTags')}">{$tagscount}个标签</a></span>
+                    href="/admin/article/tags">[[${tagsCount}]]个标签</a></span>
 
         </div>
         <div class="fast-draft">
@@ -78,7 +81,13 @@
     <div class="clear"></div>
 </div>
 <script src="/static/plugins/layuiadmin/layui/layui.js"></script>
-
+<script>
+    layui.config({
+        base: '/static/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'console']);
+</script>
 <script>
     layui.use(['layer', 'form', 'element'], function () {
         $ = layui.jquery;

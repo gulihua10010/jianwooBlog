@@ -21,10 +21,6 @@ import cn.jianwoo.blog.service.biz.VisitBizService;
 import cn.jianwoo.blog.service.biz.WebconfBizService;
 import cn.jianwoo.blog.service.bo.WebconfBO;
 import cn.jianwoo.blog.util.DomainUtil;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +28,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author GuLihua
@@ -64,11 +63,7 @@ public class AdminPageController {
 
 
     @RequestMapping(CommBackendPageUrlConfig.URL_INDEX)
-    public String index(Model model) {
-        int publishedArtsCount = articleBizService.countWithPublishArts();
-        int draftArtsCount = articleBizService.countWithDraftArts();
-        int commentCount = commentBizService.countAllComments();
-
+    public String index() {
         return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_INDEX;
     }
 
@@ -190,6 +185,16 @@ public class AdminPageController {
 
     @RequestMapping(CommBackendPageUrlConfig.URL_CONSOLE)
     public String console(Model model) {
+        int publishedArtsCount = articleBizService.countWithPublishArts();
+        int draftArtsCount = articleBizService.countWithDraftArts();
+        int commentCount = commentBizService.countAllComments();
+        int tagsCount = tagsBizService.countAllTags();
+        articleBizService.queryRecentDraft(10);
+        articleBizService.queryRecentPublishedArts(10);
+        model.addAttribute("publishedArtsCount", publishedArtsCount);
+        model.addAttribute("draftArtsCount", draftArtsCount);
+        model.addAttribute("commentCount", commentCount);
+        model.addAttribute("tagsCount", tagsCount);
 
         return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_CONSOLE;
     }

@@ -86,6 +86,6 @@ public class TagsBizServiceImpl implements TagsBizService {
 
     @Override
     public Integer countAllTags() {
-        return null;
+        return tagsBizDao.countAllTags();
     }
 }

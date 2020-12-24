@@ -3,6 +3,7 @@ package cn.jianwoo.blog.dao.biz;
 import cn.jianwoo.blog.entity.Comment;
 import cn.jianwoo.blog.entity.extension.CommentExt;
 import cn.jianwoo.blog.entity.query.CommentParam;
+
 import java.util.List;
 
 public interface CommentBizDao {

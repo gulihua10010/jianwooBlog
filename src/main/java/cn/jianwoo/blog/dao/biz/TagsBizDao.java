@@ -1,6 +1,7 @@
 package cn.jianwoo.blog.dao.biz;
 
 import cn.jianwoo.blog.entity.extension.ArticleTagsExt;
+
 import java.util.List;
 
 public interface TagsBizDao {
