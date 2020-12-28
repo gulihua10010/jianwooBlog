@@ -1,165 +1,86 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>layuiAdmin 控制台主页一</title>
-    <meta content="webkit" name="renderer">
-    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
-    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0"
-          name="viewport">
+    <meta charset="UTF-8">
     <link href="/static/plugins/layuiadmin/layui/css/layui.css" media="all" rel="stylesheet">
     <link href="/static/plugins/layuiadmin/style/admin.css" media="all" rel="stylesheet">
+    <link href="/static/css/admin.css" media="all" rel="stylesheet">
+    <title>控制台</title>
 </head>
 <body>
 
-<div class="layui-fluid">
-    <div class="layui-row layui-col-space15">
-        <div class="layui-col-md8">
-            <div class="layui-row layui-col-space15">
-                <div class="layui-col-md6">
-                    <div class="layui-card">
-                        <div class="layui-card-header">快捷方式</div>
-                        <div class="layui-card-body">
 
-                            <div class="layui-carousel layadmin-carousel layadmin-shortcut">
-                                <div carousel-item>
-                                    <ul class="layui-row layui-col-space10" style="margin-top: 20px">
-                                        <li class="layui-col-xs3">
-                                            <a lay-href="/item">
-                                                <i class="layui-icon layui-icon-console"></i>
-                                                <cite>商品</cite>
-                                            </a>
-                                        </li>
+<div class="admin-index">
+    <p>欢迎来到简窝博客后台管理系统</p>
+    <div class="index-left">
+        <div class="fast-look">
+            <p>快速概览</p>
+            <span><i class="iconfont">&#xe633;</i> <a
+                    href="/admin/my/article">[[${publishedArtsCount}]]篇文章</a></span>
+            <span><i class="iconfont">&#xe674;</i> <a href="/admin/my/article">[[${draftArtsCount}]]篇草稿</a></span>
+            <span><i class="iconfont">&#xe535;</i> <a href="/comment/management">[[${commentCount}]]条评论</a></span>
+            <span><i class="iconfont">&#xe6b1;</i> <a
+                    href="/admin/article/tags">[[${tagsCount}]]个标签</a></span>
 
-                                        <li class="layui-col-xs3">
-                                            <a lay-href="/userlist">
-                                                <i class="layui-icon layui-icon-user"></i>
-                                                <cite>用户</cite>
-                                            </a>
-                                        </li>
-                                        <li class="layui-col-xs3">
-                                            <a lay-href="/webconfig">
-                                                <i class="layui-icon layui-icon-set"></i>
-                                                <cite>设置</cite>
-                                            </a>
-                                        </li>
-                                        <li class="layui-col-xs3">
-                                            <a lay-href="/orderlist">
-                                                <i class="layui-icon layui-icon-set"></i>
-                                                <cite>订单</cite>
-                                            </a>
-                                        </li>
-                                    </ul>
-
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div>
-                <div class="layui-col-md6">
-                    <div class="layui-card">
-                        <div class="layui-card-header">网站数据</div>
-                        <div class="layui-card-body">
-
-                            <div class="layui-carousel layadmin-carousel layadmin-backlog">
-                                <div carousel-item>
-                                    <ul class="layui-row layui-col-space10">
-                                        <li class="layui-col-xs6">
-                                            <a class="layadmin-backlog-body" lay-href="app/content/comment.html">
-                                                <h3>商品数据</h3>
-                                                <p><cite>[[${items}]]</cite></p>
-                                            </a>
-                                        </li>
-                                        <li class="layui-col-xs6">
-                                            <a class="layadmin-backlog-body" lay-href="app/forum/list.html">
-                                                <h3>订单数</h3>
-                                                <p><cite>[[${orders}]]</cite></p>
-                                            </a>
-                                        </li>
-                                        <li class="layui-col-xs6">
-                                            <a class="layadmin-backlog-body" lay-href="template/goodslist.html">
-                                                <h3>用户数</h3>
-                                                <p><cite>[[${users}]]</cite></p>
-                                            </a>
-                                        </li>
-                                        <li class="layui-col-xs6">
-                                            <a class="layadmin-backlog-body" href="javascript:"
-                                               onclick="layer.tips('不跳转', this, {tips: 3});">
-                                                <h3>待发货</h3>
-                                                <p><cite>[[${ordersfa}]]</cite></p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
         </div>
-        <div class="layui-col-md8">
-            <div class="layui-row layui-col-space25">
-                <div class="layui-col-md6">
-                    <div class="layui-card">
+        <div class="fast-draft">
+            <p>快速草稿</p>
+            标题:<input class="form-control" id="title" name="title" type="text">
+            作者:<input class="form-control" id="author" name="author" type="text">
+            草稿:
+            <textarea id="art-content">
 
-                        <div class="layui-tab layui-tab-brief layadmin-latestData">
-                            <ul class="layui-tab-title">
-                                <li class="layui-this ">最新上架</li>
-                            </ul>
-                            <div class="layui-tab-content">
-                                <div class="layui-tab-item layui-show">
-                                    <table id="LAY-index-items"></table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-col-md6">
-                    <div class="layui-card">
-                        <div class="layui-card-header">版本信息</div>
-                        <div class="layui-card-body layui-text">
-                            <table class="layui-table">
-                                <colgroup>
-                                    <col width="100">
-                                    <col>
-                                </colgroup>
-                                <tbody>
-                                <tr>
-                                    <td>当前版本</td>
-                                    <td>
-                                        1.0.0
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>基于框架</td>
-                                    <td>
-                                        前端 :layui BootStrap Jquery等
-                                        后端 SpringBoot 2.0.1 Dubbo (v2.6.2)
-                                        搜索 solr
-                                    </td>
-                                </tr>
+             </textarea>
+            <button class="btn save-draft">保存草稿</button>
 
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
-
-
     </div>
+    <div class="admim-active">
+        <p>最近发布</p>
+        <ul>
+            {if condition="($recentArts==null)"}
+            <li>文章空空如也</li>
+            {else /}
+            {foreach name="recentArts" item="ra"}
+            <li><span>{$ra.article_pushdate} </span> 由<span>{$ra.article_author}</span>发表<span><a
+                    href="{:Url('admin/index/articleEdit',['artid'=>$ra.article_id])}">{$ra.article_title}</a></span>
+            </li>
+            {/foreach}
+            {/if}
+        </ul>
+    </div>
+    <div class="admim-active">
+        <p>最近草稿</p>
+        <ul>
+            {if condition="($recentDrafts==null)"}
+            <li>文章空空如也</li>
+            {else /}
+            {foreach name="recentDrafts" item="rd"}
+            <li><span>{$rd.article_pushdate} </span> 由<span>{$rd.article_author}</span>发表<span><a
+                    href="{:Url('admin/index/articleEdit',['artid'=>$rd.article_id])}">{$rd.article_title}</a></span>
+            </li>
+            {/foreach}
+            {/if}
+        </ul>
+    </div>
+    <div class="admim-active">
+        <p>最近评论</p>
+        <ul>
+            {if condition="(recentComms==null)"}
+            <li>评论空空如也</li>
+            {else /}
+            {foreach name="recentComms" item="rc"}
+            <li><span>{$rc.comment_date} </span> 由<span>{$rc.comment_user}</span>对文章<span>{$rc.article_title}发表评论<span>
+                    <a href="{:Url('admin/index/articleEdit',['artid'=>$rc.article_id])}">{$rc.comment_content}</a></span>
+            </li>
+            {/foreach}
+            {/if}
+        </ul>
+    </div>
+    <!--<div class="clear"></div>-->
+    <div class="clear"></div>
 </div>
-
-
-</div>
-
 <script src="/static/plugins/layuiadmin/layui/layui.js"></script>
-
 <script>
     layui.config({
         base: '/static/layuiadmin/' //静态资源所在路径
@@ -167,6 +88,56 @@
         index: 'lib/index' //主入口模块
     }).use(['index', 'console']);
 </script>
+<script>
+    layui.use(['layer', 'form', 'element'], function () {
+        $ = layui.jquery;
+        $('.save-draft').click(function () {
+
+            var title = $('#title').val();
+            var author = $('#author').val();
+            var articleContent = $('#art-content').val();
+            if ($.trim(title) == '' || $.trim(author) == '' || $.trim(articleContent) == '') {
+                alert_fail('提示', '标题、作者或内容不能为空！');
+                return false;
+            }
+
+            $.ajax({
+                type: 'post',
+                data: {
+                    'data': JSON.stringify({
+                        title: title,
+                        author: author,
+                        articleContent: articleContent,
+                    })
+                },
+                dataType: 'json',
+                async: true,
+                url: '{:Url("admin/index/articleSaveDraft")}',
+                success: function (data) {
+                    // console.log(JSON.stringify(data));
+                    if (JSON.stringify(data) == 1) {
+                        alert_success_url('提示', '保存成功', '{:Url("admin/index/index")}');
+                        setTimeout(function () {
+                            $('textarea').val('');
+                            $('input').val('');
+                        }, 2000)
+
+                    } else {
+                        alert_fail('提示', '保存失败');
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    // alert('错误-2');
+                    // alert(XMLHttpRequest.status);
+                    // alert(XMLHttpRequest.readyState);
+                    // alert(textStatus);
+                    alert_fail('提示', '未知错误');
+                }
+
+            })
+        })
+    })
+
+</script>
 </body>
 </html>
-
