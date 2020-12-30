@@ -1367,3 +1367,21 @@ div.clearcache button#save {
 div.loginborder .login .inputs {
     position: relative
 }
+
+.height100 {
+    height: 100px !important;
+}
+
+.console-author,
+.console-time,
+.console-title,
+.console-user,
+.dynamic-ip,
+.dynamic-user {
+    color: #555;
+    font-style: italic;
+}
+
+.console-comm {
+    background-color: #eee;
+}

@@ -13,6 +13,7 @@ public class ArticleParam extends PageParam {
     private String title;
     private String text;
 
+
     public String getTitle() {
         return title;
     }

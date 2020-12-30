@@ -10,6 +10,7 @@ import cn.jianwoo.blog.entity.Menu;
 import cn.jianwoo.blog.entity.Tags;
 import cn.jianwoo.blog.entity.extension.CommentExt;
 import cn.jianwoo.blog.entity.extension.MenuExt;
+import cn.jianwoo.blog.enums.ArticleStatusEnum;
 import cn.jianwoo.blog.enums.MenuTypeEnum;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
@@ -244,7 +245,14 @@ public class AdminPageController {
 
 
     @RequestMapping(CommBackendPageUrlConfig.URL_MY_ARTICLE)
-    public String myArticle() {
+    public String myArticle(Model model, String mode) {
+        Integer status = 2;
+        if (ArticleStatusEnum.PUBLISHED.name().equals(mode)) {
+            status = 1;
+        } else if (ArticleStatusEnum.DRAFT.name().equals(mode)) {
+            status = 0;
+        }
+        model.addAttribute("status", status);
         return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_MY_ARTICLE;
     }
 

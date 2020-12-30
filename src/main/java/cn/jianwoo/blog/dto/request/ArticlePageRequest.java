@@ -11,6 +11,15 @@ public class ArticlePageRequest extends BasePageRequestDto {
     private static final long serialVersionUID = 5162232950590602831L;
     private String title;
     private String text;
+    private Integer status;
+
+    public Integer getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
     public String getText() {
         return text;

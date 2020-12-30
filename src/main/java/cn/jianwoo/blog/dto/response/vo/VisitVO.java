@@ -13,8 +13,9 @@ import java.io.Serializable;
  */
 public class VisitVO implements Serializable {
     private static final long serialVersionUID = -173120689091202491L;
-    private static final String TEMPLATE = "来自<span class=\"dynamic-ip\">%s (ip:%s)</span>的网友在 <span class=\"dynamic-date\">%s</span>访问了文章\n"
-            + "                <span class=\"dynamic-title\"><a href=\"%s\">%s</a></span>";
+    private static final String TEMPLATE = "来自<span class=\"dynamic-ip\">%s (ip:%s)</span>的网友在 " +
+            "<span class=\"dynamic-date\">%s</span>访问了文章\n"
+            + "<span class=\"dynamic-title\"><a href=\"%s\">%s</a></span>";
 
     private String ip;
     private String visitDate;

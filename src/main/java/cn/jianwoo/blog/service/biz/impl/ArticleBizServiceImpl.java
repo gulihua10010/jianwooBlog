@@ -63,6 +63,9 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         article.setStatus(status);
         article.setIsComment(isComment == null ? ArtCommStatusEnum.NO_COMMENT.getValue() : isComment);
         article.setImgSrc(imsSrc);
+        if (visitType == null) {
+            visitType = 1;
+        }
         if (visitType == -1) {
             article.setPassword(password);
         }
@@ -80,19 +83,22 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         } catch (DaoException e) {
             throw ArticleBizException.CREATE_FAILED_EXCEPTION.format(title).print();
         }
-        for (Integer t : tags) {
-            ArticleTags articleTags = new ArticleTags();
-            articleTags.setArticleOid(oid);
-            articleTags.setTagsOid(t);
-            articleTags.setCreateDate(new Date());
-            articleTags.setUpdateDate(new Date());
-            try {
-                articleTagsTransDao.doInsert(articleTags);
-            } catch (DaoException e) {
-                throw ArticleTagsBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + oid + ",tagsOid:" + t).print();
+        if (tags != null) {
+            for (Integer t : tags) {
+                ArticleTags articleTags = new ArticleTags();
+                articleTags.setArticleOid(oid);
+                articleTags.setTagsOid(t);
+                articleTags.setCreateDate(new Date());
+                articleTags.setUpdateDate(new Date());
+                try {
+                    articleTagsTransDao.doInsert(articleTags);
+                } catch (DaoException e) {
+                    throw ArticleTagsBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + oid + ",tagsOid:" + t).print();
 
+                }
             }
         }
+
         logger.info("==========>Insert article successfully,title = {}", title);
 
     }

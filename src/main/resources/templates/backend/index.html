@@ -91,17 +91,74 @@
         <!-- 侧边菜单 -->
         <div class="layui-side layui-side-menu">
             <div class="layui-side-scroll">
-                <div class="layui-logo" lay-href="/static/layuiadmin/views/home/console.html">
+                <div class="layui-logo" lay-href="/admin/console">
                     <span>简窝</span>
                 </div>
 
                 <ul class="layui-nav layui-nav-tree" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu"
                     lay-shrink="all">
-                    <li class="layui-nav-item layui-nav-itemed" data-name="home">
-                        <a href="javascript:" lay-direction="2" lay-tips="主页">
+
+                    <li data-name="home" class="layui-nav-item layui-nav-itemed">
+                        <a href="javascript:;" lay-tips="主页" lay-direction="2">
                             <i class="layui-icon layui-icon-home"></i>
                             <cite>主页</cite>
                         </a>
+                        <dl class="layui-nav-child">
+                            <dd data-name="index" class="layui-this">
+                                <a lay-href="/admin/console">主页</a>
+                            </dd>
+                            <dd data-name="dynamic">
+                                <a lay-href="/admin/web/dynamic">动态</a>
+                            </dd>
+                        </dl>
+                    </li>
+                    <li data-name="article" class="layui-nav-item layui-nav-itemed">
+                        <a href="javascript:;" lay-tips="文章管理" lay-direction="2">
+                            <i class="layui-icon layui-icon-home"></i>
+                            <cite>文章管理</cite>
+                        </a>
+                        <dl class="layui-nav-child">
+                            <dd data-name="article-published">
+                                <a lay-href="/admin/article/published">文章发布</a>
+                            </dd>
+                            <dd data-name="my-article">
+                                <a lay-href="/admin/my/article">我的文章</a>
+                            </dd>
+                            <dd data-name="comment-management">
+                                <a lay-href="/admin/comment/management">评论管理</a>
+                            </dd>
+                            <dd data-name="article-tags">
+                                <a lay-href="/article/tags">文章标签</a>
+                            </dd>
+                            <dd data-name="article-recycle-bin">
+                                <a lay-href="/admin/article/recycle/bin">文章回收站</a>
+                            </dd>
+                        </dl>
+                    </li>
+                    <li data-name="menu" class="layui-nav-item layui-nav-itemed">
+                        <a href="javascript:;" lay-tips="菜单管理" lay-direction="2">
+                            <i class="layui-icon layui-icon-home"></i>
+                            <cite>菜单管理</cite>
+                        </a>
+                        <dl class="layui-nav-child">
+                            <dd data-name="menu-management">
+                                <a lay-href="/admin/menu/management">菜单管理</a>
+                            </dd>
+                        </dl>
+                    </li>
+                    <li data-name="system" class="layui-nav-item layui-nav-itemed">
+                        <a href="javascript:;" lay-tips="系统管理" lay-direction="2">
+                            <i class="layui-icon layui-icon-home"></i>
+                            <cite>系统管理</cite>
+                        </a>
+                        <dl class="layui-nav-child">
+                            <dd data-name="web-config" class="layui-this">
+                                <a lay-href="/admin/web/config">网站配置</a>
+                            </dd>
+                            <dd data-name="clear-cache" class="layui-this">
+                                <a lay-href="/admin/clear/cache">清除缓存</a>
+                            </dd>
+                        </dl>
                     </li>
                 </ul>
             </div>
@@ -125,8 +182,8 @@
             </div>
             <div class="layui-tab" lay-allowClose="true" lay-filter="layadmin-layout-tabs" lay-unauto>
                 <ul class="layui-tab-title" id="LAY_app_tabsheader">
-                    <li class="layui-this" lay-attr="/static/layuiadmin/views/home/console.html"
-                        lay-id="/static/layuiadmin/views/home/console.html"><i class="layui-icon layui-icon-home"></i>
+                    <li class="layui-this" lay-attr="/admin/console"
+                        lay-id="/admin/console"><i class="layui-icon layui-icon-home"></i>
                     </li>
                 </ul>
             </div>
@@ -137,7 +194,7 @@
         <div class="layui-body" id="LAY_app_body">
             <div class="layadmin-tabsbody-item layui-show">
                 <iframe class="layadmin-iframe" frameborder="0"
-                        src="templates/backend/console.html"></iframe>
+                        src="/admin/console"></iframe>
             </div>
         </div>
 

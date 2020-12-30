@@ -14,8 +14,11 @@ import java.io.Serializable;
 public class CommentVO implements Serializable {
 
     private static final long serialVersionUID = 2152295702147130154L;
-    private static final String TEMPLATE = "来自<span class=\"dynamic-ip\">%s (ip:%s)</span>的网友 <span class=\"dynamic-user\">[%s]</span> 在 <span class=\"dynamic-date\">%s</span>评论了文章\n"
+    private static final String DYNAMIC_TEMPLATE = "来自<span class=\"dynamic-ip\">%s (ip:%s)</span> 的网友 <span class=\"dynamic-user\">[%s]</span> 在 <span class=\"dynamic-date\">%s</span> 评论了文章 \n"
             + "                <span class=\"dynamic-title\"><a href=\"%s\">%s</a></span>: <span class=\"dynamic-comm\">%s</span>";
+    private static final String CONSOLE_TEMPLATE = "网友 <span class=\"console-user\">[%s]</span> 在 <span class=\"console-time\">%s</span> 评论了文章 \n"
+            + "                <span class=\"console-title\"><a href=\"%s\">%s</a></span>: <span class=\"console-comm\">%s</span>";
+
     private Integer seq;
     private String artTitle;
     private String user;
@@ -27,13 +30,22 @@ public class CommentVO implements Serializable {
     private Long artOid;
     private String ip;
     private String area;
-    private String desc;
+    private String desc = Constants.BLANK;
+    private String templateName = "DYNAMIC_TEMPLATE";
 
     public String getDesc() {
-        return String.format(TEMPLATE, DomainUtil.format(this.area, Constants.UNKNOW),
-                DomainUtil.format(this.ip, Constants.UNKNOW), DomainUtil.format(this.user, Constants.ANAONYMOUS),
-                this.date, CommBackendPageUrlConfig.URL_ARTICLE_EDIT.replace("{id}", String.valueOf(this.artOid)),
-                this.artTitle, this.content);
+        if ("DYNAMIC_TEMPLATE".equals(templateName)) {
+            desc = String.format(DYNAMIC_TEMPLATE, DomainUtil.format(this.area, Constants.UNKNOW),
+                    DomainUtil.format(this.ip, Constants.UNKNOW), DomainUtil.format(this.user, Constants.ANAONYMOUS),
+                    this.date, CommBackendPageUrlConfig.URL_PREFIX + CommBackendPageUrlConfig.URL_ARTICLE_EDIT.replace("{id}", String.valueOf(this.artOid)),
+                    this.artTitle, this.content);
+        } else if ("CONSOLE_TEMPLATE".equals(templateName)) {
+            desc = String.format(CONSOLE_TEMPLATE, DomainUtil.format(this.user, Constants.ANAONYMOUS),
+                    this.date, CommBackendPageUrlConfig.URL_PREFIX + CommBackendPageUrlConfig.URL_ARTICLE_EDIT.replace("{id}", String.valueOf(this.artOid)),
+                    this.artTitle, this.content);
+        }
+
+        return desc;
     }
 
 
@@ -41,6 +53,13 @@ public class CommentVO implements Serializable {
         this.desc = desc;
     }
 
+    public String getTemplateName() {
+        return this.templateName;
+    }
+
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
+    }
 
     public String getIp() {
         return this.ip;

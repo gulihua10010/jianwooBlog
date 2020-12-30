@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * @author GuLihua
@@ -225,6 +226,16 @@ public class ArticleApiController extends BaseController {
         }
         if (StringUtils.isNotBlank(param.getText())) {
             artParam.setText(param.getText().trim());
+        }
+        if (param.getStatus() != null) {
+            List<Integer> statusList = new ArrayList<Integer>();
+            if (ArticleStatusEnum.ALL.getValue().equals(param.getStatus())) {
+                statusList.add(ArticleStatusEnum.PUBLISHED.getValue());
+                statusList.add(ArticleStatusEnum.DRAFT.getValue());
+            } else {
+                statusList.add(param.getStatus());
+            }
+            artParam.setStatusParams(statusList);
         }
         artParam.setPageNo(param.getPage());
         artParam.setPageSize(param.getLimit());

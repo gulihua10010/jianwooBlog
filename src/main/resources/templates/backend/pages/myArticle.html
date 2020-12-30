@@ -29,6 +29,15 @@
                             <input autocomplete="off" class="layui-input" name="text" placeholder="请输入"
                                    type="text">
                         </div>
+                        <label class="layui-form-label">文章类型</label>
+                        <div class="layui-input-inline">
+                            <select name="status" id="status" lay-verify="">
+                                <option value="2">所有</option>
+                                <option value="1">已发布</option>
+                                <option value="0">草稿</option>
+                            </select>
+                        </div>
+
                     </div>
                     <div class="layui-inline">
                         <button class="layui-btn layuiadmin-btn-art" data-type="reload" lay-filter="art-search"
@@ -62,6 +71,17 @@
 
 <script src="/static/plugins/layuiadmin/layui/layui.js"></script>
 <script src="/static/js/common.js" type="text/javascript"></script>
+<script th:inline="javascript">
+    var select = document.getElementById("status");
+    /*<![CDATA[*/
+    var status = /*[[${status}]]*/'';
+    /*]]>*/
+    if (select) {
+        select.value = status;
+    }
+
+
+</script>
 <script th:inline="none">
     layui.config({
         base: '/static/plugins/layuiadmin/' //静态资源所在路径
@@ -71,7 +91,9 @@
         var admin = layui.admin
             , table = layui.table
             , $ = layui.$
-            , form = layui.form
+            , form = layui.form;
+
+
         table.render({
             elem: '#article-table'
             , url: "/api/admin/article/effective/list"

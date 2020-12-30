@@ -803,7 +803,6 @@ html {
 
 /* 重置轮播样式 */
 .layadmin-carousel {
-    height: 185px !important;
     background-color: #fff;
 }
 

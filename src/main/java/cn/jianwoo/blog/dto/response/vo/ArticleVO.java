@@ -1,5 +1,9 @@
 package cn.jianwoo.blog.dto.response.vo;
 
+import cn.jianwoo.blog.config.page.CommBackendPageUrlConfig;
+import cn.jianwoo.blog.constants.Constants;
+import cn.jianwoo.blog.util.DomainUtil;
+
 import java.io.Serializable;
 
 /**
@@ -9,6 +13,9 @@ import java.io.Serializable;
  */
 public class ArticleVO implements Serializable {
     private static final long serialVersionUID = -8183712030536923735L;
+    private static final String TEMPLATE = "<span class=\"console-author\">%s</span> 在 " +
+            "<span class=\"console-time\">%s</span> 发表了 " +
+            "<span class=\"console-title\"><a href=\"%s\">%s</a></span>";
     private Long oid;
     private String title;
     private String publishDate;
@@ -16,6 +23,18 @@ public class ArticleVO implements Serializable {
     private String author;
     private String type;
     private Integer status;
+    private String desc;
+
+    public String getDesc() {
+        return String.format(TEMPLATE, DomainUtil.format(this.author, Constants.ANAONYMOUS),
+                this.publishDate,
+                CommBackendPageUrlConfig.URL_PREFIX + CommBackendPageUrlConfig.URL_ARTICLE_EDIT.replace("{id}", String.valueOf(this.oid)),
+                this.title);
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
 
     public Integer getStatus() {
         return status;

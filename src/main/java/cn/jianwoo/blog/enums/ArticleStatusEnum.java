@@ -8,6 +8,8 @@ public enum ArticleStatusEnum {
 
     RECYCLE(-1),
 
+    ALL(2),
+
     ;
 
     /**

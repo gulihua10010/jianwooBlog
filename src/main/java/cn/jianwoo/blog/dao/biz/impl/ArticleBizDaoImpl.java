@@ -6,6 +6,7 @@ import cn.jianwoo.blog.entity.Article;
 import cn.jianwoo.blog.entity.extension.ArticleExt;
 import cn.jianwoo.blog.entity.query.ArticleParam;
 import cn.jianwoo.blog.enums.ArticleStatusEnum;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,10 +58,13 @@ public class ArticleBizDaoImpl implements ArticleBizDao {
 
     @Override
     public List<ArticleExt> queryEffectiveArticleList(ArticleParam param) {
-        List<Integer> status = new ArrayList<>();
-        status.add(ArticleStatusEnum.PUBLISHED.getValue());
-        status.add(ArticleStatusEnum.DRAFT.getValue());
-        param.setStatusParams(status);
+        if (CollectionUtils.isEmpty(param.getStatusParams())) {
+            List<Integer> status = new ArrayList<>();
+            status.add(ArticleStatusEnum.PUBLISHED.getValue());
+            status.add(ArticleStatusEnum.DRAFT.getValue());
+            param.setStatusParams(status);
+        }
+
         return articleBizMapper.selectArticleListByStatus(param);
 
     }
