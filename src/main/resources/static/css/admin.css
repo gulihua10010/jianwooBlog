@@ -320,132 +320,6 @@ div.textareas + div {
     height: 50px
 }
 
-div.articleimg, div.articletyle, div.choosetags, div.published {
-    margin-top: 20px;
-    width: 280px;
-    border: 1px solid rgba(1, 1, 1, .1);
-    border-radius: 10px;
-    background-color: hsla(0, 0%, 97%, .5);
-    box-shadow: .5px .5px .5px rgba(1, 1, 1, .4)
-}
-
-div.articleimg p, div.articletyle p, div.choosetags p, div.published p {
-    margin: 5px;
-    background-color: hsla(0, 0%, 100%, .6)
-}
-
-div.choosed, div.tags {
-    margin: 10px
-}
-
-div.choosed + div {
-    margin: auto;
-    width: 250px;
-    border-bottom: 1px solid rgba(2, 2, 2, .1)
-}
-
-div.choosetags span {
-    display: inline-block;
-    margin: 5px;
-    padding: 3px;
-    height: 30px;
-    border-radius: 5px;
-    cursor: pointer
-}
-
-div.choosetags span a {
-    display: inline-block;
-    margin: 3px
-}
-
-div.choosetags span:hover {
-    opacity: .8
-}
-
-div.articletyle label {
-    margin: 5px
-}
-
-div.articletyle .select {
-    display: inline-block;
-    margin: 20px
-}
-
-div.articleimg > div.selimg > div.layui-upload > button {
-    margin: auto 90px;
-    background-color: #282b33
-}
-
-/*div.published div:nth-child(2) {*/
-/*    !*margin: 5px 20px;*!*/
-/*    padding: 0;*/
-/*    text-align: justify;*/
-/*    text-align-last: justify*/
-/*}*/
-#ispublic-form {
-    display: none;
-}
-
-#isComment {
-    margin: 10px;
-}
-
-#ispublic-form .layui-input-block {
-    width: 100%;
-    margin: 10px;
-}
-
-#passw-content, #passw-content-confirm {
-    width: 260px;
-    display: none;
-}
-
-div.published div:nth-child(2) button:after {
-    display: inline-block
-}
-
-div.published a:nth-child(4) {
-    margin: 5px 10px;
-    text-decoration: none
-}
-
-.btns-opt, #pwd-tips {
-    margin-left: 10px;
-}
-
-#cancel, #published-save {
-    margin-left: 10px;
-}
-
-#remove-del, #published-pub, #published-update {
-    width: 105px;
-    margin-left: 85px;
-
-}
-
-#btns1-2 {
-    margin-bottom: 10px;
-}
-
-#published-sure {
-    /*float: right;*/
-    margin-left: 165px;
-    width: 105px;
-    margin-bottom: 10px;
-}
-
-#btns1 div {
-    margin-top: 10px;
-}
-
-.bordertest {
-    border: 1px black solid;
-}
-
-div.published a:nth-child(5) {
-    color: #00f;
-    cursor: pointer
-}
 
 /*div.published #ispublic {*/
 /*    display: none;*/
@@ -479,44 +353,7 @@ div.published a:nth-child(5) {
 /*    margin: -5px 10px*/
 /*}*/
 
-div.published div:nth-child(10) {
-    margin: 10px 20px
-}
 
-#remove-del {
-    background-color: #e81123
-}
-
-#published-sure, button#published-pub, button#published-update {
-    background-color: #009688
-}
-
-#published-sure:hover, button#published-pub:hover, button#published-update:hover {
-    background-color: #00967a
-}
-
-/*button#published-pub {*/
-/*    margin: 10px 5pc;*/
-/*    width: 150px*/
-/*}*/
-
-div.end {
-    height: 5pc
-}
-
-div.published div:nth-child(3), div.published div:nth-child(7), div.published div:nth-child(9) {
-    margin: 5px auto;
-    width: 270px;
-    border-bottom: 1px solid rgba(0, 0, 0, .1)
-}
-
-div.choosetags a {
-    text-decoration: none
-}
-
-.tags-id, div.choosetags > div.choosed > span > span {
-    display: none
-}
 
 #passw-content + span {
     display: block
@@ -1368,6 +1205,9 @@ div.loginborder .login .inputs {
     position: relative
 }
 
+/*===============New Version Add======================*/
+
+
 .height100 {
     height: 100px !important;
 }
@@ -1384,4 +1224,148 @@ div.loginborder .login .inputs {
 
 .console-comm {
     background-color: #eee;
+}
+
+.layui-fluid {
+    padding: 15px;
+}
+
+
+.choosed, .tags {
+    margin: 10px
+}
+
+.choosed + div {
+    margin: auto;
+    width: 250px;
+    border-bottom: 1px solid rgba(2, 2, 2, .1)
+}
+
+
+.choose-tags span {
+    display: inline-block;
+    margin: 5px;
+    padding: 3px;
+    height: 30px;
+    border-radius: 5px;
+    cursor: pointer
+}
+
+.choose-tags span a {
+    display: inline-block;
+    margin: 3px
+}
+
+.choose-tags span:hover {
+    opacity: .8
+}
+
+.choose-tag a {
+    text-decoration: none
+}
+
+.tags-id, .choosetags > .choosed > span > span {
+    display: none
+}
+
+
+.article-img {
+    min-height: 80px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.article-img button {
+    display: inline;
+}
+
+.published-btns-opt .btns-opt button:after {
+    display: inline-block
+}
+
+.published-btns-opt a {
+    margin: 5px 10px;
+    text-decoration: none
+}
+
+/*.article-type {
+     padding: 10px
+}*/
+
+
+#ispublic-form {
+    display: none;
+}
+
+#isComment {
+    margin: 10px;
+}
+
+#ispublic-form .layui-input-block {
+    width: 100%;
+    margin: 10px;
+}
+
+#passw-content, #passw-content-confirm {
+    width: 260px;
+    display: none;
+}
+
+
+.btns-opt, #pwd-tips {
+    margin-left: 10px;
+}
+
+#cancel, #published-save {
+    margin-left: 10px;
+}
+
+#remove-del, #published-pub, #published-update {
+    width: 105px;
+    margin-left: 85px;
+
+}
+
+#btns1-2 {
+    margin-bottom: 10px;
+}
+
+#published-sure {
+    /*float: right;*/
+    margin-left: 165px;
+    width: 105px;
+    margin-bottom: 10px;
+}
+
+#btns1 div {
+    margin-top: 10px;
+}
+
+.bordertest {
+    border: 1px black solid;
+}
+
+.published-btns-opt #edit {
+    color: #00f;
+    cursor: pointer
+}
+
+
+#remove-del {
+    background-color: #e81123
+}
+
+#published-sure, button#published-pub, button#published-update {
+    background-color: #009688
+}
+
+#published-sure:hover, button#published-pub:hover, button#published-update:hover {
+    background-color: #00967a
+}
+
+
+.published-btns-opt-line {
+    margin: 5px auto;
+    width: 270px;
+    border-bottom: 1px solid rgba(0, 0, 0, .1)
 }

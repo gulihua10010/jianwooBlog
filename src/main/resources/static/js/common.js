@@ -283,7 +283,7 @@ function tinymceInit(id, power_paste = "propmt") {
     tinymce.init({
         selector: id,
         max_height: 550,
-        height: 250,
+        height: 500,
         convert_urls: false,
         branding: false,
         plugins: [

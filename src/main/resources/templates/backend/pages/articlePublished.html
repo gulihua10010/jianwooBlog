@@ -12,30 +12,294 @@
 
 </head>
 <body>
-<div class="art-main">
-    <div class="art-content">
-        <div class="articleinfo">
-            <p>撰写新文章</p>
-            <input autocomplete="off" class="layui-input" id="art-title" name="title" placeholder="键入标题" type="text"
-                   value="">
-            <label for="art-author">作者：</label><input autocomplete="off" class="layui-input" id="art-author"
-                                                      name="author"
-                                                      placeholder="请输入作者"
-                                                      type="text">
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md9">
+            <div class="layui-card">
+                <div class="layui-card-header">撰写新文章</div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-form-item">
+                        <input autocomplete="off" class="layui-input" id="art-title" name="title" placeholder="键入标题"
+                               type="text"
+                               value="">
+                    </div>
+                    <div class="layui-form-item">
+                        <input autocomplete="off" class="layui-input" id="art-author"
+                               name="author"
+                               placeholder="请输入作者"
+                               type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <textarea id="mytextarea" name="article"></textarea>
+                </div>
+            </div>
         </div>
-        <div class="textareas">
-            <textarea id="mytextarea" name="article">
-            </textarea>
+        <div class="layui-col-md3">
+            <div class="layui-card">
+                <div class="layui-card-header">文章标签</div>
+                <div class="layui-card-body">
+                    <div class="choose-tags">
+                        <div class="choosed">
+                        </div>
+                        <div></div>
+                        <div class="tags">
+                    <span th:each="tag:${tags}" th:inline="text">[[${tag.content}]]
+                        <span class="tags-id" style="display: none" th:text="${tag.oid}"></span>
+                    </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header">文章分类</div>
+                <div class="layui-card-body">
+                    <div class="article-type">
+                        <div class="layui-card layui-form" lay-filter="component-form-element">
+                            <select lay-search lay-verify="required" name="type">
+                                <option style="font-weight: bold;color: black" value="-1"></option>
+                                <option style="color: #777" th:each="menu:${menuList}" th:text="${menu.text}"
+                                        th:value="${menu.oid}"></option>
+                            </select>
+                        </div>
+                    </div>
 
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header">缩略图</div>
+                <div class="layui-card-body">
+                    <div class="article-img">
+                        <div class="layui-upload">
+                            <button class="layui-btn" id="test1" type="button">上传图片</button>
+                            <div class="layui-upload-list imgupload">
+                                <img class="pre-upd-img" id="breimg" style="margin-left: 5px" width="100">
+                                <p id="demoText"></p>
+                                <input id="imgsrc" name="Img" style="visibility: hidden" value=""/>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header">操作</div>
+                <div class="layui-card-body">
+                    <div class="published-btns-opt">
+                        <div class="btns-opt">
+                            <button class="layui-btn layui-btn-primary layui-btn-sm" id="save-draft">保存草稿</button>
+                            <button class="layui-btn layui-btn-primary layui-btn-sm" id="articlePreview">文章预览</button>
+                        </div>
+                        <div class="published-btns-opt-line"></div>
+                        <a><i class="iconfont">&#xe606;</i> 公开度：<span id="published-public">公开</span></a>&nbsp;
+                        <a id="edit">编辑</a>
+                        <form class="layui-form" lay-filter="component-form-element" method="post">
+                            <div class="layui-form-item" id="ispublic-form">
+                                <div class="layui-input-block">
+                                    <input checked class="ispublic-radio" id="public" lay-filter="public"
+                                           name="isPublic" title="公开"
+                                           type="radio" value="1">
+                                    <span id="hometop1"><input id="hometop" lay-skin="primary" title="将文章置于首页顶端"
+                                                               type="checkbox"
+                                                               value="2"></span><br>
+                                    <input class="ispublic-radio" id="passw" lay-filter="passw" name="isPublic"
+                                           title="密码保护"
+                                           type="radio"
+                                           value="-1"><br>
+                                    <input autocomplete="off" class="layui-input" id="passw-content" placeholder="密码"
+                                           type="password">
+                                    <input autocomplete="off" class="layui-input" id="passw-content-confirm"
+                                           placeholder="确认密码"
+                                           type="password">
+                                    <input class="ispublic-radio" id="secret" lay-filter="secret" name="isPublic"
+                                           title="私密"
+                                           type="radio" value="0">
+
+                                </div>
+                                <span id="pwd-tips" style="color: red;display: none"></span>
+                                <div class="btns-opt" id="btns0" style="display: block">
+                                    <button class="layui-btn layui-btn-sm" id="btn-ispublic-sure">确定</button>
+                                    <button class="layui-btn layui-btn-primary layui-btn-sm" id="btn-ispublic-cancel">
+                                        取消
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <div id="isComment">
+                                    <input checked id="is-comment" name="isComment" title="是否可以评论" type="checkbox">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
+</div>
+
+<!--==========-->
+
+
+<!--<div class="published">-->
+<!--    <p>文章发布</p>-->
+<!--    <div class="btns-opt">-->
+<!--        <button class="layui-btn layui-btn-primary layui-btn-sm" id="save-draft">保存草稿</button>-->
+<!--        <button class="layui-btn layui-btn-primary layui-btn-sm" id="articlePreview">文章预览</button>-->
+<!--    </div>-->
+<!--    <div></div>-->
+<!--    <a><i class="iconfont">&#xe606;</i> 公开度：<span id="published-public">公开</span></a>&nbsp;-->
+<!--    <a id="edit">编辑</a>-->
+<!--    6 <form class="layui-form" lay-filter="component-form-element" method="post">-->
+<!--    <div class="layui-form-item" id="ispublic-form">-->
+<!--        <div class="layui-input-block">-->
+<!--            <input checked class="ispublic-radio" id="public" lay-filter="public" name="isPublic" title="公开"-->
+<!--                   type="radio" value="1">-->
+<!--            <span id="hometop1"><input id="hometop" lay-skin="primary" title="将文章置于首页顶端" type="checkbox"-->
+<!--                                       value="2"></span><br>-->
+<!--            <input class="ispublic-radio" id="passw" lay-filter="passw" name="isPublic" title="密码保护"-->
+<!--                   type="radio"-->
+<!--                   value="-1"><br>-->
+<!--            <input autocomplete="off" class="layui-input" id="passw-content" placeholder="密码"-->
+<!--                   type="password">-->
+<!--            <input autocomplete="off" class="layui-input" id="passw-content-confirm" placeholder="确认密码"-->
+<!--                   type="password">-->
+<!--            <input class="ispublic-radio" id="secret" lay-filter="secret" name="isPublic" title="私密"-->
+<!--                   type="radio" value="0">-->
+
+<!--        </div>-->
+<!--        <span id="pwd-tips" style="color: red;display: none"></span>-->
+<!--        <div class="btns-opt" id="btns0" style="display: block">-->
+<!--            <button class="layui-btn layui-btn-sm" id="btn-ispublic-sure">确定</button>-->
+<!--            <button class="layui-btn layui-btn-primary layui-btn-sm" id="btn-ispublic-cancel">取消</button>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div>-->
+<!--        <div id="isComment">-->
+<!--            <input checked id="is-comment" name="isComment" title="是否可以评论" type="checkbox">-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</form>-->
+<!--    <div></div>-->
+<!--    <div id="btns1">-->
+<!--        <div>-->
+<!--            <button class="layui-btn layui-btn-primary" id="cancel">取消</button>-->
+<!--            <button class="layui-btn layui-btn-danger" id="remove-del">移至回收站</button>-->
+<!--        </div>-->
+<!--        <div>-->
+<!--            <button class="layui-btn" id="published-sure">发布</button>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    </di|v>-->
+
+<!--    a:nth: a:nth(5)-->
+
+
+<!--    #ispublic-form {-->
+<!--    display: none;-->
+<!--    }-->
+
+<!--    #isComment {-->
+<!--    margin: 10px;-->
+<!--    }-->
+
+<!--    #ispublic-form .layui-input-block {-->
+<!--    width: 100%;-->
+<!--    margin: 10px;-->
+<!--    }-->
+
+<!--    #passw-content, #passw-content-confirm {-->
+<!--    width: 260px;-->
+<!--    display: none;-->
+<!--    }-->
+
+
+<!--    .btns-opt, #pwd-tips {-->
+<!--    margin-left: 10px;-->
+<!--    }-->
+
+<!--    #cancel, #published-save {-->
+<!--    margin-left: 10px;-->
+<!--    }-->
+
+<!--    #remove-del, #published-pub, #published-update {-->
+<!--    width: 105px;-->
+<!--    margin-left: 85px;-->
+
+<!--    }-->
+
+<!--    #btns1-2 {-->
+<!--    margin-bottom: 10px;-->
+<!--    }-->
+
+<!--    #published-sure {-->
+<!--    /*float: right;*/-->
+<!--    margin-left: 165px;-->
+<!--    width: 105px;-->
+<!--    margin-bottom: 10px;-->
+<!--    }-->
+
+<!--    #btns1 div {-->
+<!--    margin-top: 10px;-->
+<!--    }-->
+
+<!--    .bordertest {-->
+<!--    border: 1px black solid;-->
+<!--    }-->
+
+<!--    div.published a:nth-child(5) {-->
+<!--    color: #00f;-->
+<!--    cursor: pointer-->
+<!--    }-->
+<!--    div.published div:nth-child(10) {-->
+<!--    margin: 10px 20px-->
+<!--    }-->
+
+<!--    #remove-del {-->
+<!--    background-color: #e81123-->
+<!--    }-->
+
+<!--    #published-sure, button#published-pub, button#published-update {-->
+<!--    background-color: #009688-->
+<!--    }-->
+
+<!--    #published-sure:hover, button#published-pub:hover, button#published-update:hover {-->
+<!--    background-color: #00967a-->
+<!--    }-->
+
+
+<!--    div.end {-->
+<!--    height: 5pc-->
+<!--    }-->
+
+<!--    div.published div:nth-child(3), div.published div:nth-child(7), div.published div:nth-child(9) {-->
+<!--    margin: 5px auto;-->
+<!--    width: 270px;-->
+<!--    border-bottom: 1px solid rgba(0, 0, 0, .1)-->
+<!--    }-->
+
+
+<!--    <div class="layui-card">-->
+<!--        <div class="layui-card-header">文章分类</div>-->
+<!--        <div class="layui-card-body">-->
+
+<!--        </div>-->
+<!--    </div>-->
+<!--    -->
+<!--    -->
+<!--    ======-->
+<div class="art-main">
     <div style="display:none;">
-        <form action="{:Url('index/index/articlePreview')}" id="form-articlePreview" method="post" target="_blank">
-            <input id="artpre-title" name="title" type="hidden">
-            <input id="artpre-author" name="author" type="hidden">
-            <input id="artpre-content" name="content" type="hidden">
-            <input id="artpre-type" name="type" type="hidden">
-        </form>
+        <!--            <form action="{:Url('index/index/articlePreview')}" id="form-articlePreview" method="post" target="_blank">-->
+        <!--                <input id="artpre-title" name="title" type="hidden">-->
+        <!--                <input id="artpre-author" name="author" type="hidden">-->
+        <!--                <input id="artpre-content" name="content" type="hidden">-->
+        <!--                <input id="artpre-type" name="type" type="hidden">-->
+        <!--            </form>-->
     </div>
     <div class="art-pub-rightsider">
         <div class="choosetags">
@@ -148,7 +412,7 @@
             , upload = layui.upload;
 
 
-        spans = $('.choosetags').find('span');
+        spans = $('.choose-tags').find('span');
         for (var i = 0; i < spans.length; i++) {
             var color = Math.random();
             var r = parseInt((color * (i + 1) * 1234) % 254);

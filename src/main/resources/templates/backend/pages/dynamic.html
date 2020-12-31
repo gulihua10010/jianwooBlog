@@ -7,18 +7,25 @@
     <link href="/static/css/admin.css" media="all" rel="stylesheet">
 </head>
 <body>
-<div class="dynamic">
-    <p>动态</p>
-    <div class="newest-visit">
-        <p>最新访问</p>
-        <div class="layui-card-body">
-            <table id="visit-table" lay-filter="visit-data"></table>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">最新访问</div>
+                <div class="layui-card-body">
+                    <table id="visit-table" lay-filter="visit-data"></table>
+
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="not-read-comms">
-        <p>最近评论</p>
-        <div class="layui-card-body">
-            <table id="comm-table" lay-filter="comm-data"></table>
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">最近评论</div>
+                <div class="layui-card-body">
+                    <table id="comm-table" lay-filter="comm-data"></table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
