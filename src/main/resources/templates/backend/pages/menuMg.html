@@ -4,64 +4,11 @@
     <meta charset="UTF-8">
     <link href="/static/plugins/layuiadmin/layui/css/layui.css" media="all" rel="stylesheet">
     <link href="/static/css/admin.css" media="all" rel="stylesheet">
+    <link href="/static/plugins/layuiadmin/plugins/mouseRightMenu.css" media="all" rel="stylesheet">
     <link href="/static/plugins/jquery-ui/jquery-ui.min.css" media="all" rel="stylesheet">
     <title>菜单管理</title>
 </head>
-<style>
-    .menu-list > li {
-        width: 110px;
-        /*border: 1px solid rgba(0, 0, 0, .1);*/
-        text-align: center;
-        cursor: pointer;
-        display: inline-block;
-        vertical-align: top;
-    }
 
-    .menu-list {
-    }
-
-    .menu-list > li > ul {
-        display: block;
-        padding: 0;
-        margin: 0;
-
-    }
-
-    .menu-list > li > ul > li {
-        /*background-color: hsla(0, 0%, 97%, .5);*/
-        list-style: none;
-        text-align: center;
-
-    }
-
-    .menu_content {
-        /*height: 45px;*/
-        background-color: rgb(240, 240, 240);
-        border: 1px solid rgb(250, 250, 250);
-        overflow: hidden;
-        padding-left: 5px;
-
-    }
-
-    .menu_content span {
-        line-height: 45px;
-
-    }
-
-    /*.menu-list > li:last-child*/
-    /*{*/
-    /*    list-style: none;*/
-    /*    line-height: 45px;*/
-    /*    text-align: center;*/
-    /*}*/
-
-    /*.menu-list > li > ul > li {*/
-    /*    display: inline-block;*/
-    /*    width: 110px;*/
-    /*    height: 45px;*/
-    /*    text-align: center*/
-    /*}*/
-</style>
 <body>
 
 <div class="layui-fluid">
@@ -72,12 +19,12 @@
                 <div class="layui-card-body">
                     <ul class="sortable menu-list">
                         <li class="sorts" th:attr="data-id=${m.oid}" th:each="m:${menu}">
-                            <div class="menu_content" th:attr="data-data=${m.text}">
+                            <div class="menu_content" th:attr="data-data=${m.text},data-id=${m.oid}">
                                 <span th:text="${#strings.length(m.text)<=6?m.text:#strings.substring(m.text,0,6)+'...'}"></span>
                             </div>
                             <ul>
                                 <li th:each="s:${m.subMenus}">
-                                    <div class="menu_content" th:attr="data-data=${s.text}">
+                                    <div class="menu_content" th:attr="data-data=${s.text},data-id=${s.oid}">
                                         <span th:text="${#strings.length(s.text)<=6?s.text:#strings.substring(s.text,0,6)+'...'}"></span>
                                     </div>
                                 </li>
@@ -111,9 +58,20 @@
 <script src="/static/plugins/jquery-ui/jquery-ui.min.js"></script>
 <script src="/static/js/common.js" type="text/javascript"></script>
 <script>
-    layui.use(['layer', 'form', 'element', 'upload'], function () {
-        var form = layui.form
-            , $ = layui.jquery;
+    layui.config({
+        base: '/static/plugins/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index'
+        , mouseRightMenu: '/mouseRightMenu'
+    }).use(['index', 'mouseRightMenu', 'layer'], function () {
+        var $ = layui.jquery
+            , layer = layui.layer
+            , mouseRightMenu = layui.mouseRightMenu;
+
+        document.oncontextmenu = function () {
+            return false;
+        }
+
         menuEdit();
 
         function menuEdit() {
@@ -129,7 +87,7 @@
                             var indextext = $('.sorts').eq(i).data("id")
                             index[i] = indextext;
                         }
-                        console.log(index)
+                        // console.log(index)
                         ajaxPost(
                             "/api/admin/menu/sort",
                             JSON.stringify({
@@ -155,47 +113,135 @@
                 clearTimeout(handle);
             });
 
-            $('.menu_edit_btn').click(function () {
-                var id = $(this).data("id");
-                layer.open({
-                    type: 2
-                    , title: '菜单编辑'
-                    , content: '/admin/menu/edit/' + id
-                    , area: ['500px', '400px']
-                    , btn: ['确定', '取消']
-                    , yes: function (index, layero) {
-                        var iframeWindow = window['layui-layer-iframe' + index]
-                            , submitID = 'replyComm-submit'
-                            , submit = layero.find('iframe').contents().find('#' + submitID);
+            $('.menu_content').bind("contextmenu", function (e) {
+                var data = {oid: $(this).data('id'), text: $(this).data('data')}
+                if (data.text == null || data.text == undefined || data.text == '') {
+                    return false;
+                }
+                var menu_data = [
+                    {'data': data, 'type': 1, 'title': '编辑'},
+                    {'data': data, 'type': 2, 'title': '删除'},
+                ]
+                mouseRightMenu.open(menu_data, false, function (d) {
+                    if (d.type == 1) {
+                        var id = d.data.oid
+                        layer.open({
+                            type: 2
+                            , title: '菜单编辑'
+                            , content: '/admin/menu/edit/' + id
+                            , area: ['600px', '400px']
+                            , btn: ['确定', '取消']
+                            , yes: function (index, layero) {
+                                var iframeWindow = window['layui-layer-iframe' + index]
+                                    , submitID = 'replyComm-submit'
+                                    , submit = layero.find('iframe').contents().find('#' + submitID)
+                                    , menuTips = layero.find('iframe').contents().find('.menu-tips')
+                                    , menuTipsSpan = layero.find('iframe').contents().find('#menu-tips-text')
+                                ;
 
-                        //监听提交
-                        iframeWindow.layui.form.on('submit(' + submitID + ')', function (formData) {
-                            var field = formData.field; //获取提交的字段
 
-                            //提交 Ajax 成功后，静态更新表格中的数据
-                            ajaxPost(
-                                "/api/admin/menu/update",
-                                JSON.stringify({
-                                    name: field.name,
-                                    text: field.text,
-                                    icon: field.icon,
-                                    url: field.url,
-                                    oid: id
-                                }),
-                                "更新成功",
-                                function () {
-                                    layer.close(index); //关闭弹层
-                                    location.reload();
-                                }
-                            );
+                                //监听提交
+                                iframeWindow.layui.form.on('submit(' + submitID + ')', function (formData) {
+                                    var field = formData.field; //获取提交的字段
+                                    if (isEmpty(field.name)) {
+                                        menuTips.css('display', 'block');
+                                        menuTipsSpan.text('菜单名字不能为空');
+                                        return false;
+                                    }
+                                    if (isEmpty(field.text)) {
+                                        menuTips.css('display', 'block');
+                                        menuTipsSpan.text('菜单文本不能为空');
+                                        return false;
+                                    }
+                                    if (field.name.length > 10) {
+                                        menuTips.css('display', 'block');
+                                        menuTipsSpan.text('菜单名字不能大于10个字符!');
+                                        return false;
+                                    }
+                                    if (field.text.length > 10) {
+                                        menuTips.css('display', 'block');
+                                        menuTipsSpan.text('菜单文本不能大于10个字符!');
+                                        return false;
+                                    }
+                                    var patt = /^[_#$@\d\w]*$/;
+                                    if (!patt.test(field.name)) {
+                                        menuTips.css('display', 'block');
+                                        menuTipsSpan.text('菜单文本必须是字母、数字、符号\'_#$@\'，不能包含其他特殊字符!');
+                                        return false;
+                                    }
+                                    //提交 Ajax 成功后，静态更新表格中的数据
+                                    ajaxPost(
+                                        "/api/admin/menu/update",
+                                        JSON.stringify({
+                                            name: field.name,
+                                            text: field.text,
+                                            icon: field.icon,
+                                            url: field.url,
+                                            subToken: field.subToken,
+                                            oid: id
+                                        }),
+                                        "更新成功",
+                                        function () {
+                                            layer.close(index); //关闭弹层
+                                            location.reload();
+                                        }
+                                    );
+                                });
+
+                                submit.trigger('click');
+                            }
+                            , success: function (layero, index) {
+
+                            }
                         });
+                    } else if (d.type == 2) {
+                        var id = d.data.oid;
+                        ajaxApiPost(
+                            "/api/admin/menu/validate/submenu",
+                            JSON.stringify({
+                                entityOid: id
+                            }),
+                            function (data) {
+                                if (data.isSuccess == "N") {
+                                    layer.confirm(data.resultMsg, function (index) {
+                                        layer.close(index);
+                                    });
+                                } else {
+                                    ajaxApiPost(
+                                        "/api/admin/menu/validate/article/exist",
+                                        JSON.stringify({
+                                            entityOid: id
+                                        }),
+                                        function (data) {
+                                            if (data.isSuccess == "N") {
+                                                layer.confirm(data.resultMsg, function (index) {
+                                                    layer.close(index);
+                                                });
+                                            } else {
+                                                layer.confirm("确定要删除此菜单嘛？", function (index) {
+                                                    ajaxPost(
+                                                        "/api/admin/menu/remove",
+                                                        JSON.stringify({
+                                                            entityOid: id
+                                                        }),
+                                                        "删除成功",
+                                                        function () {
+                                                            layer.close(index);
+                                                            location.reload();
+                                                        }
+                                                    );
+                                                });
 
-                        submit.trigger('click');
-                    }
-                    , success: function (layero, index) {
+                                            }
 
+                                        }
+                                    );
+                                }
+
+                            }
+                        );
                     }
-                });
+                })
             });
 
 
@@ -213,12 +259,39 @@
                 , yes: function (index, layero) {
                     var iframeWindow = window['layui-layer-iframe' + index]
                         , submitID = 'replyComm-submit'
-                        , submit = layero.find('iframe').contents().find('#' + submitID);
+                        , submit = layero.find('iframe').contents().find('#' + submitID)
+                        , menuTips = layero.find('iframe').contents().find('.menu-tips')
+                        , menuTipsSpan = layero.find('iframe').contents().find('#menu-tips-text');
 
                     //监听提交
                     iframeWindow.layui.form.on('submit(' + submitID + ')', function (formData) {
                         var field = formData.field; //获取提交的字段
-
+                        if (isEmpty(field.name)) {
+                            menuTips.css('display', 'block');
+                            menuTipsSpan.text('菜单名字不能为空');
+                            return false;
+                        }
+                        if (isEmpty(field.text)) {
+                            menuTips.css('display', 'block');
+                            menuTipsSpan.text('菜单文本不能为空');
+                            return false;
+                        }
+                        if (field.name.length > 10) {
+                            menuTips.css('display', 'block');
+                            menuTipsSpan.text('菜单名字不能大于10个字符!');
+                            return false;
+                        }
+                        if (field.text.length > 10) {
+                            menuTips.css('display', 'block');
+                            menuTipsSpan.text('菜单文本不能大于10个字符!');
+                            return false;
+                        }
+                        var patt = /^[_#$@\d\w]*$/;
+                        if (!patt.test(field.name)) {
+                            menuTips.css('display', 'block');
+                            menuTipsSpan.text('菜单文本必须是字母、数字、符号\'_#$@\'，不能包含其他特殊字符!');
+                            return false;
+                        }
                         //提交 Ajax 成功后，静态更新表格中的数据
                         ajaxPost(
                             "/api/admin/menu/add",
@@ -227,7 +300,9 @@
                                 text: field.text,
                                 icon: field.icon,
                                 url: field.url,
-                                parentOid: pid
+                                parentOid: pid,
+                                subToken: field.subToken,
+
                             }),
                             "添加成功",
                             function () {
@@ -244,54 +319,8 @@
                 }
             });
         })
-        //菜单删除
-        $('.del_menu').click(function () {
-            var id = $(this).data("id");
-            ajaxApiPost(
-                "/api/admin/menu/validate/submenu",
-                JSON.stringify({
-                    entityOid: id
-                }),
-                function (data) {
-                    if (data.isSuccess == "N") {
-                        layer.confirm(data.resultMsg, function (index) {
-                            layer.close(index);
-                        });
-                    } else {
-                        ajaxApiPost(
-                            "/api/admin/menu/validate/article/exist",
-                            JSON.stringify({
-                                entityOid: id
-                            }),
-                            function (data) {
-                                if (data.isSuccess == "N") {
-                                    layer.confirm(data.resultMsg, function (index) {
-                                        layer.close(index);
-                                    });
-                                } else {
-                                    layer.confirm("确定要删除此菜单嘛？", function (index) {
-                                        ajaxPost(
-                                            "/api/admin/menu/remove",
-                                            JSON.stringify({
-                                                entityOid: id
-                                            }),
-                                            "删除成功",
-                                            function () {
-                                                layer.close(index);
-                                                location.reload();
-                                            }
-                                        );
-                                    });
 
-                                }
 
-                            }
-                        );
-                    }
-
-                }
-            );
-        })
     })
 </script>
 </body>

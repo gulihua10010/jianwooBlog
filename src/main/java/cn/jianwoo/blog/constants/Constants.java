@@ -47,6 +47,10 @@ public class Constants {
     public static final Integer TITLE_LENGTH = 50;
     public static final Integer AUTHOR_LENGTH = 10;
     public static final Integer TAGS_LENGTH = 10;
+    public static final Integer MENU_LENGTH = 10;
+
+    //reg
+    public static final String MENU_NAME_REGEX = "^[_#$@\\d\\w]*$";
 
 
 }

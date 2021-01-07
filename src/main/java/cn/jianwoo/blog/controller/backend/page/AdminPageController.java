@@ -1,5 +1,6 @@
 package cn.jianwoo.blog.controller.backend.page;
 
+import cn.jianwoo.blog.annotation.SubToken;
 import cn.jianwoo.blog.config.page.CommBackendPageTemplateConfig;
 import cn.jianwoo.blog.config.page.CommBackendPageUrlConfig;
 import cn.jianwoo.blog.dao.base.ArticleTransDao;
@@ -62,6 +63,10 @@ public class AdminPageController {
     @Autowired
     private VisitBizService visitBizService;
 
+    @RequestMapping
+    public String main() {
+        return "forward:/admin/index";
+    }
 
     @RequestMapping(CommBackendPageUrlConfig.URL_INDEX)
     public String index() {
@@ -223,12 +228,14 @@ public class AdminPageController {
     }
 
 
+    @SubToken(saveToken = true)
     @RequestMapping(CommBackendPageUrlConfig.URL_MENU_ADD)
     public String menuAdd() {
         return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_MENU_ADD;
     }
 
 
+    @SubToken(saveToken = true)
     @RequestMapping(CommBackendPageUrlConfig.URL_MENU_EDIT)
     public String menuEdit(Model model, @PathVariable("id") Long id) {
         try {

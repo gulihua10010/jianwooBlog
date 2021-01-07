@@ -18,12 +18,20 @@ public class BaseRequestDto implements Serializable {
     private String clientIp;
     private String clientName;
     private String sessionId;
+    private String token;
     private Date requestDate = new Date();
 
 
     public BaseRequestDto() {
     }
 
+    public String getToken() {
+        return this.token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     public String getRequestId() {
         return requestId;

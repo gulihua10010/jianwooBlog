@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author GuLihua
@@ -91,6 +92,15 @@ public class BizValidation {
         if (null != paramValue && paramValue.length() > length) {
             logger.error("Parameter verified failed, the length of parameter '{}' is greater than {}. ", paramName, length);
             throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_STRING_LENGTH, msg);
+
+        }
+
+    }
+
+    public static void paramRegexValidate(String paramValue, String regex, String paramName, String msg) throws JwBlogException {
+        if (StringUtils.isNotBlank(paramValue) && !Pattern.matches(regex, paramValue)) {
+            logger.error("Parameter verified failed, the regular expression is {}, but field[{}] value is {}. ", regex, paramName, paramValue);
+            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_STRING_TEGEX, msg);
 
         }
 

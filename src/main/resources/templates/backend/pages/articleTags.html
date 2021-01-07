@@ -67,7 +67,9 @@
             $(tags[i]).css("background-color", "rgba(" + r + "," + g + "," + b + ",0.1)")
             $(tags[i]).css("border", "  1px rgba(" + r + "," + g + "," + b + ",1) solid")
         }
-
+        document.oncontextmenu = function () {
+            return false;
+        }
 
         $('.tags-content > ul > li').bind("contextmenu", function (e) {
             var data = {oid: $(this).data('id'), text: $(this).data('text')}
@@ -92,7 +94,7 @@
                     })
                     $('#update-tag-btn').click(function () {
                         var text = $('#tagText').val();
-                        if (text == null || text.length < 1) {
+                        if (isEmpty(text)) {
                             $('#tags-tips').html("标签名不能为空")
                         } else if (text.length > 10) {
                             $('#tags-tips').html("标签名不得超过十个字符");

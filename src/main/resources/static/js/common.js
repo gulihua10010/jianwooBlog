@@ -430,10 +430,17 @@ function ajaxApiPost(url, data, call) {
     })
 }
 
-function log(msg) {
-    console.log("====>> " + msg);
+function isEmpty(field) {
+    if (field == undefined || field == null || field.trim() == '') {
+        return true;
+    }
+    return false;
 }
 
+
+function isNotEmpty(field) {
+    return !isEmpty(field);
+}
 
 
 

@@ -2,8 +2,10 @@ package cn.jianwoo.blog.config;
 
 import cn.jianwoo.blog.config.page.CommApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
+import cn.jianwoo.blog.interceptor.AvoidDuplicateSubmissionInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -29,10 +31,14 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addViewController("/index.html").setViewName("index");
     }
 
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry)
-//    {
-//        registry.addInterceptor(new LoginHandleInterceptor()).addPathPatterns("/**").excludePathPatterns("/login",
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(
+//                new LoginHandleInterceptor()
+//        ).addPathPatterns("/**").excludePathPatterns("/login",
 //                "/login1", "/GeetestStart", "/VerifyLogin", "/static/**", "/api/**", "/img/**");
-//    }
+        registry.addInterceptor(
+                new AvoidDuplicateSubmissionInterceptor()
+        ).addPathPatterns("/**");
+    }
 }

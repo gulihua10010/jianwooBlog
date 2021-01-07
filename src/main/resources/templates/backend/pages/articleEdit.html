@@ -552,7 +552,7 @@
 
         })
         $('#btn-ispublic-sure').click(function () {
-            if (($('#passw-content').val() == null || $('#passw-content').val() == '') && $('#ispublic-form .ispublic-radio:checked').val() == -1) {
+            if ((isEmpty($('#passw-content').val())) && $('#ispublic-form .ispublic-radio:checked').val() == -1) {
                 $('#pwd-tips').text('密码不能为空').css('color', 'red').css('display', 'block')
 
             } else if (($('#passw-content').val() != $('#passw-content-confirm').val()) && $('#ispublic-form .ispublic-radio:checked').val() == -1) {
@@ -586,8 +586,7 @@
             }
             var artAuthor = $('#art-author').val();
             var artTitle = $('#art-title').val();
-            if (artAuthor == null || $.trim(artAuthor) == '' ||
-                artTitle == null || $.trim(artTitle) == '') {
+            if (isEmpty(artAuthor) || isEmpty(artTitle)) {
                 alert_fail('提示', '标题或作者不可为空！')
                 return false;
             }

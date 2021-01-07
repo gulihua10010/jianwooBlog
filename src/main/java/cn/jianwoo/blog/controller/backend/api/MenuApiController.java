@@ -1,8 +1,10 @@
 package cn.jianwoo.blog.controller.backend.api;
 
+import cn.jianwoo.blog.annotation.SubToken;
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.config.page.MenuApiUrlConfig;
+import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dto.request.EntityOidListRequest;
 import cn.jianwoo.blog.dto.request.EntityOidRequest;
 import cn.jianwoo.blog.dto.request.MenuVoRequest;
@@ -50,6 +52,7 @@ public class MenuApiController extends BaseController {
     }
 
 
+    @SubToken(removeToken = true)
     @PostMapping(MenuApiUrlConfig.URL_MENU_ADD)
     public String add(@RequestBody String param) {
         try {
@@ -58,6 +61,9 @@ public class MenuApiController extends BaseController {
             BizValidation.paramValidate(request.getParentOid(), "parentOid", "菜单父id不能为空!");
             BizValidation.paramValidate(request.getText(), "text", "菜单名字不能为空!");
             BizValidation.paramValidate(request.getName(), "name", "菜单名不能为空!");
+            BizValidation.paramLengthValidate(request.getName(), Constants.MENU_LENGTH, "name", "菜单名字不能大于10个字符!");
+            BizValidation.paramLengthValidate(request.getText(), Constants.MENU_LENGTH, "text", "菜单文本不能大于10个字符!");
+            BizValidation.paramRegexValidate(request.getName(), Constants.MENU_NAME_REGEX, "name", "菜单文本必须是字母、数字、符号\\'_#$@\\'，不能包含其他特殊字符!");
             menuBizService.doAddMenu(request.getName(), MenuTypeEnum.FRONTEND.getValue(), request.getParentOid(),
                     request.getText(), request.getIcon(), request.getUrl());
         } catch (JwBlogException e) {
@@ -77,6 +83,9 @@ public class MenuApiController extends BaseController {
             BizValidation.paramValidate(request.getOid(), "oid", "菜单id不能为空!");
             BizValidation.paramValidate(request.getText(), "text", "菜单文本不能为空!");
             BizValidation.paramValidate(request.getName(), "name", "菜单名不能为空!");
+            BizValidation.paramLengthValidate(request.getName(), Constants.MENU_LENGTH, "name", "菜单名字不能大于10个字符!");
+            BizValidation.paramLengthValidate(request.getText(), Constants.MENU_LENGTH, "text", "菜单文本不能大于10个字符!");
+            BizValidation.paramRegexValidate(request.getName(), Constants.MENU_NAME_REGEX, "name", "菜单文本必须是字母、数字、符号\\'_#$@\\'，不能包含其他特殊字符!");
             menuBizService.doUpdateMenu(request.getOid(), request.getText(), request.getName(), request.getIcon(),
                     request.getUrl());
         } catch (JwBlogException e) {
