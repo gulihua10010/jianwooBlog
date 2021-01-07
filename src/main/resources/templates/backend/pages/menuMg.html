@@ -7,52 +7,105 @@
     <link href="/static/plugins/jquery-ui/jquery-ui.min.css" media="all" rel="stylesheet">
     <title>菜单管理</title>
 </head>
-<body>
-<div class="menu">
-    <p>添加菜单</p>
-    <span> <input id="menucheck" type="checkbox"><label
-            for="menucheck">编辑菜单</label></span>
-    <span>首页</span>
-    <ul class="sortable">
+<style>
+    .menu-list > li {
+        width: 110px;
+        /*border: 1px solid rgba(0, 0, 0, .1);*/
+        text-align: center;
+        cursor: pointer;
+        display: inline-block;
+        vertical-align: top;
+    }
 
-        <li class="sorts" th:attr="data-id=${m.oid}" th:each="m:${menu}">
-            <div class="menu_content">
-                <span th:text="${m.text}"></span>
-                <span class="del_menu" style="display: none" th:attr="data-id=${m.oid}">×</span>
-                <div class="menu_edit">
-                    <button class="layui-btn menu_edit_btn" th:attr="data-id=${m.oid}">编辑</button>
+    .menu-list {
+    }
+
+    .menu-list > li > ul {
+        display: block;
+        padding: 0;
+        margin: 0;
+
+    }
+
+    .menu-list > li > ul > li {
+        /*background-color: hsla(0, 0%, 97%, .5);*/
+        list-style: none;
+        text-align: center;
+
+    }
+
+    .menu_content {
+        /*height: 45px;*/
+        background-color: rgb(240, 240, 240);
+        border: 1px solid rgb(250, 250, 250);
+        overflow: hidden;
+        padding-left: 5px;
+
+    }
+
+    .menu_content span {
+        line-height: 45px;
+
+    }
+
+    /*.menu-list > li:last-child*/
+    /*{*/
+    /*    list-style: none;*/
+    /*    line-height: 45px;*/
+    /*    text-align: center;*/
+    /*}*/
+
+    /*.menu-list > li > ul > li {*/
+    /*    display: inline-block;*/
+    /*    width: 110px;*/
+    /*    height: 45px;*/
+    /*    text-align: center*/
+    /*}*/
+</style>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">菜单管理</div>
+                <div class="layui-card-body">
+                    <ul class="sortable menu-list">
+                        <li class="sorts" th:attr="data-id=${m.oid}" th:each="m:${menu}">
+                            <div class="menu_content" th:attr="data-data=${m.text}">
+                                <span th:text="${#strings.length(m.text)<=6?m.text:#strings.substring(m.text,0,6)+'...'}"></span>
+                            </div>
+                            <ul>
+                                <li th:each="s:${m.subMenus}">
+                                    <div class="menu_content" th:attr="data-data=${s.text}">
+                                        <span th:text="${#strings.length(s.text)<=6?s.text:#strings.substring(s.text,0,6)+'...'}"></span>
+                                    </div>
+                                </li>
+                                <li class="addMenu" th:attr="data-id=${m.oid}">
+                                    <div class="menu_content">
+                                        <span>
+                                            <i class="iconfont">&#xe613;</i>
+                                        </span>
+                                    </div>
+                                </li>
+                            </ul>
+
+                        </li>
+                        <li class="addMenu" data-id="0" th:if="${menu.size() < 9}">
+                            <div class="menu_content">
+                                <span>
+                                <i class="iconfont">&#xe613;</i>
+                                </span>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <ul>
-                <li th:each="s:${m.subMenus}">
-                    <div class="menu_content">
-                        <span th:text="${s.text}"></span>
-                        <span class="del_menu" style="display: none" th:attr="data-id=${s.oid}">×</span>
-                        <div class="menu_edit">
-                            <button class="layui-btn menu_edit_btn" th:attr="data-id=${s.oid}">编辑</button>
-                        </div>
-                    </div>
-                </li>
-
-                <li class="addMenu" th:attr="data-id=${m.oid}"><i class="iconfont">&#xe613;</i></li>
-
-            </ul>
-
-        </li>
-        <li class="addMenu" data-id="0" th:if="${menu.size() < 9}"><i class="iconfont">&#xe613;</i></li>
-    </ul>
-    <div style="display:none;">
-        <form id="menuliform" method="post">
-            <input class="text" id="menuli" name="menuli">
-        </form>
+        </div>
     </div>
-    <div style="display:none;">
-        <form id="typeliform" method="post">
-            <input class="text" id="typeli" name="typeli">
-        </form>
-    </div>
-
 </div>
+
+
 <script src="/static/plugins/layuiadmin/layui/layui.js"></script>
 <script src="/static/comm/js/jquery.min.js"></script>
 <script src="/static/plugins/jquery-ui/jquery-ui.min.js"></script>
@@ -61,28 +114,10 @@
     layui.use(['layer', 'form', 'element', 'upload'], function () {
         var form = layui.form
             , $ = layui.jquery;
-        $("#menucheck").click(function () {
-            if ($(this).is(':checked')) {
-                menuEdit();
-
-            } else {
-                $('div.menu ul>li>div span:nth-child(2)').css('display', 'none');
-                $('.menu_edit').css('display', 'none');
-                $(function () {
-                    $('.sortable').sortable('destroy')
-                })
-
-            }
-        })
+        menuEdit();
 
         function menuEdit() {
-            $('div.menu ul>li>div span:nth-child(1)').css('cursor', 'text');
-            $('div.menu ul>li>div span:nth-child(2)').css('display', 'inline-block');
-            $('.menu_edit').css('display', 'block');
-
             var index = [];
-            // index[0]=new Array();
-            // index[1]=new Array();
             $(function () {
                 $('.sortable').sortable({
                     cursor: 'move',
@@ -91,7 +126,7 @@
 
                         for (var i = 0; i < $('.sorts').length; i++) {
 
-                            var indextext = $('.sorts').eq(i).attr("data-id")
+                            var indextext = $('.sorts').eq(i).data("id")
                             index[i] = indextext;
                         }
                         console.log(index)
@@ -106,8 +141,22 @@
                     },
                 }).disableSelection();
             })
+            var handle = null;
+            $('.menu_content').mouseover(function () {
+                var text = $(this).data("data");
+                var tipSpan = $(this).children("span");
+                handle = setTimeout(function () {
+                    if (text != null && text != undefined && text != '') {
+                        layer.tips(text, tipSpan)
+                    }
+                }, 500);
+
+            }).mouseout(function () {
+                clearTimeout(handle);
+            });
+
             $('.menu_edit_btn').click(function () {
-                var id = $(this).attr("data-id");
+                var id = $(this).data("id");
                 layer.open({
                     type: 2
                     , title: '菜单编辑'
@@ -154,7 +203,7 @@
 
         // 添加菜单
         $('.addMenu').click(function () {
-            var pid = $(this).attr("data-id");
+            var pid = $(this).data("id");
             layer.open({
                 type: 2
                 , title: '添加菜单'
@@ -197,7 +246,7 @@
         })
         //菜单删除
         $('.del_menu').click(function () {
-            var id = $(this).attr("data-id");
+            var id = $(this).data("id");
             ajaxApiPost(
                 "/api/admin/menu/validate/submenu",
                 JSON.stringify({

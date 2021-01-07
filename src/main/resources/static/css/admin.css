@@ -760,14 +760,6 @@ div.menu > p, div.recycleBin > p {
     opacity: 1;
 }
 
-.menu_content {
-    overflow: hidden;
-}
-
-.menu_content {
-    position: relative
-
-}
 
 .del_menu {
     z-index: 110;
