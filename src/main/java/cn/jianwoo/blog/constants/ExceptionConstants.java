@@ -44,6 +44,8 @@ public final class ExceptionConstants {
     public static final String MENU_DEL_SUB_EXITS = "400008";
     public static final String MENU_DEL_SUB_EXITS_DESC = "该菜单(%s)下存在子菜单！请先删除子菜单！";
 
+    public static final String FORM_DUPLICATE = "400009";
+    public static final String FORM_DUPLICATE_DESC = "操作频繁!请勿重复提交!";
 
     private ExceptionConstants() {
     }

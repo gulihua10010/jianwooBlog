@@ -37,8 +37,8 @@ public class WebConfig implements WebMvcConfigurer {
 //                new LoginHandleInterceptor()
 //        ).addPathPatterns("/**").excludePathPatterns("/login",
 //                "/login1", "/GeetestStart", "/VerifyLogin", "/static/**", "/api/**", "/img/**");
-        registry.addInterceptor(
-                new AvoidDuplicateSubmissionInterceptor()
-        ).addPathPatterns("/**");
+//        registry.addInterceptor(
+//                new AvoidDuplicateSubmissionInterceptor()
+//        ).addPathPatterns("/**");
     }
 }

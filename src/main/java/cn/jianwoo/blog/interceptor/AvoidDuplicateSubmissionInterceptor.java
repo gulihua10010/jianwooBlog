@@ -11,10 +11,12 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author GuLihua
@@ -60,7 +62,7 @@ public class AvoidDuplicateSubmissionInterceptor extends
             return true;
         }
         String clinetToken = null;
-        JSONObject parameter = JSON.parseObject(getPostData(request));
+        JSONObject parameter = JSON.parseObject(new MyRequestWrapper(request).getBody());
         if (null != parameter) {
             clinetToken = (String) parameter.get("subToken");
         }
@@ -73,7 +75,14 @@ public class AvoidDuplicateSubmissionInterceptor extends
         return false;
     }
 
-    private static String getPostData(HttpServletRequest request) {
+
+}
+
+class MyRequestWrapper extends HttpServletRequestWrapper {
+    private byte[] body;
+
+    public MyRequestWrapper(HttpServletRequest request) {
+        super(request);
         StringBuffer data = new StringBuffer();
         String line = null;
         BufferedReader reader = null;
@@ -85,6 +94,11 @@ public class AvoidDuplicateSubmissionInterceptor extends
         } catch (IOException e) {
         } finally {
         }
-        return data.toString();
+        this.body = data.toString().getBytes(StandardCharsets.UTF_8);
+    }
+
+
+    public String getBody() {
+        return new String(body, StandardCharsets.UTF_8);
     }
 }
