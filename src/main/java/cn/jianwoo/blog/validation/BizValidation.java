@@ -79,9 +79,18 @@ public class BizValidation {
 
 
     public static void paramValidate(Object[] paramValue, String paramName, String msg) throws JwBlogException {
-        if (null == paramValue || paramName.length() == 0) {
+        if (null == paramValue || paramValue.length == 0) {
             logger.error("Parameter verified failed, the array is empty in the parameter: {}", paramName);
             throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_ARRAY_EMPTY, msg);
+
+        }
+
+    }
+
+    public static void paramLengthValidate(String paramValue, Integer length, String paramName, String msg) throws JwBlogException {
+        if (null != paramValue && paramValue.length() > length) {
+            logger.error("Parameter verified failed, the length of parameter '{}' is greater than {}. ", paramName, length);
+            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_STRING_LENGTH, msg);
 
         }
 

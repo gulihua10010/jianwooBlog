@@ -12,59 +12,56 @@
 
 </head>
 <body>
-<div class="comment-Mg">
-    <p>评论管理</p>
-    <div class="layui-fluid">
-        <div class="layui-card">
-            <div class="layui-form layui-card-header layuiadmin-card-header-auto">
-                <div class="layui-form-item">
-                    <div class="layui-inline">
-                        <label class="layui-form-label">文章标题</label>
-                        <div class="layui-input-inline">
-                            <input autocomplete="off" class="layui-input" name="title" placeholder="请输入"
-                                   type="text">
-                        </div>
-                        <label class="layui-form-label">文章内容</label>
-                        <div class="layui-input-inline">
-                            <input autocomplete="off" class="layui-input" name="text" placeholder="请输入"
-                                   type="text">
-                        </div>
-                        <label class="layui-form-label">文章类型</label>
-                        <div class="layui-input-inline">
-                            <select name="status" id="status" lay-verify="">
-                                <option value="2">所有</option>
-                                <option value="1">已发布</option>
-                                <option value="0">草稿</option>
-                            </select>
-                        </div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">文章标题</label>
+                    <div class="layui-input-inline">
+                        <input autocomplete="off" class="layui-input" name="title" placeholder="请输入"
+                               type="text">
+                    </div>
+                    <label class="layui-form-label">文章内容</label>
+                    <div class="layui-input-inline">
+                        <input autocomplete="off" class="layui-input" name="text" placeholder="请输入"
+                               type="text">
+                    </div>
+                    <label class="layui-form-label">文章类型</label>
+                    <div class="layui-input-inline">
+                        <select name="status" id="status" lay-verify="">
+                            <option value="2">所有</option>
+                            <option value="1">已发布</option>
+                            <option value="0">草稿</option>
+                        </select>
+                    </div>
 
-                    </div>
-                    <div class="layui-inline">
-                        <button class="layui-btn layuiadmin-btn-art" data-type="reload" lay-filter="art-search"
-                                lay-submit>
-                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-                        </button>
-                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-art" data-type="reload" lay-filter="art-search"
+                            lay-submit>
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
                 </div>
             </div>
-            <div class="layui-card-body">
-                <div style="padding-bottom: 10px;">
-                    <button class="layui-btn layuiadmin-btn-art layui-btn-danger" data-type="batchdel">移入回收站</button>
-                </div>
-                <table id="article-table" lay-filter="content-art"></table>
-                <script id="table-content-art" type="text/html">
-                    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="quickEdit"><i
-                            class="layui-icon layui-icon-reply-fill"></i>快速编辑</a>
-                    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i
-                            class="layui-icon layui-icon-form"></i>编辑</a>
-                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
-                            class="layui-icon layui-icon-delete"></i>移入回收站</a>
-                    {{#  if(d.status == 0){ }}
-                    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="publish"><i
-                            class="layui-icon layui-icon-release"></i>发布</a>
-                    {{#  } }}
-                </script>
+        </div>
+        <div class="layui-card-body">
+            <div style="padding-bottom: 10px;">
+                <button class="layui-btn layuiadmin-btn-art layui-btn-danger" data-type="batchdel">移入回收站</button>
             </div>
+            <table id="article-table" lay-filter="content-art"></table>
+            <script id="table-content-art" type="text/html">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="quickEdit"><i
+                        class="layui-icon layui-icon-reply-fill"></i>快速编辑</a>
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i
+                        class="layui-icon layui-icon-form"></i>编辑</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
+                        class="layui-icon layui-icon-delete"></i>移入回收站</a>
+                {{#  if(d.status == 0){ }}
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="publish"><i
+                        class="layui-icon layui-icon-release"></i>发布</a>
+                {{#  } }}
+            </script>
         </div>
     </div>
 </div>
@@ -104,7 +101,7 @@
                 , {field: 'author', width: 120, title: '作者', sort: true, align: 'center'}
                 , {field: 'type', width: 170, title: '类型', sort: true, align: 'center'}
                 , {field: 'publishDate', title: '发布时间', width: 200, align: 'center'}
-                , {field: 'modifiedDate', title: '最后修改时间', width: 200, align: 'center'}
+                // , {field: 'modifiedDate', title: '最后修改时间', width: 200, align: 'center'}
                 , {title: '操作', width: 360, align: 'left', fixed: 'right', toolbar: '#table-content-art'}
 
             ]]
@@ -198,6 +195,21 @@
                                 tipsTags.text('两次密码不一致').css('color', 'red').css('display', 'block')
                                 return false;
                             }
+                            var artAuthor = field.author;
+                            var artTitle = field.title;
+                            if (artAuthor == null || $.trim(artAuthor) == '' ||
+                                artTitle == null || $.trim(artTitle) == '') {
+                                alert_fail('提示', '标题或作者不可为空！')
+                                return false;
+                            }
+                            if (artTitle.length > 50) {
+                                alert_fail('提示', '标题要在50个字符以内！')
+                                return false;
+                            }
+                            if (artAuthor.length > 10) {
+                                alert_fail('提示', '作者要在10个字符以内！')
+                                return false;
+                            }
                             if (type.val() == -1) {
                                 tipsType.text('请选择类型').css('color', 'red').css('display', 'block');
                                 return false;
@@ -261,7 +273,7 @@
 
                 });
             } else if (obj.event === 'edit') {
-                window.open("/admin/article/edit/" + data.oid);
+                top.layui.index.openTabsPage("/admin/article/edit/" + data.oid, '文章编辑');
             }
 
         });

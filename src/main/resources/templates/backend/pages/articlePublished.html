@@ -46,7 +46,7 @@
                     <div class="choose-tags">
                         <div class="choosed">
                         </div>
-                        <div></div>
+                        <div class="separation-line"></div>
                         <div class="tags">
                     <span th:each="tag:${tags}" th:inline="text">[[${tag.content}]]
                         <span class="tags-id" style="display: none" th:text="${tag.oid}"></span>
@@ -94,7 +94,7 @@
                             <button class="layui-btn layui-btn-primary layui-btn-sm" id="save-draft">保存草稿</button>
                             <button class="layui-btn layui-btn-primary layui-btn-sm" id="articlePreview">文章预览</button>
                         </div>
-                        <div class="published-btns-opt-line"></div>
+                        <div class="separation-line"></div>
                         <a><i class="iconfont">&#xe606;</i> 公开度：<span id="published-public">公开</span></a>&nbsp;
                         <a id="edit">编辑</a>
                         <form class="layui-form" lay-filter="component-form-element" method="post">
@@ -134,6 +134,16 @@
                                 </div>
                             </div>
                         </form>
+                        <div class="separation-line"></div>
+                        <div class="btn-group">
+                            <div class="negative-btn">
+                                <button class="layui-btn layui-btn-primary" id="cancel">重置</button>
+                                <button class="layui-btn layui-btn-danger" id="remove-del">移至回收站</button>
+                            </div>
+                            <div class="positive-btn">
+                                <button class="layui-btn" id="published-sure">发布</button>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
@@ -142,156 +152,6 @@
     </div>
 </div>
 
-<!--==========-->
-
-
-<!--<div class="published">-->
-<!--    <p>文章发布</p>-->
-<!--    <div class="btns-opt">-->
-<!--        <button class="layui-btn layui-btn-primary layui-btn-sm" id="save-draft">保存草稿</button>-->
-<!--        <button class="layui-btn layui-btn-primary layui-btn-sm" id="articlePreview">文章预览</button>-->
-<!--    </div>-->
-<!--    <div></div>-->
-<!--    <a><i class="iconfont">&#xe606;</i> 公开度：<span id="published-public">公开</span></a>&nbsp;-->
-<!--    <a id="edit">编辑</a>-->
-<!--    6 <form class="layui-form" lay-filter="component-form-element" method="post">-->
-<!--    <div class="layui-form-item" id="ispublic-form">-->
-<!--        <div class="layui-input-block">-->
-<!--            <input checked class="ispublic-radio" id="public" lay-filter="public" name="isPublic" title="公开"-->
-<!--                   type="radio" value="1">-->
-<!--            <span id="hometop1"><input id="hometop" lay-skin="primary" title="将文章置于首页顶端" type="checkbox"-->
-<!--                                       value="2"></span><br>-->
-<!--            <input class="ispublic-radio" id="passw" lay-filter="passw" name="isPublic" title="密码保护"-->
-<!--                   type="radio"-->
-<!--                   value="-1"><br>-->
-<!--            <input autocomplete="off" class="layui-input" id="passw-content" placeholder="密码"-->
-<!--                   type="password">-->
-<!--            <input autocomplete="off" class="layui-input" id="passw-content-confirm" placeholder="确认密码"-->
-<!--                   type="password">-->
-<!--            <input class="ispublic-radio" id="secret" lay-filter="secret" name="isPublic" title="私密"-->
-<!--                   type="radio" value="0">-->
-
-<!--        </div>-->
-<!--        <span id="pwd-tips" style="color: red;display: none"></span>-->
-<!--        <div class="btns-opt" id="btns0" style="display: block">-->
-<!--            <button class="layui-btn layui-btn-sm" id="btn-ispublic-sure">确定</button>-->
-<!--            <button class="layui-btn layui-btn-primary layui-btn-sm" id="btn-ispublic-cancel">取消</button>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div>-->
-<!--        <div id="isComment">-->
-<!--            <input checked id="is-comment" name="isComment" title="是否可以评论" type="checkbox">-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</form>-->
-<!--    <div></div>-->
-<!--    <div id="btns1">-->
-<!--        <div>-->
-<!--            <button class="layui-btn layui-btn-primary" id="cancel">取消</button>-->
-<!--            <button class="layui-btn layui-btn-danger" id="remove-del">移至回收站</button>-->
-<!--        </div>-->
-<!--        <div>-->
-<!--            <button class="layui-btn" id="published-sure">发布</button>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    </di|v>-->
-
-<!--    a:nth: a:nth(5)-->
-
-
-<!--    #ispublic-form {-->
-<!--    display: none;-->
-<!--    }-->
-
-<!--    #isComment {-->
-<!--    margin: 10px;-->
-<!--    }-->
-
-<!--    #ispublic-form .layui-input-block {-->
-<!--    width: 100%;-->
-<!--    margin: 10px;-->
-<!--    }-->
-
-<!--    #passw-content, #passw-content-confirm {-->
-<!--    width: 260px;-->
-<!--    display: none;-->
-<!--    }-->
-
-
-<!--    .btns-opt, #pwd-tips {-->
-<!--    margin-left: 10px;-->
-<!--    }-->
-
-<!--    #cancel, #published-save {-->
-<!--    margin-left: 10px;-->
-<!--    }-->
-
-<!--    #remove-del, #published-pub, #published-update {-->
-<!--    width: 105px;-->
-<!--    margin-left: 85px;-->
-
-<!--    }-->
-
-<!--    #btns1-2 {-->
-<!--    margin-bottom: 10px;-->
-<!--    }-->
-
-<!--    #published-sure {-->
-<!--    /*float: right;*/-->
-<!--    margin-left: 165px;-->
-<!--    width: 105px;-->
-<!--    margin-bottom: 10px;-->
-<!--    }-->
-
-<!--    #btns1 div {-->
-<!--    margin-top: 10px;-->
-<!--    }-->
-
-<!--    .bordertest {-->
-<!--    border: 1px black solid;-->
-<!--    }-->
-
-<!--    div.published a:nth-child(5) {-->
-<!--    color: #00f;-->
-<!--    cursor: pointer-->
-<!--    }-->
-<!--    div.published div:nth-child(10) {-->
-<!--    margin: 10px 20px-->
-<!--    }-->
-
-<!--    #remove-del {-->
-<!--    background-color: #e81123-->
-<!--    }-->
-
-<!--    #published-sure, button#published-pub, button#published-update {-->
-<!--    background-color: #009688-->
-<!--    }-->
-
-<!--    #published-sure:hover, button#published-pub:hover, button#published-update:hover {-->
-<!--    background-color: #00967a-->
-<!--    }-->
-
-
-<!--    div.end {-->
-<!--    height: 5pc-->
-<!--    }-->
-
-<!--    div.published div:nth-child(3), div.published div:nth-child(7), div.published div:nth-child(9) {-->
-<!--    margin: 5px auto;-->
-<!--    width: 270px;-->
-<!--    border-bottom: 1px solid rgba(0, 0, 0, .1)-->
-<!--    }-->
-
-
-<!--    <div class="layui-card">-->
-<!--        <div class="layui-card-header">文章分类</div>-->
-<!--        <div class="layui-card-body">-->
-
-<!--        </div>-->
-<!--    </div>-->
-<!--    -->
-<!--    -->
-<!--    ======-->
 <div class="art-main">
     <div style="display:none;">
         <!--            <form action="{:Url('index/index/articlePreview')}" id="form-articlePreview" method="post" target="_blank">-->
@@ -301,101 +161,7 @@
         <!--                <input id="artpre-type" name="type" type="hidden">-->
         <!--            </form>-->
     </div>
-    <div class="art-pub-rightsider">
-        <div class="choosetags">
-            <p>文章标签</p>
-            <div class="choosed">
 
-            </div>
-            <div></div>
-            <div class="tags">
-                <span th:each="tag:${tags}" th:inline="text">[[${tag.content}]]
-                    <span class="tags-id" style="display: none" th:text="${tag.oid}"></span>
-                </span>
-            </div>
-        </div>
-        <div class="articletyle">
-            <p>文章分类</p>
-            <label>请选择文章分类:</label>
-            <div class="select">
-                <div class="layui-card layui-form" lay-filter="component-form-element">
-                    <select lay-search lay-verify="required" name="city">
-                        <option style="font-weight: bold;color: black" value="-1"></option>
-                        <option style="color: #777" th:each="menu:${menuList}" th:text="${menu.text}"
-                                th:value="${menu.oid}"></option>
-                    </select>
-                </div>
-            </div>
-
-        </div>
-        <div class="articleimg">
-            <p>缩略图</p>
-            <div class="selimg">
-
-                <div class="layui-upload ">
-                    <button class="layui-btn" id="test1" type="button">上传图片</button>
-                    <div class="layui-upload-list imgupload">
-                        <img class="layui-upload-img" id="breimg" style="margin-left: 5px" width="270">
-                        <p id="demoText"></p>
-                        <input id="imgsrc" name="Img" style="visibility: hidden" value=""/>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <div class="published">
-            <p>文章发布</p>
-            <div class="btns-opt">
-                <button class="layui-btn layui-btn-primary layui-btn-sm" id="save-draft">保存草稿</button>
-                <button class="layui-btn layui-btn-primary layui-btn-sm" id="articlePreview">文章预览</button>
-            </div>
-            <div></div>
-            <a><i class="iconfont">&#xe606;</i> 公开度：<span id="published-public">公开</span></a>&nbsp;
-            <a id="edit">编辑</a>
-            <form class="layui-form" lay-filter="component-form-element" method="post">
-                <div class="layui-form-item" id="ispublic-form">
-                    <div class="layui-input-block">
-                        <input checked class="ispublic-radio" id="public" lay-filter="public" name="isPublic" title="公开"
-                               type="radio" value="1">
-                        <span id="hometop1"><input id="hometop" lay-skin="primary" title="将文章置于首页顶端" type="checkbox"
-                                                   value="2"></span><br>
-                        <input class="ispublic-radio" id="passw" lay-filter="passw" name="isPublic" title="密码保护"
-                               type="radio"
-                               value="-1"><br>
-                        <input autocomplete="off" class="layui-input" id="passw-content" placeholder="密码"
-                               type="password">
-                        <input autocomplete="off" class="layui-input" id="passw-content-confirm" placeholder="确认密码"
-                               type="password">
-                        <input class="ispublic-radio" id="secret" lay-filter="secret" name="isPublic" title="私密"
-                               type="radio" value="0">
-
-                    </div>
-                    <span id="pwd-tips" style="color: red;display: none"></span>
-                    <div class="btns-opt" id="btns0" style="display: block">
-                        <button class="layui-btn layui-btn-sm" id="btn-ispublic-sure">确定</button>
-                        <button class="layui-btn layui-btn-primary layui-btn-sm" id="btn-ispublic-cancel">取消</button>
-                    </div>
-                </div>
-                <div>
-                    <div id="isComment">
-                        <input checked id="is-comment" name="isComment" title="是否可以评论" type="checkbox">
-                    </div>
-                </div>
-            </form>
-            <div></div>
-            <div id="btns1">
-                <div>
-                    <button class="layui-btn layui-btn-primary" id="cancel">取消</button>
-                    <button class="layui-btn layui-btn-danger" id="remove-del">移至回收站</button>
-                </div>
-                <div>
-                    <button class="layui-btn" id="published-sure">发布</button>
-                </div>
-            </div>
-        </div>
-        <div class="end"></div>
-    </div>
-    <div style="clear: both"></div>
 </div>
 <div></div>
 <script src="/static/plugins/layuiadmin/layui/layui.js"></script>
@@ -412,14 +178,14 @@
             , upload = layui.upload;
 
 
-        spans = $('.choose-tags').find('span');
-        for (var i = 0; i < spans.length; i++) {
+        var tags = $('.choose-tags').find('span');
+        for (var i = 0; i < tags.length; i++) {
             var color = Math.random();
             var r = parseInt((color * (i + 1) * 1234) % 254);
             var g = parseInt((color * (i + 1) * 4321) % 254);
             var b = parseInt((color * (i + 1) * 2222) % 254);
-            $(spans[i]).css("background-color", "rgba(" + r + "," + g + "," + b + ",0.1)")
-            $(spans[i]).css("border", "  1px rgba(" + r + "," + g + "," + b + ",1) solid")
+            $(tags[i]).css("background-color", "rgba(" + r + "," + g + "," + b + ",0.1)")
+            $(tags[i]).css("border", "  1px rgba(" + r + "," + g + "," + b + ",1) solid")
         }
         $('.choosed').on('click', 'a', function () {
             $(this).parent().remove();
@@ -561,31 +327,36 @@
             } else if ($(this).attr('id') === 'remove-del') {
                 btnstatus = -1;
             }
-
+            var artAuthor = $('#art-author').val();
+            var artTitle = $('#art-title').val();
+            if (artAuthor == null || $.trim(artAuthor) == '' ||
+                artTitle == null || $.trim(artTitle) == '') {
+                alert_fail('提示', '标题或作者不可为空！')
+                return false;
+            }
+            if (artTitle.length > 50) {
+                alert_fail('提示', '标题要在50个字符以内！')
+                return false;
+            }
+            if (artAuthor.length > 10) {
+                alert_fail('提示', '作者要在10个字符以内！')
+                return false;
+            }
+            var contentText = tinyMCE.activeEditor.getContent().replace(new RegExp('\n', 'g'), '');
             if (btnstatus === 1) {
-                if (tinyMCE.activeEditor.getContent().replace(new RegExp('\n', 'g'), '') == '<!DOCTYPE html><html><head></head><body></body></html>') {
+                if (contentText == '<!DOCTYPE html><html><head></head><body></body></html>') {
                     alert_fail('提示', '文章不可为空！')
                     return false;
                 }
-                if ($('#art-author').val() == null || $.trim($('#art-author').val()) == '' ||
-                    $('#art-title').val() == null || $.trim($('#art-title').val()) == '') {
-                    alert_fail('提示', '标题或作者不可为空！')
-                    return false;
-                }
-                if ($('.articletyle select').val() == null || $('.articletyle select').val() == -1) {
+
+                if ($('.article-type select').val() == null || $('.article-type select').val() == -1) {
                     alert_fail('提示', '请选择类别！')
                     return false;
 
                 }
 
             }
-            if (btnstatus === 0) {
-                if ($('#art-author').val() == null || $.trim($('#art-author').val()) == '' ||
-                    $('#art-title').val() == null || $.trim($('#art-title').val()) == '') {
-                    alert_fail('提示', '标题或作者不可为空！')
-                    return false;
-                }
-            }
+
 
             // console.log($('#ispublic-form .ispublic-radio:checked').val())
             var tagsId = [];
@@ -597,7 +368,7 @@
                 console.log(data.eq(i).text())
                 tagsId[i] = data.eq(i).text();
             }
-            var typeid = $('.articletyle select').val()
+            var typeid = $('.article-type select').val()
             // console.log(typeid)
             $('#type-id').val(typeid);
             publishTemp = $('#ispublic-form .ispublic-radio:checked').val();
@@ -617,8 +388,8 @@
                 iscomment = 1;
 
             }
-            var title = $('#art-title').val();
-            var author = $('#art-author').val();
+            var title = artTitle;
+            var author = artAuthor;
             var articleContent = tinyMCE.activeEditor.getContent();
             var tags = tagsId;
             var type = typeid;
@@ -635,7 +406,8 @@
             // console.log('published\t'+published)
             // console.log('password\t'+password)
             if (btnstatus === 1) {
-                articleAjax(JSON.stringify({
+                ajaxPost('/api/admin/article/submit',
+                    JSON.stringify({
                         title: title,
                         author: author,
                         articleContent: articleContent,
@@ -645,23 +417,14 @@
                         visitType: published,
                         password: password,
                         isComment: iscomment,
-                    })
-                    , '/api/admin/article/submit'
-                    , function (data) {
-                        if (data.status == '000000') {
-                            alert_success('提示', '发布成功');
-                            setTimeout(function () {
-                                tinyMCE.activeEditor.setContent(' ');
-                                $('input').val('');
-                                location.reload();
-                            }, 2000)
-
-                        } else {
-                            alert_fail('提示', data.msg);
-                        }
+                    }),
+                    '发布成功',
+                    function () {
+                        location.reload();
                     });
             } else if (btnstatus === 0) {
-                articleAjax(JSON.stringify({
+                ajaxPost('/api/admin/article/save/draft',
+                    JSON.stringify({
                         title: title,
                         author: author,
                         articleContent: articleContent,
@@ -671,86 +434,47 @@
                         visitType: published,
                         password: password,
                         isComment: iscomment,
-                    })
-                    , '/api/admin/article/save/draft'
-                    , function (data) {
-                        if (data.status == '000000') {
-                            alert_success('提示', '保存成功');
-                            setTimeout(function () {
-                                tinyMCE.activeEditor.setContent(' ');
-                                $('input').val('');
-                                location.reload();
-
-                            }, 2000)
-
-                        } else {
-                            alert_fail('提示', data.msg);
-                        }
+                    }),
+                    '保存成功',
+                    function () {
+                        location.reload();
                     });
             } else if (btnstatus === -1) {
-                articleAjax(JSON.stringify({
-                        title: title,
-                        author: author,
-                        articleContent: articleContent,
-                        tags: tags,
-                        type: type,
-                        imgSrc: imgSrc,
-                        visitType: published,
-                        password: password,
-                        isComment: iscomment,
-                    })
-                    , '/api/admin/article/save/recycle'
-                    , function (data) {
-                        if (data.status == '000000') {
-                            alert_success('提示', '移动至回收站成功');
-                            setTimeout(function () {
-                                tinyMCE.activeEditor.setContent(' ');
-                                $('input').val('');
-                                location.reload();
+                layer.confirm('确定把这文章移除到回收站吗？', function (index) {
+                    ajaxPost('/api/admin/article/save/recycle',
+                        JSON.stringify({
+                            title: title,
+                            author: author,
+                            articleContent: articleContent,
+                            tags: tags,
+                            type: type,
+                            imgSrc: imgSrc,
+                            visitType: published,
+                            password: password,
+                            isComment: iscomment,
+                        }),
+                        '移动至回收站成功',
+                        function () {
+                            location.reload();
+                        });
+                });
 
-                            }, 2000)
-
-                        } else {
-                            alert_fail('提示', data.msg);
-                        }
-                    });
             }
 
 
         })
 
-        function articleAjax(datas, url, tips) {
-            $.ajax({
-                type: 'post',
-                data: datas,
-                dataType: 'json',
-                contentType: "application/json",
-                async: true,
-                url: url,
-                success: function (data) {
-                    // alert(JSON.stringify(data))
-                    // console.log(JSON.stringify(data));
-                    tips(data);
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    alert_fail('提示', '未知错误');
-                }
-
-            })
-
-        }
 
         $('#cancel').click(function () {
             alert_ask('确认清除所有输入的数据，恢复初始状态?', function () {
-                tinyMCE.activeEditor.setContent(' ');
-                $('input').val('');
+                location.reload()
             })
         })
         $('#articlePreview').click(function () {
             var title = $('#art-title').val();
             var author = $('#art-author').val();
             var articleContent = tinyMCE.activeEditor.getContent();
-            var type = $('.articletyle select:selected').text();
+            var type = $('.article-type select:selected').text();
             $('#artpre-title').val(title);
             $('#artpre-author').val(author);
             $('#artpre-content').val(articleContent);

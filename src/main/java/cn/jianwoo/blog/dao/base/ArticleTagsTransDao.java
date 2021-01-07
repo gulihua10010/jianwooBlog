@@ -19,5 +19,21 @@ public interface ArticleTagsTransDao extends ArticleTagsQueryDao {
     void doDeleteByPrimaryKey(Long oid) throws DaoException;
 
 
-    void doDeleteByArticleOid(Long artOid) throws DaoException;
+    /**
+     * 根据文章oid删除 文章-标签
+     *
+     * @param %param name% %param description%
+     * @return
+     * @author gulihua
+     */
+    void doDeleteByArticleOid(Long artOid);
+
+    /**
+     * 根据标签oid删除 文章-标签
+     *
+     * @param %param name% %param description%
+     * @return
+     * @author gulihua
+     */
+    void doDeleteByTagsOid(Long tagsOid);
 }

@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 
@@ -58,6 +59,8 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
             BizValidation.paramValidate(request.getVisitType(), "visitType", "文章访问类型不能为空!");
             BizValidation.paramValidate(request.getType(), "type", "文章类型不能为空!");
+            BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
+            BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
             BizValidation.paramRangeValidate(request.getVisitType(), "visitType", "文章访问类型必须在[-1,0,1,2]中!",
                     ArticleVisitEnum.PUBLIC.getValue(), ArticleVisitEnum.PASSWORD.getValue(),
                     ArticleVisitEnum.PRIVATE.getValue(), ArticleVisitEnum.TOP.getValue());
@@ -80,6 +83,8 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(request.getTitle(), "title", "标题不能为空!");
             BizValidation.paramValidate(request.getArticleContent(), "articleContent", "文章内容不能为空!");
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
+            BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
+            BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
             articleBizService.doSaveArticle(request.getTitle(), request.getArticleContent(), request.getAuthor(),
                     request.getType(), request.getIsComment(), request.getVisitType(), request.getImgSrc(),
                     request.getPassword(), request.getTags(), ArticleStatusEnum.DRAFT.getValue());
@@ -99,6 +104,8 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(request.getTitle(), "title", "标题不能为空!");
             BizValidation.paramValidate(request.getArticleContent(), "articleContent", "文章内容不能为空!");
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
+            BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
+            BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
             articleBizService.doSaveArticle(request.getTitle(), request.getArticleContent(), request.getAuthor(),
                     request.getType(), request.getIsComment(), request.getVisitType(), request.getImgSrc(),
                     request.getPassword(), request.getTags(), ArticleStatusEnum.RECYCLE.getValue());
@@ -119,6 +126,8 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(request.getTitle(), "title", "标题不能为空!");
             BizValidation.paramValidate(request.getArticleContent(), "articleContent", "文章内容不能为空!");
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
+            BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
+            BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
             articleBizService.doUpdateArticle(request.getArtOid(), request.getTitle(), request.getArticleContent(),
                     request.getAuthor(), request.getType(), request.getIsComment(), request.getVisitType(),
                     request.getImgSrc(), request.getPassword(), request.getTags(),
@@ -156,6 +165,8 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
             BizValidation.paramValidate(request.getVisitType(), "visitType", "文章访问类型不能为空!");
             BizValidation.paramValidate(request.getType(), "type", "文章类型不能为空!");
+            BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
+            BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
             BizValidation.paramRangeValidate(request.getVisitType(), "visitType", "文章访问类型必须在[-1,0,1,2]中!",
                     ArticleVisitEnum.PUBLIC.getValue(), ArticleVisitEnum.PASSWORD.getValue(),
                     ArticleVisitEnum.PRIVATE.getValue(), ArticleVisitEnum.TOP.getValue());
@@ -179,9 +190,31 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(request.getTitle(), "title", "标题不能为空!");
             BizValidation.paramValidate(request.getArticleContent(), "articleContent", "文章内容不能为空!");
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
+            BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
+            BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
             articleBizService.doUpdateArticle(request.getArtOid(), request.getTitle(), request.getArticleContent(),
                     request.getAuthor(), request.getType(), request.getIsComment(), request.getVisitType(),
                     request.getImgSrc(), request.getPassword(), request.getTags(), ArticleStatusEnum.DRAFT.getValue());
+        } catch (JwBlogException e) {
+            return super.exceptionToString(e);
+        }
+
+        return super.responseToJSONString(BaseResponseDto.SUCCESS);
+    }
+
+    @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_SAVE_AND_REMOVE_RECYCLE)
+    public String artSaveAndRemoveToRecycle(@RequestBody String param) {
+        try {
+            super.printRequestParams(param);
+            ArticleSubmitRequest request = this.convertParam(param, ArticleSubmitRequest.class);
+            BizValidation.paramValidate(request.getArtOid(), "artOid", "文章id不能为空!");
+            BizValidation.paramValidate(request.getTitle(), "title", "标题不能为空!");
+            BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
+            BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
+            BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
+            articleBizService.doUpdateArticle(request.getArtOid(), request.getTitle(), request.getArticleContent(),
+                    request.getAuthor(), request.getType(), request.getIsComment(), request.getVisitType(),
+                    request.getImgSrc(), request.getPassword(), request.getTags(), ArticleStatusEnum.RECYCLE.getValue());
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
         }
@@ -202,6 +235,8 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
             BizValidation.paramValidate(request.getVisitType(), "visitType", "文章访问类型不能为空!");
             BizValidation.paramValidate(request.getType(), "type", "文章类型不能为空!");
+            BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
+            BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
             BizValidation.paramRangeValidate(request.getVisitType(), "visitType", "文章访问类型必须在[-1,0,1,2]中!",
                     ArticleVisitEnum.PUBLIC.getValue(), ArticleVisitEnum.PASSWORD.getValue(),
                     ArticleVisitEnum.PRIVATE.getValue(), ArticleVisitEnum.TOP.getValue());
@@ -380,6 +415,8 @@ public class ArticleApiController extends BaseController {
 
 
     private String clearHtml(String html) {
-        return html.replaceAll("\\<.*?>", "").replaceAll("\n", "").trim();
+        return html.replaceAll("\\<(?!img |/?video|source ).*?>", "").replaceAll("\n", "").trim();
     }
+
+
 }

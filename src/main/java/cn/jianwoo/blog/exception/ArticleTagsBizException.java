@@ -11,15 +11,15 @@ import org.slf4j.LoggerFactory;
  */
 public class ArticleTagsBizException extends JwBlogException {
     public static final ArticleTagsBizException HAS_EXIST_EXCEPTION = new ArticleTagsBizException(
-            ExceptionConstants.BIZ_HAS_EXIST, "The article[%s] tags already exists.");
+            ExceptionConstants.BIZ_HAS_EXIST, "The article-tags[%s] already exists.");
     public static final ArticleTagsBizException NOT_EXIST_EXCEPTION = new ArticleTagsBizException(
-            ExceptionConstants.BIZ_NOT_EXIST, "The article[%s] tags does not exist.");
+            ExceptionConstants.BIZ_NOT_EXIST, "The article-tags[%s] does not exist.");
     public static final ArticleTagsBizException CREATE_FAILED_EXCEPTION = new ArticleTagsBizException(
-            ExceptionConstants.BIZ_CREATE_FAIL, "The article[%s] tags creation is failed.");
+            ExceptionConstants.BIZ_CREATE_FAIL, "The article-tags[%s] creation is failed.");
     public static final ArticleTagsBizException MODIFY_FAILED_EXCEPTION = new ArticleTagsBizException(
-            ExceptionConstants.BIZ_MODIFY_FAIL, "The article[%s] tags modification is failed.");
+            ExceptionConstants.BIZ_MODIFY_FAIL, "The article-tags[%s] modification is failed.");
     public static final ArticleTagsBizException DELETE_FAILED_EXCEPTION = new ArticleTagsBizException(
-            ExceptionConstants.BIZ_DELETE_FAIL, "The article[%s] tags deletion is failed.");
+            ExceptionConstants.BIZ_DELETE_FAIL, "The article-tags[%s] deletion is failed.");
     private static final long serialVersionUID = -4477787493913372810L;
     private final Logger logger = LoggerFactory.getLogger(ArticleTagsBizException.class);
 

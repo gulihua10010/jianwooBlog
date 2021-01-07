@@ -3,8 +3,10 @@ package cn.jianwoo.blog.controller.backend.api;
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.config.page.TagsApiUrlConfig;
+import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dto.request.EntityOidRequest;
-import cn.jianwoo.blog.dto.request.TagAddRequest;
+import cn.jianwoo.blog.dto.request.TagListRequest;
+import cn.jianwoo.blog.dto.request.TagRequest;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.TagsBizService;
 import cn.jianwoo.blog.validation.BizValidation;
@@ -32,9 +34,27 @@ public class TagsApiController extends BaseController {
     public String addTag(@RequestBody String param) {
         try {
             super.printRequestParams(param);
-            TagAddRequest request = this.convertParam(param, TagAddRequest.class);
+            TagRequest request = this.convertParam(param, TagRequest.class);
             BizValidation.paramValidate(request.getTagText(), "tagText", "标签文本不能为空!");
-            tagsBizService.doAddTags(request.getTagText());
+            BizValidation.paramLengthValidate(request.getTagText(), Constants.TAGS_LENGTH, "tagText", "标签内容不能大于10个字符!");
+            tagsBizService.doAddTag(request.getTagText());
+        } catch (JwBlogException e) {
+            return super.exceptionToString(e);
+        }
+        return super.responseToJSONString(BaseResponseDto.SUCCESS);
+
+    }
+
+    @PostMapping(TagsApiUrlConfig.URL_TAG_UPDATE)
+    public String updateTag(@RequestBody String param) {
+        try {
+            super.printRequestParams(param);
+            TagRequest request = this.convertParam(param, TagRequest.class);
+            BizValidation.paramValidate(request.getOid(), "oid", "标签oid不能为空!");
+            BizValidation.paramValidate(request.getTagText(), "tagText", "标签内容不能为空!");
+            BizValidation.paramLengthValidate(request.getTagText(), Constants.TAGS_LENGTH, "tagText", "标签内容不能大于10个字符!");
+            tagsBizService.doUpdateTags(request.getTagText(), request.getOid());
+
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
         }
@@ -50,6 +70,24 @@ public class TagsApiController extends BaseController {
             EntityOidRequest request = this.convertParam(param, EntityOidRequest.class);
             BizValidation.paramValidate(request.getEntityOid(), "entityOid", "标签oid不能为空!");
             tagsBizService.doRemoveTags(request.getEntityOid());
+        } catch (JwBlogException e) {
+            return super.exceptionToString(e);
+        }
+        return super.responseToJSONString(BaseResponseDto.SUCCESS);
+
+    }
+
+    @PostMapping(TagsApiUrlConfig.URL_TAG_ADD_LIST)
+    public String addTagList(@RequestBody String param) {
+        try {
+            super.printRequestParams(param);
+            TagListRequest request = this.convertParam(param, TagListRequest.class);
+            BizValidation.paramValidate(request.getTagList(), "tagList", "列表中存在空标签!");
+            for (String tag : request.getTagList()) {
+                BizValidation.paramLengthValidate(tag.trim(), Constants.TAGS_LENGTH, "tagName", "列表中标签内容不能大于10个字符!");
+            }
+            tagsBizService.doAddTagList(request.getTagList());
+
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
         }

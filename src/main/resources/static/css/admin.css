@@ -283,13 +283,6 @@ div.art-main {
     width: 100%
 }
 
-div.art-pub-rightsider {
-    position: absolute;
-    right: 10px;
-    float: right;
-    margin: 20px;
-    width: 15%
-}
 
 div.articleinfo {
     padding-top: 20px;
@@ -352,7 +345,6 @@ div.textareas + div {
 /*    top: -10px;*/
 /*    margin: -5px 10px*/
 /*}*/
-
 
 
 #passw-content + span {
@@ -548,7 +540,7 @@ table a:hover {
 /*    top: -40px*/
 /*}*/
 
-/*div.art-comment > button:first-child:hover {*/
+/*div.art- comment > button:first-child:hover {*/
 /*    background-color: #2c4242;*/
 /*    color: #fff*/
 /*}*/
@@ -613,55 +605,7 @@ table a:hover {
 /*    right: 30px;*/
 /*    display: inline-block*/
 /*}*/
-.layui-input-right {
-    float: right;
-}
 
-.fontColor a, .min-font a {
-    color: #777;
-}
-
-.art-comment {
-    padding-right: 50px
-}
-
-.comment-content {
-    margin-bottom: 60px;
-    margin-left: 20px;
-}
-
-.comment-content .media-body, .comment-content-reply .media-body {
-    margin-bottom: 20px;
-}
-
-.comment-content .media-body .pad-btm {
-    padding-bottom: 0;
-}
-
-.comment-content .media-left, .comment-content-reply .media-left {
-    float: left;
-    margin-right: 10px;
-}
-
-.comment-content .media-left img {
-    border-radius: 50%;
-}
-
-.message-text {
-    padding-top: 10px;
-    margin-left: 55px
-}
-
-.message-content-btn {
-    text-align: center;
-}
-
-/*.comment-content .layui-btn{height: auto;line-height: 26px; padding: 5px 30px; font-size: 16px;}*/
-.comment-content-reply {
-    margin-left: 40px;
-    padding-left: 10px;
-    border-left: #ccc solid 1px;
-}
 
 /*div.comment-user > div > button {*/
 /*    background-color: #333;*/
@@ -780,61 +724,6 @@ table.commmg-list td > div.td-comm-user span {
     display: block
 }
 
-div.art-tags > p {
-    font-size: 25px
-}
-
-div.art-tags > div {
-    margin: 5px 20px;
-    font-size: 0
-}
-
-div.art-tags > div > ul > li {
-    display: inline-block;
-    overflow: hidden;
-    margin: -1px;
-    padding-top: 30px;
-    width: 75pt;
-    height: 75pt;
-    border: 1px solid rgba(0, 0, 0, .2);
-    text-align: center;
-    font-size: 20px;
-    position: relative
-}
-
-div.art-tags > div > ul > li:last-child {
-    cursor: pointer
-}
-
-div.art-tags > div > ul > li:last-child > i {
-    font-size: 30px
-}
-
-div.art-tags > div > ul > li:last-child:hover {
-    background-color: hsla(0, 0%, 97%, .7)
-}
-
-div.art-tags > div > ul > li > div {
-    position: absolute;
-    top: -75pt;
-    left: 0;
-    z-index: 100;
-    overflow: hidden;
-    width: 75pt;
-    height: 75pt;
-    background-color: rgba(0, 0, 0, .5)
-}
-
-div.art-tags > div > ul > li > div > button {
-    margin: 35px auto;
-    /*background-color: #e81123*/
-}
-
-div.art-tags > div > ul > li:hover div {
-    top: 0;
-    -webkit-transition: all .5s ease;
-    transition: all .5s ease
-}
 
 div.menu > p, div.recycleBin > p {
     margin: 10px 0;
@@ -974,32 +863,6 @@ div.menu ul > li#addmenubtn:hover {
 
 div.menu ul > li > ul > li.addtypebtn:hover {
     background-color: #f7f7f7
-}
-
-input.addinput {
-    margin: 30px 9pt;
-    width: 280px;
-    height: 35px
-}
-
-button.addbtn {
-    position: absolute;
-    right: 75pt;
-    bottom: 10px;
-    background-color: #009688
-}
-
-button.addbtncal {
-    position: absolute;
-    right: 30px;
-    bottom: 10px
-}
-
-span#tips {
-    position: absolute;
-    top: 70px;
-    left: 20px;
-    color: red
 }
 
 div.admin-index > p {
@@ -1316,26 +1179,17 @@ div.loginborder .login .inputs {
     margin-left: 10px;
 }
 
-#cancel, #published-save {
-    margin-left: 10px;
-}
-
-#remove-del, #published-pub, #published-update {
-    width: 105px;
-    margin-left: 85px;
-
-}
 
 #btns1-2 {
     margin-bottom: 10px;
 }
 
-#published-sure {
-    /*float: right;*/
-    margin-left: 165px;
-    width: 105px;
-    margin-bottom: 10px;
-}
+/*#published-sure {*/
+/*    !*float: right;*!*/
+/*    margin-left: 165px;*/
+/*    width: 105px;*/
+/*    margin-bottom: 10px;*/
+/*}*/
 
 #btns1 div {
     margin-top: 10px;
@@ -1351,21 +1205,197 @@ div.loginborder .login .inputs {
 }
 
 
-#remove-del {
-    background-color: #e81123
+/*#published-sure, button#published-pub, button#published-update {*/
+/*    background-color: #009688*/
+/*}*/
+
+/*#published-sure:hover, button#published-pub:hover, button#published-update:hover {*/
+/*    background-color: #00967a*/
+/*}*/
+
+
+.separation-line {
+    margin: 5px auto;
+    width: 95%;
+    border-bottom: 1px solid rgba(0, 0, 0, .1)
 }
 
-#published-sure, button#published-pub, button#published-update {
+.btn-group .negative-btn {
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    padding: 0 10px;
+}
+
+.btn-group .positive-btn {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    padding: 0 10px;
+
+}
+
+.btn-group .positive-btn button {
+    margin-left: auto;
+    width: 105px;
+
+
+}
+
+.negative-btn, .positive-btn {
+    margin: 10px auto;
+}
+
+#remove-del {
+    background-color: red;
+}
+
+.layui-input-right {
+    float: right;
+}
+
+.fontColor a, .min-font a {
+    color: #777;
+}
+
+
+.comment-content {
+    display: block;
+    padding: 10px 20px 60px;
+}
+
+.comment-content .media-body, .comment-content-reply .media-body {
+    margin-bottom: 20px;
+}
+
+.comment-content .media-body .pad-btm {
+    padding-bottom: 0;
+}
+
+.comment-content .media-left, .comment-content-reply .media-left {
+    float: left;
+    margin-right: 10px;
+}
+
+.comment-content .media-left img {
+    border-radius: 50%;
+}
+
+.message-text {
+    padding-top: 10px;
+    margin-left: 55px
+}
+
+.message-content-btn {
+    text-align: center;
+}
+
+/*.comment-content .layui-btn{height: auto;line-height: 26px; padding: 5px 30px; font-size: 16px;}*/
+.comment-content-reply {
+    margin-left: 40px;
+    padding-left: 10px;
+    border-left: #ccc solid 1px;
+}
+
+.comment-input {
+    margin-top: 20px;
+}
+
+
+.tags-content {
+    margin: 5px 20px;
+    font-size: 0
+}
+
+.tags-content > ul > li {
+    display: inline-block;
+    height: 50px;
+    border: 1px solid rgba(0, 0, 0, .2);
+    text-align: center;
+    font-size: 20px;
+    position: relative;
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 5px 10px;
+    padding: 0 10px;
+    line-height: 50px;
+
+}
+
+.tags-content > ul > li:last-child {
+    cursor: pointer
+}
+
+.tags-content > ul > li:last-child > i {
+    font-size: 30px
+}
+
+.tags-content > ul > li:last-child:hover {
+    background-color: hsla(0, 0%, 97%, .7)
+}
+
+/*.tags-content > ul > li > div {*/
+/*    position: absolute;*/
+/*    top: -50px;*/
+/*    left: 0;*/
+/*    z-index: 100;*/
+/*    overflow: hidden;*/
+/*    height: 50px;*/
+/*    background-color: rgba(0, 0, 0, .5)*/
+/*}*/
+
+/*.tags-content > ul > li > div > button {*/
+/*    margin: auto;*/
+/*    !*background-color: #e81123*!*/
+/*}*/
+
+/*.tags-content > ul > li:hover div {*/
+/*    top: 0;*/
+/*    -webkit-transition: all .5s ease;*/
+/*    transition: all .5s ease*/
+/*}*/
+
+
+.add-tag-input {
+    margin: 30px 9pt;
+    width: 280px;
+    height: 35px
+}
+
+.add-tag-btn, .update-tag-btn {
+    position: absolute;
+    right: 75pt;
+    bottom: 10px;
     background-color: #009688
 }
 
-#published-sure:hover, button#published-pub:hover, button#published-update:hover {
-    background-color: #00967a
+.cancel-tag-btn {
+    position: absolute;
+    right: 30px;
+    bottom: 10px
 }
 
+.tags-tips {
+    position: absolute;
+    top: 70px;
+    left: 20px;
+    color: red
+}
 
-.published-btns-opt-line {
-    margin: 5px auto;
-    width: 270px;
-    border-bottom: 1px solid rgba(0, 0, 0, .1)
+.add-tags-btn {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+}
+
+.add-tags-btn input {
+    width: 100px;
+    margin-left: auto;
 }

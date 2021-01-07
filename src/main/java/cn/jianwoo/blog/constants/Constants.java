@@ -43,5 +43,10 @@ public class Constants {
     public static final String DATE_FORMAT_YYYYMMDDHHMMSS_TIMESTAMP = "yyyyMMddHHmmssSSS";
     public static final String DATE_FORMAT_YYYYMMDD = "yyyy-MM-dd";
 
+    //validate length
+    public static final Integer TITLE_LENGTH = 50;
+    public static final Integer AUTHOR_LENGTH = 10;
+    public static final Integer TAGS_LENGTH = 10;
+
 
 }

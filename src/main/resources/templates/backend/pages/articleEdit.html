@@ -11,176 +11,201 @@
     <title>编辑文章</title>
 </head>
 <body>
-<div class="art-main">
-    <div class="art-content">
-        <div class="articleinfo">
-            <p>撰写新文章</p>
-            <input autocomplete="off" class="layui-input" id="art-title" name="title" placeholder="键入标题"
-                   th:value="${article.title}"
-                   type="text" value="">
-            <label for="art-author">作者：</label><input autocomplete="off" class="layui-input" id="art-author"
-                                                      name="author"
-                                                      placeholder="请输入作者" th:value="${article.author}"
-                                                      type="text">
-        </div>
-        <div class="textareas">
-            <textarea id="mytextarea" name="article">
-            </textarea>
-
-        </div>
-
-        <div style="display:none;">
-            <form action="{:Url('index/index/articlePreview')}" id="form-articlePreview" method="post" target="_blank">
-                <input id="artpre-title" name="title" type="hidden">
-                <input id="artpre-author" name="author" type="hidden">
-                <input id="artpre-content" name="content" type="hidden">
-                <input id="artpre-type" name="type" type="hidden">
-            </form>
-        </div>
-
-        <div class="layui-fluid layadmin-message-fluid">
-            <div class="layui-row">
-                <div class="layui-col-md12">
-                    <div class="art-comment layui-card" id="art-comment">
-                        <div class="layui-card-body">
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md9">
+            <div class="layui-card">
+                <div class="layui-card-header">编辑文章</div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-form-item">
+                        <input autocomplete="off" class="layui-input" id="art-title" name="title" placeholder="键入标题"
+                               th:value="${article.title}" type="text"
+                               value="">
+                    </div>
+                    <div class="layui-form-item">
+                        <input autocomplete="off" class="layui-input" id="art-author"
+                               name="author" th:value="${article.author}"
+                               placeholder="请输入作者"
+                               type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <textarea id="mytextarea" name="article"></textarea>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="art-comment" id="art-comment">
+                        <div class="add-comment-btn">
                             <button class="layui-btn add-comment">添加评论</button>
                         </div>
-                        <div class="layui-card-body comment-input" style="display: none">
+                        <div class="comment-input" style="display: none">
                             <div class="layui-form-item layui-form-text">
-                                <textarea class="layui-textarea" id="comm-content" name="comm-content"
-                                          placeholder="请输入内容"></textarea>
+                               <textarea class="layui-textarea" id="comm-content" name="comm-content"
+                                         placeholder="请输入内容"></textarea>
                             </div>
                             <div class="layui-form-item">
-                                <div class="layui-input-block layui-input-right">
+                                <div class="layui-input-right">
                                     <button class="comment-btn layui-btn" id="addComment">提交评论</button>
                                 </div>
                             </div>
                         </div>
-                        <!--                        comment-->
-                        <div id="commentView"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <!--                        comment-->
+                    <div class="commentView" id="commentView"></div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="layui-col-md3">
+            <div class="layui-card">
+                <div class="layui-card-header">文章标签</div>
+                <div class="layui-card-body">
+                    <div class="choose-tags">
+                        <div class="choosed">
+                            <span th:each="tag:${artTags}" th:inline="text">[[${tag.content}]]
+                                <span class="tags-id" style="display: none" th:text="${tag.oid}"></span><a>×</a>
+                            </span>
+                        </div>
+                        <div class="separation-line"></div>
+                        <div class="tags">
+                    <span th:each="tag:${tags}" th:inline="text">[[${tag.content}]]
+                        <span class="tags-id" style="display: none" th:text="${tag.oid}"></span>
+                    </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header">文章分类</div>
+                <div class="layui-card-body">
+                    <div class="article-type">
+                        <div class="layui-card layui-form" lay-filter="component-form-element">
+                            <select lay-search lay-verify="required" name="type" th:field="${article.typeId}">
+                                <option style="font-weight: bold;color: black" value="-1"></option>
+                                <option style="color: #777" th:each="menu:${menuList}" th:text="${menu.text}"
+                                        th:value="${menu.oid}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header">缩略图</div>
+                <div class="layui-card-body">
+                    <div class="article-img">
+                        <div class="layui-upload">
+                            <button class="layui-btn" id="test1" type="button">上传图片</button>
+                            <div class="layui-upload-list imgupload">
+                                <img class="pre-upd-img" id="breimg" style="margin-left: 5px" width="100"
+                                     th:src="${article.imgSrc}">
+                                <p id="demoText"></p>
+                                <input id="imgsrc" name="Img" style="visibility: hidden" value=""/>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header">操作</div>
+                <div class="layui-card-body">
+                    <div class="published-btns-opt">
+                        <div class="article-status">
+                            <span style="text-space: 2"
+                                  th:text="'&nbsp;&nbsp;当前状态: '+(${article.status} eq 1?'已发布':(${article.status} eq 0? '草稿':'回收站'))">
+                            </span>
+                        </div>
+                        <div class="btns-opt">
+                            <button class="layui-btn layui-btn-primary layui-btn-sm" id="articlePreview">文章预览</button>
+                        </div>
+                        <div class="separation-line"></div>
+                        <a><i class="iconfont">&#xe606;</i> 公开度：<span id="published-public"
+                                                                      th:text="${article.visitType == -1 ? '密码':(article.visitType == 0 ? '私密':(article.visitType == 2?'置顶':'公开' ))}"></span></a>&nbsp;
+                        <a id="edit">编辑</a>
+                        <form class="layui-form" lay-filter="component-form-element" method="post">
+                            <div class="layui-form-item" id="ispublic-form">
+                                <div class="layui-input-block">
+                                    <input th:checked="${article.visitType == 1 || article.visitType == 2}"
+                                           class="ispublic-radio" id="public" lay-filter="public"
+                                           name="isPublic" title="公开"
+                                           type="radio" value="1">
+                                    <span id="hometop1"><input id="hometop" lay-skin="primary" title="将文章置于首页顶端"
+                                                               type="checkbox" th:checked="${article.visitType == 2}"
+                                                               value="2"></span><br>
+                                    <input class="ispublic-radio" id="passw" lay-filter="passw" name="isPublic"
+                                           title="密码保护" th:checked="${article.visitType == -1}"
+                                           type="radio"
+                                           value="-1"><br>
+                                    <input autocomplete="off" class="layui-input" id="passw-content"
+                                           th:style="${article.visitType == -1 ? 'display: inline-block' : 'display: none'}"
+                                           th:value="${article.password}"
+                                           placeholder="密码"
+                                           type="password">
+                                    <input autocomplete="off" class="layui-input" id="passw-content-confirm"
+                                           placeholder="确认密码"
+                                           th:style="${article.visitType == -1 ? 'display: inline-block' : 'display: none'}"
+                                           type="password">
+                                    <input class="ispublic-radio" id="secret" lay-filter="secret" name="isPublic"
+                                           title="私密" th:checked="${article.visitType == 0}"
+                                           type="radio" value="0">
+
+                                </div>
+                                <span id="pwd-tips" style="color: red;display: none"></span>
+                                <div class="btns-opt" id="btns0" style="display: block">
+                                    <button class="layui-btn layui-btn-sm" id="btn-ispublic-sure">确定</button>
+                                    <button class="layui-btn layui-btn-primary layui-btn-sm" id="btn-ispublic-cancel">
+                                        取消
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <div id="isComment">
+                                    <input checked id="is-comment" name="isComment" title="是否可以评论"
+                                           th:checked="${article.isComment == 1}" type="checkbox">
+                                </div>
+                            </div>
+                        </form>
+                        <div class="separation-line"></div>
+                        <div class="btn-group">
+                            <div class="negative-btn">
+                                <button class="layui-btn layui-btn-primary" id="cancel">重置</button>
+                                <button class="layui-btn layui-btn-danger" id="remove-del">移至回收站</button>
+                            </div>
+                            <div class="positive-btn">
+                                <button class="layui-btn layui-btn-primary" id="published-save"
+                                        th:if="${article.status} eq 0">保存
+                                </button>
+                                <button class="layui-btn" id="published-pub" th:if="${article.status} eq 0">发布</button>
+                                <button class="layui-btn" id="published-update" th:if="${article.status} eq 1">更新
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
             </div>
         </div>
     </div>
-    <div class="art-pub-rightsider">
-        <div class="choosetags">
-            <p>文章标签</p>
-            <div class="choosed">
-                <span th:each="tag:${artTags}" th:inline="text">[[${tag.content}]]
-                    <span class="tags-id" style="display: none" th:text="${tag.oid}"></span><a>×</a>
-                </span>
-            </div>
-            <div></div>
-            <div class="tags">
-                <span th:each="tag:${tags}" th:inline="text">[[${tag.content}]]
-                    <span class="tags-id" style="display: none" th:text="${tag.oid}"></span>
-                </span>
-            </div>
-        </div>
-        <div class="articletyle">
-            <p>文章分类</p>
-            <label>请选择文章分类:</label>
-            <div class="select">
-                <div class="layui-card layui-form" lay-filter="component-form-element">
-                    <select lay-search lay-verify="required" name="city" th:field="${article.typeId}">
-                        <option style="color: #777" th:each="menu:${menuList}" th:text="${menu.text}"
-                                th:value="${menu.oid}"></option>
-                    </select>
-                </div>
-            </div>
-
-        </div>
-        <div class="articleimg">
-            <p>缩略图</p>
-            <div class="selimg">
-
-                <div class="layui-upload ">
-                    <button class="layui-btn" id="test1" type="button">上传图片</button>
-                    <div class="layui-upload-list imgupload">
-                        <img class="layui-upload-img" id="breimg" style="margin-left: 5px" th:src="${article.imgSrc}"
-                             width="270">
-                        <p id="demoText"></p>
-                        <input id="imgsrc" name="Img" style="visibility: hidden" value=""/>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <div class="published">
-            <p>文章发布</p>
-            <div>
-                <span style="text-space: 2"
-                      th:text="'&nbsp;&nbsp;当前状态: '+(${article.status} eq 1?'已发布':(${article.status} eq 0? '草稿':'回收站'))">当前状态:
-                </span>
-            </div>
-            <div class="btns-opt" style="margin-left: 10px;padding-bottom: 5px">
-                <button class="layui-btn layui-btn-primary layui-btn-sm" id="articlePreview">文章预览</button>
-            </div>
-            <a><i class="iconfont">&#xe606;</i> 公开度：<span id="published-public"
-                                                          th:text="${article.visitType == -1 ? '密码':(article.visitType == 0 ? '私密':(article.visitType == 2?'置顶':'公开' ))}"></span></a>&nbsp;
-            <a id="edit">编辑</a>
-            <form class="layui-form" lay-filter="component-form-element" method="post">
-                <div class="layui-form-item" id="ispublic-form">
-                    <div class="layui-input-block">
-                        <input checked class="ispublic-radio" id="public" lay-filter="public" name="isPublic"
-                               th:checked="${article.visitType == 1 || article.visitType == 2}"
-                               title="公开" type="radio"
-                               value="1">
-                        <span id="hometop1"><input id="hometop" lay-skin="primary"
-                                                   th:checked="${article.visitType == 2}" title="将文章置于首页顶端"
-                                                   type="checkbox" value="2"></span><br>
-                        <input class="ispublic-radio" id="passw" lay-filter="passw" name="isPublic"
-                               th:checked="${article.visitType == -1}"
-                               title="密码保护" type="radio"
-                               value="-1"><br>
-                        <input autocomplete="off" class="layui-input passw"
-                               id="passw-content"
-                               placeholder="密码"
-                               th:style="${article.visitType == -1 ? 'display: inline-block' : 'display: none'}"
-                               th:value="${article.password}"
-                               type="password">
-                        <input autocomplete="off" class="layui-input passw"
-                               id="passw-content-confirm"
-                               placeholder="确认密码"
-                               th:style="${article.visitType == -1 ? 'display: inline-block' : 'display: none'}"
-                               type="password">
-                        <input class="ispublic-radio" id="secret" lay-filter="secret" name="isPublic"
-                               th:checked="${article.visitType == 0}"
-                               title="私密" type="radio" value="0">
-                    </div>
-                    <span id="pwd-tips" style="color: red;display: none"></span>
-                    <div class="btns-opt" id="btns0" style="display: block">
-                        <button class="layui-btn layui-btn-sm" id="btn-ispublic-sure">确定</button>
-                        <button class="layui-btn layui-btn-primary layui-btn-sm" id="btn-ispublic-cancel">取消</button>
-                    </div>
-                </div>
-                <div>
-                    <div id="isComment">
-                        <input checked id="is-comment" name="isComment" th:checked="${article.isComment == 1}"
-                               title="是否可以评论" type="checkbox">
-                    </div>
-                </div>
-            </form>
-            <div></div>
-            <div id="btns1">
-                <div id="btns1-1">
-                    <button class="layui-btn layui-btn-primary" id="cancel">重置</button>
-                    <button class="layui-btn layui-btn-danger" id="remove-del">移至回收站</button>
-                </div>
-                <div id="btns1-2">
-                    <button class="layui-btn layui-btn-primary" id="published-save" th:if="${article.status} eq 0">保存
-                    </button>
-                    <button class="layui-btn" id="published-pub" th:if="${article.status} eq 0">发布</button>
-                    <button class="layui-btn" id="published-update" th:if="${article.status} eq 1">更新</button>
-                </div>
-            </div>
-        </div>
-        <div class="end"></div>
-    </div>
-    <div style="clear: both"></div>
 </div>
+<!--<div style="display:none;">-->
+<!--    <form action="{:Url('index/index/articlePreview')}" id="form-articlePreview" method="post" target="_blank">-->
+<!--        <input id="artpre-title" name="title" type="hidden">-->
+<!--        <input id="artpre-author" name="author" type="hidden">-->
+<!--        <input id="artpre-content" name="content" type="hidden">-->
+<!--        <input id="artpre-type" name="type" type="hidden">-->
+<!--    </form>-->
+<!--</div>-->
 <input id="artOid" th:value="${artOid}" type="hidden">
 <div></div>
 <script src="/static/plugins/layuiadmin/layui/layui.js"></script>
@@ -189,7 +214,7 @@
 
 <script id="commentTemplate" type="text/html">
 
-    <div class="layui-col-md12 comment-content ">
+    <div class="comment-content ">
         {{# layui.each(d, function(index, comm){ }}
         <div class="comment-list">
             <div class="media-body">
@@ -404,15 +429,14 @@
         });
 
 
-        spans = $('.choosetags').find('span');
-        for (var i = 0; i < spans.length; i++) {
+        var tags = $('.choose-tags').find('span');
+        for (var i = 0; i < tags.length; i++) {
             var color = Math.random();
             var r = parseInt((color * (i + 1) * 1234) % 254);
             var g = parseInt((color * (i + 1) * 4321) % 254);
             var b = parseInt((color * (i + 1) * 2222) % 254);
-            $(spans[i]).css("background-color", "rgba(" + r + "," + g + "," + b + ",0.1)");
-            $(spans[i]).css("border", "  1px rgba(" + r + "," + g + "," + b + ",1) solid");
-
+            $(tags[i]).css("background-color", "rgba(" + r + "," + g + "," + b + ",0.1)")
+            $(tags[i]).css("border", "  1px rgba(" + r + "," + g + "," + b + ",1) solid")
         }
         $('.choosed').on('click', 'a', function () {
             $(this).parent().remove();
@@ -544,7 +568,7 @@
             return false;
         })
 
-        $('#published-update,#published-save,#published-pub').click(function () {
+        $('#published-update,#published-save,#published-pub,#remove-del').click(function () {
             var btntype;
             if ($(this).attr('id') == 'published-update') {
                 btntype = 1;
@@ -552,14 +576,27 @@
                 btntype = 2;
             } else if ($(this).attr('id') == 'published-pub') {
                 btntype = 3;
+            } else if ($(this).attr('id') == 'remove-del') {
+                btntype = -1;
             }
-            if (tinyMCE.activeEditor.getContent().replace(new RegExp('\n', 'g'), '') == '<!DOCTYPE html><html><head></head><body></body></html>') {
+            var contentText = tinyMCE.activeEditor.getContent().replace(new RegExp('\n', 'g'), '');
+            if (btntype != -1 && contentText == '<!DOCTYPE html><html><head></head><body></body></html>') {
                 alert_fail('提示', '文章不可为空！')
                 return false;
             }
-            if ($('#art-author').val() == null || $.trim($('#art-author').val()) == '' ||
-                $('#art-title').val() == null || $.trim($('#art-title').val()) == '') {
+            var artAuthor = $('#art-author').val();
+            var artTitle = $('#art-title').val();
+            if (artAuthor == null || $.trim(artAuthor) == '' ||
+                artTitle == null || $.trim(artTitle) == '') {
                 alert_fail('提示', '标题或作者不可为空！')
+                return false;
+            }
+            if (artTitle.length > 50) {
+                alert_fail('提示', '标题要在50个字符以内！')
+                return false;
+            }
+            if (artAuthor.length > 10) {
+                alert_fail('提示', '作者要在10个字符以内！')
                 return false;
             }
             var tagsId = [];
@@ -570,7 +607,7 @@
             for (var i = 0; i < data.length; i++) {
                 tagsId[i] = data.eq(i).text();
             }
-            var typeid = $('.articletyle select').val()
+            var typeid = $('.article-type select').val()
             $('#type-id').val(typeid);
             publishTemp = $('#ispublic-form .ispublic-radio:checked').val();
             if ($('#ispublic-form .ispublic-radio:checked').val() == 1) {
@@ -587,8 +624,8 @@
                 iscomment = 1;
 
             }
-            var title = $('#art-title').val();
-            var author = $('#art-author').val();
+            var title = artTitle;
+            var author = artAuthor;
             var articleContent = tinyMCE.activeEditor.getContent();
             var tags = tagsId;
             var type = typeid;
@@ -620,7 +657,10 @@
                         password: password,
                         isComment: iscomment
                     }),
-                    "更新成功"
+                    "更新成功",
+                    function () {
+                        location.reload();
+                    }
                 );
 
             } else if (btntype == 2) {
@@ -637,7 +677,10 @@
                         password: password,
                         isComment: iscomment
                     }),
-                    "保存成功"
+                    "保存成功",
+                    function () {
+                        location.reload();
+                    }
                 )
             } else if (btntype == 3) {
                 ajaxPost('/api/admin/article/draft/publish',
@@ -653,19 +696,46 @@
                         password: password,
                         isComment: iscomment
                     }),
-                    "发布成功"
+                    "发布成功",
+                    function () {
+                        location.reload();
+                    }
                 )
-
-
+            } else if (btntype == -1) {
+                layer.confirm('确定把这文章移除到回收站吗？', function (index) {
+                    ajaxPost('/api/admin/article/save/remove/recycle',
+                        JSON.stringify({
+                            artOid: artid,
+                            title: title,
+                            author: author,
+                            articleContent: articleContent,
+                            tags: tags,
+                            type: type,
+                            imgSrc: imgSrc,
+                            visitType: published,
+                            password: password,
+                            isComment: iscomment
+                        }),
+                        '移动至回收站成功',
+                        function () {
+                            location.reload();
+                        });
+                });
             }
 
 
+        })
+
+        $('#cancel').click(function () {
+            alert_ask('确认清除所有输入的数据，恢复初始状态?', function () {
+                location.reload()
+            })
         })
         $('#articlePreview').click(function () {
             var title = $('#art-title').val();
             var author = $('#art-author').val();
             var articleContent = tinyMCE.activeEditor.getContent();
-            var type = $('.articletyle select:selected').text();
+            var type = $('.article-type select:selected').text();
             $('#artpre-title').val(title);
             $('#artpre-author').val(author);
             $('#artpre-content').val(articleContent);

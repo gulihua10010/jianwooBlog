@@ -59,12 +59,23 @@ public class ArticleTagsTransDaoImpl extends ArticleTagsQueryDaoImpl implements 
 
 
     @Override
-    public void doDeleteByArticleOid(Long artOid) throws DaoException {
+    public void doDeleteByArticleOid(Long artOid) {
         ArticleTagsExample example = new ArticleTagsExample();
         example.createCriteria().andArticleOidEqualTo(artOid);
         int delRlt = articleTagsMapper.deleteByExample(example);
         if (delRlt < 1) {
-            throw DaoException.DAO_DELETE_RESULT_0.print();
+            logger.warn("Delete table ARTICLE_TAGS failed, reason: artOid[{}] not found.", artOid);
+        }
+    }
+
+    @Override
+    public void doDeleteByTagsOid(Long tagsOid) {
+        ArticleTagsExample example = new ArticleTagsExample();
+        example.createCriteria().andTagsOidEqualTo(tagsOid.intValue());
+        int delRlt = articleTagsMapper.deleteByExample(example);
+        if (delRlt < 1) {
+            logger.warn("Delete table ARTICLE_TAGS failed, reason: tagsOid[{}] not found.", tagsOid);
+
         }
     }
 }

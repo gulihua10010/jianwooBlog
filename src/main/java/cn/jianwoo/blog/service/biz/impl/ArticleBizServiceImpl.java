@@ -135,12 +135,8 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         } catch (DaoException e) {
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
         }
-        try {
-            articleTagsTransDao.doDeleteByArticleOid(oid);
-        } catch (DaoException e) {
-            throw ArticleTagsBizException.DELETE_FAILED_EXCEPTION.format("artOid:" + oid).print();
+        articleTagsTransDao.doDeleteByArticleOid(oid);
 
-        }
         for (Integer t : tags) {
             ArticleTags articleTags = new ArticleTags();
             articleTags.setArticleOid(oid);
@@ -192,12 +188,8 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         } catch (DaoException e) {
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
         }
-        try {
-            articleTagsTransDao.doDeleteByArticleOid(oid);
-        } catch (DaoException e) {
-            throw ArticleTagsBizException.DELETE_FAILED_EXCEPTION.format("artOid:" + oid).print();
+        articleTagsTransDao.doDeleteByArticleOid(oid);
 
-        }
         for (Integer t : tags) {
             ArticleTags articleTags = new ArticleTags();
             articleTags.setArticleOid(oid);

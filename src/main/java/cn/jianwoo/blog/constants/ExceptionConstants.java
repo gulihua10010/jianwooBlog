@@ -19,6 +19,7 @@ public final class ExceptionConstants {
     public static final String VALIDATION_FAILED_LIST_EMPTY = "300003";
     public static final String VALIDATION_FAILED_ARRAY_EMPTY = "300004";
     public static final String VALIDATION_FAILED_NOT_IN_RANGE = "300005";
+    public static final String VALIDATION_FAILED_STRING_LENGTH = "300006";
 
     public static final String ADMIN_PASSWORD_NOT_CORRECT = "400001";
     public static final String ARTICLE_STATUS_NOT_MATCH = "400002";

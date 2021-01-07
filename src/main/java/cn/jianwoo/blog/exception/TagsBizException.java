@@ -14,6 +14,8 @@ public class TagsBizException extends JwBlogException {
             "The tags[%s] already exists.");
     public static final TagsBizException HAS_EXIST_EXCEPTION_CN = new TagsBizException(ExceptionConstants.BIZ_HAS_EXIST,
             "标签[%s]已经存在.");
+    public static final TagsBizException HAS_EXIST_EXCEPTION_LIST_CN = new TagsBizException(ExceptionConstants.BIZ_HAS_EXIST,
+            "标签列表中%s已经存在.");
     public static final TagsBizException NOT_EXIST_EXCEPTION = new TagsBizException(ExceptionConstants.BIZ_NOT_EXIST,
             "The tags[%s] does not exist.");
     public static final TagsBizException CREATE_FAILED_EXCEPTION = new TagsBizException(

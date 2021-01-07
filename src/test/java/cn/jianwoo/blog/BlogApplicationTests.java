@@ -29,7 +29,7 @@ import org.springframework.boot.test.context.SpringBootTest;
         try
         {
             //            commentBizService.doAddComment(1L,"gg","dd","dddd",-1L,"","");
-            tagsBizService.doAddTags("dxd");
+            tagsBizService.doAddTag("dxd");
         }
         catch (JwBlogException e)
         {
