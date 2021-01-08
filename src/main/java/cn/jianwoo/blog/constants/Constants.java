@@ -51,6 +51,7 @@ public class Constants {
 
     //reg
     public static final String MENU_NAME_REGEX = "^[_#$@\\d\\w]*$";
+    public static final String CLEAR_HTML_TAGS = "\\<(?!img |/?video|source ).*?>";
 
 
 }

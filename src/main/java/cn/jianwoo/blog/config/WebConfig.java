@@ -2,7 +2,6 @@ package cn.jianwoo.blog.config;
 
 import cn.jianwoo.blog.config.page.CommApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
-import cn.jianwoo.blog.interceptor.AvoidDuplicateSubmissionInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

@@ -1,5 +1,7 @@
 package cn.jianwoo.blog.controller.backend.page;
 
+import cn.hutool.db.Page;
+import cn.jianwoo.blog.annotation.PageId;
 import cn.jianwoo.blog.annotation.SubToken;
 import cn.jianwoo.blog.config.page.CommBackendPageTemplateConfig;
 import cn.jianwoo.blog.config.page.CommBackendPageUrlConfig;
@@ -13,6 +15,7 @@ import cn.jianwoo.blog.entity.extension.CommentExt;
 import cn.jianwoo.blog.entity.extension.MenuExt;
 import cn.jianwoo.blog.enums.ArticleStatusEnum;
 import cn.jianwoo.blog.enums.MenuTypeEnum;
+import cn.jianwoo.blog.enums.PageIdEnum;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.ArticleBizService;
@@ -63,11 +66,13 @@ public class AdminPageController {
     @Autowired
     private VisitBizService visitBizService;
 
+    @PageId(PageIdEnum.ADMIN_INDEX)
     @RequestMapping
     public String main() {
         return "forward:/admin/index";
     }
 
+    @PageId(PageIdEnum.ADMIN_INDEX)
     @RequestMapping(CommBackendPageUrlConfig.URL_INDEX)
     public String index() {
         return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_INDEX;
@@ -75,6 +80,7 @@ public class AdminPageController {
 
 
     @RequestMapping(CommBackendPageUrlConfig.URL_ARTICLE_PUBLISHED)
+    @PageId(PageIdEnum.ARTICLE_PUBLISHED)
     public String articlePublished(Model model) {
         List<Tags> tags = tagsTransDao.queryAllTags();
         List<Menu> menuList = menuBizService.querySubMenuOrderedList(MenuTypeEnum.FRONTEND.getValue());
@@ -84,6 +90,7 @@ public class AdminPageController {
     }
 
 
+    @PageId(PageIdEnum.ARTICLE_EDIT)
     @RequestMapping(CommBackendPageUrlConfig.URL_ARTICLE_EDIT)
     public String articleEdit(Model model, @PathVariable("id") Long id) {
         List<Tags> tags = tagsTransDao.queryAllTags();
@@ -111,6 +118,7 @@ public class AdminPageController {
     }
 
 
+    @PageId(PageIdEnum.TAGS_LIST)
     @RequestMapping(CommBackendPageUrlConfig.URL_ARTICLE_TAGS)
     public String articleTags(Model model) {
         List<Tags> tags = tagsTransDao.queryAllTags();
@@ -119,6 +127,7 @@ public class AdminPageController {
     }
 
 
+    @PageId(PageIdEnum.ARTICLE_QUICK_EDIT)
     @RequestMapping(CommBackendPageUrlConfig.URL_ARTICLE_QUICK_EDIT)
     public String articleQuickEdit(Model model, @PathVariable("id") Long id) {
         Article article = null;
@@ -142,6 +151,7 @@ public class AdminPageController {
     }
 
 
+    @PageId(PageIdEnum.ARTICLE_RECYCLE_BIN_VIEW)
     @RequestMapping(CommBackendPageUrlConfig.URL_ARTICLE_RECYCLE_VIEW)
     public String articleRecycleView(Model model, @PathVariable("id") Long id) {
         Article article = null;
@@ -157,24 +167,28 @@ public class AdminPageController {
     }
 
 
+    @PageId(PageIdEnum.CLEAR_CACHE)
     @RequestMapping(CommBackendPageUrlConfig.URL_CLEAR_CACHE)
     public String clearCache() {
         return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_CLEAR_CACHE;
     }
 
 
+    @PageId(PageIdEnum.COMMENT_LIST)
     @RequestMapping(CommBackendPageUrlConfig.URL_COMMENT_MANAGEMENT)
     public String commentManagement() {
         return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_COMMENT_MANAGEMENT;
     }
 
 
+    @PageId(PageIdEnum.COMMENT_REPLY)
     @RequestMapping(CommBackendPageUrlConfig.URL_COMMENT_REPLY)
     public String commentReply() {
         return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_COMMENT_REPLY;
     }
 
 
+    @PageId(PageIdEnum.COMMENT_VIEW)
     @RequestMapping(CommBackendPageUrlConfig.URL_COMMENT_VIEW)
     public String commentView(Model model, @PathVariable("id") Long id) {
         CommentExt commentExt = commentBizService.queryCommentExtByOid(id);
@@ -189,6 +203,7 @@ public class AdminPageController {
     }
 
 
+    @PageId(PageIdEnum.CONSOLE)
     @RequestMapping(CommBackendPageUrlConfig.URL_CONSOLE)
     public String console(Model model) {
         int publishedArtsCount = articleBizService.countWithPublishArts();
@@ -206,12 +221,14 @@ public class AdminPageController {
     }
 
 
+    @PageId(PageIdEnum.DYNAMIC)
     @RequestMapping(CommBackendPageUrlConfig.URL_DYNAMIC)
     public String dynamic() {
         return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_DYNAMIC;
     }
 
 
+    @PageId(PageIdEnum.MENU_LIST)
     @RequestMapping(CommBackendPageUrlConfig.URL_MENU_MANAGEMENT)
     public String menuMg(Model model) {
         List<MenuExt> menuExtList = null;
@@ -228,14 +245,14 @@ public class AdminPageController {
     }
 
 
-    @SubToken(saveToken = true)
+    @PageId(PageIdEnum.MENU_ADD)
     @RequestMapping(CommBackendPageUrlConfig.URL_MENU_ADD)
     public String menuAdd() {
         return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_MENU_ADD;
     }
 
 
-    @SubToken(saveToken = true)
+    @PageId(PageIdEnum.MENU_EDIT)
     @RequestMapping(CommBackendPageUrlConfig.URL_MENU_EDIT)
     public String menuEdit(Model model, @PathVariable("id") Long id) {
         try {
@@ -251,6 +268,7 @@ public class AdminPageController {
     }
 
 
+    @PageId(PageIdEnum.ARTICLE_LIST)
     @RequestMapping(CommBackendPageUrlConfig.URL_MY_ARTICLE)
     public String myArticle(Model model, String mode) {
         Integer status = 2;
@@ -264,12 +282,14 @@ public class AdminPageController {
     }
 
 
+    @PageId(PageIdEnum.ARTICLE_RECYCLE_BIN)
     @RequestMapping(CommBackendPageUrlConfig.URL_ARTICLE_RECYCLE_BIN)
     public String recycleBin() {
         return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_RECYCLE_BIN;
     }
 
 
+    @PageId(PageIdEnum.WEB_CONFIG)
     @RequestMapping(CommBackendPageUrlConfig.URL_WEB_CONFIG)
     public String webConfig(Model model) {
         WebconfBO webConf = webconfBizService.queryConfigWithBO();

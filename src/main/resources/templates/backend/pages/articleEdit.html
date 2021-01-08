@@ -207,6 +207,8 @@
 <!--    </form>-->
 <!--</div>-->
 <input id="artOid" th:value="${artOid}" type="hidden">
+<input type="hidden" th:value="${subToken}" id="subToken" name="subToken">
+
 <div></div>
 <script src="/static/plugins/layuiadmin/layui/layui.js"></script>
 <script src="/static/plugins/tinymce/tinymce.min.js" type="text/javascript"></script>
@@ -401,6 +403,7 @@
                 "评论成功",
                 function () {
                     renderComm();
+                    $('#comm-content').val('');
                     $(".comment-input").css('display', 'none');
                     btnShow = false;
                 }
@@ -632,6 +635,7 @@
             var published = publishTemp == undefined ? 1 : publishTemp;
             var password = passw;
             var artid = $('#artOid').val()
+            var token = $('#subToken').val();
             // //
             // console.log('title\t'+title)
             // console.log('author\t'+author)
@@ -654,7 +658,8 @@
                         imgSrc: imgSrc,
                         visitType: published,
                         password: password,
-                        isComment: iscomment
+                        isComment: iscomment,
+                        subToken: token
                     }),
                     "更新成功",
                     function () {
@@ -674,7 +679,8 @@
                         imgSrc: imgSrc,
                         visitType: published,
                         password: password,
-                        isComment: iscomment
+                        isComment: iscomment,
+                        subToken: token
                     }),
                     "保存成功",
                     function () {
@@ -693,7 +699,9 @@
                         imgSrc: imgSrc,
                         visitType: published,
                         password: password,
-                        isComment: iscomment
+                        isComment: iscomment,
+                        subToken: token
+
                     }),
                     "发布成功",
                     function () {
@@ -713,7 +721,9 @@
                             imgSrc: imgSrc,
                             visitType: published,
                             password: password,
-                            isComment: iscomment
+                            isComment: iscomment,
+                            subToken: token
+
                         }),
                         '移动至回收站成功',
                         function () {

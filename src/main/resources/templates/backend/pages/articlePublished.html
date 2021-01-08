@@ -163,6 +163,7 @@
     </div>
 
 </div>
+<input type="hidden" th:value="${subToken}" id="subToken" name="subToken">
 <div></div>
 <script src="/static/plugins/layuiadmin/layui/layui.js"></script>
 <script src="/static/plugins/tinymce/tinymce.min.js" type="text/javascript"></script>
@@ -395,6 +396,8 @@
             var imgSrc = $('#imgsrc').val();
             var published = publishTemp == undefined ? 1 : publishTemp;
             var password = passw;
+            var token = $('#subToken').val();
+
             //
             // console.log('title\t'+title)
             // console.log('author\t'+author)
@@ -416,6 +419,8 @@
                         visitType: published,
                         password: password,
                         isComment: iscomment,
+                        subToken: token
+
                     }),
                     '发布成功',
                     function () {
@@ -433,6 +438,8 @@
                         visitType: published,
                         password: password,
                         isComment: iscomment,
+                        subToken: token
+
                     }),
                     '保存成功',
                     function () {
@@ -451,6 +458,8 @@
                             visitType: published,
                             password: password,
                             isComment: iscomment,
+                            subToken: token
+
                         }),
                         '移动至回收站成功',
                         function () {

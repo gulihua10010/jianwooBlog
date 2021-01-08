@@ -1,6 +1,8 @@
 package cn.jianwoo.blog.controller.backend.api;
 
 import cn.hutool.core.date.DateUtil;
+import cn.jianwoo.blog.annotation.PageId;
+import cn.jianwoo.blog.annotation.SubToken;
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.config.page.ArticleApiUrlConfig;
@@ -16,6 +18,7 @@ import cn.jianwoo.blog.entity.extension.ArticleExt;
 import cn.jianwoo.blog.entity.query.ArticleParam;
 import cn.jianwoo.blog.enums.ArticleStatusEnum;
 import cn.jianwoo.blog.enums.ArticleVisitEnum;
+import cn.jianwoo.blog.enums.PageIdEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.ArticleBizService;
 import cn.jianwoo.blog.util.DomainUtil;
@@ -48,6 +51,8 @@ public class ArticleApiController extends BaseController {
     @Autowired
     private ArticleBizService articleBizService;
 
+    @PageId(PageIdEnum.ARTICLE_PUBLISHED)
+    @SubToken
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_SUBMIT)
     public String submit(@RequestBody String param) {
         try {
@@ -75,6 +80,8 @@ public class ArticleApiController extends BaseController {
     }
 
 
+    @PageId(PageIdEnum.ARTICLE_PUBLISHED)
+    @SubToken
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_SAVE_DRAFT)
     public String saveToDraft(@RequestBody String param) {
         try {
@@ -96,6 +103,8 @@ public class ArticleApiController extends BaseController {
     }
 
 
+    @PageId(PageIdEnum.ARTICLE_PUBLISHED)
+    @SubToken
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_SAVE_RECYCLE)
     public String saveToRecycle(@RequestBody String param) {
         try {
@@ -117,6 +126,8 @@ public class ArticleApiController extends BaseController {
     }
 
 
+    @PageId(PageIdEnum.ARTICLE_EDIT)
+    @SubToken
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_UPDATE)
     public String artUpdate(@RequestBody String param) {
         try {
@@ -140,6 +151,7 @@ public class ArticleApiController extends BaseController {
     }
 
 
+
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_DRAFT_STATUS_PUBLISH)
     public String draftArtPublish(@RequestBody String param) {
         try {
@@ -155,6 +167,8 @@ public class ArticleApiController extends BaseController {
     }
 
 
+    @PageId(PageIdEnum.ARTICLE_QUICK_EDIT)
+    @SubToken
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_INFO_UPDATE)
     public String artInfoUpdate(@RequestBody String param) {
         try {
@@ -181,6 +195,8 @@ public class ArticleApiController extends BaseController {
     }
 
 
+    @PageId(PageIdEnum.ARTICLE_EDIT)
+    @SubToken
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_DRAFT_SAVE)
     public String artDraftSave(@RequestBody String param) {
         try {
@@ -202,6 +218,8 @@ public class ArticleApiController extends BaseController {
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
     }
 
+    @PageId(PageIdEnum.ARTICLE_EDIT)
+    @SubToken
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_SAVE_AND_REMOVE_RECYCLE)
     public String artSaveAndRemoveToRecycle(@RequestBody String param) {
         try {
@@ -223,6 +241,8 @@ public class ArticleApiController extends BaseController {
     }
 
 
+    @PageId(PageIdEnum.ARTICLE_EDIT)
+    @SubToken
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_DRAFT_PUBLISH)
     public String artDraftPublish(@RequestBody String param) {
         try {
@@ -415,7 +435,8 @@ public class ArticleApiController extends BaseController {
 
 
     private String clearHtml(String html) {
-        return html.replaceAll("\\<(?!img |/?video|source ).*?>", "").replaceAll("\n", "").trim();
+        return html.replaceAll(Constants.CLEAR_HTML_TAGS, Constants.BLANK).
+                replaceAll("\n", "").trim();
     }
 
 

@@ -1,5 +1,6 @@
 package cn.jianwoo.blog.controller.backend.api;
 
+import cn.jianwoo.blog.annotation.PageId;
 import cn.jianwoo.blog.annotation.SubToken;
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
@@ -10,6 +11,7 @@ import cn.jianwoo.blog.dto.request.EntityOidRequest;
 import cn.jianwoo.blog.dto.request.MenuVoRequest;
 import cn.jianwoo.blog.dto.response.MenuValidateResponse;
 import cn.jianwoo.blog.enums.MenuTypeEnum;
+import cn.jianwoo.blog.enums.PageIdEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.MenuBizService;
 import cn.jianwoo.blog.service.bo.MenuValidateBO;
@@ -52,9 +54,10 @@ public class MenuApiController extends BaseController {
     }
 
 
-    @SubToken(removeToken = true)
+    @PageId(PageIdEnum.MENU_ADD)
+    @SubToken()
     @PostMapping(MenuApiUrlConfig.URL_MENU_ADD)
-    public String add(@RequestBody String param) {
+    public String add(@RequestBody String param) throws Exception {
         try {
             super.printRequestParams(param);
             MenuVoRequest request = this.convertParam(param, MenuVoRequest.class);
@@ -75,6 +78,8 @@ public class MenuApiController extends BaseController {
     }
 
 
+    @PageId(PageIdEnum.MENU_EDIT)
+    @SubToken()
     @PostMapping(MenuApiUrlConfig.URL_MENU_UPDATE)
     public String update(@RequestBody String param) {
         try {
