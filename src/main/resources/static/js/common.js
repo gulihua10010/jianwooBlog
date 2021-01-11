@@ -1,10 +1,12 @@
 var $jq;
 var layer;
-layui.define(['layer'], function (exports) {
+var form;
+layui.define(['layer', 'form'], function (exports) {
     "use strict";
 
     $jq = layui.jquery,
-        layer = layui.layer;
+        layer = layui.layer,
+        form = layui.form;
 
     var common = {
         /**
@@ -26,6 +28,14 @@ layui.define(['layer'], function (exports) {
 
         }
     };
+    form.verify({
+        maxLength: function (value, item) {
+            var len = item.getAttribute('lay-max');
+            if (value.length > len) {
+                return '字段长度不能大于' + len + '位';
+            }
+        }
+    })
 
     exports('common', common);
 });
@@ -33,21 +43,14 @@ layui.define(['layer'], function (exports) {
 
 function alert_fail(title = '', msg = '') {
 
-    var index = layer.load(0, {shade: false, offset: '400px'}, {time: 1000}); //0代表加载的风格，支持0-2
-    setTimeout(function () {
-        layer.close(index);
-        layer.msg(msg, {
-            title: title
-            //不自动关闭
-            , time: 1000
-            , icon: 5
-            , offset: '400px'
-        });
+    layer.msg(msg, {
+        title: title
+        //不自动关闭
+        , time: 1000
+        , icon: 5
+        , offset: '400px'
+    });
 
-    }, 1000);
-    setTimeout(function () {
-        layer.closeAll();
-    }, 2000)
 
 }
 
@@ -76,18 +79,13 @@ function alert_success_url(title = '', msg = '', url) {
 }
 
 function alert_success(title = '', msg = '') {
-    var index = layer.load(0, {shade: false, offset: '400px'}, {time: 3000}); //0代表加载的风格，支持0-2
-    setTimeout(function () {
-        layer.close(index);
-        layer.msg(msg, {
-            title: title
-            //不自动关闭
-            , time: 1000
-            , icon: 6
-            , offset: '400px'
-        });
-
-    }, 1000)
+    layer.msg(msg, {
+        title: title
+        //不自动关闭
+        , time: 1000
+        , icon: 6
+        , offset: '400px'
+    });
 
 }
 
@@ -376,8 +374,8 @@ function clearHtmlexpImg(str) {
 
 function ajaxPost(url, data, msg, tip = function () {
 }) {
-    var index = layer.load(0, {shade: false, offset: '400px'}, {time: 3000});
-
+    var index = layer.load(0, {shade: false, offset: '400px'});
+    //
     $jq.ajax({
         type: 'post',
         data: data,
@@ -388,21 +386,18 @@ function ajaxPost(url, data, msg, tip = function () {
         success: function (data) {
             if (data.status == '000000') {
                 layer.close(index);
-                layer.msg(msg, {
-                    title: "提示"
-                    , time: 1000
-                    , icon: 6
-                    , offset: '400px'
-                });
+                alert_success('提示', msg)
                 setTimeout(function () {
                     tip();
                 }, 1000)
 
             } else {
+                layer.close(index);
                 alert_fail('提示', data.msg);
             }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
+            layer.close(index);
             alert_fail('提示', '未知错误')
         }
 
@@ -442,6 +437,15 @@ function isNotEmpty(field) {
     return !isEmpty(field);
 }
 
-
+// form.verify({
+//     menuName:function (value,item)
+//     {
+//         var patt = /^[_#$@\d\w]*$/;
+//
+//         if (!patt.test(value)) {
+//             return '菜单文本必须是字母、数字、符号\'_#$@\'，不能包含其他特殊字符!';
+//         }
+//     }
+// })
 
 

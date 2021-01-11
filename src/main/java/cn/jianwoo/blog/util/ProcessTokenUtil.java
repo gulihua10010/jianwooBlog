@@ -35,8 +35,10 @@ public class ProcessTokenUtil {
         return token;
     }
 
-    public static void generateToken(HttpServletRequest request, String pageId) {
+    public static String generateToken(HttpServletRequest request, String pageId) {
         String key = ProcessTokenUtil.getSubTokenKey(request, pageId);
-        request.getSession().setAttribute(key, getTokenValue(request));
+        String value = getTokenValue(request);
+        request.getSession().setAttribute(key, value);
+        return value;
     }
 }

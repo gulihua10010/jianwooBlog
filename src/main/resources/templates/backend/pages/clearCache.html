@@ -13,22 +13,32 @@
 
 </head>
 <body>
-<div class="clearcache">
-    <p>清理缓存</p>
-    <form id="clearform" method="post">
-        <fieldset>
-            <legend>缓存选项:</legend>
-            `
-            <p>临时文件: <input autocomplete="off" class="lcs_check" id="temp" name="temp" type="checkbox"
-                            value="1"/></p>
-            <p> 数据缓存: <input autocomplete="off" class="lcs_check" id="cache" name="cache" type="checkbox"
-                             value="1"/></p>
-            <p>日志文件: <input autocomplete="off" class="lcs_check" id="log" name="log" type="checkbox"
-                            value="1"/></p>
-            <button class="layui-btn sure" id="save" type="button">执行操作</button>
-        </fieldset>
-    </form>
-
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">网站配置</div>
+                <div class="layui-card-body">
+                    <div class="clearcache">
+                        <form id="clearform" method="post">
+                            <fieldset>
+                                <legend>缓存选项:</legend>
+                                <p>临时文件: <input autocomplete="off" class="lcs_check" id="temp" name="temp"
+                                                type="checkbox"
+                                                value="1"/></p>
+                                <p> 数据缓存: <input autocomplete="off" class="lcs_check" id="cache" name="cache"
+                                                 type="checkbox"
+                                                 value="1"/></p>
+                                <p>日志文件: <input autocomplete="off" class="lcs_check" id="log" name="log" type="checkbox"
+                                                value="1"/></p>
+                                <button class="layui-btn sure" id="save" type="button">执行操作</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="/static/comm/js/jquery.min.js"></script>
 <script src="/static/comm/js/lc_switch.min.js"></script>

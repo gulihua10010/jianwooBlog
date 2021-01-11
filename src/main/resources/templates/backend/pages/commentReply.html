@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <title>评论回复</title>
@@ -20,6 +20,7 @@
             <textarea class="layui-textarea" lay-verify="required" name="content" placeholder="请输入"></textarea>
         </div>
     </div>
+    <input type="hidden" th:value="${subToken}" id="subToken" name="subToken">
     <div class="layui-form-item layui-hide">
         <label class="layui-form-label"></label>
         <div class="layui-input-inline">

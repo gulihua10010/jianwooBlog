@@ -5,6 +5,7 @@ import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.config.page.SubTokenApiUrlConfig;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.dto.request.TokenGenRequest;
+import cn.jianwoo.blog.dto.response.SubTokenResponse;
 import cn.jianwoo.blog.enums.PageIdEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.util.ProcessTokenUtil;
@@ -15,6 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author GuLihua
@@ -27,7 +32,7 @@ public class SubTokenGenerateApiController extends BaseController {
     private static final Logger logger = LoggerFactory.getLogger(SubTokenGenerateApiController.class);
 
     @PostMapping(SubTokenApiUrlConfig.URL_TOKEN_GENERATE)
-    public String sort(@RequestBody String param) {
+    public String generateToken(@RequestBody String param) {
         try {
             super.printRequestParams(param);
             TokenGenRequest request = this.convertParam(param, TokenGenRequest.class);
@@ -36,13 +41,15 @@ public class SubTokenGenerateApiController extends BaseController {
             if (pageIdEnum == null) {
                 throw new JwBlogException(ExceptionConstants.VALIDATION_FAILED, "页面无效!");
             }
-            ProcessTokenUtil.generateToken(super.request, param);
+            String token = ProcessTokenUtil.generateToken(super.request, request.getPageId());
+            SubTokenResponse response = SubTokenResponse.getInstance();
+            response.setToken(token);
+            return super.responseToJSONString(response);
 
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
 
         }
-        return super.responseToJSONString(BaseResponseDto.SUCCESS);
 
     }
 

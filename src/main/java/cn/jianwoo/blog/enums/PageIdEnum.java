@@ -54,7 +54,7 @@ public enum PageIdEnum {
     public static PageIdEnum getEnum(String name) {
         PageIdEnum[] arry = PageIdEnum.values();
         for (int i = 0; i < arry.length; i++) {
-            if (arry[i].name().equalsIgnoreCase(name)) {
+            if (arry[i].value.equalsIgnoreCase(name)) {
                 return arry[i];
             }
         }

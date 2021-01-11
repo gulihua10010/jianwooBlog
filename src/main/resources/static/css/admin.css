@@ -1016,18 +1016,6 @@ div.webconf div button {
     display: inline-block
 }
 
-div.clearcache > p {
-    margin: 10px 0;
-    font-size: 25px
-}
-
-div.clearcache fieldset p {
-    margin: 10px
-}
-
-div.clearcache button#save {
-    margin: auto 50px
-}
 
 #embed-captcha {
     width: 300px;
@@ -1447,3 +1435,12 @@ div.loginborder .login .inputs {
 /*    height: 45px;*/
 /*    text-align: center*/
 /*}*/
+
+
+.clearcache fieldset p {
+    margin: 10px
+}
+
+.clearcache button#save {
+    margin: auto 50px
+}

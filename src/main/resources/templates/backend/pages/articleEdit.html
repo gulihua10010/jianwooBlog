@@ -289,20 +289,21 @@
         var artOid = /*[[${article.oid}]]*/'';
         /*]]>*/
         var data;
-        ajaxApiPost(
-            "/api/admin/comment/query/article/list",
-            JSON.stringify({
-                entityOid: artOid,
-            }),
-            function (res) {
-                data = res.commentList;
-                renderComm(data);
-            }
-        );
+        var token;
 
         renderComm();
 
         function renderComm() {
+            ajaxApiPost(
+                "/api/admin/token/generate",
+                JSON.stringify({
+                    pageId: 'C14',
+                }),
+                function (res) {
+                    token = res.token;
+                }
+            );
+
             ajaxApiPost(
                 "/api/admin/comment/query/article/list",
                 JSON.stringify({
@@ -345,7 +346,9 @@
                 , yes: function (index, layero) {
                     var iframeWindow = window['layui-layer-iframe' + index]
                         , submitID = 'replyComm-submit'
-                        , submit = layero.find('iframe').contents().find('#' + submitID);
+                        , submit = layero.find('iframe').contents().find('#' + submitID)
+                        , commTips = layero.find('iframe').contents().find('.comment-tips')
+                        , commTipsSpan = layero.find('iframe').contents().find('#comment-tips-text')
 
                     //监听提交
                     iframeWindow.layui.form.on('submit(' + submitID + ')', function (formData) {
@@ -359,7 +362,8 @@
                                 content: field.content,
                                 parentOid: poid,
                                 artOid: artOid,
-                                headImgUrl: headImgUrl
+                                headImgUrl: headImgUrl,
+                                subToken: field.subToken
                             }),
                             "回复成功",
                             function () {
@@ -390,6 +394,11 @@
             var headImgUrl = "/static/comm/img/headimg/" + Math.ceil(Math.random() * 10) + ".jpg";
             var commentext = $('#comm-content').val();
             var replyId = 0;
+            if (isEmpty(commentext)) {
+                alert_fail("提示", "评论内容不能为空")
+                return false;
+            }
+
             ajaxPost(
                 "/api/admin/comment/reply",
                 JSON.stringify({
@@ -398,7 +407,8 @@
                     qq: qq,
                     artOid: artOid,
                     parentOid: replyId,
-                    headImgUrl: headImgUrl
+                    headImgUrl: headImgUrl,
+                    subToken: token
                 }),
                 "评论成功",
                 function () {

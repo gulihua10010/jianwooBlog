@@ -11,101 +11,119 @@
     <link href="/static/plugins/layuiadmin/style/admin.css" media="all" rel="stylesheet">
 </head>
 <body>
-
-<div class="layui-form" id="layuiadmin-form-comment" lay-filter="layuiadmin-form-comment"
-     style="padding: 20px 30px 0 0;">
-    <div class="layui-card-body">
-        <div class="layui-form-item">
-            <label class="layui-form-label">站点标题</label>
-            <div class="layui-input-block">
-                <input class="layui-input" name="title" th:value="${webConf.title}" type="text">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">网站作者</label>
-            <div class="layui-input-block">
-                <input class="layui-input" name="author" th:value="${webConf.author}" type="text">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">网站关键字</label>
-            <div class="layui-input-block">
-                <input class="layui-input" name="keywords" th:value="${webConf.keywords}" type="text">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">网站描述</label>
-            <div class="layui-input-block">
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">网站配置</div>
+                <div class="layui-card-body">
+                    <div class="layui-form" id="layuiadmin-form-comment" lay-filter="layuiadmin-form-comment"
+                         style="padding: 20px 30px 0 0;">
+                        <div class="layui-card-body">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">站点标题</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" name="title" lay-verify="required|maxLength" lay-max="2"
+                                           th:value="${webConf.title}" type="text">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">网站作者</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" name="author" th:value="${webConf.author}" type="text">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">网站关键字</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" name="keywords" th:value="${webConf.keywords}"
+                                           type="text">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">网站描述</label>
+                                <div class="layui-input-block">
                 <textarea class="layui-textarea" name="description" th:text="${webConf.description}" type="text">
                 </textarea>
-            </div>
-        </div>
+                                </div>
+                            </div>
 
-        <div class="layui-form-item">
-            <label class="layui-form-label">网站备案</label>
-            <div class="layui-input-block">
-                <input class="layui-input" name="record" th:value="${webConf.record}" type="text">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">网站域名</label>
-            <div class="layui-input-block">
-                <input class="layui-input" name="domain" th:value="${webConf.domain}" type="text">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">网站底部信息(支持html)</label>
-            <div class="layui-input-block">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">网站备案</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" name="record" th:value="${webConf.record}" type="text">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">网站域名</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" name="domain" th:value="${webConf.domain}" type="text">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">网站底部信息(支持html)</label>
+                                <div class="layui-input-block">
                 <textarea class="layui-textarea" name="footInfo" th:text="${webConf.footHtml}" type="text">
                 </textarea>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">上传logo</label>
-            <div class="layui-input-block">
-                <button class="layui-btn" id="uploadLogo" type="button">上传图片</button>
-                <div class="layui-upload-list imgupload">
-                    <img class="layui-upload-img" id="logoimg"
-                         style="margin-left: 5px" th:src="${webConf.logoImg}"
-                         width="100">
-                    <p id="logoimgText"></p>
-                    <input id="logoImgSrc" name="logoImgSrc" style="visibility: hidden" th:value="${webConf.logoImg}">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">上传logo</label>
+                                <div class="layui-input-block">
+                                    <button class="layui-btn" id="uploadLogo" type="button">上传图片</button>
+                                    <div class="layui-upload-list imgupload">
+                                        <img class="layui-upload-img" id="logoimg"
+                                             style="margin-left: 5px" th:src="${webConf.logoImg}"
+                                             width="100">
+                                        <p id="logoimgText"></p>
+                                        <input id="logoImgSrc" name="logoImgSrc" style="visibility: hidden"
+                                               th:value="${webConf.logoImg}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">首页顶部图片:（建议9：1图片）</label>
+                                <div class="layui-input-block">
+                                    <button class="layui-btn" id="uploadHomeImg" type="button">上传图片</button>
+                                    <div class="layui-upload-list imgupload">
+                                        <img class="layui-upload-img" id="homeImg"
+                                             style="margin-left: 5px" th:src="${webConf.homeImg}"
+                                             width="500">
+                                        <p id="homeImgText"></p>
+                                        <input id="homeImgSrc" name="homeImgSrc" style="visibility: hidden"
+                                               th:value="${webConf.homeImg}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">每页显示文章数</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" name="numPerPage" th:value="${webConf.numPerPage}"
+                                           type="text">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <input id="isComment" name="isComment" th:checked="${webConf.isComment}"
+                                           title="开启评论"
+                                           type="checkbox" value="1">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"></label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-btn" id="submit" lay-filter="submit" lay-submit
+                                           type="button" value="确认">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
-            </div>
-        </div>
-
-        <div class="layui-form-item">
-            <label class="layui-form-label">首页顶部图片:（建议9：1图片）</label>
-            <div class="layui-input-block">
-                <button class="layui-btn" id="uploadHomeImg" type="button">上传图片</button>
-                <div class="layui-upload-list imgupload">
-                    <img class="layui-upload-img" id="homeImg"
-                         style="margin-left: 5px" th:src="${webConf.homeImg}"
-                         width="900">
-                    <p id="homeImgText"></p>
-                    <input id="homeImgSrc" name="homeImgSrc" style="visibility: hidden" th:value="${webConf.homeImg}">
-                </div>
-            </div>
-        </div>
-
-        <div class="layui-form-item">
-            <label class="layui-form-label">每页显示文章数</label>
-            <div class="layui-input-block">
-                <input class="layui-input" name="numPerPage" th:value="${webConf.numPerPage}" type="text">
-            </div>
-        </div>
-
-        <div class="layui-form-item">
-            <div class="layui-input-block">
-                <input id="isComment" name="isComment" th:checked="${webConf.isComment}" title="开启评论"
-                       type="checkbox" value="1">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label"></label>
-            <div class="layui-input-inline">
-                <input class="layui-btn" id="submit" lay-filter="submit" lay-submit
-                       type="button" value="确认">
             </div>
         </div>
     </div>

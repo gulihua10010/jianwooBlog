@@ -1,6 +1,8 @@
 package cn.jianwoo.blog.controller.backend.api;
 
 import cn.hutool.core.date.DateUtil;
+import cn.jianwoo.blog.annotation.PageId;
+import cn.jianwoo.blog.annotation.SubToken;
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.config.page.CommentApiUrlConfig;
@@ -20,6 +22,7 @@ import cn.jianwoo.blog.entity.extension.CommentExt;
 import cn.jianwoo.blog.entity.extension.ReplyCommentsExt;
 import cn.jianwoo.blog.entity.query.CommentParam;
 import cn.jianwoo.blog.enums.CommReadEnum;
+import cn.jianwoo.blog.enums.PageIdEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.CommentBizService;
 import cn.jianwoo.blog.util.DomainUtil;
@@ -192,6 +195,8 @@ public class CommentApiController extends BaseController {
     }
 
 
+    @PageId(PageIdEnum.COMMENT_REPLY)
+    @SubToken
     @PostMapping(CommentApiUrlConfig.URL_COMMENT_REPLY)
     public String replyComm(@RequestBody String param) {
         try {

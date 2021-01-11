@@ -143,32 +143,6 @@
                                 //监听提交
                                 iframeWindow.layui.form.on('submit(' + submitID + ')', function (formData) {
                                     var field = formData.field; //获取提交的字段
-                                    if (isEmpty(field.name)) {
-                                        menuTips.css('display', 'block');
-                                        menuTipsSpan.text('菜单名字不能为空');
-                                        return false;
-                                    }
-                                    if (isEmpty(field.text)) {
-                                        menuTips.css('display', 'block');
-                                        menuTipsSpan.text('菜单文本不能为空');
-                                        return false;
-                                    }
-                                    if (field.name.length > 10) {
-                                        menuTips.css('display', 'block');
-                                        menuTipsSpan.text('菜单名字不能大于10个字符!');
-                                        return false;
-                                    }
-                                    if (field.text.length > 10) {
-                                        menuTips.css('display', 'block');
-                                        menuTipsSpan.text('菜单文本不能大于10个字符!');
-                                        return false;
-                                    }
-                                    var patt = /^[_#$@\d\w]*$/;
-                                    if (!patt.test(field.name)) {
-                                        menuTips.css('display', 'block');
-                                        menuTipsSpan.text('菜单文本必须是字母、数字、符号\'_#$@\'，不能包含其他特殊字符!');
-                                        return false;
-                                    }
                                     //提交 Ajax 成功后，静态更新表格中的数据
                                     ajaxPost(
                                         "/api/admin/menu/update",
@@ -259,39 +233,11 @@
                 , yes: function (index, layero) {
                     var iframeWindow = window['layui-layer-iframe' + index]
                         , submitID = 'replyComm-submit'
-                        , submit = layero.find('iframe').contents().find('#' + submitID)
-                        , menuTips = layero.find('iframe').contents().find('.menu-tips')
-                        , menuTipsSpan = layero.find('iframe').contents().find('#menu-tips-text');
+                        , submit = layero.find('iframe').contents().find('#' + submitID);
 
                     //监听提交
                     iframeWindow.layui.form.on('submit(' + submitID + ')', function (formData) {
                         var field = formData.field; //获取提交的字段
-                        if (isEmpty(field.name)) {
-                            menuTips.css('display', 'block');
-                            menuTipsSpan.text('菜单名字不能为空');
-                            return false;
-                        }
-                        if (isEmpty(field.text)) {
-                            menuTips.css('display', 'block');
-                            menuTipsSpan.text('菜单文本不能为空');
-                            return false;
-                        }
-                        if (field.name.length > 10) {
-                            menuTips.css('display', 'block');
-                            menuTipsSpan.text('菜单名字不能大于10个字符!');
-                            return false;
-                        }
-                        if (field.text.length > 10) {
-                            menuTips.css('display', 'block');
-                            menuTipsSpan.text('菜单文本不能大于10个字符!');
-                            return false;
-                        }
-                        var patt = /^[_#$@\d\w]*$/;
-                        if (!patt.test(field.name)) {
-                            menuTips.css('display', 'block');
-                            menuTipsSpan.text('菜单文本必须是字母、数字、符号\'_#$@\'，不能包含其他特殊字符!');
-                            return false;
-                        }
                         //提交 Ajax 成功后，静态更新表格中的数据
                         ajaxPost(
                             "/api/admin/menu/add",

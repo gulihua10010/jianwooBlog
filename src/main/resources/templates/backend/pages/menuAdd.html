@@ -18,14 +18,16 @@
         <div class="layui-form-item">
             <label class="layui-form-label">菜单名字</label>
             <div class="layui-input-block">
-                <input class="layui-input" name="name" autocomplete="off" placeholder="必填(必须是字母、数字、符号'_#$@'，不能包含其他特殊字符)"
+                <input class="layui-input" name="name" lay-verify="required" autocomplete="off"
+                       placeholder="必填(必须是字母、数字、符号'_#$@'，不能包含其他特殊字符)"
                        type="text">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">菜单文本</label>
             <div class="layui-input-block">
-                <input class="layui-input" name="text" autocomplete="off" placeholder="必填(用于页面显示)" type="text">
+                <input class="layui-input" name="text" lay-verify="required" autocomplete="off" placeholder="必填(用于页面显示)"
+                       type="text">
             </div>
         </div>
         <div class="layui-form-item">
