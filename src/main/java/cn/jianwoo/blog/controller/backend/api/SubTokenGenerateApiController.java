@@ -45,7 +45,6 @@ public class SubTokenGenerateApiController extends BaseController {
             SubTokenResponse response = SubTokenResponse.getInstance();
             response.setToken(token);
             return super.responseToJSONString(response);
-
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
 

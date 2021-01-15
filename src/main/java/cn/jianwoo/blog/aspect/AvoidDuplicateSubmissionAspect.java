@@ -44,16 +44,18 @@ public class AvoidDuplicateSubmissionAspect {
     public Object validateToken(ProceedingJoinPoint joinPoint, SubToken subToken, PageId pageId) throws Throwable {
         logger.info("===>> AvoidDuplicateSubmissionAspect validateToken method: {}", joinPoint.getSignature().getName());
 
+        String clinetToken = getClientToken(joinPoint);
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = servletRequestAttributes.getRequest();
+        String page = PAGE_ID;
+        if (pageId != null) {
+            page = pageId.value().getValue();
+        }
+        String key = ProcessTokenUtil.getSubTokenKey(request, page);
         if (null != subToken) {
-            ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-            HttpServletRequest request = servletRequestAttributes.getRequest();
             if (subToken.validateToken()) {
-                String page = PAGE_ID;
-                if (pageId != null) {
-                    page = pageId.value().getValue();
-                }
-                String key = ProcessTokenUtil.getSubTokenKey(request, page);
-                boolean isDuplicate = isRepeatSubmit(joinPoint, request, page);
+
+                boolean isDuplicate = isRepeatSubmit(clinetToken, request, page);
                 if (isDuplicate) {
                     request.getSession().removeAttribute(key);
                     return processException(FormDuplicateSubmitException.FORM_DUPLICATE_SUBMIT_EXCEPTION);
@@ -61,22 +63,40 @@ public class AvoidDuplicateSubmissionAspect {
                 request.getSession().removeAttribute(key);
             }
         }
-        return joinPoint.proceed();
+        String responseDto = (String) joinPoint.proceed();
+        BaseResponseDto dto = JSON.parseObject(responseDto, BaseResponseDto.class);
+        if (!dto.isSuccess()) {
+            request.getSession().setAttribute(key, clinetToken);
+        }
+        return responseDto;
     }
+
 
     private String processException(JwBlogException e) {
         return JSON.toJSONString(new BaseResponseDto(e.getCode(), e.getMsg()));
     }
 
 
-    private boolean isRepeatSubmit(JoinPoint joinPoint, HttpServletRequest request, String pageId) {
+    private boolean isRepeatSubmit(String clinetToken, HttpServletRequest request, String pageId) {
         String key = ProcessTokenUtil.getSubTokenKey(request, pageId);
         String serverToken = (String) request.getSession().getAttribute(
                 key);
         if (serverToken == null) {
             return true;
         }
+        logger.info("serverToken: {}", serverToken);
+        logger.info("clinetToken: {}", clinetToken);
 
+        if (clinetToken == null) {
+            return true;
+        }
+        if (!serverToken.equals(clinetToken)) {
+            return true;
+        }
+        return false;
+    }
+
+    private String getClientToken(JoinPoint joinPoint) {
         String clinetToken = null;
         if (joinPoint.getArgs().length > 0) {
             for (Object o : joinPoint.getArgs()) {
@@ -92,20 +112,10 @@ public class AvoidDuplicateSubmissionAspect {
                     }
                 }
 
-
             }
         }
+        return clinetToken;
 
-        logger.info("serverToken: {}", serverToken);
-        logger.info("clinetToken: {}", clinetToken);
-
-        if (clinetToken == null) {
-            return true;
-        }
-        if (!serverToken.equals(clinetToken)) {
-            return true;
-        }
-        return false;
     }
 
 

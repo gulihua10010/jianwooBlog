@@ -21,6 +21,7 @@ public class CommBackendPageTemplateConfig {
     public static final String PAGE_CLEAR_CACHE = "/pages/clearCache";
     public static final String PAGE_COMMENT_MANAGEMENT = "/pages/commentManagement";
     public static final String PAGE_COMMENT_REPLY = "/pages/commentReply";
+    public static final String PAGE_TAGS_EDIT = "/pages/tagsEdit";
     public static final String PAGE_COMMENT_VIEW = "/pages/commentView";
     public static final String PAGE_CONSOLE = "/console";
     public static final String PAGE_DYNAMIC = "/pages/dynamic";

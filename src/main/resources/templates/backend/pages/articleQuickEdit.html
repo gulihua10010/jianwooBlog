@@ -18,13 +18,15 @@
         <div class="layui-form-item">
             <label class="layui-form-label">文章标题</label>
             <div class="layui-input-block">
-                <input class="layui-input" name="title" th:value="${article.title}" type="text">
+                <input class="layui-input" name="title" autocomplete="off" lay-verify="required|maxLength" lay-max="50"
+                       th:value="${article.title}" type="text">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">作者</label>
             <div class="layui-input-block">
-                <input class="layui-input" name="author" th:value="${article.author}" type="text">
+                <input class="layui-input" name="author" autocomplete="off" lay-verify="required|maxLength" lay-max="10"
+                       th:value="${article.author}" type="text">
             </div>
         </div>
         <div class="layui-form-item" id="ispublic-form">
@@ -44,12 +46,12 @@
                        value="-1"><br>
                 <input autocomplete="off" class="layui-input passw"
                        id="passw-content"
-                       name="passwContent" placeholder="密码"
+                       name="passwContent" placeholder="密码" lay-verify="pass"
                        th:style="${article.visitType == -1 ? 'display: inline-block' : 'display: none'}"
                        th:value="${article.password}"
                        type="password">
                 <input autocomplete="off" class="layui-input passw"
-                       id="passw-content-confirm"
+                       id="passw-content-confirm" lay-verify="repass"
                        name="passwContentConfirm" placeholder="确认密码"
                        th:style="${article.visitType == -1 ? 'display: inline-block' : 'display: none'}"
                        type="password">
@@ -70,7 +72,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">文章类别</label>
             <div class="layui-input-block">
-                <select id="type" lay-search lay-verify="required" name="type" th:field="${article.typeId}">
+                <select id="type" lay-search lay-verify="required|artType" name="type" th:field="${article.typeId}">
                     <option style="color: #777" value="-1"></option>
                     <option style="color: #777" th:each="menu:${menuList}" th:text="${menu.text}"
                             th:value="${menu.oid}"></option>
@@ -96,6 +98,8 @@
 </div>
 
 <script src="/static/plugins/layuiadmin/layui/layui.js"></script>
+<script src="/static/js/common.js" type="text/javascript"></script>
+
 <script>
     layui.config({
         base: '/static/plugins/layuiadmin/' //静态资源所在路径

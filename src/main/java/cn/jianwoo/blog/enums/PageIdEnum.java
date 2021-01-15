@@ -22,6 +22,8 @@ public enum PageIdEnum {
     TAGS_LIST("T10"),
     TAGS_EDIT("T11"),
     TAGS_VIEW("T12"),
+    TAGS_ADD("T13"),
+    TAGS_ADD_LIST("T14"),
 
     CONSOLE("CS10"),
 

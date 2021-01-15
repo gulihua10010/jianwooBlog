@@ -18,7 +18,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label">菜单名字</label>
             <div class="layui-input-block">
-                <input class="layui-input" name="name" lay-verify="required" autocomplete="off"
+                <input class="layui-input" name="name" lay-verify="required|maxLength|menuName" autocomplete="off"
+                       lay-max="10"
                        placeholder="必填(必须是字母、数字、符号'_#$@'，不能包含其他特殊字符)"
                        type="text">
             </div>
@@ -26,20 +27,23 @@
         <div class="layui-form-item">
             <label class="layui-form-label">菜单文本</label>
             <div class="layui-input-block">
-                <input class="layui-input" name="text" lay-verify="required" autocomplete="off" placeholder="必填(用于页面显示)"
+                <input class="layui-input" name="text" lay-verify="required|maxLength" lay-max="10" autocomplete="off"
+                       placeholder="必填(用于页面显示)"
                        type="text">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">菜单图标</label>
             <div class="layui-input-block">
-                <input class="layui-input" name="icon" autocomplete="off" type="text">
+                <input class="layui-input" name="icon" autocomplete="off" lay-verify="maxLength" lay-max="20"
+                       type="text">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">菜单url</label>
             <div class="layui-input-block">
-                <input class="layui-input" name="url" autocomplete="off" type="text">
+                <input class="layui-input" name="url" autocomplete="off" lay-verify="maxLength" lay-max="200"
+                       type="text">
             </div>
         </div>
         <div class="layui-form-item menu-tips" style="display: none">
@@ -59,6 +63,8 @@
 </div>
 
 <script src="/static/plugins/layuiadmin/layui/layui.js"></script>
+<script src="/static/js/common.js" type="text/javascript"></script>
+
 <script>
     layui.config({
         base: '/static/plugins/layuiadmin/' //静态资源所在路径

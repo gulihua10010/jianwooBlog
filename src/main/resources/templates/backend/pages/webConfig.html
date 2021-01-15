@@ -23,27 +23,30 @@
                             <div class="layui-form-item">
                                 <label class="layui-form-label">站点标题</label>
                                 <div class="layui-input-block">
-                                    <input class="layui-input" name="title" lay-verify="required|maxLength" lay-max="2"
+                                    <input class="layui-input" name="title" lay-verify="required|maxLength" lay-max="50"
                                            th:value="${webConf.title}" type="text">
                                 </div>
                             </div>
                             <div class="layui-form-item">
                                 <label class="layui-form-label">网站作者</label>
                                 <div class="layui-input-block">
-                                    <input class="layui-input" name="author" th:value="${webConf.author}" type="text">
+                                    <input class="layui-input" name="author" lay-verify="maxLength" lay-max="20"
+                                           th:value="${webConf.author}" type="text">
                                 </div>
                             </div>
                             <div class="layui-form-item">
                                 <label class="layui-form-label">网站关键字</label>
                                 <div class="layui-input-block">
-                                    <input class="layui-input" name="keywords" th:value="${webConf.keywords}"
+                                    <input class="layui-input" name="keywords" lay-verify="maxLength" lay-max="50"
+                                           th:value="${webConf.keywords}"
                                            type="text">
                                 </div>
                             </div>
                             <div class="layui-form-item">
                                 <label class="layui-form-label">网站描述</label>
                                 <div class="layui-input-block">
-                <textarea class="layui-textarea" name="description" th:text="${webConf.description}" type="text">
+                <textarea class="layui-textarea" name="description" th:text="${webConf.description}" lay-max="500"
+                          lay-verify="maxLength" type="text">
                 </textarea>
                                 </div>
                             </div>
@@ -51,19 +54,22 @@
                             <div class="layui-form-item">
                                 <label class="layui-form-label">网站备案</label>
                                 <div class="layui-input-block">
-                                    <input class="layui-input" name="record" th:value="${webConf.record}" type="text">
+                                    <input class="layui-input" name="record" th:value="${webConf.record}" lay-max="500"
+                                           lay-verify="maxLength" type="text">
                                 </div>
                             </div>
                             <div class="layui-form-item">
                                 <label class="layui-form-label">网站域名</label>
                                 <div class="layui-input-block">
-                                    <input class="layui-input" name="domain" th:value="${webConf.domain}" type="text">
+                                    <input class="layui-input" name="domain" th:value="${webConf.domain}" lay-max="50"
+                                           lay-verify="maxLength" type="text">
                                 </div>
                             </div>
                             <div class="layui-form-item">
                                 <label class="layui-form-label">网站底部信息(支持html)</label>
                                 <div class="layui-input-block">
-                <textarea class="layui-textarea" name="footInfo" th:text="${webConf.footHtml}" type="text">
+                <textarea class="layui-textarea" name="footInfo" th:text="${webConf.footHtml}" lay-verify="maxLength"
+                          lay-max="500" type="text">
                 </textarea>
                                 </div>
                             </div>
@@ -101,6 +107,7 @@
                                 <label class="layui-form-label">每页显示文章数</label>
                                 <div class="layui-input-block">
                                     <input class="layui-input" name="numPerPage" th:value="${webConf.numPerPage}"
+                                           lay-verify="number"
                                            type="text">
                                 </div>
                             </div>

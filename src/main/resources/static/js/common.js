@@ -31,11 +31,34 @@ layui.define(['layer', 'form'], function (exports) {
     form.verify({
         maxLength: function (value, item) {
             var len = item.getAttribute('lay-max');
+            if (len == undefined || len == null) len = 200;
             if (value.length > len) {
                 return '字段长度不能大于' + len + '位';
             }
+        },
+        menuName: [/^[_#$@\d\w]*$/, '菜单文本必须是字母、数字、符号\'_#$@\'，不能包含其他特殊字符!'],
+        pass: function (value, item) {
+            if ($jq('#passw').is(":checked")) {
+                var patt = /(.+){6,12}$/;
+                if (!patt.test(value)) {
+                    return '密码必须6到12位';
+                }
+            }
+
+        },
+        repass: function (value, item) {
+            if ($jq('#passw').is(":checked") &&
+                $jq('#passw-content').val() != value) {
+                return '两次密码不一致';
+            }
+        },
+        artType: function (value, item) {
+            if (value == -1) {
+                return "请选择类别！"
+            }
         }
     })
+
 
     exports('common', common);
 });

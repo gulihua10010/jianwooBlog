@@ -1,5 +1,7 @@
 package cn.jianwoo.blog.controller.backend.api;
 
+import cn.jianwoo.blog.annotation.PageId;
+import cn.jianwoo.blog.annotation.SubToken;
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.config.page.TagsApiUrlConfig;
@@ -7,6 +9,7 @@ import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dto.request.EntityOidRequest;
 import cn.jianwoo.blog.dto.request.TagListRequest;
 import cn.jianwoo.blog.dto.request.TagRequest;
+import cn.jianwoo.blog.enums.PageIdEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.TagsBizService;
 import cn.jianwoo.blog.validation.BizValidation;
@@ -45,6 +48,8 @@ public class TagsApiController extends BaseController {
 
     }
 
+    @PageId(PageIdEnum.TAGS_EDIT)
+    @SubToken()
     @PostMapping(TagsApiUrlConfig.URL_TAG_UPDATE)
     public String updateTag(@RequestBody String param) {
         try {
@@ -77,12 +82,15 @@ public class TagsApiController extends BaseController {
 
     }
 
+    @PageId(PageIdEnum.TAGS_ADD_LIST)
+    @SubToken()
     @PostMapping(TagsApiUrlConfig.URL_TAG_ADD_LIST)
     public String addTagList(@RequestBody String param) {
         try {
             super.printRequestParams(param);
             TagListRequest request = this.convertParam(param, TagListRequest.class);
-            BizValidation.paramValidate(request.getTagList(), "tagList", "列表中存在空标签!");
+            BizValidation.paramValidate(request.getTagList(), "tagList", "提交列表为空!");
+            BizValidation.paramValidateListContent(request.getTagList(), "tagList", "列表中存在空标签!");
             for (String tag : request.getTagList()) {
                 BizValidation.paramLengthValidate(tag.trim(), Constants.TAGS_LENGTH, "tagName", "列表中标签内容不能大于10个字符!");
             }

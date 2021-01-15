@@ -188,28 +188,9 @@
                         iframeWindow.layui.form.on('submit(' + submitID + ')', function (formData) {
                             var field = formData.field; //获取提交的字段
 
-                            if ((field.passwContent == null || field.passwContent == '') && field.isPublic == -1) {
-                                tipsTags.text('密码不能为空').css('color', 'red').css('display', 'block')
-                                return false;
-                            } else if ((field.passwContent != field.passwContentConfirm) && field.isPublic == -1) {
-                                tipsTags.text('两次密码不一致').css('color', 'red').css('display', 'block')
-                                return false;
-                            }
                             var artAuthor = field.author;
                             var artTitle = field.title;
-                            if (artAuthor == null || $.trim(artAuthor) == '' ||
-                                artTitle == null || $.trim(artTitle) == '') {
-                                alert_fail('提示', '标题或作者不可为空！')
-                                return false;
-                            }
-                            if (artTitle.length > 50) {
-                                alert_fail('提示', '标题要在50个字符以内！')
-                                return false;
-                            }
-                            if (artAuthor.length > 10) {
-                                alert_fail('提示', '作者要在10个字符以内！')
-                                return false;
-                            }
+
                             if (type.val() == -1) {
                                 tipsType.text('请选择类型').css('color', 'red').css('display', 'block');
                                 return false;

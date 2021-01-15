@@ -57,7 +57,7 @@ public class MenuApiController extends BaseController {
     @PageId(PageIdEnum.MENU_ADD)
     @SubToken()
     @PostMapping(MenuApiUrlConfig.URL_MENU_ADD)
-    public String add(@RequestBody String param) throws Exception {
+    public String add(@RequestBody String param) {
         try {
             super.printRequestParams(param);
             MenuVoRequest request = this.convertParam(param, MenuVoRequest.class);

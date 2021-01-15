@@ -6,21 +6,19 @@ import cn.jianwoo.blog.dao.base.TagsTransDao;
 import cn.jianwoo.blog.dao.biz.TagsBizDao;
 import cn.jianwoo.blog.entity.Tags;
 import cn.jianwoo.blog.entity.extension.ArticleTagsExt;
-import cn.jianwoo.blog.exception.ArticleTagsBizException;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.exception.TagsBizException;
 import cn.jianwoo.blog.service.biz.TagsBizService;
-import cn.jianwoo.blog.validation.BizValidation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TagsBizServiceImpl implements TagsBizService {
@@ -111,6 +109,7 @@ public class TagsBizServiceImpl implements TagsBizService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void doAddTagList(List<String> tagList) throws JwBlogException {
+        tagList = tagList.stream().distinct().collect(Collectors.toList());
         List<String> existTags = new ArrayList<>();
         for (String tagName : tagList) {
             Tags oldTags = tagsTransDao.queryTagByName(tagName);

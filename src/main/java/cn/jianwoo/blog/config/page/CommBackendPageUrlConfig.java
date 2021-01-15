@@ -27,4 +27,6 @@ public class CommBackendPageUrlConfig {
     public static final String URL_ARTICLE_RECYCLE_BIN = "/article/recycle/bin";
     public static final String URL_WEB_CONFIG = "/web/config";
     public static final String URL_DYNAMIC = "/web/dynamic";
+    public static final String URL_TAGS_EDIT = "/tags/edit/{id}";
+
 }

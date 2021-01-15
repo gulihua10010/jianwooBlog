@@ -137,4 +137,19 @@ public class BizValidation {
 
     }
 
+
+    public static void paramValidateListContent(List<String> paramValue, String paramName, String msg) throws JwBlogException {
+        if (!CollectionUtils.isEmpty(paramValue)) {
+            for (String s : paramValue) {
+                if (StringUtils.isBlank(s)) {
+                    logger.error("Page parameter verified failed, some list content is empty in the parameter: {}", paramName);
+                    throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_LIST_CONTENT_EMPTY, msg);
+                }
+            }
+
+        }
+
+    }
+
+
 }

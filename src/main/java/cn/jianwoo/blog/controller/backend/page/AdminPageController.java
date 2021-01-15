@@ -1,8 +1,6 @@
 package cn.jianwoo.blog.controller.backend.page;
 
-import cn.hutool.db.Page;
 import cn.jianwoo.blog.annotation.PageId;
-import cn.jianwoo.blog.annotation.SubToken;
 import cn.jianwoo.blog.config.page.CommBackendPageTemplateConfig;
 import cn.jianwoo.blog.config.page.CommBackendPageUrlConfig;
 import cn.jianwoo.blog.dao.base.ArticleTransDao;
@@ -298,5 +296,20 @@ public class AdminPageController {
 
         return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_WEB_CONFIG;
     }
+
+    @PageId(PageIdEnum.TAGS_EDIT)
+    @RequestMapping(CommBackendPageUrlConfig.URL_TAGS_EDIT)
+    public String tagsEdit(Model model, @PathVariable("id") Long id) {
+        try {
+            Tags tags = tagsTransDao.queryTagsByPrimaryKey(id);
+            model.addAttribute("tag", tags.getContent());
+        } catch (DaoException e) {
+            logger.error(">> AdminPageController.tagsEdit exec failed, exception: \n", e);
+            logger.error(">> Tags {} cannot be found", id);
+            return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_404;
+        }
+        return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_TAGS_EDIT;
+    }
+
 
 }
