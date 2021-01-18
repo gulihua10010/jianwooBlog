@@ -1451,3 +1451,21 @@ div.loginborder .login .inputs {
 .recycle-view-tips {
     color: #e4c500;
 }
+
+.add-tags {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+}
+
+.add-tags-dynamic-input {
+    margin-left: auto;
+    height: 100%;
+    padding: 0;
+    border: none;
+    font-size: 18px;
+    width: 100%;
+}

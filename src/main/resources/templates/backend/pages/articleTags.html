@@ -10,7 +10,7 @@
     <link href="/static/plugins/layuiadmin/plugins/mouseRightMenu.css" media="all" rel="stylesheet">
     <link href="/static/css/admin.css" media="all" rel="stylesheet">
     <title>文章标签</title>
- 
+
 </head>
 <body>
 
@@ -33,8 +33,10 @@
             <div class="layui-card">
                 <div class="layui-card-header">添加标签</div>
                 <div class="layui-card-body">
-                    <div class="layui-form-item">
-                        <input class="layui-input" name="text" type="text" id="tags-add-text" autocomplete="off">
+                    <div class="add-tags layui-input">
+                        <span class="tags-show">111</span>
+                        <input class="add-tags-dynamic-input" name="text" type="text" id="tags-add-text"
+                               autocomplete="off">
                     </div>
                     <div class="layui-form-item add-tags-btn">
                         <span>添加标签，可用逗号(,)分隔</span>
@@ -60,7 +62,7 @@
             , layer = layui.layer
             , mouseRightMenu = layui.mouseRightMenu;
 
-        var tags = $('.tags-content > ul > li');
+        var tags = $('.tags-content > ul > li,.tags-show');
         for (var i = 0; i < tags.length; i++) {
             var color = Math.random();
             var r = parseInt((color * (i + 1) * 1234) % 254);
@@ -143,7 +145,16 @@
             })
             return false;
         });
+        // $('.added-tags-block').html("<span class='tags-show'>"+11+"</span>")
 
+        $("#tags-add-text").bind('input propertychange', function () {
+            var val = $(this).val();
+            console.log(val)
+            if (val.substr(val.length - 1) == ",") {
+                console.log(val)
+                $(this).before("<span class='tags-show'>" + val.substr(0, val.length - 1) + "</span>")
+            }
+        });
 
         $('#add-tags').click(function () {
             var text = $('#tags-add-text').val();
