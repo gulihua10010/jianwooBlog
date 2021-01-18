@@ -31,6 +31,17 @@ public class UploadController extends BaseController {
     @Autowired
     private FileUploadService fileUploadService;
 
+    /**
+     * 标签集合的添加(标签页面)<br/>
+     * url:/api/file/upload<br/>
+     *
+     * @param file 上传的文件
+     * @return 返回响应 {@link FileUploadResponse}
+     * file
+     * --fileName<br/>
+     * --url<br/>
+     * @author gulihua
+     */
     @PostMapping(CommApiUrlConfig.URL_FILE_UPLOAD)
     public String uploadImg(@RequestParam("file") MultipartFile file) throws JwBlogException {
         BizValidation.paramValidate(file, "file");

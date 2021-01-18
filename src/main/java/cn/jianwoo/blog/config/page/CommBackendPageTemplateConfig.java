@@ -16,6 +16,7 @@ public class CommBackendPageTemplateConfig {
     public static final String PAGE_ARTICLE_PUBLISHED = "/pages/articlePublished";
     public static final String PAGE_ARTICLE_EDIT = "/pages/articleEdit";
     public static final String PAGE_ARTICLE_QUICK_EDIT = "/pages/articleQuickEdit";
+    public static final String PAGE_ARTICLE_RECYCLE_CONTENT_VIEW = "/pages/articleRecycleContentView";
     public static final String PAGE_ARTICLE_RECYCLE_VIEW = "/pages/articleRecycleView";
     public static final String PAGE_ARTICLE_TAGS = "/pages/articleTags";
     public static final String PAGE_CLEAR_CACHE = "/pages/clearCache";

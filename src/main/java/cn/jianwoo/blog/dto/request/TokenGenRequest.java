@@ -9,6 +9,9 @@ import cn.jianwoo.blog.base.BaseRequestDto;
  */
 public class TokenGenRequest extends BaseRequestDto {
     private static final long serialVersionUID = -7682284534958110646L;
+    /**
+     * 页面ID {@link cn.jianwoo.blog.enums.PageIdEnum}
+     */
     private String pageId;
 
     public String getPageId() {

@@ -14,6 +14,7 @@ public class CommBackendPageUrlConfig {
     public static final String URL_ARTICLE_EDIT = "/article/edit/{id}";
     public static final String URL_ARTICLE_QUICK_EDIT = "/article/quick/edit/{id}";
     public static final String URL_ARTICLE_RECYCLE_VIEW = "/article/recycle/view/{id}";
+    public static final String URL_ARTICLE_RECYCLE_CONTENT_VIEW = "/article/recycle/content/view/{id}";
     public static final String URL_ARTICLE_TAGS = "/article/tags";
     public static final String URL_CLEAR_CACHE = "/clear/cache";
     public static final String URL_COMMENT_MANAGEMENT = "/comment/management";

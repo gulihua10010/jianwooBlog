@@ -9,7 +9,13 @@ import cn.jianwoo.blog.base.BaseRequestDto;
  */
 public class TagRequest extends BaseRequestDto {
     private static final long serialVersionUID = 5162232950590602831L;
+    /**
+     * 标签文本
+     */
     private String tagText;
+    /**
+     * 标签oid
+     */
     private Long oid;
 
     public Long getOid() {

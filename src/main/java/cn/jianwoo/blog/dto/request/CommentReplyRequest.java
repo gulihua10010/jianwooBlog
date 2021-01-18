@@ -9,10 +9,25 @@ import cn.jianwoo.blog.base.BasePageRequestDto;
  */
 public class CommentReplyRequest extends BasePageRequestDto {
     private static final long serialVersionUID = 5162232950590602831L;
+    /**
+     * 评论内容
+     */
     private String content;
+    /**
+     * 评论父oid
+     */
     private Long parentOid;
+    /**
+     * 文章oid
+     */
     private Long artOid;
+    /**
+     * 头像url
+     */
     private String headImgUrl;
+    /**
+     * qq
+     */
     private String qq;
 
     public String getQq() {

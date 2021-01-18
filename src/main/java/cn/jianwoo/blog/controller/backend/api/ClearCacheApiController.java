@@ -27,6 +27,19 @@ public class ClearCacheApiController extends BaseController {
     @Autowired
     private ClearCacheBizService clearCacheBizService;
 
+    /**
+     * 清除缓存(清除缓存页面)<br/>
+     * url:/api/admin/cache/clear<br/>
+     *
+     * @param param JSON 参数({@link ClearCacheRequest})
+     *              temp<br/>
+     *              log<br/>
+     *              cache<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PostMapping(ClearCacheApiUrlConfig.URL_COMMENT_ADD)
     public String clear(@RequestBody String param) {
         try {

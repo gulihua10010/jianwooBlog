@@ -10,11 +10,29 @@ import cn.jianwoo.blog.base.BaseRequestDto;
 public class CommentAddRequest extends BaseRequestDto {
     private static final long serialVersionUID = 1691429969857619376L;
 
+    /**
+     * 评论内容
+     */
     private String commentText;
+    /**
+     * 用户名
+     */
     private String username;
+    /**
+     * qq
+     */
     private String qq;
+    /**
+     * 文章oid
+     */
     private Long artId;
+    /**
+     * 评论父id
+     */
     private Long commentParentId;
+    /**
+     * 头像url
+     */
     private String headImgUrl;
 
     public String getCommentText() {

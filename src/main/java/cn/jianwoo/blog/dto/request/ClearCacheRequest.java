@@ -9,8 +9,17 @@ import cn.jianwoo.blog.base.BaseRequestDto;
  */
 public class ClearCacheRequest extends BaseRequestDto {
     private static final long serialVersionUID = -7558874574721985156L;
+    /**
+     * 临时目录
+     */
     private boolean temp;
+    /**
+     * 日志目录
+     */
     private boolean log;
+    /**
+     * 缓存目录
+     */
     private boolean cache;
 
 

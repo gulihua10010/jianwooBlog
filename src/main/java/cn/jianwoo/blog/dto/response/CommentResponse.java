@@ -13,6 +13,9 @@ public class CommentResponse extends LayuiBaseResponse {
 
     private static final long serialVersionUID = -4171515102409676030L;
     private List<CommentVO> data;
+    /**
+     * 查询总数量
+     */
     private Long count;
 
     public static CommentResponse getInstance() {

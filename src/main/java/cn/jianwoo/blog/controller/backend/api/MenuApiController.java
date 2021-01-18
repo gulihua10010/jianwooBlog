@@ -38,6 +38,17 @@ public class MenuApiController extends BaseController {
     @Autowired
     private MenuBizService menuBizService;
 
+    /**
+     * 菜单排序(菜单页面)<br/>
+     * url:api/admin/menu/sort<br/>
+     *
+     * @param param JSON 参数({@link EntityOidListRequest})
+     *              entityOidList<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PostMapping(MenuApiUrlConfig.URL_MENU_SORT)
     public String sort(@RequestBody String param) {
         try {
@@ -53,7 +64,22 @@ public class MenuApiController extends BaseController {
 
     }
 
-
+    /**
+     * 菜单添加(菜单页面)<br/>
+     * url:api/admin/menu/add<br/>
+     *
+     * @param param JSON 参数({@link MenuVoRequest})
+     *              oid<br/>
+     *              parentOid<br/>
+     *              text<br/>
+     *              url<br/>
+     *              name<br/>
+     *              icon<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PageId(PageIdEnum.MENU_ADD)
     @SubToken()
     @PostMapping(MenuApiUrlConfig.URL_MENU_ADD)
@@ -77,7 +103,22 @@ public class MenuApiController extends BaseController {
 
     }
 
-
+    /**
+     * 菜单更新(菜单页面)<br/>
+     * url:api/admin/menu/update<br/>
+     *
+     * @param param JSON 参数({@link MenuVoRequest})
+     *              oid<br/>
+     *              parentOid<br/>
+     *              text<br/>
+     *              url<br/>
+     *              name<br/>
+     *              icon<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PageId(PageIdEnum.MENU_EDIT)
     @SubToken()
     @PostMapping(MenuApiUrlConfig.URL_MENU_UPDATE)
@@ -101,7 +142,17 @@ public class MenuApiController extends BaseController {
 
     }
 
-
+    /**
+     * 验证子菜单是否存在，删除菜单前验证(菜单页面)<br/>
+     * url:api/admin/menu/validate/submenu<br/>
+     *
+     * @param param JSON 参数({@link EntityOidRequest})
+     *              entityOid<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PostMapping(MenuApiUrlConfig.URL_MENU_VALIDATE_SUBMENU)
     public String validateSubMenuExist(@RequestBody String param) {
         try {
@@ -120,7 +171,17 @@ public class MenuApiController extends BaseController {
 
     }
 
-
+    /**
+     * 验证菜单下文章是否存在，删除菜单前验证(菜单页面)<br/>
+     * url:api/admin/menu/validate/article/exist<br/>
+     *
+     * @param param JSON 参数({@link EntityOidRequest})
+     *              entityOid<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PostMapping(MenuApiUrlConfig.URL_MENU_VALIDATE_ARTICLE_EXIST)
     public String validateArticleExistsInMenu(@RequestBody String param) {
         try {
@@ -140,6 +201,17 @@ public class MenuApiController extends BaseController {
     }
 
 
+    /**
+     * 删除菜单(菜单页面)<br/>
+     * url:api/admin/menu/remove<br/>
+     *
+     * @param param JSON 参数({@link EntityOidRequest})
+     *              entityOid<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PostMapping(MenuApiUrlConfig.URL_MENU_REMOVE)
     public String delete(@RequestBody String param) {
         try {

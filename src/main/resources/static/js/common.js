@@ -52,11 +52,8 @@ layui.define(['layer', 'form'], function (exports) {
                 return '两次密码不一致';
             }
         },
-        artType: function (value, item) {
-            if (value == -1) {
-                return "请选择类别！"
-            }
-        }
+
+
     })
 
 
@@ -64,19 +61,36 @@ layui.define(['layer', 'form'], function (exports) {
 });
 
 
-function alert_fail(title = '', msg = '') {
+function alert_fail(title = '', msg = '', input_dom) {
 
     layer.msg(msg, {
         title: title
         //不自动关闭
         , time: 1000
         , icon: 5
+        , shift: 6
         , offset: '400px'
     });
-
+    if (input_dom != undefined) {
+        $jq(input_dom).css('border', '1px solid rgb(255,87,34)')
+        scrollPosition(input_dom, 0)
+    }
 
 }
 
+function scrollPosition(id, p_top) {
+
+    /*获取某个元素的相对偏移，此元素必须是可见的，返回值是top 和left 单位是像素 移动到固定元素上尽可能使用padding
+     *
+     *
+     *
+     * */
+    var offset = $jq(id).offset();
+    console.log(offset);
+    $jq('body,html').animate({
+        scrollTop: offset.top + p_top
+    })
+};
 
 function alert_success_url(title = '', msg = '', url) {
 

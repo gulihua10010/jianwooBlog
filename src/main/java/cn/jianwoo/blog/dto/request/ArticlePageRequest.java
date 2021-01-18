@@ -9,8 +9,17 @@ import cn.jianwoo.blog.base.BasePageRequestDto;
  */
 public class ArticlePageRequest extends BasePageRequestDto {
     private static final long serialVersionUID = 5162232950590602831L;
+    /**
+     * 文章标题
+     */
     private String title;
+    /**
+     * 文章内容
+     */
     private String text;
+    /**
+     * 文章状态(0:草稿, 1:已发布, -1:回收站 )
+     */
     private Integer status;
 
     public Integer getStatus() {

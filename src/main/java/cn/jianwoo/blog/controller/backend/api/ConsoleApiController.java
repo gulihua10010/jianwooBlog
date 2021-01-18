@@ -38,6 +38,24 @@ public class ConsoleApiController extends BaseController {
     private ArticleBizService articleBizService;
     private final static String templateName = "CONSOLE_TEMPLATE";
 
+    /**
+     * 查詢已发布的最近10篇文章列表(控制台首页)<br/>
+     * url:/api/admin/console/recent/article/published/query<br/>
+     *
+     * @return 返回响应 {@link ArticleResponse}
+     * code<br/>
+     * count<br/>
+     * data<br/>
+     * --oid<br/>
+     * --title<br/>
+     * --publishDate<br/>
+     * --modifiedDate<br/>
+     * --author<br/>
+     * --type<br/>
+     * --status<br/>
+     * --desc<br/>
+     * @author gulihua
+     */
     @GetMapping(ConsoleApiUrlConfig.URL_RECENT_ARTICLE_PUBLISHED_QUERY)
     public String queryPublishedArticleList() {
         List<Article> articleList = articleBizService.queryRecentPublishedArts(10);
@@ -57,6 +75,24 @@ public class ConsoleApiController extends BaseController {
         return super.responseToJSONString(response);
     }
 
+    /**
+     * 查詢最近10篇文章草稿列表(控制台首页)<br/>
+     * url:/api/admin/console/recent/article/draft/query<br/>
+     *
+     * @return 返回响应 {@link ArticleResponse}
+     * code<br/>
+     * count<br/>
+     * data<br/>
+     * --oid<br/>
+     * --title<br/>
+     * --publishDate<br/>
+     * --modifiedDate<br/>
+     * --author<br/>
+     * --type<br/>
+     * --status<br/>
+     * --desc<br/>
+     * @author gulihua
+     */
     @GetMapping(ConsoleApiUrlConfig.URL_RECENT_ARTICLE_DRAFT_QUERY)
     public String queryDraftArticleList() {
         List<Article> articleList = articleBizService.queryRecentDraft(10);
@@ -76,6 +112,28 @@ public class ConsoleApiController extends BaseController {
         return super.responseToJSONString(response);
     }
 
+    /**
+     * 查詢最近10个文章评论列表(控制台首页)<br/>
+     * url:/api/admin/console/recent/comment/query<br/>
+     *
+     * @return 返回响应 {@link CommentResponse}
+     * code<br/>
+     * count<br/>
+     * data<br/>
+     * --seq<br/>
+     * --artTitle<br/>
+     * --user<br/>
+     * --date<br/>
+     * --replyTo<br/>
+     * --content<br/>
+     * --replyOid<br/>
+     * --oid<br/>
+     * --artOid<br/>
+     * --ip<br/>
+     * --area<br/>
+     * --desc<br/>
+     * @author gulihua
+     */
     @GetMapping(ConsoleApiUrlConfig.URL_RECENT_COMMENT_QUERY)
     public String queryCommentList() {
         List<CommentExt> commentExtList = commentBizService.queryRecentComments(10);

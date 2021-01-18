@@ -17,11 +17,29 @@ public class VisitVO implements Serializable {
             "<span class=\"dynamic-date\">%s</span>访问了文章\n"
             + "<span class=\"dynamic-title\"><a href=\"%s\">%s</a></span>";
 
+    /**
+     * IP地址
+     */
     private String ip;
+    /**
+     * 访问时间 格式:yyyy-MM-dd HH:mm:ss
+     */
     private String visitDate;
+    /**
+     * 文章标题
+     */
     private String articleTitle;
+    /**
+     * 文章oid
+     */
     private Long articleOid;
+    /**
+     * IP所属地域
+     */
     private String area;
+    /**
+     * 显示描述
+     */
     private String desc;
 
     public String getDesc() {

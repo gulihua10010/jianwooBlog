@@ -12,6 +12,9 @@ import java.util.List;
 public class VisitResponse extends LayuiBaseResponse {
     private static final long serialVersionUID = 1970975993765800809L;
     private List<VisitVO> data;
+    /**
+     * 查询总数量
+     */
     private Long count;
 
     public static VisitResponse getInstance() {

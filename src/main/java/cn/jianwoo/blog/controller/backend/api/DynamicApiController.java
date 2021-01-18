@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.config.page.DynamicApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
+import cn.jianwoo.blog.dto.request.CommentPageRequest;
 import cn.jianwoo.blog.dto.request.VisitPageRequest;
 import cn.jianwoo.blog.dto.response.CommentResponse;
 import cn.jianwoo.blog.dto.response.LayuiBaseResponse;
@@ -44,6 +45,23 @@ public class DynamicApiController extends BaseController {
     @Autowired
     private CommentBizService commentBizService;
 
+    /**
+     * 查詢最近的访问列表(动态首页)<br/>
+     * url:/api/admin/dynamic/visit/query<br/>
+     *
+     * @param param JSON 参数({@link VisitPageRequest})
+     * @return 返回响应 {@link VisitResponse}
+     * code<br/>
+     * count<br/>
+     * data<br/>
+     * --ip<br/>
+     * --visitDate<br/>
+     * --articleTitle<br/>
+     * --articleOid<br/>
+     * --area<br/>
+     * --desc<br/>
+     * @author gulihua
+     */
     @GetMapping(DynamicApiUrlConfig.URL_VISIT_QUERY)
     public String queryVisitList(VisitPageRequest param) {
         super.printRequestParams(DomainUtil.toString(param));
@@ -73,8 +91,31 @@ public class DynamicApiController extends BaseController {
     }
 
 
+    /**
+     * 查詢最近的文章评论列表(动态首页)<br/>
+     * url:/api/admin/dynamic/visit/query<br/>
+     *
+     * @param param JSON 参数({@link VisitPageRequest})
+     * @return 返回响应 {@link CommentResponse}
+     * code<br/>
+     * count<br/>
+     * data<br/>
+     * --seq<br/>
+     * --artTitle<br/>
+     * --user<br/>
+     * --date<br/>
+     * --replyTo<br/>
+     * --content<br/>
+     * --replyOid<br/>
+     * --oid<br/>
+     * --artOid<br/>
+     * --ip<br/>
+     * --area<br/>
+     * --desc<br/>
+     * @author gulihua
+     */
     @GetMapping(DynamicApiUrlConfig.URL_COMMENT_QUERY)
-    public String queryCommPageList(VisitPageRequest param) {
+    public String queryCommPageList(CommentPageRequest param) {
         super.printRequestParams(DomainUtil.toString(param));
 
         CommentParam pageParam = new CommentParam();

@@ -11,7 +11,7 @@
     <title>编辑文章</title>
 </head>
 <body>
-<div class="layui-fluid">
+<div class="layui-fluid layui-form" id="layuiadmin-form-comment" lay-filter="layuiadmin-form-comment">
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md9">
             <div class="layui-card">
@@ -21,19 +21,19 @@
                 <div class="layui-card-body">
                     <div class="layui-form-item">
                         <input autocomplete="off" class="layui-input" id="art-title" name="title" placeholder="键入标题"
-                               th:value="${article.title}" type="text"
+                               th:value="${article.title}" type="text" lay-verify="required|maxLength" lay-max="50"
                                value="">
                     </div>
                     <div class="layui-form-item">
                         <input autocomplete="off" class="layui-input" id="art-author"
-                               name="author" th:value="${article.author}"
+                               name="author" th:value="${article.author}" lay-verify="required|maxLength" lay-max="10"
                                placeholder="请输入作者"
                                type="text">
                     </div>
                 </div>
             </div>
             <div class="layui-card">
-                <div class="layui-card-body">
+                <div class="layui-card-body" id="article-content">
                     <textarea id="mytextarea" name="article"></textarea>
                 </div>
             </div>
@@ -89,8 +89,8 @@
                 <div class="layui-card-header">文章分类</div>
                 <div class="layui-card-body">
                     <div class="article-type">
-                        <div class="layui-card layui-form" lay-filter="component-form-element">
-                            <select lay-search lay-verify="required" name="type" th:field="${article.typeId}">
+                        <div class="layui-card layui-form" lay-filter="component-form-element" id="type-select">
+                            <select lay-search lay-verify="required" th:field="${article.typeId}">
                                 <option style="font-weight: bold;color: black" value="-1"></option>
                                 <option style="color: #777" th:each="menu:${menuList}" th:text="${menu.text}"
                                         th:value="${menu.oid}"></option>
@@ -110,7 +110,7 @@
                                 <img class="pre-upd-img" id="breimg" style="margin-left: 5px" width="100"
                                      th:src="${article.imgSrc}">
                                 <p id="demoText"></p>
-                                <input id="imgsrc" name="Img" style="visibility: hidden" value=""/>
+                                <input id="imgsrc" name="imgsrc" style="visibility: hidden" value=""/>
                             </div>
                         </div>
 
@@ -142,11 +142,11 @@
                                            type="radio" value="1">
                                     <span id="hometop1"><input id="hometop" lay-skin="primary" title="将文章置于首页顶端"
                                                                type="checkbox" th:checked="${article.visitType == 2}"
-                                                               value="2"></span><br>
+                                                               value="2" name="hometop"></span><br>
                                     <input class="ispublic-radio" id="passw" lay-filter="passw" name="isPublic"
                                            title="密码保护" th:checked="${article.visitType == -1}"
                                            type="radio"
-                                           value="-1"><br>
+                                           value="-1">
                                     <input autocomplete="off" class="layui-input" id="passw-content"
                                            th:style="${article.visitType == -1 ? 'display: inline-block' : 'display: none'}"
                                            th:value="${article.password}"
@@ -155,7 +155,7 @@
                                     <input autocomplete="off" class="layui-input" id="passw-content-confirm"
                                            placeholder="确认密码"
                                            th:style="${article.visitType == -1 ? 'display: inline-block' : 'display: none'}"
-                                           type="password">
+                                           type="password"><br>
                                     <input class="ispublic-radio" id="secret" lay-filter="secret" name="isPublic"
                                            title="私密" th:checked="${article.visitType == 0}"
                                            type="radio" value="0">
@@ -177,17 +177,28 @@
                             </div>
                         </form>
                         <div class="separation-line"></div>
+                        <input id="artOid" th:value="${artOid}" name="artOid" type="hidden">
+                        <input type="hidden" th:value="${subToken}" id="subToken" name="subToken">
                         <div class="btn-group">
                             <div class="negative-btn">
                                 <button class="layui-btn layui-btn-primary" id="cancel">重置</button>
-                                <button class="layui-btn layui-btn-danger" id="remove-del">移至回收站</button>
+                                <button class="layui-btn layui-btn-danger" id="remove-del" lay-filter="submit-article"
+                                        lay-submit
+                                        th:if="${article.status} neq -1">移至回收站
+                                </button>
                             </div>
                             <div class="positive-btn">
                                 <button class="layui-btn layui-btn-primary" id="published-save"
+                                        lay-filter="submit-article" lay-submit
                                         th:if="${article.status} eq 0">保存
                                 </button>
-                                <button class="layui-btn" id="published-pub" th:if="${article.status} eq 0">发布</button>
-                                <button class="layui-btn" id="published-update" th:if="${article.status} eq 1">更新
+                                <button class="layui-btn positive-btn-right" id="published-pub"
+                                        lay-filter="submit-article" lay-submit
+                                        th:if="${article.status} eq 0">发布
+                                </button>
+                                <button class="layui-btn positive-btn-right" id="published-update"
+                                        lay-filter="submit-article" lay-submit
+                                        th:if="${article.status} eq 1">更新
                                 </button>
                             </div>
                         </div>
@@ -206,8 +217,7 @@
 <!--        <input id="artpre-type" name="type" type="hidden">-->
 <!--    </form>-->
 <!--</div>-->
-<input id="artOid" th:value="${artOid}" type="hidden">
-<input type="hidden" th:value="${subToken}" id="subToken" name="subToken">
+
 
 <div></div>
 <script src="/static/plugins/layuiadmin/layui/layui.js"></script>
@@ -565,10 +575,16 @@
 
         })
         $('#btn-ispublic-sure').click(function () {
-            if ((isEmpty($('#passw-content').val())) && $('#ispublic-form .ispublic-radio:checked').val() == -1) {
+            var pass = $('#passw-content').val();
+            var repass = $('#passw-content-confirm').val();
+            var isPublic = $('#ispublic-form .ispublic-radio:checked').val()
+            var patt = /(.+){6,12}$/;
+            if ((isEmpty(pass)) && isPublic == -1) {
                 $('#pwd-tips').text('密码不能为空').css('color', 'red').css('display', 'block')
 
-            } else if (($('#passw-content').val() != $('#passw-content-confirm').val()) && $('#ispublic-form .ispublic-radio:checked').val() == -1) {
+            } else if (!patt.test(pass)) {
+                $('#pwd-tips').text('密码必须6到12位').css('color', 'red').css('display', 'block')
+            } else if ((pass != repass) && isPublic == -1) {
                 $('#pwd-tips').text('两次密码不一致').css('color', 'red').css('display', 'block')
             } else if (status1 == 1) {
                 $('#ispublic-form').css("display", "none");
@@ -577,58 +593,43 @@
                 $('#published-public').text($('#ispublic-form .ispublic-radio:checked').attr('title'));
 
             }
-
             return false;
         })
 
-        $('#published-update,#published-save,#published-pub,#remove-del').click(function () {
-            var btntype;
+        form.on("submit(submit-article)", function (data) {
+            var field = data.field;
+            var btnType = 0;
             if ($(this).attr('id') == 'published-update') {
-                btntype = 1;
+                btnType = 1;
             } else if ($(this).attr('id') == 'published-save') {
-                btntype = 2;
+                btnType = 2;
             } else if ($(this).attr('id') == 'published-pub') {
-                btntype = 3;
+                btnType = 3;
             } else if ($(this).attr('id') == 'remove-del') {
-                btntype = -1;
+                btnType = -1;
             }
-            var contentText = tinyMCE.activeEditor.getContent().replace(new RegExp('\n', 'g'), '');
-            if (btntype != -1 && contentText == '<!DOCTYPE html><html><head></head><body></body></html>') {
-                alert_fail('提示', '文章不可为空！')
+            var articleContent = tinyMCE.activeEditor.getContent();
+            var contentText = articleContent.replace(new RegExp('\n', 'g'), '');
+            if (btnType != -1 && contentText == '<!DOCTYPE html><html><head></head><body></body></html>') {
+                alert_fail('提示', '文章内容不可为空！', '#article-content')
                 return false;
             }
-            var artAuthor = $('#art-author').val();
-            var artTitle = $('#art-title').val();
-            if (isEmpty(artAuthor) || isEmpty(artTitle)) {
-                alert_fail('提示', '标题或作者不可为空！')
-                return false;
-            }
-            if (artTitle.length > 50) {
-                alert_fail('提示', '标题要在50个字符以内！')
-                return false;
-            }
-            if (artAuthor.length > 10) {
-                alert_fail('提示', '作者要在10个字符以内！')
-                return false;
-            }
+            console.log(field)
             var tagsId = [];
             var publishTemp = 1;
-            var passw = 0;
+            var passw = '';
 
             var data = $('.choosed>span>span');
             for (var i = 0; i < data.length; i++) {
                 tagsId[i] = data.eq(i).text();
             }
-            var typeid = $('.article-type select').val()
-            $('#type-id').val(typeid);
-            publishTemp = $('#ispublic-form .ispublic-radio:checked').val();
-            if ($('#ispublic-form .ispublic-radio:checked').val() == 1) {
+            publishTemp = field.isPublic
+            if (publishTemp == 1 == 1) {
                 if ($('#hometop').prop('checked')) {
                     publishTemp = 2;
 
                 }
-
-            } else if ($('#ispublic-form .ispublic-radio:checked').val() == -1) {
+            } else if (publishTemp == -1) {
                 passw = $('#passw-content').val();
             }
             var iscomment = 0;
@@ -636,40 +637,26 @@
                 iscomment = 1;
 
             }
-            var title = artTitle;
-            var author = artAuthor;
-            var articleContent = tinyMCE.activeEditor.getContent();
+
             var tags = tagsId;
-            var type = typeid;
-            var imgSrc = $('#imgsrc').val();
             var published = publishTemp == undefined ? 1 : publishTemp;
             var password = passw;
-            var artid = $('#artOid').val()
-            var token = $('#subToken').val();
-            // //
-            // console.log('title\t'+title)
-            // console.log('author\t'+author)
-            // // console.log('articleContent\t'+articleContent)
-            // console_log.log('tags\t'+tags);
-            // console.log('type\t'+type)
-            // console.log('img\t'+imgSrc)
-            // console.log('published\t'+published)
-            // console.log('password\t'+password)
-            if (btntype == 1) {
+
+            if (btnType == 1) {
                 ajaxPost(
                     '/api/admin/article/update',
                     JSON.stringify({
-                        artOid: artid,
-                        title: title,
-                        author: author,
+                        artOid: field.artOid,
+                        title: field.title,
+                        author: field.author,
                         articleContent: articleContent,
                         tags: tags,
-                        type: type,
-                        imgSrc: imgSrc,
+                        type: field.typeId,
+                        imgSrc: field.imgsrc,
                         visitType: published,
                         password: password,
                         isComment: iscomment,
-                        subToken: token
+                        subToken: field.subToken
                     }),
                     "更新成功",
                     function () {
@@ -677,40 +664,40 @@
                     }
                 );
 
-            } else if (btntype == 2) {
+            } else if (btnType == 2) {
                 ajaxPost('/api/admin/article/draft/save',
                     JSON.stringify({
-                        artOid: artid,
-                        title: title,
-                        author: author,
+                        artOid: field.artOid,
+                        title: field.title,
+                        author: field.author,
                         articleContent: articleContent,
                         tags: tags,
-                        type: type,
-                        imgSrc: imgSrc,
+                        type: field.typeId,
+                        imgSrc: field.imgsrc,
                         visitType: published,
                         password: password,
                         isComment: iscomment,
-                        subToken: token
+                        subToken: field.subToken
                     }),
                     "保存成功",
                     function () {
                         location.reload();
                     }
                 )
-            } else if (btntype == 3) {
+            } else if (btnType == 3) {
                 ajaxPost('/api/admin/article/draft/publish',
                     JSON.stringify({
-                        artOid: artid,
-                        title: title,
-                        author: author,
+                        artOid: field.artOid,
+                        title: field.title,
+                        author: field.author,
                         articleContent: articleContent,
                         tags: tags,
-                        type: type,
-                        imgSrc: imgSrc,
+                        type: field.typeId,
+                        imgSrc: field.imgsrc,
                         visitType: published,
                         password: password,
                         isComment: iscomment,
-                        subToken: token
+                        subToken: field.subToken
 
                     }),
                     "发布成功",
@@ -718,26 +705,28 @@
                         location.reload();
                     }
                 )
-            } else if (btntype == -1) {
+            } else if (btnType == -1) {
                 layer.confirm('确定把这文章移除到回收站吗？', function (index) {
                     ajaxPost('/api/admin/article/save/remove/recycle',
                         JSON.stringify({
-                            artOid: artid,
-                            title: title,
-                            author: author,
+                            artOid: field.artOid,
+                            title: field.title,
+                            author: field.author,
                             articleContent: articleContent,
                             tags: tags,
-                            type: type,
-                            imgSrc: imgSrc,
+                            type: field.typeId,
+                            imgSrc: field.imgsrc,
                             visitType: published,
                             password: password,
                             isComment: iscomment,
-                            subToken: token
+                            subToken: field.subToken
 
                         }),
                         '移动至回收站成功',
                         function () {
-                            location.reload();
+                            //重点在这里
+                            //关闭当前的tab
+                            parent.layui.admin.events.closeThisTabs()
                         });
                 });
             }

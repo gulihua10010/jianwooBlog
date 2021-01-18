@@ -22,7 +22,7 @@ public class ArticleApiUrlConfig {
     public static final String URL_ARTICLE_RECYCLE_RESTORE_DRAFT_LIST = "/recycle/restore/draft/list";
     public static final String URL_ARTICLE_DELETE_RECYCLE_LIST = "/delete/recycle/list";
     public static final String URL_ARTICLE_RECYCLE_RESTORE_DRAFT = "/recycle/restore/draft";
-    public static final String URL_ARTICLE_DELETE_RECYCLE = "/delete/recycle";
+    public static final String URL_ARTICLE_RECYCLE_DELETE = "/recycle/delete";
     public static final String URL_ARTICLE_REMOVE_RECYCLE = "/remove/recycle";
 
 }

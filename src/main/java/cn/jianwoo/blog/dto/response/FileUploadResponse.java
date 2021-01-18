@@ -10,6 +10,9 @@ import cn.jianwoo.blog.dto.response.vo.FileUploadResVO;
  */
 public class FileUploadResponse extends BaseResponseDto {
     private static final long serialVersionUID = -3603543587584431681L;
+    /**
+     * 上传的文件
+     */
     private FileUploadResVO file;
 
     public FileUploadResVO getFile() {

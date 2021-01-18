@@ -8,10 +8,24 @@ import java.util.List;
 public interface MenuQueryDao {
     Menu queryMenuByPrimaryKey(Long oid) throws DaoException;
 
+    /**
+     * 通过菜单type查询 Menu
+     *
+     * @param type 菜单type {@link cn.jianwoo.blog.enums.MenuTypeEnum} 1:前台 2:后台
+     * @return List<Menu>
+     * @author gulihua
+     */
 
     List<Menu> queryMenuByType(Integer type);
 
-
+    /**
+     * 通过菜单type 和 父 oid 查询 Menu
+     *
+     * @param parentOid 父 oid
+     * @param type      菜单type {@link cn.jianwoo.blog.enums.MenuTypeEnum} 1:前台 2:后台
+     * @return List<Menu>
+     * @author gulihua
+     */
     List<Menu> queryMenuByParentIdAndType(Long parentOid, Integer type);
 
 }

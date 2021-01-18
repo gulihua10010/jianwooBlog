@@ -62,20 +62,23 @@
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">标题</label>
                                             <div class="layui-input-block">
-                                                <input class="layui-input" name="title" type="text">
+                                                <input class="layui-input" lay-verify="required|maxLength" lay-max="50"
+                                                       name="title" type="text">
                                             </div>
                                         </div>
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">作者</label>
                                             <div class="layui-input-block">
-                                                <input class="layui-input" name="author" type="text">
+                                                <input class="layui-input" name="author" lay-verify="required|maxLength"
+                                                       lay-max="10"
+                                                       type="text">
                                             </div>
                                         </div>
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">草稿内容</label>
                                             <div class="layui-input-block">
-                                                <textarea class="layui-textarea" name="content" type="text">
-                                                </textarea>
+                                                <textarea class="layui-textarea" name="content" lay-verify="required"
+                                                          type="text"></textarea>
                                             </div>
                                         </div>
                                         <div class="layui-form-item">
@@ -170,6 +173,18 @@
             , text: {none: '无数据'}
 
         });
+
+        var token;
+        ajaxApiPost(
+            "/api/admin/token/generate",
+            JSON.stringify({
+                pageId: 'A11',
+            }),
+            function (res) {
+                token = res.token;
+            }
+        );
+
         layui.form.on('submit', function (formData) {
             var field = formData.field; //获取提交的字段
             var title = field.title;
@@ -185,6 +200,7 @@
                     title: title,
                     author: author,
                     articleContent: articleContent,
+                    subToken: token
                 }),
                 "保存成功",
                 function () {

@@ -33,6 +33,18 @@ public class TagsApiController extends BaseController {
     @Autowired
     private TagsBizService tagsBizService;
 
+    /**
+     * 标签添加(标签页面)<br/>
+     * url:/api/admin/tag/add<br/>
+     *
+     * @param param JSON 参数({@link TagRequest})
+     *              tagText<br/>
+     *              oid<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PostMapping(TagsApiUrlConfig.URL_TAG_ADD)
     public String addTag(@RequestBody String param) {
         try {
@@ -48,6 +60,18 @@ public class TagsApiController extends BaseController {
 
     }
 
+    /**
+     * 标签更新(标签页面)<br/>
+     * url:/api/admin/tag/update<br/>
+     *
+     * @param param JSON 参数({@link TagRequest})
+     *              tagText<br/>
+     *              oid<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PageId(PageIdEnum.TAGS_EDIT)
     @SubToken()
     @PostMapping(TagsApiUrlConfig.URL_TAG_UPDATE)
@@ -67,7 +91,17 @@ public class TagsApiController extends BaseController {
 
     }
 
-
+    /**
+     * 标签删除(标签页面)<br/>
+     * url:/api/admin/tag/remove<br/>
+     *
+     * @param param JSON 参数({@link EntityOidRequest})
+     *              entityOid<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PostMapping(TagsApiUrlConfig.URL_TAG_REMOVE)
     public String removeTag(@RequestBody String param) {
         try {
@@ -82,6 +116,17 @@ public class TagsApiController extends BaseController {
 
     }
 
+    /**
+     * 标签集合的添加(标签页面)<br/>
+     * url:/api/admin/tag/add/list<br/>
+     *
+     * @param param JSON 参数({@link TagListRequest})
+     *              tagList<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PageId(PageIdEnum.TAGS_ADD_LIST)
     @SubToken()
     @PostMapping(TagsApiUrlConfig.URL_TAG_ADD_LIST)

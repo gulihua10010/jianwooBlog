@@ -57,6 +57,23 @@ public class CommentApiController extends BaseController {
     @Autowired
     private CommentBizService commentBizService;
 
+
+    /**
+     * 文章评论添加(文章编辑页面)<br/>
+     * url:/api/admin/comment/add<br/>
+     *
+     * @param param JSON 参数({@link CommentAddRequest})
+     *              commentText<br/>
+     *              username<br/>
+     *              qq<br/>
+     *              artId<br/>
+     *              commentParentId<br/>
+     *              headImgUrl<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PostMapping(CommentApiUrlConfig.URL_COMMENT_ADD)
     public String addComment(@RequestBody String param) {
         try {
@@ -77,7 +94,17 @@ public class CommentApiController extends BaseController {
 
     }
 
-
+    /**
+     * 文章评论删除(文章编辑页面/评论列表)<br/>
+     * url:/api/admin/comment/remove<br/>
+     *
+     * @param param JSON 参数({@link EntityOidRequest})
+     *              entityOid<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PostMapping(CommentApiUrlConfig.URL_COMMENT_REMOVE)
     public String removeComm(@RequestBody String param) {
         try {
@@ -92,7 +119,17 @@ public class CommentApiController extends BaseController {
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
     }
 
-
+    /**
+     * 文章评论集合删除(评论列表)<br/>
+     * url:/api/admin/comment/remove/list<br/>
+     *
+     * @param param JSON 参数({@link EntityOidListRequest})
+     *              entityOidList<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PostMapping(CommentApiUrlConfig.URL_COMMENT_REMOVE_LIST)
     public String removeCommList(@RequestBody String param) {
         try {
@@ -157,7 +194,31 @@ public class CommentApiController extends BaseController {
         return super.responseToJSONString(response);
     }
 
-
+    /**
+     * 分页查询评论(评论列表)<br/>
+     * url:/api/admin/comment/query<br/>
+     *
+     * @param param JSON 参数({@link CommentPageRequest})
+     *              title<br/>
+     *              unread<br/>
+     * @return 返回响应 {@link CommentResponse}
+     * code<br/>
+     * count<br/>
+     * data<br/>
+     * --seq<br/>
+     * --artTitle<br/>
+     * --user<br/>
+     * --date<br/>
+     * --replyTo<br/>
+     * --content<br/>
+     * --replyOid<br/>
+     * --oid<br/>
+     * --artOid<br/>
+     * --ip<br/>
+     * --area<br/>
+     * --desc<br/>
+     * @author gulihua
+     */
     @GetMapping(CommentApiUrlConfig.URL_COMMENT_QUERY)
     public String queryCommPage(CommentPageRequest param) {
         super.printRequestParams(DomainUtil.toString(param));
@@ -194,7 +255,21 @@ public class CommentApiController extends BaseController {
 
     }
 
-
+    /**
+     * 评论回复(评论列表)<br/>
+     * url:/api/admin/comment/reply<br/>
+     *
+     * @param param JSON 参数({@link CommentReplyRequest})
+     *              content<br/>
+     *              parentOid<br/>
+     *              artOid<br/>
+     *              headImgUrl<br/>
+     *              qq<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PageId(PageIdEnum.COMMENT_REPLY)
     @SubToken
     @PostMapping(CommentApiUrlConfig.URL_COMMENT_REPLY)
@@ -214,7 +289,17 @@ public class CommentApiController extends BaseController {
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
     }
 
-
+    /**
+     * 根据文章oid查询文章评论(文章编辑列表)<br/>
+     * url:/api/admin/comment/query/article/list<br/>
+     *
+     * @param param JSON 参数({@link EntityOidRequest})
+     *              entityOid<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PostMapping(CommentApiUrlConfig.URL_COMMENT_QUERY_ARTICLE_LIST)
     public String queryArticleList(@RequestBody String param) {
         try {
@@ -258,7 +343,17 @@ public class CommentApiController extends BaseController {
 
     }
 
-
+    /**
+     * 文章已读(評論列表列表)<br/>
+     * url:/api/admin/comment/read<br/>
+     *
+     * @param param JSON 参数({@link EntityOidListRequest})
+     *              entityOidList<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PostMapping(CommentApiUrlConfig.URL_COMMENT_READ)
     public String doReadCommList(@RequestBody String param) {
         try {

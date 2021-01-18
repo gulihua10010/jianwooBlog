@@ -110,7 +110,7 @@
 
                 layer.confirm('确定要永久删除这些文章！(此操作不可恢复)?', function (index) {
                     ajaxPost(
-                        "/api/admin/article/delete/recycle/list",
+                        "/api/admin/article/recycle/delete/list",
                         JSON.stringify({entityOidList: entityOidArr}),
                         "删除成功",
                         function () {
@@ -170,7 +170,7 @@
                 layer.open({
                     type: 2
                     , title: '文章预览 - ' + data.title
-                    , content: '/admin/article/recycle/view/' + data.oid
+                    , content: '/admin/article/recycle/content/view/' + data.oid
                     , area: ['750px', '600px']
                 });
             } else if (obj.event === 'restore') {

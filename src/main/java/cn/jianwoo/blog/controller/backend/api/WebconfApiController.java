@@ -29,6 +29,28 @@ public class WebconfApiController extends BaseController {
     @Autowired
     private WebconfBizService webconfBizService;
 
+
+    /**
+     * 文章配置更新(文章配置页面)<br/>
+     * url:/api/admin/webconf/update<br/>
+     *
+     * @param param JSON 参数({@link WebconfRequest})
+     *              title<br/>
+     *              author<br/>
+     *              keywords<br/>
+     *              description<br/>
+     *              record<br/>
+     *              domain<br/>
+     *              footHtml<br/>
+     *              logoImg<br/>
+     *              homeImg<br/>
+     *              numPerPage<br/>
+     *              isComment<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PostMapping(WeconfApiUrlConfig.URL_WEBCONF_UPDATE)
     public String doUpdateWebconf(@RequestBody String param) {
         try {

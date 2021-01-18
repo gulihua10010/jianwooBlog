@@ -9,31 +9,16 @@
           name="viewport">
     <link href="/static/plugins/layuiadmin/layui/css/layui.css" media="all" rel="stylesheet">
     <link href="/static/plugins/layuiadmin/style/admin.css" media="all" rel="stylesheet">
-    <link href="/static/css/admin.css" media="all" rel="stylesheet">
-
 </head>
 <body>
 
 <div class="layui-fluid">
     <div class="layui-row layui-col-space15">
         <div class="layui-card">
-            <div class="layui-card-header"><span class="recycle-view-tips">此页面为回收站文章预览页面，信息不可编辑！</span></div>
-        </div>
-        <div class="layui-card">
-            <div class="layui-card-header" th:text="${article.title + ' - ' + article.author}"></div>
-        </div>
-        <div class="layui-card" th:if="${menuName} neq null">
-            <div class="layui-card-header">类型：<span th:text="${menuName}"></span></div>
-        </div>
-        <div class="layui-card" th:if="${artTags.size > 0}">
-            <div class="layui-card-header">
-                标签：<span th:each="tag:${artTags}" th:text="${tag.content + '&nbsp;&nbsp;'}"></span>
-            </div>
-        </div>
-        <div class="layui-card">
             <div class="layui-card-body">
                 <div th:utext="${article.content}">
                 </div>
+
             </div>
         </div>
     </div>

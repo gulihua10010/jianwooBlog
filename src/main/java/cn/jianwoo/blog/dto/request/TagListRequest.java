@@ -11,6 +11,9 @@ import java.util.List;
  */
 public class TagListRequest extends BaseRequestDto {
     private static final long serialVersionUID = 5162232950590602831L;
+    /**
+     * 标签列表集合
+     */
     private List<String> tagList;
 
     public List<String> getTagList() {

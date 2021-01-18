@@ -9,11 +9,29 @@ import cn.jianwoo.blog.base.BasePageRequestDto;
  */
 public class MenuVoRequest extends BasePageRequestDto {
     private static final long serialVersionUID = 4600458570269532916L;
+    /**
+     * 菜单oid
+     */
     private Long oid;
+    /**
+     * 菜单父oid
+     */
     private Long parentOid;
+    /**
+     * 菜单显示文本
+     */
     private String text;
+    /**
+     * 菜单跳转路由
+     */
     private String url;
+    /**
+     * 菜单名
+     */
     private String name;
+    /**
+     * 菜单图标
+     */
     private String icon;
 
     public String getIcon() {

@@ -31,6 +31,16 @@ import javax.servlet.http.HttpServletRequest;
 public class SubTokenGenerateApiController extends BaseController {
     private static final Logger logger = LoggerFactory.getLogger(SubTokenGenerateApiController.class);
 
+    /**
+     * 生成token，用于验证表单重复提交<br/>
+     * url:/api/admin/token/generate<br/>
+     *
+     * @param param JSON 参数({@link TokenGenRequest})
+     *              pageId<br/>
+     * @return 返回响应 {@link SubTokenResponse}
+     * token
+     * @author gulihua
+     */
     @PostMapping(SubTokenApiUrlConfig.URL_TOKEN_GENERATE)
     public String generateToken(@RequestBody String param) {
         try {

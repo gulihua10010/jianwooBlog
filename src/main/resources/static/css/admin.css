@@ -1154,6 +1154,9 @@ div.loginborder .login .inputs {
     display: none;
 }
 
+#passw-content-confirm {
+    margin-top: 5px;
+}
 
 .btns-opt, #pwd-tips {
     margin-left: 10px;
@@ -1221,7 +1224,7 @@ div.loginborder .login .inputs {
 
 }
 
-.btn-group .positive-btn button {
+.btn-group .positive-btn-right {
     margin-left: auto;
     width: 105px;
 
@@ -1443,4 +1446,8 @@ div.loginborder .login .inputs {
 
 .clearcache button#save {
     margin: auto 50px
+}
+
+.recycle-view-tips {
+    color: #e4c500;
 }

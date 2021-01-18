@@ -9,10 +9,16 @@ import java.io.Serializable;
  */
 public class FileUploadResVO implements Serializable {
     private static final long serialVersionUID = 4563971387655597400L;
+    /**
+     * 文件名
+     */
     private String fileName;
 
 //    private String path;
 
+    /**
+     * 文件 web url
+     */
     private String url;
 
 

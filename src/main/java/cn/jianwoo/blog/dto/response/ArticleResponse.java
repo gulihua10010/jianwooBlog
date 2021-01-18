@@ -13,6 +13,9 @@ public class ArticleResponse extends LayuiBaseResponse {
 
     private static final long serialVersionUID = -4171515102409676030L;
     private List<ArticleVO> data;
+    /**
+     * 总计数量
+     */
     private Long count;
 
     public static ArticleResponse getInstance() {

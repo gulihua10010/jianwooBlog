@@ -9,7 +9,13 @@ import cn.jianwoo.blog.base.BasePageRequestDto;
  */
 public class CommentPageRequest extends BasePageRequestDto {
     private static final long serialVersionUID = 5162232950590602831L;
+    /**
+     * 文章标题
+     */
     private String title;
+    /**
+     * 是否已读
+     */
     private Integer unread;
 
     public Integer getUnread() {

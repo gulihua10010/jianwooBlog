@@ -35,9 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Stack;
 
 /**
  * @author GuLihua
@@ -51,6 +49,26 @@ public class ArticleApiController extends BaseController {
     @Autowired
     private ArticleBizService articleBizService;
 
+    /**
+     * 文章提交(文章发布页面)<br/>
+     * 文章STATUS 为 1 <br/>
+     * url:/api/admin/article/submit<br/>
+     *
+     * @param param JSON 参数({@link ArticleSubmitRequest})
+     *              title<br/>
+     *              author<br/>
+     *              articleContent<br/>
+     *              tags<br/>
+     *              type<br/>
+     *              imgSrc<br/>
+     *              visitType
+     *              password<br/>
+     *              isComment<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PageId(PageIdEnum.ARTICLE_PUBLISHED)
     @SubToken
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_SUBMIT)
@@ -69,6 +87,9 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramRangeValidate(request.getVisitType(), "visitType", "文章访问类型必须在[-1,0,1,2]中!",
                     ArticleVisitEnum.PUBLIC.getValue(), ArticleVisitEnum.PASSWORD.getValue(),
                     ArticleVisitEnum.PRIVATE.getValue(), ArticleVisitEnum.TOP.getValue());
+            if (ArticleVisitEnum.PASSWORD.getValue().equals(request.getVisitType())) {
+                BizValidation.paramValidate(request.getPassword(), "password", "文章密码不能为空!");
+            }
             articleBizService.doSaveArticle(request.getTitle(), request.getArticleContent(), request.getAuthor(),
                     request.getType(), request.getIsComment(), request.getVisitType(), request.getImgSrc(),
                     request.getPassword(), request.getTags(), ArticleStatusEnum.PUBLISHED.getValue());
@@ -79,7 +100,27 @@ public class ArticleApiController extends BaseController {
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
     }
 
-
+    /**
+     * 文章提交保存至草稿(文章发布页面)<br/>
+     * 文章STATUS 为 0 <br/>
+     * <p>
+     * url:/api/admin/article/save/draft<br/>
+     *
+     * @param param JSON 参数({@link ArticleSubmitRequest})
+     *              title<br/>
+     *              author<br/>
+     *              articleContent<br/>
+     *              tags<br/>
+     *              type<br/>
+     *              imgSrc<br/>
+     *              visitType
+     *              password<br/>
+     *              isComment<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PageId(PageIdEnum.ARTICLE_PUBLISHED)
     @SubToken
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_SAVE_DRAFT)
@@ -102,7 +143,26 @@ public class ArticleApiController extends BaseController {
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
     }
 
-
+    /**
+     * 文章提交保存至回收站(文章发布页面)<br/>
+     * 文章STATUS 为 -1 <br/>
+     * url:/api/admin/article/save/recycle<br/>
+     *
+     * @param param JSON 参数({@link ArticleSubmitRequest})
+     *              title<br/>
+     *              author<br/>
+     *              articleContent<br/>
+     *              tags<br/>
+     *              type<br/>
+     *              imgSrc<br/>
+     *              visitType
+     *              password<br/>
+     *              isComment<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PageId(PageIdEnum.ARTICLE_PUBLISHED)
     @SubToken
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_SAVE_RECYCLE)
@@ -125,7 +185,26 @@ public class ArticleApiController extends BaseController {
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
     }
 
-
+    /**
+     * 已提交的文章进行更新(文章编辑页面)<br/>
+     * 文章STATUS 为 1 <br/>
+     * url:/api/admin/article/update<br/>
+     *
+     * @param param JSON 参数({@link ArticleSubmitRequest})
+     *              title<br/>
+     *              author<br/>
+     *              articleContent<br/>
+     *              tags<br/>
+     *              type<br/>
+     *              imgSrc<br/>
+     *              visitType
+     *              password<br/>
+     *              isComment<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PageId(PageIdEnum.ARTICLE_EDIT)
     @SubToken
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_UPDATE)
@@ -151,7 +230,18 @@ public class ArticleApiController extends BaseController {
     }
 
 
-
+    /**
+     * 文章草稿更新至发布状态(文章列表页面)<br/>
+     * 文章STATUS 为 0 --> 1 <br/>
+     * url:/api/admin/article/draft/status/publish<br/>
+     *
+     * @param param JSON 参数({@link EntityOidRequest})
+     *              entityOid<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_DRAFT_STATUS_PUBLISH)
     public String draftArtPublish(@RequestBody String param) {
         try {
@@ -166,7 +256,25 @@ public class ArticleApiController extends BaseController {
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
     }
 
-
+    /**
+     * 文章信息(不包括文章内容)进行更新(文章列表页面)<br/>
+     * url:/api/admin/article/info/update<br/>
+     *
+     * @param param JSON 参数({@link ArticleSubmitRequest})
+     *              title<br/>
+     *              author<br/>
+     *              articleContent<br/>
+     *              tags<br/>
+     *              type<br/>
+     *              imgSrc<br/>
+     *              visitType
+     *              password<br/>
+     *              isComment<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PageId(PageIdEnum.ARTICLE_QUICK_EDIT)
     @SubToken
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_INFO_UPDATE)
@@ -184,6 +292,9 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramRangeValidate(request.getVisitType(), "visitType", "文章访问类型必须在[-1,0,1,2]中!",
                     ArticleVisitEnum.PUBLIC.getValue(), ArticleVisitEnum.PASSWORD.getValue(),
                     ArticleVisitEnum.PRIVATE.getValue(), ArticleVisitEnum.TOP.getValue());
+            if (ArticleVisitEnum.PASSWORD.getValue().equals(request.getVisitType())) {
+                BizValidation.paramValidate(request.getPassword(), "password", "文章密码不能为空!");
+            }
             articleBizService.doUpdateArticleInfo(request.getArtOid(), request.getTitle(), request.getAuthor(),
                     request.getType(), request.getIsComment(), request.getVisitType(), request.getImgSrc(),
                     request.getPassword(), request.getTags());
@@ -194,7 +305,26 @@ public class ArticleApiController extends BaseController {
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
     }
 
-
+    /**
+     * 已保存的文章草稿进行更新(文章编辑页面)<br/>
+     * 文章STATUS 为 0 <br/>
+     * url:/api/admin/article/draft/save<br/>
+     *
+     * @param param JSON 参数({@link ArticleSubmitRequest})
+     *              title<br/>
+     *              author<br/>
+     *              articleContent<br/>
+     *              tags<br/>
+     *              type<br/>
+     *              imgSrc<br/>
+     *              visitType
+     *              password<br/>
+     *              isComment<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PageId(PageIdEnum.ARTICLE_EDIT)
     @SubToken
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_DRAFT_SAVE)
@@ -218,6 +348,26 @@ public class ArticleApiController extends BaseController {
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
     }
 
+    /**
+     * 把文章更新并且移动到回收站里(文章编辑页面)<br/>
+     * 文章STATUS 为 0/1 --> -1 <br/>
+     * url:/api/admin/article/save/remove/recycle<br/>
+     *
+     * @param param JSON 参数({@link ArticleSubmitRequest})
+     *              title<br/>
+     *              author<br/>
+     *              articleContent<br/>
+     *              tags<br/>
+     *              type<br/>
+     *              imgSrc<br/>
+     *              visitType
+     *              password<br/>
+     *              isComment<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PageId(PageIdEnum.ARTICLE_EDIT)
     @SubToken
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_SAVE_AND_REMOVE_RECYCLE)
@@ -240,7 +390,26 @@ public class ArticleApiController extends BaseController {
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
     }
 
-
+    /**
+     * 把文章草稿更新并且发布(文章编辑页面)<br/>
+     * 文章STATUS 为 0 --> 1 <br/>
+     * url:/api/admin/article/draft/publish<br/>
+     *
+     * @param param JSON 参数({@link ArticleSubmitRequest})
+     *              title<br/>
+     *              author<br/>
+     *              articleContent<br/>
+     *              tags<br/>
+     *              type<br/>
+     *              imgSrc<br/>
+     *              visitType
+     *              password<br/>
+     *              isComment<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PageId(PageIdEnum.ARTICLE_EDIT)
     @SubToken
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_DRAFT_PUBLISH)
@@ -260,6 +429,9 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramRangeValidate(request.getVisitType(), "visitType", "文章访问类型必须在[-1,0,1,2]中!",
                     ArticleVisitEnum.PUBLIC.getValue(), ArticleVisitEnum.PASSWORD.getValue(),
                     ArticleVisitEnum.PRIVATE.getValue(), ArticleVisitEnum.TOP.getValue());
+            if (ArticleVisitEnum.PASSWORD.getValue().equals(request.getVisitType())) {
+                BizValidation.paramValidate(request.getPassword(), "password", "文章密码不能为空!");
+            }
             articleBizService.doUpdateArticle(request.getArtOid(), request.getTitle(), request.getArticleContent(),
                     request.getAuthor(), request.getType(), request.getIsComment(), request.getVisitType(),
                     request.getImgSrc(), request.getPassword(), request.getTags(),
@@ -271,7 +443,28 @@ public class ArticleApiController extends BaseController {
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
     }
 
-
+    /**
+     * 分页查询有效的文章集合(STATUS = 0/1)(文章列表页面)<br/>
+     * url:/api/admin/article/effective/list<br/>
+     *
+     * @param param JSON 参数({@link ArticlePageRequest})
+     *              title<br/>
+     *              text<br/>
+     *              status<br/>
+     * @return 返回响应 {@link ArticleResponse}
+     * code<br/>
+     * count<br/>
+     * data<br/>
+     * --oid<br/>
+     * --title<br/>
+     * --publishDate<br/>
+     * --modifiedDate<br/>
+     * --author<br/>
+     * --type<br/>
+     * --status<br/>
+     * --desc<br/>
+     * @author gulihua
+     */
     @GetMapping(ArticleApiUrlConfig.URL_ARTICLE_EFFECTIVE_LIST)
     public String queryEffectiveArticlePage(ArticlePageRequest param) {
         super.printRequestParams(DomainUtil.toString(param));
@@ -315,7 +508,28 @@ public class ArticleApiController extends BaseController {
 
     }
 
-
+    /**
+     * 分页查询回收站文章集合(STATUS = -1)(文章列表页面)<br/>
+     * url:/api/admin/article/recycle/list<br/>
+     *
+     * @param param JSON 参数({@link ArticlePageRequest})
+     *              title<br/>
+     *              text<br/>
+     *              status<br/>
+     * @return 返回响应 {@link ArticleResponse}
+     * code<br/>
+     * count<br/>
+     * data<br/>
+     * --oid<br/>
+     * --title<br/>
+     * --publishDate<br/>
+     * --modifiedDate<br/>
+     * --author<br/>
+     * --type<br/>
+     * --status<br/>
+     * --desc<br/>
+     * @author gulihua
+     */
     @GetMapping(ArticleApiUrlConfig.URL_ARTICLE_RECYCLE_LIST)
     public String queryRecycleBinArticlePage(ArticlePageRequest param) {
         super.printRequestParams(DomainUtil.toString(param));
@@ -349,7 +563,18 @@ public class ArticleApiController extends BaseController {
 
     }
 
-
+    /**
+     * 把文章集合移动至回收站(文章列表页面)<br/>
+     * 文章STATUS 为 0/1 --> -1 <br/>
+     * url:/api/admin/article/remove/recycle/list<br/>
+     *
+     * @param param JSON 参数({@link EntityOidListRequest})
+     *              entityOidList<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_REMOVE_RECYCLE_LIST)
     public String removeArticleListToRecycleBin(@RequestBody String param) {
         try {
@@ -363,7 +588,18 @@ public class ArticleApiController extends BaseController {
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
     }
 
-
+    /**
+     * 把文章移动至回收站(文章列表页面)<br/>
+     * 文章STATUS 为 0/1 --> -1 <br/>
+     * url:/api/admin/article/remove/recycle<br/>
+     *
+     * @param param JSON 参数({@link EntityOidRequest})
+     *              entityOid<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_REMOVE_RECYCLE)
     public String removeArticleToRecycleBin(@RequestBody String param) {
         try {
@@ -377,7 +613,18 @@ public class ArticleApiController extends BaseController {
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
     }
 
-
+    /**
+     * 把回收站文章集合恢复至草稿状态(回收站列表页面)<br/>
+     * 文章STATUS 为 -1 --> 0 <br/>
+     * url:/api/admin/article/recycle/restore/draft/list<br/>
+     *
+     * @param param JSON 参数({@link EntityOidListRequest})
+     *              entityOidList<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_RECYCLE_RESTORE_DRAFT_LIST)
     public String restoreArticleListToDraftList(@RequestBody String param) {
         try {
@@ -391,7 +638,17 @@ public class ArticleApiController extends BaseController {
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
     }
 
-
+    /**
+     * 把回收站文章集合删除(回收站列表页面)<br/>
+     * url:/api/admin/article/delete/recycle/list<br/>
+     *
+     * @param param JSON 参数({@link EntityOidListRequest})
+     *              entityOidList<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_DELETE_RECYCLE_LIST)
     public String delArticleList(@RequestBody String param) {
         try {
@@ -405,9 +662,20 @@ public class ArticleApiController extends BaseController {
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
     }
 
-
+    /**
+     * 把回收站文章恢复至草稿状态(回收站列表页面)<br/>
+     * 文章STATUS 为 -1 --> 0 <br/>
+     * url:/api/admin/article/recycle/restore/draft<br/>
+     *
+     * @param param JSON 参数({@link EntityOidRequest})
+     *              entityOid<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_RECYCLE_RESTORE_DRAFT)
-    public String restoreArticleListToDraft(@RequestBody String param) {
+    public String restoreArticleToDraft(@RequestBody String param) {
         try {
             super.printRequestParams(param);
             EntityOidRequest request = this.convertParam(param, EntityOidRequest.class);
@@ -419,8 +687,18 @@ public class ArticleApiController extends BaseController {
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
     }
 
-
-    @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_DELETE_RECYCLE)
+    /**
+     * 把回收站文章删除(回收站列表页面)<br/>
+     * url:/api/admin/article/recycle/delete<br/>
+     *
+     * @param param JSON 参数({@link EntityOidRequest})
+     *              entityOid<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
+    @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_RECYCLE_DELETE)
     public String delArticle(@RequestBody String param) {
         try {
             super.printRequestParams(param);
@@ -433,7 +711,13 @@ public class ArticleApiController extends BaseController {
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
     }
 
-
+    /**
+     * 把html标签文本的标签移除<br/>
+     *
+     * @param html html标签文本
+     * @return 纯html文本
+     * @author gulihua
+     */
     private String clearHtml(String html) {
         return html.replaceAll(Constants.CLEAR_HTML_TAGS, Constants.BLANK).
                 replaceAll("\n", "").trim();

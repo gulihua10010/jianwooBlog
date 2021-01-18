@@ -19,17 +19,53 @@ public class CommentVO implements Serializable {
     private static final String CONSOLE_TEMPLATE = "网友 <span class=\"console-user\">[%s]</span> 在 <span class=\"console-time\">%s</span> 评论了文章 \n"
             + "                <span class=\"console-title\"><a href=\"%s\">%s</a></span>: <span class=\"console-comm\">%s</span>";
 
+    /**
+     * seq
+     */
     private Integer seq;
+    /**
+     * 文章标题
+     */
     private String artTitle;
+    /**
+     * 用户名
+     */
     private String user;
+    /**
+     * 评论日期
+     */
     private String date;
+    /**
+     * 回复给的用户
+     */
     private String replyTo;
+    /**
+     * 评论内容
+     */
     private String content;
+    /**
+     * 要回复评论的oid
+     */
     private Long replyOid;
+    /**
+     * 评论oid
+     */
     private Long oid;
+    /**
+     * 文章oid
+     */
     private Long artOid;
+    /**
+     * IP地址
+     */
     private String ip;
+    /**
+     * ip所属地域
+     */
     private String area;
+    /**
+     * 显示描述
+     */
     private String desc = Constants.BLANK;
     private String templateName = "DYNAMIC_TEMPLATE";
 
