@@ -25,6 +25,7 @@ layui.define(['jquery', 'layer'], function (exports) {
                     if (callback) {
                         var returnData = $(this).data();
                         if ($(this).children('a').data('type') == 1) {
+                            console.log($(this).children('a').html())
                             returnData.data = JSON.parse($(this).children('a').html())
                         } else {
                             returnData.data = $(this).children('a').html();
@@ -57,6 +58,7 @@ layui.define(['jquery', 'layer'], function (exports) {
 
     //生成菜单数据
     function build_menu_data(data) {
+        console.log(data)
         var h_son = ''
         for (var i = 0; i < data.length; i++) {
             var dataType = 0;//字符串
@@ -66,7 +68,7 @@ layui.define(['jquery', 'layer'], function (exports) {
             }
             h_son += '<div class="enian_menu">'
                 + '<div class="text" data-type="' + data[i].type + '" data-title="' + data[i].title + '">'
-                + '<a style="display:none;" data-type="' + dataType + '">' + data[i].data + '</a>'
+                + '<a style="display:none;" data-type="' + dataType + '">' + html2Escape(data[i].data) + '</a>'
                 + data[i].title
                 + '</div></div>'
         }

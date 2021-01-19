@@ -486,3 +486,19 @@ function isNotEmpty(field) {
 // })
 
 
+/** 用正则表达式实现html编码（转义）（另一种写法）*/
+function html2Escape(sHtml) {
+    return sHtml.replace(/[<>&"]/g, function (c) {
+        return {'<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;'}[c];
+    });
+}
+
+/**用正则表达式实现html解码（反转义）（另一种写法）*/
+function escape2Html(str) {
+    var arrEntities = {'lt': '<', 'gt': '>', 'nbsp': ' ', 'amp': '&', 'quot': '"'};
+    return str.replace(/&(lt|gt|nbsp|amp|quot);/ig, function (all, t) {
+        return arrEntities[t];
+    });
+}
+
+

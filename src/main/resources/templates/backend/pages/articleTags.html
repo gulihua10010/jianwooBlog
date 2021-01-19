@@ -10,7 +10,27 @@
     <link href="/static/plugins/layuiadmin/plugins/mouseRightMenu.css" media="all" rel="stylesheet">
     <link href="/static/css/admin.css" media="all" rel="stylesheet">
     <title>文章标签</title>
+<style>
+    .tags-show-block {
+        line-height: 35px;
+        padding: 2px 0;
 
+    }
+
+    .tags-show {
+        background-color: #eee;
+        line-height: 35px;
+        padding: 3px 7px;
+        border-radius: 5px;
+        text-align: center;
+        font-size: 20px;
+        /*border-right: 1px #aaa solid;*/
+        overflow: hidden;
+        margin: 0 3px;
+    }
+
+
+</style>
 </head>
 <body>
 
@@ -34,7 +54,8 @@
                 <div class="layui-card-header">添加标签</div>
                 <div class="layui-card-body">
                     <div class="add-tags layui-input">
-                        <span class="tags-show">111</span>
+                        <span class="tags-show-block">
+                        </span>
                         <input class="add-tags-dynamic-input" name="text" type="text" id="tags-add-text"
                                autocomplete="off">
                     </div>
@@ -62,15 +83,8 @@
             , layer = layui.layer
             , mouseRightMenu = layui.mouseRightMenu;
 
-        var tags = $('.tags-content > ul > li,.tags-show');
-        for (var i = 0; i < tags.length; i++) {
-            var color = Math.random();
-            var r = parseInt((color * (i + 1) * 1234) % 254);
-            var g = parseInt((color * (i + 1) * 4321) % 254);
-            var b = parseInt((color * (i + 1) * 2222) % 254);
-            $(tags[i]).css("background-color", "rgba(" + r + "," + g + "," + b + ",0.1)")
-            $(tags[i]).css("border", "  1px rgba(" + r + "," + g + "," + b + ",1) solid")
-        }
+        doRenderTags('.tags-content > ul > li')
+
         document.oncontextmenu = function () {
             return false;
         }
@@ -84,6 +98,8 @@
                 token = res.token;
             }
         );
+        console.log($('.tags-show-block').css('width'))
+        computeInputWidth()
 
         $('.tags-content > ul > li').bind("contextmenu", function (e) {
             var data = {oid: $(this).data('id'), text: $(this).data('text')}
@@ -147,14 +163,66 @@
         });
         // $('.added-tags-block').html("<span class='tags-show'>"+11+"</span>")
 
-        $("#tags-add-text").bind('input propertychange', function () {
+        $("#tags-add-text").unbind("input propertychange").bind('input propertychange', function () {
+            if ($(this).prop('comStart')) return; // 中文输入过程中不截断
             var val = $(this).val();
-            console.log(val)
-            if (val.substr(val.length - 1) == ",") {
-                console.log(val)
-                $(this).before("<span class='tags-show'>" + val.substr(0, val.length - 1) + "</span>")
-            }
+            doProcessTagsInput(val);
+        }).on('compositionstart', function () {
+            $(this).prop('comStart', true);
+        }).on('compositionend', function () {
+            $(this).prop('comStart', false);
+            var val = $(this).val();
+            doProcessTagsInput(val);
         });
+
+        var count = 0;
+
+        function doProcessTagsInput(val) {
+            var lastVal = val.substr(val.length - 1);
+            var tag = val.substr(0, val.length - 1);
+            // console.log(val)
+            if (isEmpty(lastVal) || (lastVal == val && lastVal == ',')) {
+                $('#tags-add-text').val(tag);
+                return;
+            }
+            if (val.length > 10 && lastVal != ',') {
+                alert_fail("提示", "标签最大支持10个字符！");
+                $('#tags-add-text').val(val.substr(0, 10));
+                return;
+            }
+            // console.log(lastVal)
+            if (lastVal == ",") {
+                // $('.tags-show-block').appendTo('<span class="tags-show">' + tag + '</span>');
+                var t = $('<span class="tags-show">' + html2Escape(tag) + '</span>')
+                $('.tags-show-block').append(t);
+                doRenderTag('.tags-show:last', count++);
+                $('#tags-add-text').val('');
+                // computeInputWidth();
+            }
+        }
+
+        function doRenderTags(doms) {
+            var tags = $(doms);
+            for (var i = 0; i < tags.length; i++) {
+                doRenderTag(tags[i], i)
+            }
+        }
+
+        function doRenderTag(dom, i) {
+
+            var color = Math.random();
+            var r = parseInt((color * (i + 1) * 1234) % 254);
+            var g = parseInt((color * (i + 1) * 4321) % 254);
+            var b = parseInt((color * (i + 1) * 2222) % 254);
+            $(dom).css("background-color", "rgba(" + r + "," + g + "," + b + ",0.1)")
+            $(dom).css("border", "  1px rgba(" + r + "," + g + "," + b + ",1) solid")
+        }
+
+        function computeInputWidth() {
+            var bodyWidth = $('body').css('width');
+            var spanWidth = $('.tags-show-block').css('width');
+            $('.add-tags-dynamic-input').css('width', (parseInt(bodyWidth) - parseInt(spanWidth)) + 'px');
+        }
 
         $('#add-tags').click(function () {
             var text = $('#tags-add-text').val();
