@@ -3,6 +3,7 @@ package cn.jianwoo.blog.aspect;
 import cn.jianwoo.blog.annotation.PageId;
 import cn.jianwoo.blog.util.ProcessTokenUtil;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -26,6 +27,7 @@ public class GenerateSubTokenAspect {
     private static final Logger logger = LoggerFactory.getLogger(GenerateSubTokenAspect.class);
     public static final String SUB_TOKEN = "subToken";
     public static final String PAGE_ID = "PAGE_ID";
+    public static final String OPEN = "_OPEN";
 
     @Pointcut("execution(public * cn.jianwoo.blog.controller.backend.page.AdminPageController.*(..))")
     public void generateToken() {
@@ -40,7 +42,17 @@ public class GenerateSubTokenAspect {
         String page = PAGE_ID;
         if (pageId != null) {
             page = pageId.value().getValue();
+
         }
         ProcessTokenUtil.generateToken(request, page);
     }
+
+
+    @After(value = "generateToken() && @annotation(pageId)")
+    public void doAfter(JoinPoint joinPoint, PageId pageId) {
+        logger.info("===>> GenerateSubTokenAspect After method: {}", joinPoint.getSignature().getName());
+
+
+    }
+
 }

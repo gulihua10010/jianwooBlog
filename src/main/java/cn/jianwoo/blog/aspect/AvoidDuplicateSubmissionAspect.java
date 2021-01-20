@@ -32,6 +32,7 @@ public class AvoidDuplicateSubmissionAspect {
     private static final Logger logger = LoggerFactory.getLogger(AvoidDuplicateSubmissionAspect.class);
     public static final String SUB_TOKEN = "subToken";
     public static final String PAGE_ID = "PAGE_ID";
+    public static final String OPEN = "_OPEN";
 
 
     @Pointcut("@annotation(subToken)")
@@ -54,7 +55,6 @@ public class AvoidDuplicateSubmissionAspect {
         String key = ProcessTokenUtil.getSubTokenKey(request, page);
         if (null != subToken) {
             if (subToken.validateToken()) {
-
                 boolean isDuplicate = isRepeatSubmit(clinetToken, request, page);
                 if (isDuplicate) {
                     request.getSession().removeAttribute(key);
@@ -63,6 +63,7 @@ public class AvoidDuplicateSubmissionAspect {
                 request.getSession().removeAttribute(key);
             }
         }
+        request.getSession().removeAttribute(page);
         String responseDto = (String) joinPoint.proceed();
         BaseResponseDto dto = JSON.parseObject(responseDto, BaseResponseDto.class);
         if (!dto.isSuccess()) {
