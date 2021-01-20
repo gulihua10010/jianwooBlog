@@ -1458,13 +1458,16 @@ div.loginborder .login .inputs {
     display: -webkit-flex;
     margin-top: 10px;
     margin-bottom: 10px;
+    /*border: 1px skyblue solid;*/
 
 }
 
 .add-tags-dynamic-input {
     margin-left: auto;
-    height: 100%;
+    height: 38px;
     padding: 0;
     border: none;
     font-size: 18px;
+    width: max-content;
+    padding-left: 3px;
 }

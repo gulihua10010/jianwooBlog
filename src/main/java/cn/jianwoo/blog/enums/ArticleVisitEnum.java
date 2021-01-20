@@ -2,12 +2,24 @@ package cn.jianwoo.blog.enums;
 
 public enum ArticleVisitEnum {
 
+    /**
+     * 密码
+     */
     PASSWORD(-1),
 
+    /**
+     * 公开的
+     */
     PUBLIC(1),
 
+    /**
+     * 私密的
+     */
     PRIVATE(0),
 
+    /**
+     * 文章置顶
+     */
     TOP(2),
 
     ;

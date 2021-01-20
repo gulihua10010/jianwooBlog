@@ -1,9 +1,14 @@
 package cn.jianwoo.blog.enums;
 
 public enum ArtCommStatusEnum {
-
+    /**
+     * 可以评论
+     */
     HAS_COMMENT(1),
 
+    /**
+     * 不可以评论
+     */
     NO_COMMENT(0),
 
     ;

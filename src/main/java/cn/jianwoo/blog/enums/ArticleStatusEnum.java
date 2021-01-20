@@ -2,12 +2,24 @@ package cn.jianwoo.blog.enums;
 
 public enum ArticleStatusEnum {
 
+    /**
+     * 已发布
+     */
     PUBLISHED(1),
 
+    /**
+     * 草稿
+     */
     DRAFT(0),
 
+    /**
+     * 回收站
+     */
     RECYCLE(-1),
 
+    /**
+     * 所有
+     */
     ALL(2),
 
     ;

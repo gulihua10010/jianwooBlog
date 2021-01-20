@@ -2,7 +2,13 @@ package cn.jianwoo.blog.enums;
 
 public enum CommReadEnum {
 
+    /**
+     * 已读
+     */
     READ(1),
+    /**
+     * 未读的
+     */
     UNREAD(0),
 
     ;

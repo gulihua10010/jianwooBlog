@@ -2,12 +2,12 @@
 
 ### TODO：
 
-fail_tips
+fail_tips ✔
 
-枚举，control注释
+枚举✔，control注释✔
 
-验证
+layui-verify 验证✔
 
 多页面 重复提交问题 表单重复提交
 
-tags
+tags✔

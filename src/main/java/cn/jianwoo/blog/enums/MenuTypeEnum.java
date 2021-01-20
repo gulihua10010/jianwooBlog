@@ -2,8 +2,14 @@ package cn.jianwoo.blog.enums;
 
 public enum MenuTypeEnum {
 
+    /**
+     * 前台
+     */
     FRONTEND(1),
 
+    /**
+     * 后台
+     */
     BACKEND(2),
 
     ;

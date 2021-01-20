@@ -501,4 +501,50 @@ function escape2Html(str) {
     });
 }
 
+function css(a) {
+    var sheets = document.styleSheets, o = {};
+    for (var i in sheets) {
+        var rules = sheets[i].rules || sheets[i].cssRules;
+        for (var r in rules) {
+            if (a.is(rules[r].selectorText)) {
+                o = $jq.extend(o, css2json(rules[r].style), css2json(a.attr('style')));
+            }
+        }
+    }
+    return o;
+}
 
+function css2json(css) {
+    var s = {};
+    if (!css) return s;
+    if (css instanceof CSSStyleDeclaration) {
+        for (var i in css) {
+            if ((css[i]).toLowerCase) {
+                s[(css[i]).toLowerCase()] = (css[css[i]]);
+            }
+        }
+    } else if (typeof css == "string") {
+        css = css.split("; ");
+        for (var i in css) {
+            var l = css[i].split(": ");
+            s[l[0].toLowerCase()] = (l[1]);
+        }
+    }
+    return s;
+}
+
+/**
+ * 统计区分中英文字符字数
+ */
+function getWordsCnt(str) {
+    var n = 0;
+    for (var i = 0; i < str.length; i++) {
+        var ch = str.charCodeAt(i);
+        if (ch > 255) { // 中文字符集
+            n += 2;
+        } else {
+            n++;
+        }
+    }
+    return n;
+}
