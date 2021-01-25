@@ -2,13 +2,12 @@ package cn.jianwoo.blog.aspect;
 
 import cn.jianwoo.blog.annotation.PageId;
 import cn.jianwoo.blog.util.ProcessTokenUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -22,9 +21,9 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Aspect
 @Component
+@Slf4j
 public class GenerateSubTokenAspect {
 
-    private static final Logger logger = LoggerFactory.getLogger(GenerateSubTokenAspect.class);
     public static final String SUB_TOKEN = "subToken";
     public static final String PAGE_ID = "PAGE_ID";
     public static final String OPEN = "_OPEN";
@@ -35,7 +34,7 @@ public class GenerateSubTokenAspect {
 
     @Before(value = "generateToken() && @annotation(pageId)")
     public void genToken(JoinPoint joinPoint, PageId pageId) {
-        logger.info("===>> GenerateSubTokenAspect Before method: {}", joinPoint.getSignature().getName());
+        log.info("===>> GenerateSubTokenAspect Before method: {}", joinPoint.getSignature().getName());
 
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = servletRequestAttributes.getRequest();
@@ -50,9 +49,7 @@ public class GenerateSubTokenAspect {
 
     @After(value = "generateToken() && @annotation(pageId)")
     public void doAfter(JoinPoint joinPoint, PageId pageId) {
-        logger.info("===>> GenerateSubTokenAspect After method: {}", joinPoint.getSignature().getName());
-
-
+        log.info("===>> GenerateSubTokenAspect After method: {}", joinPoint.getSignature().getName());
     }
 
 }

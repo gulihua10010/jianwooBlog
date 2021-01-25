@@ -1,6 +1,10 @@
 package cn.jianwoo.blog.dto.response;
 
 import cn.jianwoo.blog.dto.response.vo.CommentListVO;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -9,6 +13,10 @@ import java.util.List;
  * @Description
  * @date 2020-10-12 12:00
  */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommentListResponse extends LayuiBaseResponse {
 
     private static final long serialVersionUID = -4171515102409676030L;
@@ -19,12 +27,4 @@ public class CommentListResponse extends LayuiBaseResponse {
     }
 
 
-    public List<CommentListVO> getCommentList() {
-        return commentList;
-    }
-
-
-    public void setCommentList(List<CommentListVO> commentList) {
-        this.commentList = commentList;
-    }
 }

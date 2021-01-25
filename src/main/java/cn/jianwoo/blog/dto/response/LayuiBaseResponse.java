@@ -1,6 +1,10 @@
 package cn.jianwoo.blog.dto.response;
 
 import cn.jianwoo.blog.base.BaseResponseDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * @author GuLihua
@@ -12,6 +16,10 @@ import cn.jianwoo.blog.base.BaseResponseDto;
  * --b <br/>
  * @date 2020-10-12 17:28
  */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class LayuiBaseResponse extends BaseResponseDto {
     public static final String SUCCESS_CODE = "0";
     private static final long serialVersionUID = 3369282587308977275L;
@@ -21,12 +29,4 @@ public class LayuiBaseResponse extends BaseResponseDto {
      */
     private String code;
 
-    public String getCode() {
-        return code;
-    }
-
-
-    public void setCode(String code) {
-        this.code = code;
-    }
 }

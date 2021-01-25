@@ -6,6 +6,7 @@ import cn.jianwoo.blog.config.page.ClearCacheApiUrlConfig;
 import cn.jianwoo.blog.dto.request.ClearCacheRequest;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.ClearCacheBizService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(ClearCacheApiUrlConfig.URL_PREFIX)
+@Slf4j
 public class ClearCacheApiController extends BaseController {
-    private static final Logger logger = LoggerFactory.getLogger(TagsApiController.class);
     @Autowired
     private ClearCacheBizService clearCacheBizService;
 

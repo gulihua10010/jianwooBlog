@@ -4,6 +4,7 @@ import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.exception.JwBlogException;
 import com.alibaba.fastjson.JSON;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +23,8 @@ import java.util.Map;
  * @Description
  * @date 2020-09-29 10:42
  */
+@Slf4j
 public class DomainUtil {
-    protected static final Logger log = LoggerFactory.getLogger(DomainUtil.class);
 
     private static final long serialVersionUID = 6875048159436708207L;
     private static final String INTEGER = "java.lang.Integer";

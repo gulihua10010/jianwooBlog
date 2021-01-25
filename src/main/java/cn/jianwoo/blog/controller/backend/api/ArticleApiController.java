@@ -22,11 +22,11 @@ import cn.jianwoo.blog.enums.PageIdEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.ArticleBizService;
 import cn.jianwoo.blog.util.DomainUtil;
+import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.validation.BizValidation;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,8 +44,8 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(ArticleApiUrlConfig.URL_PREFIX)
+@Slf4j
 public class ArticleApiController extends BaseController {
-    private static final Logger logger = LoggerFactory.getLogger(ArticleApiController.class);
     @Autowired
     private ArticleBizService articleBizService;
 
@@ -78,7 +78,7 @@ public class ArticleApiController extends BaseController {
             ArticleSubmitRequest request = this.convertParam(param, ArticleSubmitRequest.class);
             BizValidation.paramValidate(request.getTitle(), "title", "标题不能为空!");
             BizValidation.paramValidate(request.getArticleContent(), "articleContent", "文章内容不能为空!");
-            BizValidation.paramValidate(clearHtml(request.getArticleContent()), "articleContent", "文章内容不能为空!");
+            BizValidation.paramValidate(JwUtil.clearHtmlWithoutMedia(request.getArticleContent()), "articleContent", "文章内容不能为空!");
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
             BizValidation.paramValidate(request.getVisitType(), "visitType", "文章访问类型不能为空!");
             BizValidation.paramValidate(request.getType(), "type", "文章类型不能为空!");
@@ -420,7 +420,7 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(request.getArtOid(), "artOid", "文章id不能为空!");
             BizValidation.paramValidate(request.getTitle(), "title", "标题不能为空!");
             BizValidation.paramValidate(request.getArticleContent(), "articleContent", "文章内容不能为空!");
-            BizValidation.paramValidate(clearHtml(request.getArticleContent()), "articleContent", "文章内容不能为空!");
+            BizValidation.paramValidate(JwUtil.clearHtmlWithoutMedia(request.getArticleContent()), "articleContent", "文章内容不能为空!");
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
             BizValidation.paramValidate(request.getVisitType(), "visitType", "文章访问类型不能为空!");
             BizValidation.paramValidate(request.getType(), "type", "文章类型不能为空!");
@@ -497,8 +497,8 @@ public class ArticleApiController extends BaseController {
             vo.setTitle(articleExt.getTitle());
             vo.setType(articleExt.getTypeName());
             vo.setStatus(articleExt.getStatus());
-            vo.setPublishDate(DateUtil.format(articleExt.getPushDate(), Constants.DATE_FORMAT_YYYYMMDDHHMMSS));
-            vo.setModifiedDate(DateUtil.format(articleExt.getModifiedDate(), Constants.DATE_FORMAT_YYYYMMDDHHMMSS));
+            vo.setPublishDate(DateUtil.formatDateTime(articleExt.getPushDate()));
+            vo.setModifiedDate(DateUtil.formatDateTime(articleExt.getModifiedDate()));
             articleVOList.add(vo);
         }
         response.setData(articleVOList);
@@ -552,8 +552,8 @@ public class ArticleApiController extends BaseController {
             vo.setTitle(articleExt.getTitle());
             vo.setType(articleExt.getTypeName());
             vo.setStatus(articleExt.getStatus());
-            vo.setPublishDate(DateUtil.format(articleExt.getPushDate(), Constants.DATE_FORMAT_YYYYMMDDHHMMSS));
-            vo.setModifiedDate(DateUtil.format(articleExt.getModifiedDate(), Constants.DATE_FORMAT_YYYYMMDDHHMMSS));
+            vo.setPublishDate(DateUtil.formatDateTime(articleExt.getPushDate()));
+            vo.setModifiedDate(DateUtil.formatDateTime(articleExt.getModifiedDate()));
             articleVOList.add(vo);
         }
         response.setData(articleVOList);
@@ -709,18 +709,6 @@ public class ArticleApiController extends BaseController {
             return super.exceptionToString(e);
         }
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
-    }
-
-    /**
-     * 把html标签文本的标签移除<br/>
-     *
-     * @param html html标签文本
-     * @return 纯html文本
-     * @author gulihua
-     */
-    private String clearHtml(String html) {
-        return html.replaceAll(Constants.CLEAR_HTML_TAGS, Constants.BLANK).
-                replaceAll("\n", "").trim();
     }
 
 

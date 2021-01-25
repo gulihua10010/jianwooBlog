@@ -29,5 +29,7 @@ public class CommBackendPageUrlConfig {
     public static final String URL_WEB_CONFIG = "/web/config";
     public static final String URL_DYNAMIC = "/web/dynamic";
     public static final String URL_TAGS_EDIT = "/tags/edit/{id}";
+    public static final String URL_LOGIN = "/login";
+    public static final String URL_ERROR = "/error";
 
 }

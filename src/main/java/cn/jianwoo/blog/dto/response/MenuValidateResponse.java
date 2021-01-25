@@ -1,12 +1,20 @@
 package cn.jianwoo.blog.dto.response;
 
 import cn.jianwoo.blog.base.BaseResponseDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * @author GuLihua
  * @Description
  * @date 2020-11-19 19:45
  */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class MenuValidateResponse extends BaseResponseDto {
     private static final long serialVersionUID = 3728070239002639495L;
     /**
@@ -24,22 +32,4 @@ public class MenuValidateResponse extends BaseResponseDto {
     }
 
 
-    public String getIsSuccess() {
-        return isSuccess;
-    }
-
-
-    public void setIsSuccess(String isSuccess) {
-        this.isSuccess = isSuccess;
-    }
-
-
-    public String getResultMsg() {
-        return resultMsg;
-    }
-
-
-    public void setResultMsg(String resultMsg) {
-        this.resultMsg = resultMsg;
-    }
 }

@@ -3,6 +3,10 @@ package cn.jianwoo.blog.dto.response.vo;
 import cn.jianwoo.blog.config.page.CommBackendPageUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.util.DomainUtil;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -11,6 +15,11 @@ import java.io.Serializable;
  * @Description
  * @date 2020-10-12 11:59
  */
+
+@Data
+@EqualsAndHashCode()
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommentVO implements Serializable {
 
     private static final long serialVersionUID = 2152295702147130154L;
@@ -89,120 +98,4 @@ public class CommentVO implements Serializable {
         this.desc = desc;
     }
 
-    public String getTemplateName() {
-        return this.templateName;
-    }
-
-    public void setTemplateName(String templateName) {
-        this.templateName = templateName;
-    }
-
-    public String getIp() {
-        return this.ip;
-    }
-
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-
-    public String getArea() {
-        return this.area;
-    }
-
-
-    public void setArea(String area) {
-        this.area = area;
-    }
-
-
-    public Long getArtOid() {
-        return artOid;
-    }
-
-
-    public void setArtOid(Long artOid) {
-        this.artOid = artOid;
-    }
-
-
-    public Long getOid() {
-        return oid;
-    }
-
-
-    public void setOid(Long oid) {
-        this.oid = oid;
-    }
-
-
-    public Long getReplyOid() {
-        return replyOid;
-    }
-
-
-    public void setReplyOid(Long replyOid) {
-        this.replyOid = replyOid;
-    }
-
-
-    public Integer getSeq() {
-        return seq;
-    }
-
-
-    public void setSeq(Integer seq) {
-        this.seq = seq;
-    }
-
-
-    public String getArtTitle() {
-        return artTitle;
-    }
-
-
-    public void setArtTitle(String artTitle) {
-        this.artTitle = artTitle;
-    }
-
-
-    public String getUser() {
-        return user;
-    }
-
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-
-    public String getDate() {
-        return date;
-    }
-
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-
-    public String getReplyTo() {
-        return replyTo;
-    }
-
-
-    public void setReplyTo(String replyTo) {
-        this.replyTo = replyTo;
-    }
-
-
-    public String getContent() {
-        return content;
-    }
-
-
-    public void setContent(String content) {
-        this.content = content;
-    }
 }

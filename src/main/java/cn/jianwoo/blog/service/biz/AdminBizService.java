@@ -13,7 +13,7 @@ public interface AdminBizService {
      * @return
      * @author gulihua
      */
-    boolean register(@NonNull String name, @NonNull String password) throws JwBlogException;
+    void register(@NonNull String name, @NonNull String password) throws JwBlogException;
 
 
     /**
@@ -25,5 +25,5 @@ public interface AdminBizService {
      * @return
      * @author gulihua
      */
-    Admin login(@NonNull String name, @NonNull String password, @NonNull String ip) throws JwBlogException;
+    void authLogin(@NonNull String name, @NonNull String password, @NonNull String ip) throws JwBlogException;
 }

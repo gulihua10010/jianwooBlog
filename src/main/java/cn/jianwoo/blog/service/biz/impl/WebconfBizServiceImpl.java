@@ -9,6 +9,7 @@ import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.exception.WebconfBizException;
 import cn.jianwoo.blog.service.biz.WebconfBizService;
 import cn.jianwoo.blog.service.bo.WebconfBO;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class WebconfBizServiceImpl implements WebconfBizService {
-    private static final Logger logger = LoggerFactory.getLogger(WebconfBizServiceImpl.class);
 
     @Autowired
     private WebconfTransDao webconfTransDao;
@@ -43,7 +44,7 @@ public class WebconfBizServiceImpl implements WebconfBizService {
                 conf.put(webconf.getKey(), webconf.getBooleanValue());
             }
         }
-        logger.info("query data : {}", conf);
+        log.info("query data : {}", conf);
         return conf;
     }
 
@@ -66,7 +67,7 @@ public class WebconfBizServiceImpl implements WebconfBizService {
                 oldWebconf.setBooleanValue((Boolean) conf.getValue());
             }
             oldWebconf.setUpdateDate(new Date());
-            logger.info("update data : {}", oldWebconf);
+            log.info("update data : {}", oldWebconf);
 
             try {
                 webconfTransDao.doUpdateByPrimaryKeySelective(oldWebconf);

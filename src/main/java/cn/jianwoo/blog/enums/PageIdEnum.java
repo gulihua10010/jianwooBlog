@@ -60,6 +60,11 @@ public enum PageIdEnum {
      */
     ADMIN_INDEX("AI10"),
 
+    /**
+     * 登录
+     */
+    ADMIN_LOGIN("AL10"),
+
 
     ;
     private String value;

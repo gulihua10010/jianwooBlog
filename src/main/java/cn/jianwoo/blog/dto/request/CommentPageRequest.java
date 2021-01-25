@@ -1,12 +1,21 @@
 package cn.jianwoo.blog.dto.request;
 
 import cn.jianwoo.blog.base.BasePageRequestDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * @author GuLihua
  * @Description
  * @date 2020-09-30 11:40
  */
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommentPageRequest extends BasePageRequestDto {
     private static final long serialVersionUID = 5162232950590602831L;
     /**
@@ -18,22 +27,5 @@ public class CommentPageRequest extends BasePageRequestDto {
      */
     private Integer unread;
 
-    public Integer getUnread() {
-        return this.unread;
-    }
 
-
-    public void setUnread(Integer unread) {
-        this.unread = unread;
-    }
-
-
-    public String getTitle() {
-        return title;
-    }
-
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
 }

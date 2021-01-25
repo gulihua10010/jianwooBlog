@@ -13,6 +13,7 @@ import cn.jianwoo.blog.enums.PageIdEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.TagsBizService;
 import cn.jianwoo.blog.validation.BizValidation;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(TagsApiUrlConfig.URL_PREFIX)
+@Slf4j
 public class TagsApiController extends BaseController {
-    private static final Logger logger = LoggerFactory.getLogger(TagsApiController.class);
     @Autowired
     private TagsBizService tagsBizService;
 

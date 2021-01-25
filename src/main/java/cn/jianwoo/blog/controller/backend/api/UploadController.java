@@ -9,6 +9,7 @@ import cn.jianwoo.blog.entity.FileUpload;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.base.FileUploadService;
 import cn.jianwoo.blog.validation.BizValidation;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -26,8 +27,8 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @RestController
 @RequestMapping(CommApiUrlConfig.URL_PREFIX)
+@Slf4j
 public class UploadController extends BaseController {
-    private static final Logger logger = LoggerFactory.getLogger(UploadController.class);
     @Autowired
     private FileUploadService fileUploadService;
 
@@ -43,9 +44,9 @@ public class UploadController extends BaseController {
      * @author gulihua
      */
     @PostMapping(CommApiUrlConfig.URL_FILE_UPLOAD)
-    public String uploadImg(@RequestParam("file") MultipartFile file) throws JwBlogException {
+    public String upload(@RequestParam("file") MultipartFile file) throws JwBlogException {
         BizValidation.paramValidate(file, "file");
-        logger.info("====>>>Start Uploading files, name = {}, size = {}.", file.getOriginalFilename(), file.getSize());
+        log.info("====>>>Start Uploading files, name = {}, size = {}.", file.getOriginalFilename(), file.getSize());
         String uploadUrl = getServerIPPort() + Constants.URL_SEPARATOR + CommApiUrlConfig.URL_RES_PREFIX;
         FileUpload fileUpload = fileUploadService.doUpload(file, uploadUrl, true);
         FileUploadResponse response = new FileUploadResponse();

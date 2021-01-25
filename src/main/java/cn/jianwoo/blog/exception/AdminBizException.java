@@ -14,6 +14,10 @@ public class AdminBizException extends JwBlogException {
             "The admin[%s] has been registered.");
     public static final AdminBizException NOT_EXIST_EXCEPTION = new AdminBizException(ExceptionConstants.BIZ_NOT_EXIST,
             "The admin[%s] does not exist.");
+    public static final AdminBizException NOT_EXIST_EXCEPTION_CN = new AdminBizException(ExceptionConstants.BIZ_NOT_EXIST,
+            "管理员[%s] 不存在！.");
+    public static final AdminBizException USERNAME_OR_PASSWORD_INCORRECT = new AdminBizException(ExceptionConstants.BIZ_PASSWORD_INCORRECT,
+            "用户名或密码不正确！");
     public static final AdminBizException CREATE_FAILED_EXCEPTION = new AdminBizException(
             ExceptionConstants.BIZ_CREATE_FAIL, "The admin[%s] creation is failed.");
     public static final AdminBizException MODIFY_FAILED_EXCEPTION = new AdminBizException(

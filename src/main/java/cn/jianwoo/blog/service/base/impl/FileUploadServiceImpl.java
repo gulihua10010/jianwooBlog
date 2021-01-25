@@ -1,6 +1,5 @@
 package cn.jianwoo.blog.service.base.impl;
 
-import cn.hutool.core.date.DateUtil;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.dao.base.FileUploadTransDao;
@@ -9,13 +8,13 @@ import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.FileUploadBizException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.base.FileUploadService;
-import cn.jianwoo.blog.util.UuidUtil;
+import cn.jianwoo.blog.util.DateUtil;
+import cn.jianwoo.blog.util.JwUtil;
 import it.sauronsoftware.jave.Encoder;
 import it.sauronsoftware.jave.MultimediaInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -33,8 +32,8 @@ import java.util.Date;
  * @date 2020-08-18 14:06
  */
 @Service
+@Slf4j
 public class FileUploadServiceImpl implements FileUploadService {
-    private static final Logger logger = LoggerFactory.getLogger(FileUploadServiceImpl.class);
     @Value("${file.upload.path}")
     private String uploadPath;
     @Autowired
@@ -80,15 +79,15 @@ public class FileUploadServiceImpl implements FileUploadService {
         String oldName = multipartFile.getOriginalFilename();
         // 文件类型
         String fileType = getFileExt(oldName);
-        String uuid = UuidUtil.getUUID();
-        String ts = DateUtil.format(new Date(), Constants.DATE_FORMAT_YYYYMMDDHHMMSS_TIMESTAMP);
+        String uuid = JwUtil.randomUUIDWithoutDash();
+        String ts = DateUtil.getNowTimestamp();
         String newFilename = isReName ? uuid + Constants.SEPARATE_HYPHEN + ts + Constants.FILE_POINT + fileType : oldName;
         String filePath = uploadPath + File.separator + newFilename;
         File newFile = new File(filePath);
         try {
             multipartFile.transferTo(newFile);
         } catch (IOException e) {
-            logger.error("File upload failed, exception:\n", e);
+            log.error("File upload failed, exception:\n", e);
             throw new JwBlogException(ExceptionConstants.FILE_TRANSFER_FAILED,
                     ExceptionConstants.FILE_TRANSFER_FAILED_DESC);
 

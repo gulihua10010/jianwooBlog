@@ -1,5 +1,6 @@
 package cn.jianwoo.blog.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +13,8 @@ import java.io.IOException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+@Slf4j
 public class FileUtil {
-    private static final Logger log = LoggerFactory.getLogger(FileUtil.class);
     private static final String SYMBOL_LEFT = "[";
     private static final String SYMBOL_RIGHT = "]";
     private static final String TO = "] to [";

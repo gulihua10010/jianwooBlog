@@ -1,5 +1,6 @@
 package cn.jianwoo.blog.service.biz.impl;
 
+import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.dao.base.ArticleTransDao;
@@ -14,8 +15,10 @@ import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.exception.MenuBizException;
 import cn.jianwoo.blog.service.biz.MenuBizService;
 import cn.jianwoo.blog.service.bo.MenuValidateBO;
+import cn.jianwoo.blog.util.DateUtil;
 import cn.jianwoo.blog.util.DomainUtil;
 import cn.jianwoo.blog.validation.BizValidation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class MenuBizServiceImpl implements MenuBizService {
     @Autowired
     private MenuTransDao menuTransDao;
@@ -122,56 +126,6 @@ public class MenuBizServiceImpl implements MenuBizService {
         }
     }
 
-    //
-    // public static void main(String[] args) throws Exception
-    // {
-    // List<Menu> menus=new ArrayList<>();
-    // Menu m=new Menu();
-    // m.setOid(1L);
-    // m.setParentOid(0L);
-    // menus.add(m);
-    // m=new Menu();
-    // m.setOid(2L);
-    // m.setParentOid(0L);
-    // menus.add(m);
-    // m=new Menu();
-    // m.setOid(3L);
-    // m.setParentOid(1L);
-    // menus.add(m);
-    // m=new Menu();
-    // m.setOid(4L);
-    // m.setParentOid(1L);
-    // menus.add(m);
-    // m=new Menu();
-    // m.setOid(5L);
-    // m.setParentOid(2L);
-    // menus.add(m);
-    // m=new Menu();
-    // m.setOid(6L);
-    // m.setParentOid(3L);
-    // menus.add(m);
-    // MenuServiceImpl x=new MenuServiceImpl();
-    // List<MenuExt> p= x.getMenuWithLevel(menus);
-    // for (MenuExt m1:p)
-    // {
-    // System.out.print(m1.getOid()+"==");
-    // for (MenuExt m2:m1.getSubMenus())
-    // {
-    // System.out.print(m2.getOid()+",");
-    // if (m2.getSubMenus()!=null)
-    // {
-    // System.out.print(m2.getOid()+"==");
-    // for (MenuExt m3:m2.getSubMenus())
-    // {
-    // System.out.print(m3.getOid()+",");
-    //
-    // }
-    // }
-    // }
-    // System.out.println();
-    // }
-    //
-    // }
 
 
     @Override
@@ -191,17 +145,20 @@ public class MenuBizServiceImpl implements MenuBizService {
     public void doAddMenu(String name, Integer type, Long parentOid, String text, String icon, String url)
             throws JwBlogException {
 
-        Menu menu = new Menu();
-        menu.setName(name);
-        menu.setType(type);
-        menu.setParentOid(parentOid == null ? 0L : parentOid);
-        menu.setCreateDate(new Date());
-        menu.setUpdateDate(new Date());
+        Date now = DateUtil.getNow();
+
         int index = countMenuWithSameLevel(type, parentOid);
-        menu.setIndex(index + 1);
-        menu.setIcon(icon);
-        menu.setText(text);
-        menu.setUrl(url);
+        Menu menu = JwBuilder.of(Menu::new)
+                .with(Menu::setName, name)
+                .with(Menu::setType, type)
+                .with(Menu::setParentOid, parentOid == null ? 0L : parentOid)
+                .with(Menu::setIndex, index + 1)
+                .with(Menu::setIcon, icon)
+                .with(Menu::setText, text)
+                .with(Menu::setUrl, url)
+                .with(Menu::setCreateDate, now)
+                .with(Menu::setUpdateDate, now)
+                .build();
         try {
             menuTransDao.doInsert(menu);
         } catch (DaoException e) {

@@ -1,6 +1,7 @@
 package cn.jianwoo.blog.util;
 
 import cn.jianwoo.blog.constants.Constants;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
  * @Description
  * @date 2021-01-08 15:53
  */
+@Slf4j
 public class ProcessTokenUtil {
     public static final String LOGIN_ID = "LOGIN_ID";
     public static final String TOKEN_KEY = "SUB_TOEKN_KEY";
@@ -30,7 +32,7 @@ public class ProcessTokenUtil {
 
 
     public static String getTokenValue(HttpServletRequest request) {
-        String token = UuidUtil.getUUID();
+        String token = JwUtil.randomUUIDWithoutDash();
         request.setAttribute(SUB_TOKEN, token);
         return token;
     }

@@ -19,6 +19,7 @@ import cn.jianwoo.blog.service.biz.CommentBizService;
 import cn.jianwoo.blog.service.biz.VisitBizService;
 import cn.jianwoo.blog.util.DomainUtil;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
@@ -38,8 +39,8 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(DynamicApiUrlConfig.URL_PREFIX)
+@Slf4j
 public class DynamicApiController extends BaseController {
-    private static final Logger logger = LoggerFactory.getLogger(DynamicApiController.class);
     @Autowired
     private VisitBizService visitBizService;
     @Autowired
@@ -79,7 +80,7 @@ public class DynamicApiController extends BaseController {
                 vo.setArticleTitle(domain.getTitle());
                 vo.setIp(domain.getIp());
                 vo.setArea(domain.getArea());
-                vo.setVisitDate(DateUtil.format(domain.getVisitDate(), Constants.DATE_FORMAT_YYYYMMDDHHMMSS));
+                vo.setVisitDate(DateUtil.formatDateTime(domain.getVisitDate()));
                 list.add(vo);
             });
             response.setData(list);
@@ -128,7 +129,7 @@ public class DynamicApiController extends BaseController {
             pageInfo.getList().forEach(domain -> {
                 CommentVO vo = new CommentVO();
                 vo.setArtOid(domain.getArticleOid());
-                vo.setDate(DateUtil.format(domain.getDate(), Constants.DATE_FORMAT_YYYYMMDDHHMMSS));
+                vo.setDate(DateUtil.formatDateTime(domain.getDate()));
                 vo.setArtTitle(domain.getTitle());
                 vo.setUser(domain.getUser());
                 vo.setIp(domain.getIp());

@@ -409,7 +409,8 @@ function clearHtmlexpImg(str) {
 }
 
 
-function ajaxPost(url, data, msg, tip = function () {
+function ajaxPost(url, data, msg, success = function () {
+}, failed = function () {
 }) {
     var index = layer.load(0, {shade: false, offset: '400px'});
     //
@@ -425,12 +426,16 @@ function ajaxPost(url, data, msg, tip = function () {
                 layer.close(index);
                 alert_success('提示', msg)
                 setTimeout(function () {
-                    tip();
+                    success();
                 }, 1000)
 
             } else {
                 layer.close(index);
                 alert_fail('提示', data.msg);
+                setTimeout(function () {
+                    failed();
+                }, 1000)
+
             }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {

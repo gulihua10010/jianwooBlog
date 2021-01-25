@@ -10,6 +10,7 @@ import cn.jianwoo.blog.enums.PageIdEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.util.ProcessTokenUtil;
 import cn.jianwoo.blog.validation.BizValidation;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,8 +29,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @RequestMapping(SubTokenApiUrlConfig.URL_PREFIX)
+@Slf4j
 public class SubTokenGenerateApiController extends BaseController {
-    private static final Logger logger = LoggerFactory.getLogger(SubTokenGenerateApiController.class);
 
     /**
      * 生成token，用于验证表单重复提交<br/>

@@ -38,11 +38,6 @@ public class Constants {
     public static final String UNKNOW = "未知";
     public static final String ANAONYMOUS = "匿名";
 
-    //date format
-    public static final String DATE_FORMAT_YYYYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
-    public static final String DATE_FORMAT_YYYYMMDDHHMMSS_TIMESTAMP = "yyyyMMddHHmmssSSS";
-    public static final String DATE_FORMAT_YYYYMMDD = "yyyy-MM-dd";
-
     //validate length
     public static final Integer TITLE_LENGTH = 50;
     public static final Integer AUTHOR_LENGTH = 10;
@@ -51,7 +46,9 @@ public class Constants {
 
     //reg
     public static final String MENU_NAME_REGEX = "^[_#$@\\d\\w]*$";
-    public static final String CLEAR_HTML_TAGS = "\\<(?!img |/?video|source ).*?>";
+    public static final String CLEAR_HTML_TAGS_WITHOUT_MEDIA_REGEX = "\\<(?!img |/?video|source ).*?>";
+    public static final String CLEAR_HTML_TAGS_REGEX = "\\<.*?>";
+    public static final String NEW_LINE_REGEX = "\n";
 
 
 }

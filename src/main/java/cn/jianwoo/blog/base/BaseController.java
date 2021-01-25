@@ -6,6 +6,7 @@ import cn.jianwoo.blog.exception.ValidationException;
 import cn.jianwoo.blog.util.DomainUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +20,10 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Random;
 
+@Slf4j
 public class BaseController implements Serializable {
     private static final long serialVersionUID = -4016109185391802117L;
 
-    private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
     @Autowired
     protected HttpServletRequest request;
 
@@ -36,7 +37,7 @@ public class BaseController implements Serializable {
     protected ServletContext application;
 
     protected void printRequestParams(String param) {
-        logger.info("receive the request with param :: {}", param);
+        log.info("receive the request with param :: {}", param);
     }
 
 
@@ -77,7 +78,7 @@ public class BaseController implements Serializable {
 
 
     protected String exceptionToString(Exception e) {
-        logger.error("Occur system error, ex : " + e.getMessage(), e);
+        log.error("Occur system error, ex : " + e.getMessage(), e);
 
         if (e instanceof ControllerBizException) {
             return responseToJSONString(
@@ -102,7 +103,7 @@ public class BaseController implements Serializable {
         } else if (e instanceof JwBlogException) {
             return new BaseResponseDto(((JwBlogException) e).getCode(), ((JwBlogException) e).getMsg());
         } else {
-            logger.error("SYSTEM ERROR : " + e.getMessage(), e);
+            log.error("SYSTEM ERROR : " + e.getMessage(), e);
             return BaseResponseDto.SYSTEM_ERROR;
         }
     }
@@ -115,7 +116,7 @@ public class BaseController implements Serializable {
         } else {
             resp = JSON.toJSONString(object);
         }
-        logger.info("API response data: {}", resp);
+        log.info("API response data: {}", resp);
         return resp;
     }
 

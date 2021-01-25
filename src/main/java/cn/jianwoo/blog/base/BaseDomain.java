@@ -3,9 +3,8 @@ package cn.jianwoo.blog.base;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.util.TestUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -16,8 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class BaseDomain implements Serializable {
-    protected static final Logger log = LoggerFactory.getLogger(BaseDomain.class);
 
     private static final long serialVersionUID = 6875048159436708207L;
     private static final String INTEGER = "java.lang.Integer";

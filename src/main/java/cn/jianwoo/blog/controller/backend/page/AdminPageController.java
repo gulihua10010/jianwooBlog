@@ -1,6 +1,7 @@
 package cn.jianwoo.blog.controller.backend.page;
 
 import cn.jianwoo.blog.annotation.PageId;
+import cn.jianwoo.blog.cache.CacheStore;
 import cn.jianwoo.blog.config.page.CommBackendPageTemplateConfig;
 import cn.jianwoo.blog.config.page.CommBackendPageUrlConfig;
 import cn.jianwoo.blog.dao.base.ArticleTransDao;
@@ -24,8 +25,7 @@ import cn.jianwoo.blog.service.biz.VisitBizService;
 import cn.jianwoo.blog.service.biz.WebconfBizService;
 import cn.jianwoo.blog.service.bo.WebconfBO;
 import cn.jianwoo.blog.util.DomainUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +33,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -42,8 +44,8 @@ import java.util.stream.Collectors;
  */
 @Controller()
 @RequestMapping(CommBackendPageUrlConfig.URL_PREFIX)
+@Slf4j
 public class AdminPageController {
-    private static final Logger logger = LoggerFactory.getLogger(AdminPageController.class);
 
     @Autowired
     private TagsTransDao tagsTransDao;
@@ -63,6 +65,8 @@ public class AdminPageController {
     private WebconfBizService webconfBizService;
     @Autowired
     private VisitBizService visitBizService;
+    @Autowired
+    private CacheStore cacheStore;
 
     /**
      * 首頁<br/>
@@ -122,8 +126,8 @@ public class AdminPageController {
         try {
             article = articleTransDao.queryArticleByPrimaryKey(id);
         } catch (DaoException e) {
-            logger.error(">> AdminPageController.articleEdit exec failed, exception: \n", e);
-            logger.error(">> Article {} cannot be found", id);
+            log.error(">> AdminPageController.articleEdit exec failed, exception: \n", e);
+            log.error(">> Article {} cannot be found", id);
             return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_404;
         }
         List<Tags> artTags = tagsBizService.queryTagsByArtOid(id);
@@ -134,7 +138,7 @@ public class AdminPageController {
             try {
                 menuName = menuBizService.queryMenuNameById(article.getTypeId().longValue());
             } catch (JwBlogException e) {
-                logger.error("AdminPageController.articleRecycleView exec failed, exception: \n", e);
+                log.error("AdminPageController.articleRecycleView exec failed, exception: \n", e);
             }
             model.addAttribute("menuName", menuName);
             return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_ARTICLE_RECYCLE_VIEW;
@@ -184,8 +188,8 @@ public class AdminPageController {
             article = articleTransDao.queryArticleByPrimaryKey(id);
         } catch (DaoException e) {
 
-            logger.error(">> AdminPageController.articleQuickEdit exec failed, exception: \n", e);
-            logger.error(">> Article {} cannot be found", id);
+            log.error(">> AdminPageController.articleQuickEdit exec failed, exception: \n", e);
+            log.error(">> Article {} cannot be found", id);
             return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_404;
         }
         List<Tags> tags = tagsTransDao.queryAllTags();
@@ -213,8 +217,8 @@ public class AdminPageController {
         try {
             article = articleTransDao.queryArticleByPrimaryKey(id);
         } catch (DaoException e) {
-            logger.error(">> AdminPageController.articleQuickEdit exec failed, exception: \n", e);
-            logger.error(">> Article {} cannot be found", id);
+            log.error(">> AdminPageController.articleQuickEdit exec failed, exception: \n", e);
+            log.error(">> Article {} cannot be found", id);
             return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_404;
         }
         model.addAttribute("article", article);
@@ -235,8 +239,8 @@ public class AdminPageController {
         try {
             article = articleTransDao.queryArticleByPrimaryKey(id);
         } catch (DaoException e) {
-            logger.error(">> AdminPageController.articleRecycleView exec failed, exception: \n", e);
-            logger.error(">> Article {} cannot be found", id);
+            log.error(">> AdminPageController.articleRecycleView exec failed, exception: \n", e);
+            log.error(">> Article {} cannot be found", id);
             return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_404;
         }
 
@@ -245,7 +249,7 @@ public class AdminPageController {
         try {
             menuName = menuBizService.queryMenuNameById(article.getTypeId().longValue());
         } catch (JwBlogException e) {
-            logger.error("AdminPageController.articleRecycleView exec failed, exception: \n", e);
+            log.error("AdminPageController.articleRecycleView exec failed, exception: \n", e);
         }
 
         model.addAttribute("article", article);
@@ -307,7 +311,7 @@ public class AdminPageController {
         try {
             commentBizService.doUpdateReadByOid(id);
         } catch (JwBlogException e) {
-            logger.error(">> AdminPageController.commentView exec failed, exception: \n", e);
+            log.error(">> AdminPageController.commentView exec failed, exception: \n", e);
             return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_ERROR;
         }
         model.addAttribute("comm", commentExt);
@@ -336,7 +340,7 @@ public class AdminPageController {
         model.addAttribute("commentCount", commentCount);
         model.addAttribute("tagsCount", tagsCount);
 
-        return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_CONSOLE;
+        return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.CONSOLE;
     }
 
     /**
@@ -367,7 +371,7 @@ public class AdminPageController {
             menuExtList = menuBizService.queryFrontDeskMenuList();
         } catch (JwBlogException e) {
 
-            logger.error(">> AdminPageController.menuMg exec failed, exception: \n", e);
+            log.error(">> AdminPageController.menuMg exec failed, exception: \n", e);
             return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_ERROR;
         }
         model.addAttribute("menu", menuExtList);
@@ -403,8 +407,8 @@ public class AdminPageController {
             Menu menu = menuTransDao.queryMenuByPrimaryKey(id);
             model.addAttribute("menu", menu);
         } catch (DaoException e) {
-            logger.error(">> AdminPageController.menuEdit exec failed, exception: \n", e);
-            logger.error(">> Menu {} cannot be found", id);
+            log.error(">> AdminPageController.menuEdit exec failed, exception: \n", e);
+            log.error(">> Menu {} cannot be found", id);
             return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_404;
 
         }
@@ -456,7 +460,7 @@ public class AdminPageController {
     @RequestMapping(CommBackendPageUrlConfig.URL_WEB_CONFIG)
     public String webConfig(Model model) {
         WebconfBO webConf = webconfBizService.queryConfigWithBO();
-        logger.info("==>> query webconf data: {}", DomainUtil.toString(webConf));
+        log.info("==>> query webconf data: {}", DomainUtil.toString(webConf));
         model.addAttribute("webConf", webConf);
 
         return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_WEB_CONFIG;
@@ -476,11 +480,26 @@ public class AdminPageController {
             Tags tags = tagsTransDao.queryTagsByPrimaryKey(id);
             model.addAttribute("tag", tags.getContent());
         } catch (DaoException e) {
-            logger.error(">> AdminPageController.tagsEdit exec failed, exception: \n", e);
-            logger.error(">> Tags {} cannot be found", id);
+            log.error(">> AdminPageController.tagsEdit exec failed, exception: \n", e);
+            log.error(">> Tags {} cannot be found", id);
             return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_404;
         }
         return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_TAGS_EDIT;
+    }
+
+
+    /**
+     * 后台登录页面<br/>
+     * url:/admin/login<br/>
+     *
+     * @return page /backend/pages/login
+     * @author gulihua
+     */
+    @PageId(PageIdEnum.ADMIN_LOGIN)
+    @RequestMapping(CommBackendPageUrlConfig.URL_LOGIN)
+    public String login() {
+
+        return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.LOGIN;
     }
 
 

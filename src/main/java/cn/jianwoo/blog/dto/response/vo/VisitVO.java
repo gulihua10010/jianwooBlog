@@ -3,6 +3,10 @@ package cn.jianwoo.blog.dto.response.vo;
 import cn.jianwoo.blog.config.page.CommBackendPageUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.util.DomainUtil;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -11,6 +15,11 @@ import java.io.Serializable;
  * @Description
  * @date 2020-11-26 14:57
  */
+
+@Data
+@EqualsAndHashCode()
+@NoArgsConstructor
+@AllArgsConstructor
 public class VisitVO implements Serializable {
     private static final long serialVersionUID = -173120689091202491L;
     private static final String TEMPLATE = "来自<span class=\"dynamic-ip\">%s (ip:%s)</span>的网友在 " +
@@ -54,53 +63,4 @@ public class VisitVO implements Serializable {
         this.desc = desc;
     }
 
-
-    public String getArea() {
-        return this.area;
-    }
-
-
-    public void setArea(String area) {
-        this.area = area;
-    }
-
-
-    public String getIp() {
-        return this.ip;
-    }
-
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-
-    public String getVisitDate() {
-        return this.visitDate;
-    }
-
-
-    public void setVisitDate(String visitDate) {
-        this.visitDate = visitDate;
-    }
-
-
-    public String getArticleTitle() {
-        return this.articleTitle;
-    }
-
-
-    public void setArticleTitle(String articleTitle) {
-        this.articleTitle = articleTitle;
-    }
-
-
-    public Long getArticleOid() {
-        return this.articleOid;
-    }
-
-
-    public void setArticleOid(Long articleOid) {
-        this.articleOid = articleOid;
-    }
 }

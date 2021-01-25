@@ -64,7 +64,7 @@ public class ConsoleApiController extends BaseController {
             List<ArticleVO> articleVOList = articleList.stream().map(data -> {
                 ArticleVO vo = new ArticleVO();
                 vo.setAuthor(data.getAuthor());
-                vo.setPublishDate(DateUtil.format(data.getPushDate(), Constants.DATE_FORMAT_YYYYMMDDHHMMSS));
+                vo.setPublishDate(DateUtil.formatDateTime(data.getPushDate()));
                 vo.setOid(data.getOid());
                 vo.setTitle(data.getTitle());
                 return vo;
@@ -101,7 +101,7 @@ public class ConsoleApiController extends BaseController {
             List<ArticleVO> articleVOList = articleList.stream().map(data -> {
                 ArticleVO vo = new ArticleVO();
                 vo.setAuthor(data.getAuthor());
-                vo.setPublishDate(DateUtil.format(data.getPushDate(), Constants.DATE_FORMAT_YYYYMMDDHHMMSS));
+                vo.setPublishDate(DateUtil.formatDateTime(data.getPushDate()));
                 vo.setOid(data.getOid());
                 vo.setTitle(data.getTitle());
                 return vo;
@@ -143,7 +143,7 @@ public class ConsoleApiController extends BaseController {
             commentExtList.forEach(domain -> {
                 CommentVO vo = new CommentVO();
                 vo.setArtOid(domain.getArticleOid());
-                vo.setDate(DateUtil.format(domain.getDate(), Constants.DATE_FORMAT_YYYYMMDDHHMMSS));
+                vo.setDate(DateUtil.formatDateTime(domain.getDate()));
                 vo.setArtTitle(domain.getTitle());
                 vo.setUser(domain.getUser());
                 vo.setIp(domain.getIp());

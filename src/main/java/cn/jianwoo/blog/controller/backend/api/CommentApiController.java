@@ -28,11 +28,10 @@ import cn.jianwoo.blog.service.biz.CommentBizService;
 import cn.jianwoo.blog.util.DomainUtil;
 import cn.jianwoo.blog.validation.BizValidation;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,8 +51,8 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping(CommentApiUrlConfig.URL_PREFIX)
+@Slf4j
 public class CommentApiController extends BaseController {
-    private static final Logger logger = LoggerFactory.getLogger(CommentApiController.class);
     @Autowired
     private CommentBizService commentBizService;
 
@@ -157,7 +156,7 @@ public class CommentApiController extends BaseController {
             CommentVO vo = new CommentVO();
             vo.setArtTitle(commentExt.getTitle());
             vo.setContent(commentExt.getContent());
-            vo.setDate(DateUtil.format(commentExt.getDate(), Constants.DATE_FORMAT_YYYYMMDDHHMMSS));
+            vo.setDate(DateUtil.formatDateTime(commentExt.getDate()));
             vo.setUser(commentExt.getUser());
             vo.setReplyTo(commentExt.getParentUserName());
             vo.setReplyOid(commentExt.getParent());
@@ -239,7 +238,7 @@ public class CommentApiController extends BaseController {
             CommentVO vo = new CommentVO();
             vo.setArtTitle(commentExt.getTitle());
             vo.setContent(StringEscapeUtils.escapeHtml4(commentExt.getContent()));
-            vo.setDate(DateUtil.format(commentExt.getDate(), Constants.DATE_FORMAT_YYYYMMDDHHMMSS));
+            vo.setDate(DateUtil.formatDateTime(commentExt.getDate()));
             vo.setUser(commentExt.getUser());
             vo.setReplyTo(commentExt.getParentUserName());
             vo.setReplyOid(commentExt.getParent());
@@ -313,7 +312,7 @@ public class CommentApiController extends BaseController {
                 CommentListVO vo = new CommentListVO();
                 vo.setUser(ext.getUser());
                 vo.setContent(ext.getContent());
-                vo.setDate(DateUtil.format(ext.getDate(), Constants.DATE_FORMAT_YYYYMMDDHHMMSS));
+                vo.setDate(DateUtil.formatDateTime(ext.getDate()));
                 vo.setHeadImg(ext.getHeadImg());
                 vo.setOid(ext.getOid());
                 List<CommentReplyListVO> replyList = new ArrayList<>();
@@ -322,7 +321,7 @@ public class CommentApiController extends BaseController {
                         CommentReplyListVO replyVo = new CommentReplyListVO();
                         replyVo.setUser(rep.getUser());
                         replyVo.setContent(rep.getContent());
-                        replyVo.setDate(DateUtil.format(rep.getDate(), Constants.DATE_FORMAT_YYYYMMDDHHMMSS));
+                        replyVo.setDate(DateUtil.formatDateTime(rep.getDate()));
                         replyVo.setHeadImg(rep.getHeadImg());
                         replyVo.setOid(rep.getOid());
                         replyVo.setParentUserName(rep.getParentUserName());

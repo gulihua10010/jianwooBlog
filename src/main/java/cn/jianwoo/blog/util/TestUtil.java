@@ -1,11 +1,13 @@
 package cn.jianwoo.blog.util;
 
 import cn.jianwoo.blog.entity.Article;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
+@Slf4j
 public class TestUtil {
     private static final TestUtil ourInstance = new TestUtil();
 

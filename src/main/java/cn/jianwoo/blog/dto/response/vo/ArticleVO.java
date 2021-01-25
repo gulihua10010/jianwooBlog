@@ -3,6 +3,10 @@ package cn.jianwoo.blog.dto.response.vo;
 import cn.jianwoo.blog.config.page.CommBackendPageUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.util.DomainUtil;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -11,6 +15,10 @@ import java.io.Serializable;
  * @Description
  * @date 2020-11-02 17:58
  */
+@Data
+@EqualsAndHashCode()
+@NoArgsConstructor
+@AllArgsConstructor
 public class ArticleVO implements Serializable {
     private static final long serialVersionUID = -8183712030536923735L;
     private static final String TEMPLATE = "<span class=\"console-author\">%s</span> 在 " +
@@ -60,72 +68,4 @@ public class ArticleVO implements Serializable {
         this.desc = desc;
     }
 
-    public Integer getStatus() {
-        return status;
-    }
-
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-
-    public String getModifiedDate() {
-        return modifiedDate;
-    }
-
-
-    public void setModifiedDate(String modifiedDate) {
-        this.modifiedDate = modifiedDate;
-    }
-
-
-    public Long getOid() {
-        return oid;
-    }
-
-
-    public void setOid(Long oid) {
-        this.oid = oid;
-    }
-
-
-    public String getTitle() {
-        return title;
-    }
-
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-
-    public String getPublishDate() {
-        return publishDate;
-    }
-
-
-    public void setPublishDate(String publishDate) {
-        this.publishDate = publishDate;
-    }
-
-
-    public String getAuthor() {
-        return author;
-    }
-
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-
-    public String getType() {
-        return type;
-    }
-
-
-    public void setType(String type) {
-        this.type = type;
-    }
 }

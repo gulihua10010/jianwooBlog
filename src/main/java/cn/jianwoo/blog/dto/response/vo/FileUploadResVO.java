@@ -1,5 +1,10 @@
 package cn.jianwoo.blog.dto.response.vo;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 /**
@@ -7,6 +12,10 @@ import java.io.Serializable;
  * @Description
  * @date 2020-08-18 15:53
  */
+@Data
+@EqualsAndHashCode()
+@NoArgsConstructor
+@AllArgsConstructor
 public class FileUploadResVO implements Serializable {
     private static final long serialVersionUID = 4563971387655597400L;
     /**
@@ -22,34 +31,4 @@ public class FileUploadResVO implements Serializable {
     private String url;
 
 
-    public String getFileName() {
-        return fileName;
-    }
-
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-
-//    public String getPath()
-//    {
-//        return path;
-//    }
-//
-//
-//    public void setPath(String path)
-//    {
-//        this.path = path;
-//    }
-
-
-    public String getUrl() {
-        return url;
-    }
-
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
 }

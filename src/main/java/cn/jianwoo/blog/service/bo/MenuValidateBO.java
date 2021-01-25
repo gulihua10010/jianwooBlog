@@ -1,5 +1,10 @@
 package cn.jianwoo.blog.service.bo;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 /**
@@ -7,6 +12,10 @@ import java.io.Serializable;
  * @Description
  * @date 2020-11-19 19:45
  */
+@Data
+@EqualsAndHashCode()
+@NoArgsConstructor
+@AllArgsConstructor
 public class MenuValidateBO implements Serializable {
     private static final long serialVersionUID = 3728070239002639495L;
     /**
@@ -19,32 +28,5 @@ public class MenuValidateBO implements Serializable {
      */
     private String resultMsg;
 
-    public MenuValidateBO(String isSuccess, String resultMsg) {
-        this.isSuccess = isSuccess;
-        this.resultMsg = resultMsg;
-    }
 
-
-    public MenuValidateBO() {
-    }
-
-
-    public String getIsSuccess() {
-        return isSuccess;
-    }
-
-
-    public void setIsSuccess(String isSuccess) {
-        this.isSuccess = isSuccess;
-    }
-
-
-    public String getResultMsg() {
-        return resultMsg;
-    }
-
-
-    public void setResultMsg(String resultMsg) {
-        this.resultMsg = resultMsg;
-    }
 }

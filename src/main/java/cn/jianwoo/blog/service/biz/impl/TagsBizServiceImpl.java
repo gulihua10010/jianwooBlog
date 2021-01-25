@@ -1,6 +1,7 @@
 package cn.jianwoo.blog.service.biz.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.dao.base.ArticleTagsTransDao;
 import cn.jianwoo.blog.dao.base.TagsTransDao;
 import cn.jianwoo.blog.dao.biz.TagsBizDao;
@@ -10,6 +11,8 @@ import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.exception.TagsBizException;
 import cn.jianwoo.blog.service.biz.TagsBizService;
+import cn.jianwoo.blog.util.DateUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class TagsBizServiceImpl implements TagsBizService {
     @Autowired
     TagsTransDao tagsTransDao;
@@ -36,10 +40,13 @@ public class TagsBizServiceImpl implements TagsBizService {
         if (null != oldTags) {
             throw TagsBizException.HAS_EXIST_EXCEPTION_CN.format(name).print();
         }
-        Tags tags = new Tags();
-        tags.setContent(name);
-        tags.setCreateDate(new Date());
-        tags.setUpdateDate(new Date());
+        Date now = DateUtil.getNow();
+
+        Tags tags = JwBuilder.of(Tags::new)
+                .with(Tags::setContent, name)
+                .with(Tags::setCreateDate, now)
+                .with(Tags::setUpdateDate, now).build();
+
         try {
             tagsTransDao.doInsert(tags);
         } catch (DaoException e) {

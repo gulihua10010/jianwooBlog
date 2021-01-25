@@ -13,6 +13,7 @@ public final class ExceptionConstants {
     public static final String BIZ_CREATE_FAIL = "200003";
     public static final String BIZ_MODIFY_FAIL = "200004";
     public static final String BIZ_DELETE_FAIL = "200005";
+    public static final String BIZ_PASSWORD_INCORRECT = "200005";
 
     public static final String VALIDATION_FAILED_NULL = "300001";
     public static final String VALIDATION_FAILED_EMPTY = "300002";
@@ -48,6 +49,9 @@ public final class ExceptionConstants {
 
     public static final String FORM_DUPLICATE = "400009";
     public static final String FORM_DUPLICATE_DESC = "操作频繁!请勿重复提交!";
+
+    public static final String LOGIN_CAPTCHA_AUTH_INVALID = "400010";
+    public static final String LOGIN_CAPTCHA_AUTH_INVALID_DESC = "验证码验证失败，请刷新页面重试！";
 
     private ExceptionConstants() {
     }

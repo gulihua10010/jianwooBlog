@@ -1,5 +1,6 @@
 package cn.jianwoo.blog.service.biz.impl;
 
+import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.dao.base.ArticleTagsTransDao;
 import cn.jianwoo.blog.dao.base.ArticleTransDao;
@@ -16,14 +17,15 @@ import cn.jianwoo.blog.exception.ArticleTagsBizException;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.ArticleBizService;
-import cn.jianwoo.blog.util.ArticleUtil;
+import cn.jianwoo.blog.service.biz.UidGenService;
+import cn.jianwoo.blog.util.DateUtil;
+import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.util.TestUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,49 +37,54 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class ArticleBizServiceImpl implements ArticleBizService {
-    private static final Logger logger = LoggerFactory.getLogger(ArticleBizServiceImpl.class);
     @Autowired
     private ArticleTransDao articleTransDao;
     @Autowired
     private ArticleTagsTransDao articleTagsTransDao;
     @Autowired
     private ArticleBizDao articleBizDao;
+    @Autowired
+    private UidGenService uidGenService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void doSaveArticle(String title, String content, String author, Integer typeId, Integer isComment,
                               Integer visitType, String imsSrc, String password, Integer[] tags, Integer status) throws JwBlogException {
-        logger.info("==========>Start insert article,title = {}", title);
-//        BizValidation.paramValidate(title, "title");
-//        BizValidation.paramValidate(author, "author");
-//        BizValidation.paramValidate(content, "content");
+        log.info("==========>Start insert article,title = {}", title);
 
-        Long oid = ArticleUtil.getInstance().generateArticleOid();
-        Article article = new Article();
-        article.setOid(oid);
-        article.setAuthor(author);
-        article.setCommentCount(0L);
-        article.setTitle(title);
-        article.setTypeId(typeId);
-        article.setStatus(status);
-        article.setIsComment(isComment == null ? ArtCommStatusEnum.NO_COMMENT.getValue() : isComment);
-        article.setImgSrc(imsSrc);
+        Long oid = uidGenService.getUid();
+        Date now = DateUtil.getNow();
+
+        isComment = isComment == null ? ArtCommStatusEnum.NO_COMMENT.getValue() : isComment;
         if (visitType == null) {
-            visitType = 1;
+            visitType = ArticleVisitEnum.PUBLIC.getValue();
         }
-        if (visitType == -1) {
+        Article article = JwBuilder.of(Article::new)
+                .with(Article::setOid, oid)
+                .with(Article::setAuthor, author)
+                .with(Article::setOid, oid)
+                .with(Article::setCommentCount, 0L)
+                .with(Article::setTitle, title)
+                .with(Article::setTypeId, typeId)
+                .with(Article::setStatus, status)
+                .with(Article::setIsComment, isComment)
+                .with(Article::setImgSrc, imsSrc)
+                .with(Article::setVisitType, visitType)
+                .with(Article::setContent, content)
+                .with(Article::setPraiseCount, 0L)
+                .with(Article::setReadCount, 0L)
+                .with(Article::setText, JwUtil.clearHtml(content))
+                .with(Article::setCreateDate, now)
+                .with(Article::setUpdateDate, now)
+                .with(Article::setPushDate, now)
+                .with(Article::setModifiedDate, now)
+                .build();
+
+        if (ArticleVisitEnum.PASSWORD.getValue().equals(visitType)) {
             article.setPassword(password);
         }
-        article.setCreateDate(new Date());
-        article.setUpdateDate(new Date());
-        article.setPushDate(new Date());
-        article.setModifiedDate(new Date());
-        article.setVisitType(visitType == null ? ArticleVisitEnum.PUBLIC.getValue() : visitType);
-        article.setContent(content);
-        article.setPraiseCount(0L);
-        article.setReadCount(0L);
-        article.setText(content.replaceAll("\\<.*?>", "").replaceAll("\n", ""));
         try {
             articleTransDao.doInsert(article);
         } catch (DaoException e) {
@@ -85,11 +92,11 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         }
         if (tags != null) {
             for (Integer t : tags) {
-                ArticleTags articleTags = new ArticleTags();
-                articleTags.setArticleOid(oid);
-                articleTags.setTagsOid(t);
-                articleTags.setCreateDate(new Date());
-                articleTags.setUpdateDate(new Date());
+                ArticleTags articleTags = JwBuilder.of(ArticleTags::new)
+                        .with(ArticleTags::setArticleOid, oid)
+                        .with(ArticleTags::setTagsOid, t)
+                        .with(ArticleTags::setCreateDate, now)
+                        .with(ArticleTags::setUpdateDate, now).build();
                 try {
                     articleTagsTransDao.doInsert(articleTags);
                 } catch (DaoException e) {
@@ -99,7 +106,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
             }
         }
 
-        logger.info("==========>Insert article successfully,title = {}", title);
+        log.info("==========>Insert article successfully,title = {}", title);
 
     }
 
@@ -108,9 +115,10 @@ public class ArticleBizServiceImpl implements ArticleBizService {
     @Transactional(rollbackFor = Exception.class)
     public void doUpdateArticleInfo(Long oid, String title, String author, Integer typeId, Integer isComment,
                                     Integer visitType, String imsSrc, String password, Integer[] tags) throws JwBlogException {
-        logger.info("==========>Start update article,title = {}", title);
+        log.info("==========>Start update article,title = {}", title);
 
         Article article = null;
+        Date now = DateUtil.getNow();
         try {
             article = articleTransDao.queryArticleByPrimaryKey(oid);
         } catch (DaoException e) {
@@ -138,18 +146,18 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         articleTagsTransDao.doDeleteByArticleOid(oid);
 
         for (Integer t : tags) {
-            ArticleTags articleTags = new ArticleTags();
-            articleTags.setArticleOid(oid);
-            articleTags.setTagsOid(t);
-            articleTags.setCreateDate(new Date());
-            articleTags.setUpdateDate(new Date());
+            ArticleTags articleTags = JwBuilder.of(ArticleTags::new)
+                    .with(ArticleTags::setArticleOid, oid)
+                    .with(ArticleTags::setTagsOid, t)
+                    .with(ArticleTags::setCreateDate, now)
+                    .with(ArticleTags::setUpdateDate, now).build();
             try {
                 articleTagsTransDao.doInsert(articleTags);
             } catch (DaoException e) {
                 throw ArticleTagsBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + oid + ",tagsOid:" + t).print();
             }
         }
-        logger.info("==========>Update article successfully,title = {}", title);
+        log.info("==========>Update article successfully,title = {}", title);
     }
 
 
@@ -158,8 +166,9 @@ public class ArticleBizServiceImpl implements ArticleBizService {
     public void doUpdateArticle(Long oid, String title, String content, String author, Integer typeId,
                                 Integer isComment, Integer visitType, String imsSrc, String password, Integer[] tags, Integer status)
             throws JwBlogException {
-        logger.info("==========>Start update article,title = {}", title);
+        log.info("==========>Start update article,title = {}", title);
 
+        Date now = DateUtil.getNow();
         Article article = null;
         try {
             article = articleTransDao.queryArticleByPrimaryKey(oid);
@@ -191,18 +200,18 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         articleTagsTransDao.doDeleteByArticleOid(oid);
 
         for (Integer t : tags) {
-            ArticleTags articleTags = new ArticleTags();
-            articleTags.setArticleOid(oid);
-            articleTags.setTagsOid(t);
-            articleTags.setCreateDate(new Date());
-            articleTags.setUpdateDate(new Date());
+            ArticleTags articleTags = JwBuilder.of(ArticleTags::new)
+                    .with(ArticleTags::setArticleOid, oid)
+                    .with(ArticleTags::setTagsOid, t)
+                    .with(ArticleTags::setCreateDate, now)
+                    .with(ArticleTags::setUpdateDate, now).build();
             try {
                 articleTagsTransDao.doInsert(articleTags);
             } catch (DaoException e) {
                 throw ArticleTagsBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + oid + ",tagsOid:" + t).print();
             }
         }
-        logger.info("==========>Update article successfully,title = {}", title);
+        log.info("==========>Update article successfully,title = {}", title);
     }
 
 

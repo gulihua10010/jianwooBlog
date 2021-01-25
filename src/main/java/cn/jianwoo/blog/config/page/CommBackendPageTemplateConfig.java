@@ -24,7 +24,7 @@ public class CommBackendPageTemplateConfig {
     public static final String PAGE_COMMENT_REPLY = "/pages/commentReply";
     public static final String PAGE_TAGS_EDIT = "/pages/tagsEdit";
     public static final String PAGE_COMMENT_VIEW = "/pages/commentView";
-    public static final String PAGE_CONSOLE = "/console";
+    public static final String CONSOLE = "/console";
     public static final String PAGE_DYNAMIC = "/pages/dynamic";
     public static final String PAGE_MENU_MANAGEMENT = "/pages/menuMg";
     public static final String PAGE_MY_ARTICLE = "/pages/myArticle";
@@ -32,4 +32,5 @@ public class CommBackendPageTemplateConfig {
     public static final String PAGE_WEB_CONFIG = "/pages/webConfig";
     public static final String PAGE_MENU_ADD = "/pages/menuAdd";
     public static final String PAGE_MENU_EDIT = "/pages/menuEdit";
+    public static final String LOGIN = "/login";
 }

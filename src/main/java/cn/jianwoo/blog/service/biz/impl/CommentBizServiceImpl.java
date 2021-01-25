@@ -1,5 +1,6 @@
 package cn.jianwoo.blog.service.biz.impl;
 
+import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dao.base.ArticleTransDao;
 import cn.jianwoo.blog.dao.base.CommentTransDao;
@@ -16,11 +17,10 @@ import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.CommentBizService;
 import cn.jianwoo.blog.task.AsyncTask;
-import cn.jianwoo.blog.util.DomainUtil;
+import cn.jianwoo.blog.util.DateUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,8 +35,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class CommentBizServiceImpl implements CommentBizService {
-    private static final Logger logger = LoggerFactory.getLogger(CommentBizServiceImpl.class);
 
     @Autowired
     private CommentBizDao commentBizDao;
@@ -46,52 +46,6 @@ public class CommentBizServiceImpl implements CommentBizService {
     private CommentTransDao commentTransDao;
     @Autowired
     private AsyncTask asyncTask;
-
-
-    /**
-     * test 1 <br/>
-     * --3 <br/>
-     * ---5 <br/>
-     * <br/>
-     * 2 <br/>
-     * --4 <br/>
-     *
-     * @return
-     * @author gulihua
-     */
-    public static void main(String[] args) {
-        Comment comment = new Comment();
-        List<Comment> commentList = new ArrayList<>();
-        comment.setOid(1L);
-        comment.setParent(0L);
-        commentList.add(comment);
-        comment = new Comment();
-        comment.setOid(2L);
-        comment.setParent(0L);
-        commentList.add(comment);
-        comment = new Comment();
-        comment.setOid(3L);
-        comment.setParent(1L);
-        commentList.add(comment);
-        comment = new Comment();
-        comment.setOid(4L);
-        comment.setParent(2L);
-        commentList.add(comment);
-        comment = new Comment();
-        comment.setOid(5L);
-        comment.setParent(3L);
-        commentList.add(comment);
-        comment = new Comment();
-
-        Comment subComment = new Comment();
-        subComment.setOid(4L);
-        subComment.setParent(2L);
-        Map<Long, Comment> commentMap = commentList.stream().collect(
-                Collectors.toMap(Comment::getOid, a -> a, (k1, k2) -> k1));
-        Comment partentComment = new CommentBizServiceImpl().queryTopComment(subComment, commentMap);
-        System.out.println(DomainUtil.toString(partentComment));
-
-    }
 
 
     @Override
@@ -128,21 +82,24 @@ public class CommentBizServiceImpl implements CommentBizService {
     @Transactional(rollbackFor = Exception.class)
     public void doAddComment(Long artOid, String username, String ip, String content, Long parentOid, String qq,
                              String headerImg) throws JwBlogException {
-        Comment comment = new Comment();
-        comment.setArtDel(0);
-        comment.setArticleOid(artOid);
-        comment.setContent(content);
-        comment.setDate(new Date());
-        comment.setCreateDate(new Date());
-        comment.setUpdateDate(new Date());
-        comment.setPraiseCount(0L);
-        comment.setHeadImg(headerImg);
-        comment.setIp(ip);
-        comment.setArea(Constants.UNKNOW);
-        comment.setIsRead(CommReadEnum.UNREAD.getValue());
-        comment.setParent(parentOid);
-        comment.setQq(qq);
-        comment.setUser(username);
+        Date now = DateUtil.getNow();
+
+        Comment comment = JwBuilder.of(Comment::new)
+                .with(Comment::setArtDel, 0)
+                .with(Comment::setArticleOid, artOid)
+                .with(Comment::setContent, content)
+                .with(Comment::setPraiseCount, 0L)
+                .with(Comment::setHeadImg, headerImg)
+                .with(Comment::setIp, ip)
+                .with(Comment::setArea, Constants.UNKNOW)
+                .with(Comment::setIsRead, CommReadEnum.UNREAD.getValue())
+                .with(Comment::setParent, parentOid)
+                .with(Comment::setQq, qq)
+                .with(Comment::setUser, username)
+                .with(Comment::setDate, now)
+                .with(Comment::setCreateDate, now)
+                .with(Comment::setUpdateDate, now)
+                .build();
 
         try {
             commentTransDao.doInsert(comment);
@@ -301,14 +258,14 @@ public class CommentBizServiceImpl implements CommentBizService {
                 try {
                     commentTransDao.doDeleteByPrimaryKey(sub.getOid());
                 } catch (DaoException e) {
-                    logger.warn("CommentBizServiceImpl.doDelCommentById deleted failed, oid={}", sub.getOid());
+                    log.warn("CommentBizServiceImpl.doDelCommentById deleted failed, oid={}", sub.getOid());
                 }
             }
         }
         try {
             commentTransDao.doDeleteByPrimaryKey(oid);
         } catch (DaoException e) {
-            logger.warn("CommentBizServiceImpl.doDelCommentById deleted failed, oid={}", oid);
+            log.warn("CommentBizServiceImpl.doDelCommentById deleted failed, oid={}", oid);
 
         }
 

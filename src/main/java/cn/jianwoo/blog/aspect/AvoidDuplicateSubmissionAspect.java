@@ -8,6 +8,7 @@ import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.util.ProcessTokenUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -28,8 +29,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Aspect
 @Component
+@Slf4j
 public class AvoidDuplicateSubmissionAspect {
-    private static final Logger logger = LoggerFactory.getLogger(AvoidDuplicateSubmissionAspect.class);
     public static final String SUB_TOKEN = "subToken";
     public static final String PAGE_ID = "PAGE_ID";
     public static final String OPEN = "_OPEN";
@@ -43,7 +44,7 @@ public class AvoidDuplicateSubmissionAspect {
 
     @Around(value = "doToken(subToken) && @annotation(pageId)")
     public Object validateToken(ProceedingJoinPoint joinPoint, SubToken subToken, PageId pageId) throws Throwable {
-        logger.info("===>> AvoidDuplicateSubmissionAspect validateToken method: {}", joinPoint.getSignature().getName());
+        log.info("===>> AvoidDuplicateSubmissionAspect validateToken method: {}", joinPoint.getSignature().getName());
 
         String clinetToken = getClientToken(joinPoint);
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -85,8 +86,8 @@ public class AvoidDuplicateSubmissionAspect {
         if (serverToken == null) {
             return true;
         }
-        logger.info("serverToken: {}", serverToken);
-        logger.info("clinetToken: {}", clinetToken);
+        log.info("serverToken: {}", serverToken);
+        log.info("clinetToken: {}", clinetToken);
 
         if (clinetToken == null) {
             return true;

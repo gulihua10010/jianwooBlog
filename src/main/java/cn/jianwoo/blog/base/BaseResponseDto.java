@@ -17,6 +17,10 @@ public class BaseResponseDto implements Serializable {
     private String status;
     private String msg;
 
+    public static BaseResponseDto buildResponse(String status, String msg) {
+        return new BaseResponseDto(status, msg);
+    }
+
     public BaseResponseDto(String status, String msg) {
         this.status = status;
         this.msg = msg;
@@ -51,7 +55,7 @@ public class BaseResponseDto implements Serializable {
 
 
     public static BaseResponseDto invalidParams() {
-        return new BaseResponseDto(StatusCode.InvalidParams.getStatus(), StatusCode.InvalidParams.getMsg());
+        return new BaseResponseDto(StatusCode.INVALID_PARAMS.getStatus(), StatusCode.INVALID_PARAMS.getMsg());
     }
 
 
