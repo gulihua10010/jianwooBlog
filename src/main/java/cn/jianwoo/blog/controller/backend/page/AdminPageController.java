@@ -33,8 +33,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -497,8 +495,10 @@ public class AdminPageController {
      */
     @PageId(PageIdEnum.ADMIN_LOGIN)
     @RequestMapping(CommBackendPageUrlConfig.URL_LOGIN)
-    public String login() {
-
+    public String login(Model model) {
+        WebconfBO webconf = webconfBizService.queryConfigWithBO();
+        Boolean isCaptcha = webconf.getIsCaptchaOn();
+        model.addAttribute("isCaptcha", isCaptcha);
         return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.LOGIN;
     }
 

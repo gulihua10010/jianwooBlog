@@ -50,5 +50,10 @@ public class Constants {
     public static final String CLEAR_HTML_TAGS_REGEX = "\\<.*?>";
     public static final String NEW_LINE_REGEX = "\n";
 
+    //path
+    public static final String ALL_PATH_PATTERNS = "/**";
+    public static final String ALL_STATIC_PATTERNS = "/static/**";
+    public static final String ALL_RES_PATTERNS = "/res/**";
+
 
 }

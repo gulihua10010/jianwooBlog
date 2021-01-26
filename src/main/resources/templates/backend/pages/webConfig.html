@@ -120,6 +120,13 @@
                                 </div>
                             </div>
                             <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <input id="isCaptchaOn" name="isCaptchaOn" th:checked="${webConf.isCaptchaOn}"
+                                           title="登录是否需要验证码"
+                                           type="checkbox" value="1">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
                                 <label class="layui-form-label"></label>
                                 <div class="layui-input-inline">
                                     <input class="layui-btn" id="submit" lay-filter="submit" lay-submit
@@ -166,7 +173,8 @@
                     logoImg: field.logoImgSrc,
                     homeImg: field.homeImgSrc,
                     numPerPage: field.numPerPage,
-                    isComment: field.isComment == 1 ? 1 : 0
+                    isComment: field.isComment == 1 ? 1 : 0,
+                    isCaptchaOn: field.isCaptchaOn == 1 ? 1 : 0,
                 }),
                 "更新成功",
                 function () {

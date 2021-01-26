@@ -1,26 +1,23 @@
 package cn.jianwoo.blog;
 
-import cn.jianwoo.blog.service.biz.CommentBizService;
-import cn.jianwoo.blog.service.biz.TagsBizService;
-import cn.jianwoo.blog.service.biz.UidGenService;
-import cn.jianwoo.blog.service.biz.WebconfBizService;
-import org.apache.commons.lang3.StringUtils;
+import cn.jianwoo.blog.base.BaseController;
+import cn.jianwoo.blog.base.BaseResponseDto;
+import com.alibaba.fastjson.JSON;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @MapperScan(basePackages = {"cn.jianwoo.blog.dao.base.mapper", "cn.jianwoo.blog.dao.biz.mapper", "com.baidu.fsg.uid.worker.dao"})
 @SpringBootTest
 class BlogApplicationTests {
-    @Autowired
-    CommentBizService commentBizService;
-    @Autowired
-    WebconfBizService webconfBizService;
-    @Autowired
-    private TagsBizService tagsBizService;
-    @Autowired
-    private UidGenService uidGenService;
+//    @Autowired
+//    CommentBizService commentBizService;
+//    @Autowired
+//    WebconfBizService webconfBizService;
+//    @Autowired
+//    private TagsBizService tagsBizService;
+//    @Autowired
+//    private UidGenService uidGenService;
 
 
     @Test
@@ -44,8 +41,8 @@ class BlogApplicationTests {
 //        HttpClientUtil.doPost(url,jsonParam);
 //        System.out.println(uidGenService.getUid());
 
-        System.out.println(StringUtils.compare(null, null)
-        );
+//        System.out.println(StringUtils.compare(null, null)
+//        );
 
 
 //
@@ -59,6 +56,8 @@ class BlogApplicationTests {
 //            e.printStackTrace();
 //        }
 
+
+        System.out.println(JSON.toJSONString(new BaseResponseDto()));
     }
 
 }

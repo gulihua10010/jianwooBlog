@@ -57,7 +57,7 @@ public class AdminBizServiceImpl implements AdminBizService {
 
 
     @Override
-    public void authLogin(String name, String password, String ip) throws JwBlogException {
+    public AuthToken authLogin(String name, String password, String ip) throws JwBlogException {
 
         log.info("========>> Start admin login,name= {},ip= {}", name, ip);
 
@@ -89,9 +89,12 @@ public class AdminBizServiceImpl implements AdminBizService {
         UserBO user = JwBuilder.of(UserBO::new)
                 .with(UserBO::setId, admin.getOid())
                 .with(UserBO::setName, admin.getUsername()).build();
+        jwCacheStore.put("user", user.getId().toString());
         jwCacheStore.put(SecurityUtils.buildAccessTokenKey(user), authToken.getAccessToken(), accessTokenExpiredSeconds, TimeUnit.SECONDS);
 
         log.info("========>> Admin [username={}, ip={}] login successfully!!1", name, ip);
+
+        return authToken;
 
     }
 }

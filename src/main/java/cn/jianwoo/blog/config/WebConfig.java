@@ -1,8 +1,13 @@
 package cn.jianwoo.blog.config;
 
+import cn.hutool.extra.spring.SpringUtil;
 import cn.jianwoo.blog.config.page.CommApiUrlConfig;
+import cn.jianwoo.blog.config.page.CommBackendPageUrlConfig;
+import cn.jianwoo.blog.config.page.LoginApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
+import cn.jianwoo.blog.interceptor.LoginHandleInterceptor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -16,6 +21,16 @@ public class WebConfig implements WebMvcConfigurer {
             + Constants.ASTERISK;
     @Value("${file.upload.path}")
     private String uploadPath;
+    private static final String[] EXCLUDE_PATH = {
+            CommBackendPageUrlConfig.URL_PREFIX + CommBackendPageUrlConfig.URL_LOGIN,
+            LoginApiUrlConfig.URL_PREFIX + LoginApiUrlConfig.URL_PREFIX,
+            LoginApiUrlConfig.URL_PREFIX + LoginApiUrlConfig.URL_LOGIN_CAPTCHA_INIT,
+            LoginApiUrlConfig.URL_PREFIX + LoginApiUrlConfig.URL_LOGIN_CAPTCHA_VERIFY,
+            LoginApiUrlConfig.URL_PREFIX + LoginApiUrlConfig.URL_LOGIN_AUTH,
+            Constants.ALL_STATIC_PATTERNS,
+            Constants.ALL_RES_PATTERNS
+
+    };
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -32,12 +47,14 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(
-//                new LoginHandleInterceptor()
-//        ).addPathPatterns("/**").excludePathPatterns("/login",
-//                "/login1", "/GeetestStart", "/VerifyLogin", "/static/**", "/api/**", "/img/**");
-//        registry.addInterceptor(
-//                new AvoidDuplicateSubmissionInterceptor()
-//        ).addPathPatterns("/**");
+        registry.addInterceptor(loginHandleInterceptor()
+        ).addPathPatterns(Constants.ALL_PATH_PATTERNS).excludePathPatterns(EXCLUDE_PATH);
+
     }
+
+    @Bean
+    public LoginHandleInterceptor loginHandleInterceptor() {
+        return new LoginHandleInterceptor();
+    }
+
 }

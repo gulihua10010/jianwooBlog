@@ -36,7 +36,7 @@ public class WebconfBizServiceImpl implements WebconfBizService {
         List<Webconf> configs = webconfTransDao.queryAllWebconf();
         Map<String, Object> conf = new HashMap<>();
         for (Webconf webconf : configs) {
-            if (webconf.getStringValue() != null) {
+            if (StringUtils.isNotBlank(webconf.getStringValue())) {
                 conf.put(webconf.getKey(), webconf.getStringValue());
             } else if (webconf.getNumValue() != null) {
                 conf.put(webconf.getKey(), webconf.getNumValue());
@@ -84,6 +84,7 @@ public class WebconfBizServiceImpl implements WebconfBizService {
         bo.setTitle((String) conf.get(WebConfDataConfig.TITLE));
         bo.setAuthor((String) conf.get(WebConfDataConfig.AUTHOR));
         bo.setIsComment((Boolean) conf.get(WebConfDataConfig.IS_COMMENT));
+        bo.setIsCaptchaOn((Boolean) conf.get(WebConfDataConfig.IS_LOGIN_NEED_CAPTCHA));
         bo.setDescription((String) conf.get(WebConfDataConfig.DESCRIPTION));
         bo.setDomain((String) conf.get(WebConfDataConfig.DOMAIN));
         bo.setFootHtml((String) conf.get(WebConfDataConfig.FOOT_HTML));
@@ -126,6 +127,7 @@ public class WebconfBizServiceImpl implements WebconfBizService {
         conf.put(WebConfDataConfig.LOGO, bo.getLogoImg());
         conf.put(WebConfDataConfig.NUM_PER_PAGE, bo.getNumPerPage());
         conf.put(WebConfDataConfig.RECORD, bo.getRecord());
+        conf.put(WebConfDataConfig.IS_LOGIN_NEED_CAPTCHA, bo.getIsCaptchaOn());
         return conf;
     }
 }

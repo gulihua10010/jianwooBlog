@@ -17,5 +17,6 @@ public class WebConfDataConfig {
     public static final String TOP_IMG = "TOP_IMG";
     public static final String NUM_PER_PAGE = "NUM_PER_PAGE";
     public static final String IS_COMMENT = "IS_COMMENT";
+    public static final String IS_LOGIN_NEED_CAPTCHA = "IS_LOGIN_NEED_CAPTCHA";
 
 }

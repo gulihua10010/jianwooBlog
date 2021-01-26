@@ -61,4 +61,9 @@ public class WebconfRequest extends BasePageRequestDto {
      * 是否可以评论
      */
     private Boolean isComment;
+
+    /**
+     * 登录是否需要验证码
+     */
+    private Boolean isCaptchaOn;
 }

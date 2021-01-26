@@ -1,7 +1,7 @@
 package cn.jianwoo.blog.service.biz;
 
-import cn.jianwoo.blog.entity.Admin;
 import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.security.token.AuthToken;
 import org.springframework.lang.NonNull;
 
 public interface AdminBizService {
@@ -25,5 +25,5 @@ public interface AdminBizService {
      * @return
      * @author gulihua
      */
-    void authLogin(@NonNull String name, @NonNull String password, @NonNull String ip) throws JwBlogException;
+    AuthToken authLogin(@NonNull String name, @NonNull String password, @NonNull String ip) throws JwBlogException;
 }

@@ -9,7 +9,10 @@ import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.dto.request.UserRequest;
 import cn.jianwoo.blog.dto.response.GeetestResponse;
 import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.security.token.AuthToken;
 import cn.jianwoo.blog.service.biz.AdminBizService;
+import cn.jianwoo.blog.service.biz.WebconfBizService;
+import cn.jianwoo.blog.service.bo.WebconfBO;
 import cn.jianwoo.blog.util.GeetestLibUtil;
 import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.validation.BizValidation;
@@ -35,8 +38,11 @@ public class LoginApiController extends BaseController {
     private AdminBizService adminBizService;
     @Autowired
     private CacheStore<String, String> cacheStore;
+    @Autowired
+    private WebconfBizService webconfBizService;
 
     public static final String LOGIN_CAPTCHA_AUTH = "JIANWOO.LOGIN.CAPTCHA.AUTH";
+    public static final String LOGIN_SESSION = "JIANWOO.LOGIN.SESSION";
 
     @GetMapping(LoginApiUrlConfig.URL_LOGIN_CAPTCHA_INIT)
     public String startCaptcha() {
@@ -124,17 +130,26 @@ public class LoginApiController extends BaseController {
             UserRequest requestParam = this.convertParam(param, UserRequest.class);
             BizValidation.paramValidate(requestParam.getUsername(), "username", "用户名不能为空!");
             BizValidation.paramValidate(requestParam.getPassword(), "password", "密码不能为空!");
-            String tokenStore = cacheStore.get(LOGIN_CAPTCHA_AUTH).orElse(null);
-            String tokenSession = (String) request.getSession().getAttribute(LOGIN_CAPTCHA_AUTH);
-            boolean isCaptcha = null != tokenSession && tokenSession.equals(tokenStore);
-            if (!isCaptcha) {
-                throw new JwBlogException(ExceptionConstants.LOGIN_CAPTCHA_AUTH_INVALID,
-                        ExceptionConstants.LOGIN_CAPTCHA_AUTH_INVALID_DESC);
+            WebconfBO webconf = webconfBizService.queryConfigWithBO();
+            Boolean isCaptchaOn = webconf.getIsCaptchaOn();
+            if (isCaptchaOn) {
+                String tokenStore = cacheStore.get(LOGIN_CAPTCHA_AUTH).orElse(null);
+                String tokenSession = (String) request.getSession().getAttribute(LOGIN_CAPTCHA_AUTH);
+                boolean isCaptcha = null != tokenSession && tokenSession.equals(tokenStore);
+                if (!isCaptcha) {
+                    throw new JwBlogException(ExceptionConstants.LOGIN_CAPTCHA_AUTH_INVALID,
+                            ExceptionConstants.LOGIN_CAPTCHA_AUTH_INVALID_DESC);
+                }
             }
 
-            adminBizService.authLogin(requestParam.getUsername(), requestParam.getPassword(), requestParam.getClientIp());
-            cacheStore.delete(LOGIN_CAPTCHA_AUTH);
-            request.getSession().removeAttribute(LOGIN_CAPTCHA_AUTH);
+
+            AuthToken authToken = adminBizService.authLogin(requestParam.getUsername(), requestParam.getPassword(), requestParam.getClientIp());
+            if (isCaptchaOn) {
+                cacheStore.delete(LOGIN_CAPTCHA_AUTH);
+                request.getSession().removeAttribute(LOGIN_CAPTCHA_AUTH);
+            }
+
+            request.getSession().setAttribute(LOGIN_SESSION, authToken.getAccessToken());
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
         }
