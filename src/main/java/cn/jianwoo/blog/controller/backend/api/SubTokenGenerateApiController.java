@@ -1,26 +1,21 @@
 package cn.jianwoo.blog.controller.backend.api;
 
 import cn.jianwoo.blog.base.BaseController;
-import cn.jianwoo.blog.base.BaseResponseDto;
-import cn.jianwoo.blog.config.page.SubTokenApiUrlConfig;
+import cn.jianwoo.blog.config.router.SubTokenApiUrlConfig;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.dto.request.TokenGenRequest;
 import cn.jianwoo.blog.dto.response.SubTokenResponse;
 import cn.jianwoo.blog.enums.PageIdEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.util.DomainUtil;
 import cn.jianwoo.blog.util.ProcessTokenUtil;
 import cn.jianwoo.blog.validation.BizValidation;
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author GuLihua
@@ -62,5 +57,6 @@ public class SubTokenGenerateApiController extends BaseController {
         }
 
     }
+
 
 }

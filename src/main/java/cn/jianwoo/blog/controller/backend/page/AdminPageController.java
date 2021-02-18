@@ -2,8 +2,8 @@ package cn.jianwoo.blog.controller.backend.page;
 
 import cn.jianwoo.blog.annotation.PageId;
 import cn.jianwoo.blog.cache.CacheStore;
-import cn.jianwoo.blog.config.page.CommBackendPageTemplateConfig;
-import cn.jianwoo.blog.config.page.CommBackendPageUrlConfig;
+import cn.jianwoo.blog.config.router.CommBackendPageTemplateConfig;
+import cn.jianwoo.blog.config.router.CommBackendPageUrlConfig;
 import cn.jianwoo.blog.dao.base.ArticleTransDao;
 import cn.jianwoo.blog.dao.base.MenuTransDao;
 import cn.jianwoo.blog.dao.base.TagsTransDao;
@@ -76,12 +76,12 @@ public class AdminPageController {
     @PageId(PageIdEnum.ADMIN_INDEX)
     @RequestMapping
     public String main() {
-        return "forward:/admin/index";
+        return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_INDEX;
     }
 
     /**
      * 首頁<br/>
-     * url:/admin/index<br/>
+     * url:/admin<br/>
      *
      * @return page /backend/index
      * @author gulihua

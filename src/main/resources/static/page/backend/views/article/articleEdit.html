@@ -1,0 +1,279 @@
+<title>文章发布</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>文章管理</cite></a>
+        <a><cite>文章编辑</cite></a>
+    </div>
+</div>
+<div class="layui-fluid layui-form" id="layuiadmin-form-comment" lay-filter="layuiadmin-form-comment">
+    <script type="text/html" template lay-url="/api/admin/tag/list">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md9">
+                <div class="layui-card">
+                    <div class="layui-card-header">编辑文章</div>
+                </div>
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        <div class="layui-form-item">
+                            <input autocomplete="off" class="layui-input" id="art-title" name="title" placeholder="键入标题"
+                                   type="text" lay-verify="required|maxLength" lay-max="50"
+                                   value="{{ d.data.title }}">
+                        </div>
+                        <div class="layui-form-item">
+                            <input autocomplete="off" class="layui-input" id="art-author"
+                                   name="author" value="{{ d.data.author }}" lay-verify="required|maxLength"
+                                   lay-max="10"
+                                   placeholder="请输入作者"
+                                   type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-card">
+                    <div class="layui-card-body" id="article-content">
+                        <textarea id="mytextarea" name="article"></textarea>
+                    </div>
+                </div>
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        <div class="art-comment" id="art-comment">
+                            <div class="add-comment-btn">
+                                <button class="layui-btn add-comment">添加评论</button>
+                            </div>
+                            <div class="comment-input" style="display: none">
+                                <div class="layui-form-item layui-form-text">
+                               <textarea class="layui-textarea" id="comm-content" name="comm-content"
+                                         placeholder="请输入内容"></textarea>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-right">
+                                        <button class="comment-btn layui-btn" id="addComment">提交评论</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        <!--                        comment-->
+                        <div class="commentView" id="commentView"></div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="layui-col-md3">
+                <div class="layui-card">
+                    <div class="layui-card-header">文章标签</div>
+                    <div class="layui-card-body">
+                        <div class="choose-tags">
+                            <div class="choosed">
+
+                                <span th:each="tag:${artTags}" th:inline="text">[[${tag.content}]]
+                                <span class="tags-id" style="display: none" th:text="${tag.oid}"></span><a>×</a>
+                            </span>
+
+
+                            </div>
+                            <div class="separation-line"></div>
+                            <div class="tags">
+                    <span th:each="tag:${tags}" th:inline="text">[[${tag.content}]]
+                        <span class="tags-id" style="display: none" th:text="${tag.oid}"></span>
+                    </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-card">
+                    <div class="layui-card-header">文章分类</div>
+                    <div class="layui-card-body">
+                        <div class="article-type">
+                            <div class="layui-card layui-form" lay-filter="component-form-element" id="type-select">
+                                <select lay-search lay-verify="required" th:field="${article.typeId}">
+                                    <option style="font-weight: bold;color: black" value="-1"></option>
+                                    <option style="color: #777" th:each="menu:${menuList}" th:text="${menu.text}"
+                                            th:value="${menu.oid}"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="layui-card">
+                    <div class="layui-card-header">缩略图</div>
+                    <div class="layui-card-body">
+                        <div class="article-img">
+                            <div class="layui-upload">
+                                <button class="layui-btn" id="test1" type="button">上传图片</button>
+                                <div class="layui-upload-list imgupload">
+                                    <img class="pre-upd-img" id="breimg" style="margin-left: 5px" width="100"
+                                         th:src="${article.imgSrc}">
+                                    <p id="demoText"></p>
+                                    <input id="imgsrc" name="imgsrc" style="visibility: hidden" value=""/>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-card">
+                    <div class="layui-card-header">操作</div>
+                    <div class="layui-card-body">
+                        <div class="published-btns-opt">
+                            <div class="article-status">
+                            <span style="text-space: 2"
+                                  th:text="'&nbsp;&nbsp;当前状态: '+(${article.status} eq 1?'已发布':(${article.status} eq 0? '草稿':'回收站'))">
+                            </span>
+                            </div>
+                            <div class="btns-opt">
+                                <button class="layui-btn layui-btn-primary layui-btn-sm" id="articlePreview">文章预览
+                                </button>
+                            </div>
+                            <div class="separation-line"></div>
+                            <a><i class="iconfont">&#xe606;</i> 公开度：<span id="published-public"
+                                                                          th:text="${article.visitType == -1 ? '密码':(article.visitType == 0 ? '私密':(article.visitType == 2?'置顶':'公开' ))}"></span></a>&nbsp;
+                            <a id="edit">编辑</a>
+                            <form class="layui-form" lay-filter="component-form-element" method="post">
+                                <div class="layui-form-item" id="ispublic-form">
+                                    <div class="layui-input-block">
+                                        <input th:checked="${article.visitType == 1 || article.visitType == 2}"
+                                               class="ispublic-radio" id="public" lay-filter="public"
+                                               name="isPublic" title="公开"
+                                               type="radio" value="1">
+                                        <span id="hometop1"><input id="hometop" lay-skin="primary" title="将文章置于首页顶端"
+                                                                   type="checkbox"
+                                                                   th:checked="${article.visitType == 2}"
+                                                                   value="2" name="hometop"></span><br>
+                                        <input class="ispublic-radio" id="passw" lay-filter="passw" name="isPublic"
+                                               title="密码保护" th:checked="${article.visitType == -1}"
+                                               type="radio"
+                                               value="-1">
+                                        <input autocomplete="off" class="layui-input" id="passw-content"
+                                               th:style="${article.visitType == -1 ? 'display: inline-block' : 'display: none'}"
+                                               th:value="${article.password}"
+                                               placeholder="密码"
+                                               type="password">
+                                        <input autocomplete="off" class="layui-input" id="passw-content-confirm"
+                                               placeholder="确认密码"
+                                               th:style="${article.visitType == -1 ? 'display: inline-block' : 'display: none'}"
+                                               type="password"><br>
+                                        <input class="ispublic-radio" id="secret" lay-filter="secret" name="isPublic"
+                                               title="私密" th:checked="${article.visitType == 0}"
+                                               type="radio" value="0">
+
+                                    </div>
+                                    <span id="pwd-tips" style="color: red;display: none"></span>
+                                    <div class="btns-opt" id="btns0" style="display: block">
+                                        <button class="layui-btn layui-btn-sm" id="btn-ispublic-sure">确定</button>
+                                        <button class="layui-btn layui-btn-primary layui-btn-sm"
+                                                id="btn-ispublic-cancel">
+                                            取消
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div id="isComment">
+                                        <input checked id="is-comment" name="isComment" title="是否可以评论"
+                                               th:checked="${article.isComment == 1}" type="checkbox">
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="separation-line"></div>
+                            <input id="artOid" th:value="${artOid}" name="artOid" type="hidden">
+                            <input type="hidden" th:value="${subToken}" id="subToken" name="subToken">
+                            <div class="btn-group">
+                                <div class="negative-btn">
+                                    <button class="layui-btn layui-btn-primary" id="cancel">重置</button>
+                                    <button class="layui-btn layui-btn-danger" id="remove-del"
+                                            lay-filter="submit-article"
+                                            lay-submit
+                                            th:if="${article.status} neq -1">移至回收站
+                                    </button>
+                                </div>
+                                <div class="positive-btn">
+                                    <button class="layui-btn layui-btn-primary" id="published-save"
+                                            lay-filter="submit-article" lay-submit
+                                            th:if="${article.status} eq 0">保存
+                                    </button>
+                                    <button class="layui-btn positive-btn-right" id="published-pub"
+                                            lay-filter="submit-article" lay-submit
+                                            th:if="${article.status} eq 0">发布
+                                    </button>
+                                    <button class="layui-btn positive-btn-right" id="published-update"
+                                            lay-filter="submit-article" lay-submit
+                                            th:if="${article.status} eq 1">更新
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+</div>
+
+<script id="commentTemplate" type="text/html">
+
+    <div class="comment-content ">
+        {{# layui.each(d, function(index, comm){ }}
+        <div class="comment-list">
+            <div class="media-body">
+                <a href="javascript:" class="media-left" style="float: left;">
+                    <img src="{{ comm.headImg }}" height="46px"
+                         width="46px">
+                </a>
+                <div class="pad-btm">
+                    <p class="fontColor">
+                        <a href="javascript:">{{ comm.user }}</a>
+                        <span style="float: right">
+                                            <button class="layui-btn layui-btn-sm reply"
+                                                    data-id="{{ comm.oid}}">回复</button>
+                                            <button class="layui-btn layui-btn-sm layui-btn-danger del"
+                                                    data-id="{{ comm.oid}}">删除</button>
+                                        </span>
+                    </p>
+                    <p class="min-font">
+                        <a href="javascript:">{{ comm.date }}</a>
+                    </p>
+                </div>
+                <p class="message-text">{{=comm.content}}</p>
+            </div>
+            <div class="comment-content-reply">
+                {{# layui.each(comm.replyList, function(index, rep){ }}
+                <div>
+                    <div class="media-body">
+                        <a href="javascript:" class="media-left" style="float: left;">
+                            <img src="{{rep.headImg}}" height="46px"
+                                 width="46px">
+                        </a>
+                        <div class="pad-btm">
+                            <p class="fontColor">
+                                <a href="javascript:">{{rep.user}}</a>
+                                <span style="float: right">
+                                                        <button class="layui-btn layui-btn-sm reply"
+                                                                data-id="{{ comm.oid}}">回复</button>
+                                                        <button class="layui-btn layui-btn-sm layui-btn-danger del"
+                                                                data-id="{{ comm.oid}}">删除</button>
+                                                 </span>
+                            </p>
+                            <p class="min-font">
+                                <a href="javascript:">回复给{{rep.parentUserName}}</a>
+                                <a href="javascript:">{{rep.date}}</a>
+                            </p>
+                        </div>
+                        <p class="message-text">{{=rep.content}}</p>
+                    </div>
+                </div>
+                {{# }); }}
+            </div>
+        </div>
+        {{# }); }}
+    </div>
+
+
+</script>
+

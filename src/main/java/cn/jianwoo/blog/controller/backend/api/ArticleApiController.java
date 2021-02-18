@@ -5,20 +5,27 @@ import cn.jianwoo.blog.annotation.PageId;
 import cn.jianwoo.blog.annotation.SubToken;
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
-import cn.jianwoo.blog.config.page.ArticleApiUrlConfig;
+import cn.jianwoo.blog.builder.JwBuilder;
+import cn.jianwoo.blog.config.router.ArticleApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
+import cn.jianwoo.blog.dao.base.ArticleTransDao;
 import cn.jianwoo.blog.dto.request.ArticlePageRequest;
 import cn.jianwoo.blog.dto.request.ArticleSubmitRequest;
 import cn.jianwoo.blog.dto.request.EntityOidListRequest;
 import cn.jianwoo.blog.dto.request.EntityOidRequest;
+import cn.jianwoo.blog.dto.response.ArticleInfoResponse;
+import cn.jianwoo.blog.dto.response.ArticleMenuResponse;
 import cn.jianwoo.blog.dto.response.ArticleResponse;
 import cn.jianwoo.blog.dto.response.LayuiBaseResponse;
+import cn.jianwoo.blog.dto.response.vo.ArticleInfoVO;
 import cn.jianwoo.blog.dto.response.vo.ArticleVO;
+import cn.jianwoo.blog.entity.Article;
 import cn.jianwoo.blog.entity.extension.ArticleExt;
 import cn.jianwoo.blog.entity.query.ArticleParam;
 import cn.jianwoo.blog.enums.ArticleStatusEnum;
 import cn.jianwoo.blog.enums.ArticleVisitEnum;
 import cn.jianwoo.blog.enums.PageIdEnum;
+import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.ArticleBizService;
 import cn.jianwoo.blog.util.DomainUtil;
@@ -27,8 +34,10 @@ import cn.jianwoo.blog.validation.BizValidation;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,6 +57,8 @@ import java.util.List;
 public class ArticleApiController extends BaseController {
     @Autowired
     private ArticleBizService articleBizService;
+    @Autowired
+    private ArticleTransDao articleTransDao;
 
     /**
      * 文章提交(文章发布页面)<br/>
@@ -711,5 +722,44 @@ public class ArticleApiController extends BaseController {
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
     }
 
+    /**
+     * 获取文章信息<br/>
+     * url:/api/admin/article/info<br/>
+     *
+     * @return 返回响应 {@link ArticleMenuResponse}
+     * status<br/>
+     * data<br/>
+     * --id<br/>
+     * --name<br/>
+     * @author gulihua
+     */
+    @GetMapping(ArticleApiUrlConfig.URL_ARTICLE_INFO)
+    public String getFrontendMenuList(@PathVariable("id") Long id) {
+        ArticleInfoResponse response = ArticleInfoResponse.getInstance();
+        Article article;
+        try {
+            article = articleTransDao.queryArticleByPrimaryKey(id);
+            ArticleInfoVO vo = JwBuilder.of(ArticleInfoVO::new)
+                    .with(ArticleInfoVO::setId, article.getOid())
+                    .with(ArticleInfoVO::setTitle, StringEscapeUtils.escapeHtml4(article.getTitle()))
+                    .with(ArticleInfoVO::setAuthor, StringEscapeUtils.escapeHtml4(article.getAuthor()))
+                    .with(ArticleInfoVO::setContent, article.getContent())
+                    .with(ArticleInfoVO::setMenuOid, article.getTypeId())
+                    .with(ArticleInfoVO::setImgSrc, article.getImgSrc())
+                    .with(ArticleInfoVO::setIsComment, article.getIsComment())
+                    .with(ArticleInfoVO::setPassword, article.getPassword())
+                    .with(ArticleInfoVO::setVisitType, article.getVisitType())
+                    .with(ArticleInfoVO::setStatus, article.getStatus())
+                    .build();
+
+            response.setData(vo);
+        } catch (DaoException e) {
+            log.error(">> AdminPageController.articleEdit exec failed, exception: \n", e);
+            log.error(">> Article {} cannot be found", id);
+            return super.exceptionToString(e);
+        }
+        return super.responseToJSONString(response);
+
+    }
 
 }

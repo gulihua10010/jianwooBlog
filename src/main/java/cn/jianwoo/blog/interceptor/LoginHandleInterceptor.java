@@ -1,7 +1,7 @@
 package cn.jianwoo.blog.interceptor;
 
 import cn.jianwoo.blog.cache.CacheStore;
-import cn.jianwoo.blog.config.page.CommBackendPageUrlConfig;
+import cn.jianwoo.blog.config.router.CommBackendPageUrlConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;

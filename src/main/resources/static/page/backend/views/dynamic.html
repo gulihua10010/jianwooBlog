@@ -1,0 +1,36 @@
+<title>动态</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>动态</cite></a>
+    </div>
+</div>
+<script type="text/html" template>
+    <link rel="stylesheet" href="{{ layui.setter.base }}style/jw_admin.css?v={{ layui.admin.v }}-1" media="all">
+</script>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">最新访问</div>
+                <div class="layui-card-body">
+                    <table id="visit-table" lay-filter="visit-data"></table>
+
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">最近评论</div>
+                <div class="layui-card-body">
+                    <table id="comm-table" lay-filter="comm-data"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use('dynamic', layui.factory('dynamic')).use(['admin', 'dynamic', 'form', 'table'], function () {
+    })
+</script>

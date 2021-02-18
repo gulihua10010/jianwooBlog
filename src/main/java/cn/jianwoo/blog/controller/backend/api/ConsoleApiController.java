@@ -2,17 +2,21 @@ package cn.jianwoo.blog.controller.backend.api;
 
 import cn.hutool.core.date.DateUtil;
 import cn.jianwoo.blog.base.BaseController;
-import cn.jianwoo.blog.config.page.ConsoleApiUrlConfig;
+import cn.jianwoo.blog.builder.JwBuilder;
+import cn.jianwoo.blog.config.router.ConsoleApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dto.response.ArticleResponse;
 import cn.jianwoo.blog.dto.response.CommentResponse;
+import cn.jianwoo.blog.dto.response.ConsoleCountResponse;
 import cn.jianwoo.blog.dto.response.LayuiBaseResponse;
 import cn.jianwoo.blog.dto.response.vo.ArticleVO;
 import cn.jianwoo.blog.dto.response.vo.CommentVO;
+import cn.jianwoo.blog.dto.response.vo.ConsoleCountVO;
 import cn.jianwoo.blog.entity.Article;
 import cn.jianwoo.blog.entity.extension.CommentExt;
 import cn.jianwoo.blog.service.biz.ArticleBizService;
 import cn.jianwoo.blog.service.biz.CommentBizService;
+import cn.jianwoo.blog.service.biz.TagsBizService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +40,8 @@ public class ConsoleApiController extends BaseController {
     private CommentBizService commentBizService;
     @Autowired
     private ArticleBizService articleBizService;
+    @Autowired
+    private TagsBizService tagsBizService;
     private final static String templateName = "CONSOLE_TEMPLATE";
 
     /**
@@ -158,6 +164,88 @@ public class ConsoleApiController extends BaseController {
             response.setData(list);
         }
         response.setCode(LayuiBaseResponse.SUCCESS_CODE);
+        return super.responseToJSONString(response);
+    }
+
+
+    /**
+     * 查詢发布文章的数量<br/>
+     * url:/api/admin/console/published/articles/count<br/>
+     *
+     * @return 返回响应 {@link ConsoleCountResponse}
+     * status<br/>
+     * data<br/>
+     * --count<br/>
+     * @author gulihua
+     */
+    @GetMapping(ConsoleApiUrlConfig.URL_PUBLISHED_ARTICLES_COUNT)
+    public String queryPublishedArtsCount() {
+        ConsoleCountResponse response = ConsoleCountResponse.getInstance();
+        int publishedArtsCount = articleBizService.countWithPublishArts();
+        ConsoleCountVO vo = JwBuilder.of(ConsoleCountVO::new)
+                .with(ConsoleCountVO::setCount, publishedArtsCount).build();
+        response.setData(vo);
+        return super.responseToJSONString(response);
+    }
+
+
+    /**
+     * 查詢草稿文章的数量<br/>
+     * url:/api/admin/console/draft/articles/count<br/>
+     *
+     * @return 返回响应 {@link ConsoleCountResponse}
+     * status<br/>
+     * data<br/>
+     * --count<br/>
+     * @author gulihua
+     */
+    @GetMapping(ConsoleApiUrlConfig.URL_DRAFT_ARTICLES_COUNT)
+    public String queryDraftArtsCount() {
+        ConsoleCountResponse response = ConsoleCountResponse.getInstance();
+        int draftArtsCount = articleBizService.countWithDraftArts();
+        ConsoleCountVO vo = JwBuilder.of(ConsoleCountVO::new)
+                .with(ConsoleCountVO::setCount, draftArtsCount).build();
+        response.setData(vo);
+        return super.responseToJSONString(response);
+    }
+
+    /**
+     * 查詢评论的数量<br/>
+     * url:/api/admin/console/comment/count<br/>
+     *
+     * @return 返回响应 {@link ConsoleCountResponse}
+     * status<br/>
+     * data<br/>
+     * --count<br/>
+     * @author gulihua
+     */
+    @GetMapping(ConsoleApiUrlConfig.URL_COMMENT_COUNT)
+    public String queryCommentCount() {
+        ConsoleCountResponse response = ConsoleCountResponse.getInstance();
+        int commentCount = commentBizService.countAllComments();
+        ConsoleCountVO vo = JwBuilder.of(ConsoleCountVO::new)
+                .with(ConsoleCountVO::setCount, commentCount).build();
+        response.setData(vo);
+        return super.responseToJSONString(response);
+    }
+
+    /**
+     * 查詢文章表情的数量<br/>
+     * url:/api/admin/console/tags/count<br/>
+     *
+     * @return 返回响应 {@link ConsoleCountResponse}
+     * status<br/>
+     * data<br/>
+     * --count<br/>
+     * @author gulihua
+     */
+    @GetMapping(ConsoleApiUrlConfig.URL_TAGS_COUNT)
+    public String queryTagsCount() {
+        ConsoleCountResponse response = ConsoleCountResponse.getInstance();
+        int tagsCount = tagsBizService.countAllTags();
+        ConsoleCountVO vo = JwBuilder.of(ConsoleCountVO::new)
+                .with(ConsoleCountVO::setCount, tagsCount).build();
+        response.setData(vo);
         return super.responseToJSONString(response);
     }
 }

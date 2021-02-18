@@ -4,7 +4,7 @@ import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.cache.CacheStore;
 import cn.jianwoo.blog.config.GeetestConfig;
-import cn.jianwoo.blog.config.page.LoginApiUrlConfig;
+import cn.jianwoo.blog.config.router.LoginApiUrlConfig;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.dto.request.UserRequest;
 import cn.jianwoo.blog.dto.response.GeetestResponse;

@@ -46,7 +46,7 @@ public class MenuBizServiceImpl implements MenuBizService {
     @Override
     public List<MenuExt> queryBackGroudMenuList() throws JwBlogException {
 
-        List<Menu> menus = menuTransDao.queryMenuByType(MenuTypeEnum.BACKEND.getValue());
+        List<Menu> menus = menuTransDao.queryEffectiveMenuByType(MenuTypeEnum.BACKEND.getValue());
         return queryMenuWithLevel(menus);
     }
 
