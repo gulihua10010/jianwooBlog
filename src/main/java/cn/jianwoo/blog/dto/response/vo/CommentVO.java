@@ -1,6 +1,6 @@
 package cn.jianwoo.blog.dto.response.vo;
 
-import cn.jianwoo.blog.config.page.CommBackendPageUrlConfig;
+import cn.jianwoo.blog.config.router.CommBackendPageUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.util.DomainUtil;
 import lombok.AllArgsConstructor;
@@ -69,9 +69,21 @@ public class CommentVO implements Serializable {
      */
     private String ip;
     /**
+     * QQ
+     */
+    private String qq;
+    /**
+     * 头像
+     */
+    private String headImg;
+    /**
      * ip所属地域
      */
     private String area;
+    /**
+     * 是否以读
+     */
+    private Integer read;
     /**
      * 显示描述
      */

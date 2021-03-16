@@ -5,16 +5,17 @@ import cn.jianwoo.blog.annotation.PageId;
 import cn.jianwoo.blog.annotation.SubToken;
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
-import cn.jianwoo.blog.config.page.CommentApiUrlConfig;
+import cn.jianwoo.blog.builder.JwBuilder;
+import cn.jianwoo.blog.config.router.CommentApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dto.request.CommentAddRequest;
 import cn.jianwoo.blog.dto.request.CommentPageRequest;
 import cn.jianwoo.blog.dto.request.CommentReplyRequest;
 import cn.jianwoo.blog.dto.request.EntityOidListRequest;
 import cn.jianwoo.blog.dto.request.EntityOidRequest;
+import cn.jianwoo.blog.dto.response.CommentInfoResponse;
 import cn.jianwoo.blog.dto.response.CommentListResponse;
-import cn.jianwoo.blog.dto.response.CommentResponse;
-import cn.jianwoo.blog.dto.response.LayuiBaseResponse;
+import cn.jianwoo.blog.dto.response.CommentSummaryResponse;
 import cn.jianwoo.blog.dto.response.vo.CommentListVO;
 import cn.jianwoo.blog.dto.response.vo.CommentReplyListVO;
 import cn.jianwoo.blog.dto.response.vo.CommentVO;
@@ -30,10 +31,11 @@ import cn.jianwoo.blog.validation.BizValidation;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -149,7 +151,7 @@ public class CommentApiController extends BaseController {
     public String queryComm(Integer page, Integer limit, CommentParam param) {
         List<CommentExt> commentList = commentBizService.queryAllEffectiveComment(param);
         List<CommentVO> commentVOList = new ArrayList<>();
-        CommentResponse response = new CommentResponse();
+        CommentSummaryResponse response = new CommentSummaryResponse();
         Map<Long, Integer> oidSeqMap = new HashMap<>();
         Integer seq = 1;
         for (CommentExt commentExt : commentList) {
@@ -188,7 +190,6 @@ public class CommentApiController extends BaseController {
         }
         response.setData(resCommList);
         response.setCount(Long.parseLong(String.valueOf(commentVOList.size())));
-        response.setCode(LayuiBaseResponse.SUCCESS_CODE);
 
         return super.responseToJSONString(response);
     }
@@ -200,7 +201,7 @@ public class CommentApiController extends BaseController {
      * @param param JSON 参数({@link CommentPageRequest})
      *              title<br/>
      *              unread<br/>
-     * @return 返回响应 {@link CommentResponse}
+     * @return 返回响应 {@link CommentSummaryResponse}
      * code<br/>
      * count<br/>
      * data<br/>
@@ -233,7 +234,7 @@ public class CommentApiController extends BaseController {
         }
         PageInfo<CommentExt> commentExtPageInfo = commentBizService.queryAllCommentPage(commParam);
         List<CommentVO> commentVOList = new ArrayList<>();
-        CommentResponse response = new CommentResponse();
+        CommentSummaryResponse response = new CommentSummaryResponse();
         for (CommentExt commentExt : commentExtPageInfo.getList()) {
             CommentVO vo = new CommentVO();
             vo.setArtTitle(commentExt.getTitle());
@@ -249,7 +250,6 @@ public class CommentApiController extends BaseController {
 
         response.setData(commentVOList);
         response.setCount(commentExtPageInfo.getTotal());
-        response.setCode(LayuiBaseResponse.SUCCESS_CODE);
         return super.responseToJSONString(response);
 
     }
@@ -344,7 +344,7 @@ public class CommentApiController extends BaseController {
 
     /**
      * 文章已读(評論列表列表)<br/>
-     * url:/api/admin/comment/read<br/>
+     * url:/api/admin/comment/read/list<br/>
      *
      * @param param JSON 参数({@link EntityOidListRequest})
      *              entityOidList<br/>
@@ -353,7 +353,7 @@ public class CommentApiController extends BaseController {
      * msg
      * @author gulihua
      */
-    @PostMapping(CommentApiUrlConfig.URL_COMMENT_READ)
+    @PostMapping(CommentApiUrlConfig.URL_COMMENT_READ_LIST)
     public String doReadCommList(@RequestBody String param) {
         try {
             super.printRequestParams(param);
@@ -365,5 +365,68 @@ public class CommentApiController extends BaseController {
 
         }
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
+    }
+
+    /**
+     * 文章已读(評論列表列表)<br/>
+     * url:/api/admin/comment/read<br/>
+     *
+     * @param param JSON 参数({@link EntityOidListRequest})
+     *              entityOidList<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
+    @PostMapping(CommentApiUrlConfig.URL_COMMENT_READ)
+    public String doReadComment(@RequestBody String param) {
+        try {
+            super.printRequestParams(param);
+            EntityOidRequest request = this.convertParam(param, EntityOidRequest.class);
+            BizValidation.paramValidate(request.getEntityOid(), "entityOid", "评论id不能为空!");
+            commentBizService.doUpdateReadByOid(request.getEntityOid());
+        } catch (JwBlogException e) {
+            return super.exceptionToString(e);
+
+        }
+        return super.responseToJSONString(BaseResponseDto.SUCCESS);
+    }
+
+    /**
+     * 文获取评论信息<br/>
+     * url:/api/admin/comment/info/{id}<br/>
+     *
+     * @param id
+     * @return 返回响应 {@link CommentInfoResponse}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * data
+     * --oid
+     * --user
+     * --headImg
+     * --qq
+     * --ip
+     * --content
+     * --date
+     * @author gulihua
+     */
+    @GetMapping(CommentApiUrlConfig.URL_COMMENT_INFO)
+    public String queryCommentInfo(@PathVariable("id") Long id) {
+        CommentInfoResponse response = CommentInfoResponse.getInstance();
+        CommentExt commentExt = commentBizService.queryCommentExtByOid(id);
+        CommentVO vo = JwBuilder.of(CommentVO::new)
+                .with(CommentVO::setOid, commentExt.getOid())
+                .with(CommentVO::setUser, commentExt.getUser())
+                .with(CommentVO::setArtOid, commentExt.getArticleOid())
+                .with(CommentVO::setArtTitle, commentExt.getTitle())
+                .with(CommentVO::setHeadImg, commentExt.getHeadImg())
+                .with(CommentVO::setIp, commentExt.getIp())
+                .with(CommentVO::setQq, commentExt.getQq())
+                .with(CommentVO::setContent, commentExt.getContent())
+                .with(CommentVO::setRead, commentExt.getIsRead())
+                .with(CommentVO::setDate, DateUtil.formatDateTime(commentExt.getDate())).build();
+        response.setData(vo);
+
+        return super.responseToJSONString(response);
     }
 }

@@ -1,0 +1,309 @@
+<title>文章编辑</title>
+<style>
+
+    .artTitle:hover {
+        color: blue;
+    }
+
+    .artTitle {
+        cursor: pointer;
+    }
+
+    input {
+        border: none !important;
+    }
+
+    .layui-card {
+        padding-left: 0 !important;
+        margin-left: 0 !important;
+    }
+
+    .commentView-card {
+        margin-top: 20px;
+    }
+
+    .comment-list {
+        padding: 0;
+    }
+
+    .media-body {
+        padding: 10px;
+        margin: 0;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .media-body:hover {
+        background-color: rgb(242, 242, 242);
+    }
+
+    .bg {
+        border: 1px black solid;
+    }
+
+    .comm-current {
+        background-color: rgba(135, 206, 235, 0.2)
+    }
+
+    opt-history .layui-btn {
+        background-color: rgb(193, 193, 193);
+    }
+
+</style>
+
+<script type="text/html" template>
+    <link rel="stylesheet" href="{{ layui.setter.base }}style/jw_admin.css?v={{ layui.admin.v }}-1" media="all">
+</script>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-card opt-history" style="display: none">
+            <div class="layui-card-body">
+                <button class="layui-btn opt-left"><i class="layui-icon layui-icon-left" style="font-size: 30px;"></i>
+                </button>
+                <button class="layui-btn opt-right"><i class="layui-icon layui-icon-right" style="font-size: 30px;"></i>
+                </button>
+            </div>
+        </div>
+        <script type="text/html" template lay-url="/api/admin/comment/info/{{ d.params }}" lay-done="doView(d);">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">文章标题</label>
+                        <div class="layui-input-block">
+                            <a class="layui-input artTitle" style="line-height: 40px"
+                               target="_blank" href="#/article/edit/id={{ d.data.artOid}}">{{d.data.artTitle}}</a>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">评论用户</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" disabled name="user" value="{{d.data.user}}" type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">评论者头像</label>
+                        <div class="layui-input-block">
+                            <img class="layui-upload-img" id="headImg" style="margin-left: 5px" src="{{d.data.headImg}}"
+                                 width="50">
+
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">评论者IP</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" disabled name="ip" value="{{ formatStr(d.data.ip) }}"
+                                   type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">评论日期</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" disabled name="date"
+                                   value="{{d.data.date}}"
+                                   type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">评论QQ</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" disabled name="qq" value="{{ formatStr(d.data.qq)}}" type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">评论内容</label>
+                        <div class="layui-input-block">
+                        <textarea class="layui-textarea" disabled name="other" placeholder="">
+                            {{d.data.content}}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card commentView-card">
+                <div class="layui-card-header">
+                    评论列表上下文
+                </div>
+                <div class="layui-card-body">
+                    <!--                        comment-->
+                    <div class="commentView" id="commentView"></div>
+                </div>
+                <div>
+                    <input type="hidden" name="artOid" id="artOid" value="{{d.data.artOid}}">
+                    <input type="hidden" name="artOid" id="commOid" value="{{ d.params }}">
+                </div>
+            </div>
+
+        </script>
+
+    </div>
+</div>
+
+<script id="commentTemplate" type="text/html">
+
+    <div class="comment-content">
+        {{# layui.each(d, function(index, comm){ }}
+        <div class="comment-list">
+            <div class="media-body" data-id="{{ comm.oid}}">
+                <a href="javascript:" class="media-left" style="float: left;">
+                    <img src="{{ comm.headImg }}" height="46px"
+                         width="46px">
+                </a>
+                <div class="pad-btm">
+                    <p class="fontColor">
+                        <a href="javascript:">{{ comm.user }}</a>
+                        <span style="float: right">
+                                            <button class="layui-btn layui-btn-sm reply"
+                                                    data-id="{{ comm.oid}}">回复</button>
+                                            <button class="layui-btn layui-btn-sm layui-btn-danger del"
+                                                    data-id="{{ comm.oid}}">删除</button>
+                                        </span>
+                    </p>
+                    <p class="min-font">
+                        <a href="javascript:">{{ comm.date }}</a>
+                    </p>
+                </div>
+                <p class="message-text">{{=comm.content}}</p>
+            </div>
+            <div class="comment-content-reply">
+                {{# layui.each(comm.replyList, function(index, rep){ }}
+                <div>
+                    <div class="media-body" data-id="{{ rep.oid}}">
+                        <a href="javascript:" class="media-left" style="float: left;">
+                            <img src="{{rep.headImg}}" height="46px"
+                                 width="46px">
+                        </a>
+                        <div class="pad-btm">
+                            <p class="fontColor">
+                                <a href="javascript:">{{rep.user}}</a>
+                                <span style="float: right">
+                                                        <button class="layui-btn layui-btn-sm reply"
+                                                                data-id="{{ rep.oid}}">回复</button>
+                                                        <button class="layui-btn layui-btn-sm layui-btn-danger del"
+                                                                data-id="{{ rep.oid}}">删除</button>
+                                                 </span>
+                            </p>
+                            <p class="min-font">
+                                <a href="javascript:">回复给{{rep.parentUserName}}</a>
+                                <a href="javascript:">{{rep.date}}</a>
+                            </p>
+                        </div>
+                        <p class="message-text">{{=rep.content}}</p>
+                    </div>
+                </div>
+                {{# }); }}
+            </div>
+        </div>
+        {{# }); }}
+    </div>
+
+
+</script>
+
+<script>
+
+    doView = function (d) {
+        layui.use('comment', layui.factory('comment')).use(['admin', 'form', 'table', 'element', 'laytpl', 'comment'], function () {
+            var $ = layui.jquery
+                , form = layui.form
+                , admin = layui.admin
+                , view = layui.view
+                , element = layui.element;
+            element.render();
+            form.render();
+            renderComm(d.data.artOid, function () {
+                $('.media-body').each(function (i) {
+                    if ($(this).data('id').toString() === $('#commOid').val()) {
+                        $(this).addClass('comm-current')
+                    }
+                })
+            });
+
+
+            // logStore();
+            $('.commentView-card').on('click', '.media-body', function () {
+                var oid = $(this).data('id');
+                var index = getIndex();
+                pushHistory(oid, ++index);
+                render(oid);
+
+            })
+
+            $('.opt-left').click(function () {
+                var oid = getHistoryOid(getIndex() - 1)
+                if (oid !== undefined) {
+                    putIndex(getIndex() - 1)
+                    render(oid);
+                }
+            })
+
+            $('.opt-right').click(function () {
+                var oid = getHistoryOid(getIndex() + 1)
+                if (oid !== undefined) {
+                    putIndex(getIndex() + 1)
+                    render(oid)
+                }
+            })
+
+            function render(oid) {
+                view('LAY-popup-comment-view').render('comment/view', oid).done(function () {
+                    form.render(null, 'LAY-popup-comment-view');
+                    $('.opt-history').show();
+                });
+            }
+
+            function putHistory(history) {
+                layui.sessionData('comment-view-history', {
+                    key: 'history'
+                    , value: history
+                });
+            }
+
+            function putIndex(index) {
+                layui.sessionData('comment-view-history', {
+                    key: 'index'
+                    , value: index
+                });
+            }
+
+            function getIndex() {
+                var index = layui.sessionData('comment-view-history').index;
+                return index === undefined ? 0 : index
+            }
+
+            function getHistoryOid(index) {
+                var history = layui.sessionData('comment-view-history').history;
+
+                return history[index]
+            }
+
+            function pushHistory(value, index) {
+                var history = layui.sessionData('comment-view-history').history;
+                if (history === undefined || history == null) {
+                    history = [];
+                }
+                history.splice(index)
+                history.push(value);
+                putHistory(history);
+                putIndex(index);
+            }
+
+            function logStore() {
+                var index = layui.sessionData('comment-view-history').index;
+                var history = layui.sessionData('comment-view-history').history;
+                console.log(history)
+                console.log(index)
+            }
+
+            if (d.data.read === 0) {
+                ajaxApiPost(
+                    "/api/admin/comment/read",
+                    JSON.stringify({
+                        entityOid: d.data.oid,
+                    }),
+                );
+            }
+
+        })
+    }
+
+
+</script>

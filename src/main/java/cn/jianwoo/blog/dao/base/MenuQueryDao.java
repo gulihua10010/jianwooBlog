@@ -18,6 +18,19 @@ public interface MenuQueryDao {
 
     List<Menu> queryMenuByType(Integer type);
 
+
+    /**
+     * 通过菜单type查询 有效的Menu
+     * VALID = 1
+     *
+     * @param type 菜单type {@link cn.jianwoo.blog.enums.MenuTypeEnum} 1:前台 2:后台
+     * @return List<Menu>
+     * @author gulihua
+     */
+
+    List<Menu> queryEffectiveMenuByType(Integer type);
+
+
     /**
      * 通过菜单type 和 父 oid 查询 Menu
      *

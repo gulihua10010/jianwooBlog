@@ -1,0 +1,407 @@
+<title>文章编辑</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>文章管理</cite></a>
+        <a><cite>文章编辑</cite></a>
+    </div>
+</div>
+<script type="text/html" template>
+    <link rel="stylesheet" href="{{ layui.setter.base }}style/jw_admin.css?v={{ layui.admin.v }}-1" media="all">
+</script>
+<div class="layui-fluid layui-form" id="layuiadmin-form-comment" lay-filter="layuiadmin-form-comment">
+    <script type="text/html" template lay-url="/api/admin/article/info/{{ layui.router().search.id }}"
+            lay-done="doEdit(d);">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md9 art-left">
+                <div class="layui-card">
+                    <div class="layui-card-header">
+                        {{# if(d.data.status !== -1){ }}
+                        编辑文章
+                        {{# } }}
+                        {{# if(d.data.status === -1){ }}
+                        回收站文章预览 (此页面为回收站文章预览页面，信息不可编辑！)
+                        {{# } }}
+
+                    </div>
+                </div>
+
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        {{# if(d.data.status === -1){ }}
+                        <div>
+                            <h1 style="font-weight: bold">{{ d.data.title }}</h1>
+                        </div>
+                        <span style="color: #aaa"> &nbsp;&nbsp;&nbsp;------ {{ d.data.author }}</span>
+                        {{# } }}
+                        {{# if(d.data.status !== -1){ }}
+                        <div class="layui-form-item">
+                            <input autocomplete="off" class="layui-input" id="art-title" name="title" placeholder="键入标题"
+                                   type="text" lay-verify="required|maxLength" lay-max="50"
+                                   value="{{ d.data.title }}">
+                        </div>
+                        <div class="layui-form-item">
+
+                            <input autocomplete="off" class="layui-input" id="art-author"
+                                   name="author" value="{{ d.data.author }}" lay-verify="required|maxLength"
+                                   lay-max="10"
+                                   placeholder="请输入作者"
+                                   type="text">
+                        </div>
+                        {{# } }}
+                    </div>
+                </div>
+                {{# if(d.data.status === -1){ }}
+                <div class="layui-card" style="color: #aaa">
+                    <div class="layui-card-header">
+                        <span style="color: #aaa">{{ d.data.menuName == null ? "" : ("类别: " + d.data.menuName) }}</span>
+                        <span style="color: #aaa">标签:</span>
+                        {{# layui.each(d.data.artTagsList, function(index, item){ }}
+                        <span style="color: #aaa">
+                                 {{#  if(index !== 0){ }}
+                                  ,
+                                 {{#  } }}
+                                {{ item.name}}
+                            </span>
+                        {{# }); }}
+                    </div>
+                </div>
+                {{# } }}
+                <div class="layui-card">
+                    <div class="layui-card-body" id="article-content">
+                        <textarea id="article-content-text-edit" name="article"></textarea>
+                    </div>
+                </div>
+                {{# if(d.data.status !== -1){ }}
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        <div class="art-comment" id="art-comment">
+                            <div class="add-comment-btn">
+                                <button class="layui-btn add-comment">添加评论</button>
+                            </div>
+                            <div class="comment-input" style="display: none">
+                                <div class="layui-form-item layui-form-text">
+                               <textarea class="layui-textarea" id="comm-content" name="comm-content"
+                                         placeholder="请输入内容"></textarea>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-right">
+                                        <button class="comment-btn layui-btn" id="addComment">提交评论</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{# } }}
+
+                <div class="layui-card commentView-card">
+                    <div class="layui-card-body">
+                        <!--                        comment-->
+                        <div class="commentView" id="commentView"></div>
+                    </div>
+                    <div>
+                        <input type="hidden" name="artOid" id="artOid" value="{{d.data.id}}">
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="layui-col-md3 art-right-side">
+                <div class="layui-card">
+                    <div class="layui-card-header">文章标签</div>
+                    <div class="layui-card-body">
+                        <div class="choose-tags">
+                            <div class="choosed">
+                                {{# layui.each(d.data.artTagsList, function(index, item){ }}
+                                <span class="publish-tags-content">{{ item.name}}
+                                         <span class="tags-id" style="display: none">{{ item.id}}</span><a>×</a>
+                                     </span>
+                                {{# }); }}
+
+                            </div>
+                            <div class="separation-line"></div>
+                            <div class="tags">
+                                {{# layui.each(d.data.tagsList, function(index, item){ }}
+                                <span class="publish-tags-content">{{ item.name}}
+                                     <span class="tags-id" style="display: none">{{ item.id}}</span>
+                                 </span>
+                                {{# }); }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-card">
+                    <div class="layui-card-header">文章分类</div>
+                    <div class="layui-card-body">
+                        <div class="article-type">
+                            <div class="layui-card layui-form" lay-filter="component-form-element" id="type-select">
+                                <select lay-search lay-verify="required" name="typeId" id="typeId">
+                                    <option style="font-weight: bold;color: black" value="-1"></option>
+                                    {{# layui.each(d.data.menuList, function(index, item){ }}
+                                    <option style="color: #777" value="{{ item.id }}" {{# if(item.id=== d.data.menuOid){
+                                            }} selected {{# } }}>{{ item.name }}
+                                    </option>
+                                    {{# }); }}
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="layui-card">
+                    <div class="layui-card-header">缩略图</div>
+                    <div class="layui-card-body">
+                        <div class="article-img">
+                            <div class="layui-upload">
+                                <button class="layui-btn" id="test1" type="button">上传图片</button>
+                                <div class="layui-upload-list imgupload">
+                                    <img class="pre-upd-img" id="breimg" style="margin-left: 5px" width="100"
+                                         src="{{ d.data.imgSrc }}">
+                                    <p id="demoText"></p>
+                                    <input id="imgsrc" name="imgsrc" style="visibility: hidden" value=""/>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-card">
+                    <div class="layui-card-header">操作</div>
+                    <div class="layui-card-body">
+                        <div class="published-btns-opt">
+                            <div class="article-status">
+                               <span style="text-space: 2">&nbsp;&nbsp;当前状态:
+                                    {{#  if(d.data.status === 1){ }}
+                                     已发布
+                                    {{#  } }}
+                                    {{# if(d.data.status === 0){ }}
+                                    草稿
+                                    {{#  } }}
+                                    {{# if(d.data.status === -1){ }}
+                                    回收站
+                                    {{#  } }}
+                                   </span>
+                            </div>
+                            <div class="btns-opt">
+                                <button class="layui-btn layui-btn-primary layui-btn-sm wd30p wdmin70"
+                                        id="articlePreview">文章预览
+                                </button>
+                            </div>
+                            <div class="separation-line"></div>
+                            <a><i class="iconfont">&#xe606;</i> 公开度：
+                                <span id="published-public">
+                            {{#  if(d.data.visitType === 1){ }}
+                                密码
+                            {{#  } }}
+                            {{# if(d.data.visitType === 0){ }}
+                                私密
+                            {{#  } }}
+                            {{# if(d.data.visitType === 2){ }}
+                                置顶
+                            {{#  } }}
+                            {{# if(d.data.visitType === 1){ }}
+                                公开
+                            {{#  } }}
+                            </span></a>&nbsp;
+                            <a id="edit">编辑</a>
+                            <form class="layui-form" lay-filter="component-form-element" method="post">
+                                <div class="layui-form-item" id="ispublic-form">
+                                    <div class="layui-input-block">
+                                        <input {{# if(d.data.visitType=== 1 || d.data.visitType=== 2){ }} checked {{# }
+                                               }}
+                                               class="ispublic-radio" id="public" lay-filter="public"
+                                               name="isPublic" title="公开"
+                                               type="radio" value="1">
+                                        <span id="hometop1"><input id="hometop" lay-skin="primary" title="将文章置于首页顶端"
+                                                                   type="checkbox"
+                                                                   {{# if(d.data.visitType=== 2){ }} checked {{# } }}
+                                                                   value="2" name="hometop"></span><br>
+                                        <input class="ispublic-radio" id="passw" lay-filter="passw" name="isPublic"
+                                               title="密码保护" {{# if(d.data.visitType=== -1){ }} checked {{# } }}
+                                               type="radio"
+                                               value="-1">
+                                        <input autocomplete="off" class="layui-input wd80p" id="passw-content"
+                                               {{# if(d.data.visitType !== -1){ }} style="display: none" {{# } }}
+                                               value="{{d.data.password}}"
+                                               placeholder="密码"
+                                               type="password">
+                                        <input autocomplete="off" class="layui-input wd80p" id="passw-content-confirm"
+                                               placeholder="确认密码"
+                                               {{# if(d.data.visitType !== -1){ }} style="display: none" {{# } }}
+                                               type="password"><br>
+                                        <input class="ispublic-radio" id="secret" lay-filter="secret" name="isPublic"
+                                               title="私密" {{# if(d.data.visitType=== 0){ }} checked {{# } }}
+                                               type="radio" value="0">
+
+                                    </div>
+                                    <span id="pwd-tips" style="color: red;display: none"></span>
+                                    <div class="btns-opt" id="btns0" style="display: block">
+                                        <button class="layui-btn layui-btn-sm" id="btn-ispublic-sure">确定</button>
+                                        <button class="layui-btn layui-btn-primary layui-btn-sm"
+                                                id="btn-ispublic-cancel">
+                                            取消
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div id="isComment">
+                                        <input id="is-comment" name="isComment" title="是否可以评论"
+                                               {{# if(d.data.isComment=== 1){ }} checked {{# } }} type="checkbox">
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="separation-line"></div>
+                            <div class="btn-group">
+                                <div class="negative-btn">
+                                    <button class="layui-btn layui-btn-primary" id="cancel">重置</button>
+                                    {{# if(d.data.status !== -1){ }}
+                                    <button class="layui-btn layui-btn-danger wd50p" id="remove-del"
+                                            lay-filter="submit-article"
+                                            lay-submit>移至回收站
+                                    </button>
+                                    {{# } }}
+
+                                </div>
+                                <div class="positive-btn">
+                                    {{# if(d.data.status === 0){ }}
+                                    <button class="layui-btn layui-btn-primary" id="published-save"
+                                            lay-filter="submit-article" lay-submit>保存
+                                    </button>
+                                    {{# } }}
+                                    {{# if(d.data.status === 0){ }}
+                                    <button class="layui-btn positive-btn-right wd50p" id="published-pub"
+                                            lay-filter="submit-article" lay-submit>发布
+                                    </button>
+                                    {{# } }}
+                                    {{# if(d.data.status === 1){ }}
+                                    <button class="layui-btn positive-btn-right wd50p" id="published-update"
+                                            lay-filter="submit-article" lay-submit>更新
+                                    </button>
+                                    {{# } }}
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <script type="text/html" template lay-url="/api/admin/token/generate"
+            lay-data="{pageId: 'A12'}" lay-type="post">
+        <input type="hidden" name="subToken" id="subToken" value="{{d.token}}">
+    </script>
+</div>
+
+<script id="commentTemplate" type="text/html">
+
+    <div class="comment-content ">
+        {{# layui.each(d, function(index, comm){ }}
+        <div class="comment-list">
+            <div class="media-body">
+                <a href="javascript:" class="media-left" style="float: left;">
+                    <img src="{{ comm.headImg }}" height="46px"
+                         width="46px">
+                </a>
+                <div class="pad-btm">
+                    <p class="fontColor">
+                        <a href="javascript:">{{ comm.user }}</a>
+                        <span style="float: right">
+                                            <button class="layui-btn layui-btn-sm reply"
+                                                    data-id="{{ comm.oid}}">回复</button>
+                                            <button class="layui-btn layui-btn-sm layui-btn-danger del"
+                                                    data-id="{{ comm.oid}}">删除</button>
+                                        </span>
+                    </p>
+                    <p class="min-font">
+                        <a href="javascript:">{{ comm.date }}</a>
+                    </p>
+                </div>
+                <p class="message-text">{{=comm.content}}</p>
+            </div>
+            <div class="comment-content-reply">
+                {{# layui.each(comm.replyList, function(index, rep){ }}
+                <div>
+                    <div class="media-body">
+                        <a href="javascript:" class="media-left" style="float: left;">
+                            <img src="{{rep.headImg}}" height="46px"
+                                 width="46px">
+                        </a>
+                        <div class="pad-btm">
+                            <p class="fontColor">
+                                <a href="javascript:">{{rep.user}}</a>
+                                <span style="float: right">
+                                                        <button class="layui-btn layui-btn-sm reply"
+                                                                data-id="{{ rep.oid}}">回复</button>
+                                                        <button class="layui-btn layui-btn-sm layui-btn-danger del"
+                                                                data-id="{{ rep.oid}}">删除</button>
+                                                 </span>
+                            </p>
+                            <p class="min-font">
+                                <a href="javascript:">回复给{{rep.parentUserName}}</a>
+                                <a href="javascript:">{{rep.date}}</a>
+                            </p>
+                        </div>
+                        <p class="message-text">{{=rep.content}}</p>
+                    </div>
+                </div>
+                {{# }); }}
+            </div>
+        </div>
+        {{# }); }}
+    </div>
+
+
+</script>
+
+<script src="/static/plugins/tinymce/tinymce.min.js" type="text/javascript"></script>
+<script>
+    doEdit = function (d) {
+        layui.use('articleEdit', layui.factory('articleEdit'))
+            .use('comment', layui.factory('comment'))
+            .use(['admin', 'articleEdit', 'form', 'table', 'element', 'comment'], function () {
+                var $ = layui.jquery
+                    , form = layui.form
+                    , element = layui.element;
+                element.render()
+                form.render()
+                //回收站view
+                if (d.data.status === -1) {
+                    console.log("===回收站===")
+                    $('input').attr('disabled', 'disabled')
+                    $('input').css('border', 'none')
+                    $('.art-right-side').hide()
+                    $('button').hide()
+                    $('.art-left').removeClass('layui-col-md9')
+                    $('#article-content-text-edit').hide()
+                    $('#article-content').html(d.data.content)
+                }
+                if (d.data.status !== -1) {
+                    tinymceInit("#article-content-text-edit", d.data.content);
+                    var tags = $('.choose-tags').find('.publish-tags-content');
+                    tags.each(function (i) {
+                        var color = Math.random();
+                        var r = parseInt((color * (i + 1) * 1234) % 254);
+                        var g = parseInt((color * (i + 1) * 4321) % 254);
+                        var b = parseInt((color * (i + 1) * 2222) % 254);
+                        $(this).css("background-color", "rgba(" + r + "," + g + "," + b + ",0.1)")
+                        $(this).css("border", "  1px rgba(" + r + "," + g + "," + b + ",1) solid")
+                    })
+                }
+
+                var artOid = layui.router().search.id;
+                renderComm(artOid, function () {
+                    if (d.data.status === -1) {
+                        $('button').hide();
+                    }
+                });
+
+            })
+    }
+
+
+</script>

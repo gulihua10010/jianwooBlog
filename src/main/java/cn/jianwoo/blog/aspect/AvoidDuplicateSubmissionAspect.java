@@ -107,6 +107,8 @@ public class AvoidDuplicateSubmissionAspect {
                     if (!paramStr.contains(SUB_TOKEN)) {
                         continue;
                     }
+                    System.out.println("paramStr");
+                    System.out.println(paramStr);
                     JSONObject parameter = JSON.parseObject(paramStr);
                     if (null != parameter) {
                         clinetToken = (String) parameter.get(SUB_TOKEN);

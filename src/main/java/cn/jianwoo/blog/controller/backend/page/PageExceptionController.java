@@ -1,7 +1,7 @@
 package cn.jianwoo.blog.controller.backend.page;
 
-import cn.jianwoo.blog.config.page.CommBackendPageTemplateConfig;
-import cn.jianwoo.blog.config.page.CommBackendPageUrlConfig;
+import cn.jianwoo.blog.config.router.CommBackendPageTemplateConfig;
+import cn.jianwoo.blog.config.router.CommBackendPageUrlConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;

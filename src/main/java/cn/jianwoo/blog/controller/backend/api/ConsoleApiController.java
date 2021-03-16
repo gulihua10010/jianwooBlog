@@ -2,17 +2,20 @@ package cn.jianwoo.blog.controller.backend.api;
 
 import cn.hutool.core.date.DateUtil;
 import cn.jianwoo.blog.base.BaseController;
-import cn.jianwoo.blog.config.page.ConsoleApiUrlConfig;
+import cn.jianwoo.blog.builder.JwBuilder;
+import cn.jianwoo.blog.config.router.ConsoleApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
-import cn.jianwoo.blog.dto.response.ArticleResponse;
-import cn.jianwoo.blog.dto.response.CommentResponse;
-import cn.jianwoo.blog.dto.response.LayuiBaseResponse;
+import cn.jianwoo.blog.dto.response.ArticleSummaryResponse;
+import cn.jianwoo.blog.dto.response.CommentSummaryResponse;
+import cn.jianwoo.blog.dto.response.ConsoleCountResponse;
 import cn.jianwoo.blog.dto.response.vo.ArticleVO;
 import cn.jianwoo.blog.dto.response.vo.CommentVO;
+import cn.jianwoo.blog.dto.response.vo.ConsoleCountVO;
 import cn.jianwoo.blog.entity.Article;
 import cn.jianwoo.blog.entity.extension.CommentExt;
 import cn.jianwoo.blog.service.biz.ArticleBizService;
 import cn.jianwoo.blog.service.biz.CommentBizService;
+import cn.jianwoo.blog.service.biz.TagsBizService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +39,15 @@ public class ConsoleApiController extends BaseController {
     private CommentBizService commentBizService;
     @Autowired
     private ArticleBizService articleBizService;
+    @Autowired
+    private TagsBizService tagsBizService;
     private final static String templateName = "CONSOLE_TEMPLATE";
 
     /**
      * 查詢已发布的最近10篇文章列表(控制台首页)<br/>
      * url:/api/admin/console/recent/article/published/query<br/>
      *
-     * @return 返回响应 {@link ArticleResponse}
+     * @return 返回响应 {@link ArticleSummaryResponse}
      * code<br/>
      * count<br/>
      * data<br/>
@@ -59,7 +64,7 @@ public class ConsoleApiController extends BaseController {
     @GetMapping(ConsoleApiUrlConfig.URL_RECENT_ARTICLE_PUBLISHED_QUERY)
     public String queryPublishedArticleList() {
         List<Article> articleList = articleBizService.queryRecentPublishedArts(10);
-        ArticleResponse response = ArticleResponse.getInstance();
+        ArticleSummaryResponse response = ArticleSummaryResponse.getInstance();
         if (CollectionUtils.isNotEmpty(articleList)) {
             List<ArticleVO> articleVOList = articleList.stream().map(data -> {
                 ArticleVO vo = new ArticleVO();
@@ -71,7 +76,6 @@ public class ConsoleApiController extends BaseController {
             }).collect(Collectors.toList());
             response.setData(articleVOList);
         }
-        response.setCode(LayuiBaseResponse.SUCCESS_CODE);
         return super.responseToJSONString(response);
     }
 
@@ -79,7 +83,7 @@ public class ConsoleApiController extends BaseController {
      * 查詢最近10篇文章草稿列表(控制台首页)<br/>
      * url:/api/admin/console/recent/article/draft/query<br/>
      *
-     * @return 返回响应 {@link ArticleResponse}
+     * @return 返回响应 {@link ArticleSummaryResponse}
      * code<br/>
      * count<br/>
      * data<br/>
@@ -96,7 +100,7 @@ public class ConsoleApiController extends BaseController {
     @GetMapping(ConsoleApiUrlConfig.URL_RECENT_ARTICLE_DRAFT_QUERY)
     public String queryDraftArticleList() {
         List<Article> articleList = articleBizService.queryRecentDraft(10);
-        ArticleResponse response = ArticleResponse.getInstance();
+        ArticleSummaryResponse response = ArticleSummaryResponse.getInstance();
         if (CollectionUtils.isNotEmpty(articleList)) {
             List<ArticleVO> articleVOList = articleList.stream().map(data -> {
                 ArticleVO vo = new ArticleVO();
@@ -108,7 +112,6 @@ public class ConsoleApiController extends BaseController {
             }).collect(Collectors.toList());
             response.setData(articleVOList);
         }
-        response.setCode(LayuiBaseResponse.SUCCESS_CODE);
         return super.responseToJSONString(response);
     }
 
@@ -116,7 +119,7 @@ public class ConsoleApiController extends BaseController {
      * 查詢最近10个文章评论列表(控制台首页)<br/>
      * url:/api/admin/console/recent/comment/query<br/>
      *
-     * @return 返回响应 {@link CommentResponse}
+     * @return 返回响应 {@link CommentSummaryResponse}
      * code<br/>
      * count<br/>
      * data<br/>
@@ -137,7 +140,7 @@ public class ConsoleApiController extends BaseController {
     @GetMapping(ConsoleApiUrlConfig.URL_RECENT_COMMENT_QUERY)
     public String queryCommentList() {
         List<CommentExt> commentExtList = commentBizService.queryRecentComments(10);
-        CommentResponse response = CommentResponse.getInstance();
+        CommentSummaryResponse response = CommentSummaryResponse.getInstance();
         if (CollectionUtils.isNotEmpty(commentExtList)) {
             List<CommentVO> list = new ArrayList<>();
             commentExtList.forEach(domain -> {
@@ -157,7 +160,88 @@ public class ConsoleApiController extends BaseController {
             });
             response.setData(list);
         }
-        response.setCode(LayuiBaseResponse.SUCCESS_CODE);
+        return super.responseToJSONString(response);
+    }
+
+
+    /**
+     * 查詢发布文章的数量<br/>
+     * url:/api/admin/console/published/articles/count<br/>
+     *
+     * @return 返回响应 {@link ConsoleCountResponse}
+     * status<br/>
+     * data<br/>
+     * --count<br/>
+     * @author gulihua
+     */
+    @GetMapping(ConsoleApiUrlConfig.URL_PUBLISHED_ARTICLES_COUNT)
+    public String queryPublishedArtsCount() {
+        ConsoleCountResponse response = ConsoleCountResponse.getInstance();
+        int publishedArtsCount = articleBizService.countWithPublishArts();
+        ConsoleCountVO vo = JwBuilder.of(ConsoleCountVO::new)
+                .with(ConsoleCountVO::setCount, publishedArtsCount).build();
+        response.setData(vo);
+        return super.responseToJSONString(response);
+    }
+
+
+    /**
+     * 查詢草稿文章的数量<br/>
+     * url:/api/admin/console/draft/articles/count<br/>
+     *
+     * @return 返回响应 {@link ConsoleCountResponse}
+     * status<br/>
+     * data<br/>
+     * --count<br/>
+     * @author gulihua
+     */
+    @GetMapping(ConsoleApiUrlConfig.URL_DRAFT_ARTICLES_COUNT)
+    public String queryDraftArtsCount() {
+        ConsoleCountResponse response = ConsoleCountResponse.getInstance();
+        int draftArtsCount = articleBizService.countWithDraftArts();
+        ConsoleCountVO vo = JwBuilder.of(ConsoleCountVO::new)
+                .with(ConsoleCountVO::setCount, draftArtsCount).build();
+        response.setData(vo);
+        return super.responseToJSONString(response);
+    }
+
+    /**
+     * 查詢评论的数量<br/>
+     * url:/api/admin/console/comment/count<br/>
+     *
+     * @return 返回响应 {@link ConsoleCountResponse}
+     * status<br/>
+     * data<br/>
+     * --count<br/>
+     * @author gulihua
+     */
+    @GetMapping(ConsoleApiUrlConfig.URL_COMMENT_COUNT)
+    public String queryCommentCount() {
+        ConsoleCountResponse response = ConsoleCountResponse.getInstance();
+        int commentCount = commentBizService.countAllComments();
+        ConsoleCountVO vo = JwBuilder.of(ConsoleCountVO::new)
+                .with(ConsoleCountVO::setCount, commentCount).build();
+        response.setData(vo);
+        return super.responseToJSONString(response);
+    }
+
+    /**
+     * 查詢文章表情的数量<br/>
+     * url:/api/admin/console/tags/count<br/>
+     *
+     * @return 返回响应 {@link ConsoleCountResponse}
+     * status<br/>
+     * data<br/>
+     * --count<br/>
+     * @author gulihua
+     */
+    @GetMapping(ConsoleApiUrlConfig.URL_TAGS_COUNT)
+    public String queryTagsCount() {
+        ConsoleCountResponse response = ConsoleCountResponse.getInstance();
+        int tagsCount = tagsBizService.countAllTags();
+        ConsoleCountVO vo = JwBuilder.of(ConsoleCountVO::new)
+                .with(ConsoleCountVO::setCount, tagsCount).build();
+        response.setData(vo);
         return super.responseToJSONString(response);
     }
 }

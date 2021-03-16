@@ -1,8 +1,10 @@
 package cn.jianwoo.blog.dto.response.vo;
 
-import cn.jianwoo.blog.config.page.CommBackendPageUrlConfig;
+import cn.jianwoo.blog.config.LongToStringSerializerConfig;
+import cn.jianwoo.blog.config.router.CommBackendPageUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.util.DomainUtil;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,6 +29,7 @@ public class ArticleVO implements Serializable {
     /**
      * 文章OID
      */
+    @JSONField(serializeUsing = LongToStringSerializerConfig.class)
     private Long oid;
     /**
      * 文章标题

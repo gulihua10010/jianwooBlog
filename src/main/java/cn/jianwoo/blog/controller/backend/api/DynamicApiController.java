@@ -2,12 +2,11 @@ package cn.jianwoo.blog.controller.backend.api;
 
 import cn.hutool.core.date.DateUtil;
 import cn.jianwoo.blog.base.BaseController;
-import cn.jianwoo.blog.config.page.DynamicApiUrlConfig;
+import cn.jianwoo.blog.config.router.DynamicApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dto.request.CommentPageRequest;
 import cn.jianwoo.blog.dto.request.VisitPageRequest;
-import cn.jianwoo.blog.dto.response.CommentResponse;
-import cn.jianwoo.blog.dto.response.LayuiBaseResponse;
+import cn.jianwoo.blog.dto.response.CommentSummaryResponse;
 import cn.jianwoo.blog.dto.response.VisitResponse;
 import cn.jianwoo.blog.dto.response.vo.CommentVO;
 import cn.jianwoo.blog.dto.response.vo.VisitVO;
@@ -22,8 +21,6 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -86,7 +83,6 @@ public class DynamicApiController extends BaseController {
             response.setData(list);
             response.setCount(pageInfo.getTotal());
         }
-        response.setCode(LayuiBaseResponse.SUCCESS_CODE);
         return super.responseToJSONString(response);
 
     }
@@ -97,7 +93,7 @@ public class DynamicApiController extends BaseController {
      * url:/api/admin/dynamic/visit/query<br/>
      *
      * @param param JSON 参数({@link VisitPageRequest})
-     * @return 返回响应 {@link CommentResponse}
+     * @return 返回响应 {@link CommentSummaryResponse}
      * code<br/>
      * count<br/>
      * data<br/>
@@ -123,7 +119,7 @@ public class DynamicApiController extends BaseController {
         pageParam.setPageNo(param.getPage());
         pageParam.setPageSize(param.getLimit());
         PageInfo<CommentExt> pageInfo = commentBizService.queryAllCommentPage(pageParam);
-        CommentResponse response = CommentResponse.getInstance();
+        CommentSummaryResponse response = CommentSummaryResponse.getInstance();
         if (CollectionUtils.isNotEmpty(pageInfo.getList())) {
             List<CommentVO> list = new ArrayList<>();
             pageInfo.getList().forEach(domain -> {
@@ -144,7 +140,6 @@ public class DynamicApiController extends BaseController {
             response.setData(list);
             response.setCount(pageInfo.getTotal());
         }
-        response.setCode(LayuiBaseResponse.SUCCESS_CODE);
         return super.responseToJSONString(response);
 
     }

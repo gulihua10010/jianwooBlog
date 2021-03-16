@@ -475,11 +475,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
     public void doRemoveToRecycleBinList(List<Long> oidList) throws JwBlogException {
         if (CollectionUtils.isNotEmpty(oidList)) {
             for (Long oid : oidList) {
-                try {
-                    this.doRemoveToRecycle(oid);
-                } catch (JwBlogException e) {
-                    throw ArticleBizException.DELETE_FAILED_EXCEPTION.format(oid).print();
-                }
+                this.doRemoveToRecycle(oid);
             }
         }
     }

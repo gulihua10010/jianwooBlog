@@ -5,6 +5,7 @@
         <id column="OID" jdbcType="BIGINT" property="oid"/>
         <result column="USERNAME" jdbcType="VARCHAR" property="username"/>
         <result column="PASSWORD" jdbcType="VARCHAR" property="password"/>
+        <result column="NICK" jdbcType="VARCHAR" property="nick"/>
         <result column="PHONE" jdbcType="VARCHAR" property="phone"/>
         <result column="EMAIL" jdbcType="VARCHAR" property="email"/>
         <result column="SEX" jdbcType="VARCHAR" property="sex"/>
@@ -75,9 +76,8 @@
         </where>
     </sql>
     <sql id="Base_Column_List">
-        OID
-        , USERNAME, PASSWORD, PHONE, EMAIL, SEX, IP, LAST_LOGIN_IP, LAST_LOGIN_TIME, CREATE_DATE,
-    UPDATE_DATE
+        OID, USERNAME, `PASSWORD`, NICK, PHONE, EMAIL, SEX, IP, LAST_LOGIN_IP, LAST_LOGIN_TIME,
+    CREATE_DATE, UPDATE_DATE
     </sql>
     <select id="selectByExample" parameterType="cn.jianwoo.blog.entity.example.AdminExample" resultMap="BaseResultMap">
         select
@@ -102,8 +102,10 @@
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete
-        from admin
-        where OID = #{oid,jdbcType=BIGINT}
+        from
+            admin
+        where
+            OID = #{oid,jdbcType=BIGINT}
     </delete>
     <delete id="deleteByExample" parameterType="cn.jianwoo.blog.entity.example.AdminExample">
         delete from admin
@@ -112,14 +114,18 @@
         </if>
     </delete>
     <insert id="insert" parameterType="cn.jianwoo.blog.entity.Admin">
-        insert into admin (OID, USERNAME, PASSWORD,
-                           PHONE, EMAIL, SEX,
-                           IP, LAST_LOGIN_IP, LAST_LOGIN_TIME,
-                           CREATE_DATE, UPDATE_DATE)
-        values (#{oid,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
-                #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR},
-                #{ip,jdbcType=VARCHAR}, #{lastLoginIp,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=TIMESTAMP},
-                #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP})
+        insert
+        into
+            admin
+            (OID, USERNAME, `PASSWORD`,
+             NICK, PHONE, EMAIL,
+             SEX, IP, LAST_LOGIN_IP,
+             LAST_LOGIN_TIME, CREATE_DATE, UPDATE_DATE)
+        values
+            (#{oid,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+             #{nick,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
+             #{sex,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{lastLoginIp,jdbcType=VARCHAR},
+             #{lastLoginTime,jdbcType=TIMESTAMP}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP})
     </insert>
     <insert id="insertSelective" parameterType="cn.jianwoo.blog.entity.Admin">
         insert into admin
@@ -131,7 +137,10 @@
                 USERNAME,
             </if>
             <if test="password != null">
-                PASSWORD,
+                `PASSWORD`,
+            </if>
+            <if test="nick != null">
+                NICK,
             </if>
             <if test="phone != null">
                 PHONE,
@@ -167,6 +176,9 @@
             </if>
             <if test="password != null">
                 #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="nick != null">
+                #{nick,jdbcType=VARCHAR},
             </if>
             <if test="phone != null">
                 #{phone,jdbcType=VARCHAR},
@@ -210,7 +222,10 @@
                 USERNAME = #{record.username,jdbcType=VARCHAR},
             </if>
             <if test="record.password != null">
-                PASSWORD = #{record.password,jdbcType=VARCHAR},
+                `PASSWORD` = #{record.password,jdbcType=VARCHAR},
+            </if>
+            <if test="record.nick != null">
+                NICK = #{record.nick,jdbcType=VARCHAR},
             </if>
             <if test="record.phone != null">
                 PHONE = #{record.phone,jdbcType=VARCHAR},
@@ -245,7 +260,8 @@
         update admin
         set OID = #{record.oid,jdbcType=BIGINT},
         USERNAME = #{record.username,jdbcType=VARCHAR},
-        PASSWORD = #{record.password,jdbcType=VARCHAR},
+        `PASSWORD` = #{record.password,jdbcType=VARCHAR},
+        NICK = #{record.nick,jdbcType=VARCHAR},
         PHONE = #{record.phone,jdbcType=VARCHAR},
         EMAIL = #{record.email,jdbcType=VARCHAR},
         SEX = #{record.sex,jdbcType=VARCHAR},
@@ -265,7 +281,10 @@
                 USERNAME = #{username,jdbcType=VARCHAR},
             </if>
             <if test="password != null">
-                PASSWORD = #{password,jdbcType=VARCHAR},
+                `PASSWORD` = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="nick != null">
+                NICK = #{nick,jdbcType=VARCHAR},
             </if>
             <if test="phone != null">
                 PHONE = #{phone,jdbcType=VARCHAR},
@@ -296,8 +315,10 @@
     </update>
     <update id="updateByPrimaryKey" parameterType="cn.jianwoo.blog.entity.Admin">
         update admin
-        set USERNAME        = #{username,jdbcType=VARCHAR},
-            PASSWORD        = #{password,jdbcType=VARCHAR},
+        set
+            USERNAME        = #{username,jdbcType=VARCHAR},
+            `PASSWORD`      = #{password,jdbcType=VARCHAR},
+            NICK            = #{nick,jdbcType=VARCHAR},
             PHONE           = #{phone,jdbcType=VARCHAR},
             EMAIL           = #{email,jdbcType=VARCHAR},
             SEX             = #{sex,jdbcType=VARCHAR},
@@ -306,7 +327,8 @@
             LAST_LOGIN_TIME = #{lastLoginTime,jdbcType=TIMESTAMP},
             CREATE_DATE     = #{createDate,jdbcType=TIMESTAMP},
             UPDATE_DATE     = #{updateDate,jdbcType=TIMESTAMP}
-        where OID = #{oid,jdbcType=BIGINT}
+        where
+            OID = #{oid,jdbcType=BIGINT}
     </update>
     <sql id="MySQLDialectSuffix">
         <if test="start != null and rows != null">

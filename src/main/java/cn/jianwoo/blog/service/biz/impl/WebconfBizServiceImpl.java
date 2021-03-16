@@ -1,6 +1,6 @@
 package cn.jianwoo.blog.service.biz.impl;
 
-import cn.jianwoo.blog.config.page.WebConfDataConfig;
+import cn.jianwoo.blog.config.router.WebConfDataConfig;
 import cn.jianwoo.blog.dao.base.WebconfTransDao;
 import cn.jianwoo.blog.dao.biz.WebconfBizDao;
 import cn.jianwoo.blog.entity.Webconf;
@@ -11,8 +11,6 @@ import cn.jianwoo.blog.service.biz.WebconfBizService;
 import cn.jianwoo.blog.service.bo.WebconfBO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

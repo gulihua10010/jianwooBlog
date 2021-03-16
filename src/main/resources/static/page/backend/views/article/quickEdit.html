@@ -1,0 +1,167 @@
+<style>
+    .layui-form-label {
+        padding-left: 0;
+    }
+
+    .layui-input-block {
+        margin-left: 95px;
+
+    }
+</style>
+<div class=" layui-form" id="layuiadmin-form-article-quick-edit" lay-filter="layuiadmin-form-article-quick-edit">
+    <script type="text/html" template lay-url="/api/admin/article/info/{{ d.params.oid }}"
+            lay-done="doEdit(d)">
+        <div class="layui-card-body">
+            <div class="layui-form-item">
+                <label class="layui-form-label">文章标题</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" name="title" autocomplete="off" lay-verify="required|maxLength"
+                           lay-max="50"
+                           value="{{ d.data.title }}" type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">作者</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" name="author" autocomplete="off" lay-verify="required|maxLength"
+                           lay-max="10"
+                           value="{{ d.data.author }}" type="text">
+                </div>
+            </div>
+            <div class="layui-form-item" id="ispublic-form">
+                <label class="layui-form-label">文章权限</label>
+
+                <div class="layui-input-block">
+
+                    <input class="ispublic-radio" id="public" lay-filter="public" name="isPublic"
+                           {{# if(d.data.visitType=== 1 || d.data.visitType=== 2){ }} checked {{# }
+                           }} title="公开"
+                           type="radio" value="1">
+                    <span id="hometop1"><input id="hometop" lay-skin="primary" name="isPublic"
+                                               {{# if(d.data.visitType=== 2){ }} checked {{# } }} title="将文章置于首页顶端"
+                                               type="checkbox"
+                                               value="2"></span><br>
+                    <input class="ispublic-radio" id="passw" lay-filter="passw" name="isPublic"
+                           {{# if(d.data.visitType=== -1){ }} checked {{# } }}
+                           title="密码保护"
+                           type="radio"
+                           value="-1"><br>
+                    <input autocomplete="off" class="layui-input passw"
+                           id="passw-content"
+                           name="passwContent" placeholder="密码" lay-verify="pass"
+                           {{# if(d.data.visitType !== -1){ }} style="display: none" {{# } }}
+                           value="{{d.data.password}}"
+                           type="password">
+                    <input autocomplete="off" class="layui-input passw"
+                           id="passw-content-confirm" lay-verify="repass"
+                           name="passwContentConfirm" placeholder="确认密码"
+                           {{# if(d.data.visitType !== -1){ }} style="display: none" {{# } }}
+                           type="password">
+                    <input class="ispublic-radio" id="secret" lay-filter="secret" name="isPublic"
+                           {{# if(d.data.visitType=== 0){ }} checked {{# } }}
+                           title="私密" type="radio"
+                           value="0">
+                </div>
+                <span id="pwd-tips-tags" style="color: red; display:none;margin-left: 110px"></span>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">文章标签</label>
+                <div class="layui-input-block">
+                    {{# layui.each(d.data.tagsList, function(index, item){ }}
+                    <input class="tags" lay-skin="primary" name="tags" {{# if(tagsContains(d.data.artTagsList, item)){
+                           }} checked {{# } }} title="{{ html2Escape(item.name) }}" value="{{ item.id}}"
+                           type="checkbox">
+                    {{# }); }}
+
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">文章类别</label>
+                <div class="layui-input-block">
+                    <select lay-search lay-verify="required" name="type" id="type">
+                        <option style="font-weight: bold;color: black" value="-1"></option>
+                        {{# layui.each(d.data.menuList, function(index, item){ }}
+                        <option style="color: #777" value="{{ item.id }}" {{# if(item.id=== d.data.menuOid){
+                                }} selected {{# } }}>{{ item.name }}
+                        </option>
+                        {{# }); }}
+                    </select>
+                </div>
+            </div>
+            <span id="pwd-tips-type" style="color: red; display:none;margin-left: 110px"></span>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <input id="isComment" name="isComment" title="是否可以评论"
+                           {{# if(d.data.isComment=== 1){ }} checked {{# } }} type="checkbox" value="1">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-block">
+                    <input class="layui-btn" style="float: right" id="quick-edit-submit"
+                           lay-filter="JW-quick-edit-submit" lay-submit
+                           type="button" value="确认">
+                </div>
+            </div>
+        </div>
+    </script>
+    <script type="text/html" template lay-url="/api/admin/token/generate"
+            lay-data="{pageId: 'A13'}" lay-type="post">
+        <input type="hidden" name="subToken" id="subToken" value="{{d.token}}">
+    </script>
+</div>
+
+
+<script>
+
+    function tagsContains(artTags, tag) {
+        if (!artTags instanceof Array || tag === undefined || tag === null)
+            return false;
+        for (let i in artTags) {
+            var t = artTags[i];
+            if (t.id === tag.id) {
+                return true;
+            }
+        }
+
+    }
+
+    doEdit = function (d) {
+        layui.use(['admin', 'form', 'table', 'element'], function () {
+            var $ = layui.jquery
+                , form = layui.form
+                , element = layui.element;
+            element.render()
+            form.render()
+            //回收站view
+            if (d.data.status === -1) {
+                console.log("===回收站===")
+            }
+            if (d.data.status !== -1) {
+
+                form.on('radio(public)', function (data) {
+                    $('#hometop1').show();
+                    $('#passw-content').hide();
+                    $('#passw-content-confirm').hide();
+                    form.render();
+                });
+                form.on('radio(secret)', function (data) {
+                    $('#hometop1').show();
+                    $('#passw-content').hide();
+                    $('#passw-content-confirm').hide();
+                    form.render();
+                });
+                form.on('radio(passw)', function (data) {
+                    $('#hometop1').hide();
+                    $('#passw-content').show();
+                    $('#passw-content-confirm').show();
+                    form.render();
+                });
+            }
+
+
+        })
+    }
+
+
+</script>

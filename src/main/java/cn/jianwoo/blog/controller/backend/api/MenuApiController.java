@@ -4,12 +4,20 @@ import cn.jianwoo.blog.annotation.PageId;
 import cn.jianwoo.blog.annotation.SubToken;
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
-import cn.jianwoo.blog.config.page.MenuApiUrlConfig;
+import cn.jianwoo.blog.builder.JwBuilder;
+import cn.jianwoo.blog.config.router.MenuApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dto.request.EntityOidListRequest;
 import cn.jianwoo.blog.dto.request.EntityOidRequest;
 import cn.jianwoo.blog.dto.request.MenuVoRequest;
+import cn.jianwoo.blog.dto.response.ArticleMenuResponse;
+import cn.jianwoo.blog.dto.response.BackendMenuResponse;
 import cn.jianwoo.blog.dto.response.MenuValidateResponse;
+import cn.jianwoo.blog.dto.response.vo.ArticleMenuVO;
+import cn.jianwoo.blog.dto.response.vo.BackendMenuVO;
+import cn.jianwoo.blog.dto.response.vo.BackendSubMenuVO;
+import cn.jianwoo.blog.entity.Menu;
+import cn.jianwoo.blog.entity.extension.MenuExt;
 import cn.jianwoo.blog.enums.MenuTypeEnum;
 import cn.jianwoo.blog.enums.PageIdEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
@@ -17,14 +25,18 @@ import cn.jianwoo.blog.service.biz.MenuBizService;
 import cn.jianwoo.blog.service.bo.MenuValidateBO;
 import cn.jianwoo.blog.validation.BizValidation;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author GuLihua
@@ -226,6 +238,84 @@ public class MenuApiController extends BaseController {
 
         }
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
+
+    }
+
+
+    /**
+     * 获取后台菜单信息<br/>
+     * url:/api/admin/menu/backend/info/list<br/>
+     *
+     * @return 返回响应 {@link BackendMenuResponse}
+     * status<br/>
+     * count<br/>
+     * data<br/>
+     * --title<br/>
+     * --icon<br/>
+     * --list<br/>
+     * ----name<br/>
+     * ----title<br/>
+     * ----jump<br/>
+     * @author gulihua
+     */
+    @GetMapping(MenuApiUrlConfig.URL_MENU_BACKEND_INFO_LIST)
+    public String getBackendInfoList() {
+        BackendMenuResponse response = BackendMenuResponse.getInstance();
+        List<BackendMenuVO> list = new ArrayList<>();
+        try {
+            List<MenuExt> menuExtList = menuBizService.queryBackGroudMenuList();
+            for (MenuExt menuExt : menuExtList) {
+                List<BackendSubMenuVO> subMenuVOList = new ArrayList<>();
+                BackendMenuVO vo = new BackendMenuVO();
+                vo.setIcon(menuExt.getIcon());
+                vo.setTitle(menuExt.getText());
+                for (MenuExt subMenu : menuExt.getSubMenus()) {
+                    BackendSubMenuVO subMenuVO = JwBuilder.of(BackendSubMenuVO::new)
+                            .with(BackendSubMenuVO::setTitle, subMenu.getText())
+                            .with(BackendSubMenuVO::setName, subMenu.getName())
+                            .with(BackendSubMenuVO::setJump, subMenu.getUrl())
+                            .build();
+                    subMenuVOList.add(subMenuVO);
+                }
+                vo.setList(subMenuVOList);
+                list.add(vo);
+            }
+
+        } catch (JwBlogException e) {
+            log.error("MenuApiController.getBackendInfoList exec failed, e:\n", e);
+        }
+        response.setData(list);
+        return super.responseToJSONString(response);
+
+    }
+
+    /**
+     * 获取前台菜单<br/>
+     * url:/api/admin/menu/article/type/list<br/>
+     *
+     * @return 返回响应 {@link ArticleMenuResponse}
+     * status<br/>
+     * data<br/>
+     * --id<br/>
+     * --name<br/>
+     * @author gulihua
+     */
+    @GetMapping(MenuApiUrlConfig.URL_MENU_ARTICLE_TYPE_LIST)
+    public String getFrontendMenuList() {
+        ArticleMenuResponse response = ArticleMenuResponse.getInstance();
+        List<ArticleMenuVO> list = new ArrayList<>();
+        List<Menu> menuList = menuBizService.querySubMenuOrderedList(MenuTypeEnum.FRONTEND.getValue());
+        if (CollectionUtils.isNotEmpty(menuList)) {
+            for (Menu menu : menuList) {
+                ArticleMenuVO vo = JwBuilder.of(ArticleMenuVO::new)
+                        .with(ArticleMenuVO::setId, menu.getOid())
+                        .with(ArticleMenuVO::setName, StringEscapeUtils.escapeHtml4(menu.getText())).build();
+                list.add(vo);
+            }
+        }
+
+        response.setData(list);
+        return super.responseToJSONString(response);
 
     }
 

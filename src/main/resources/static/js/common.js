@@ -355,6 +355,7 @@ function tinymceInit(id, power_paste = "propmt") {
         powerpaste_allow_local_images: true,
         paste_data_images: true,
         paste_merge_formats: true,
+        init_instance_callback: "initData",
         paste_preprocess: function (plugin, args) {
             function load(src) {
                 loadImageToBlob(src, function (blobFile) {

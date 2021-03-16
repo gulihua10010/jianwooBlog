@@ -11,6 +11,7 @@
         <result column="ICON" jdbcType="VARCHAR" property="icon"/>
         <result column="TEXT" jdbcType="VARCHAR" property="text"/>
         <result column="URL" jdbcType="VARCHAR" property="url"/>
+        <result column="VALID" jdbcType="CHAR" property="valid"/>
         <result column="PARENT_OID" jdbcType="BIGINT" property="parentOid"/>
     </resultMap>
     <sql id="Example_Where_Clause">
@@ -74,8 +75,8 @@
         </where>
     </sql>
     <sql id="Base_Column_List">
-        OID
-        , NAME, `INDEX`, CREATE_DATE, UPDATE_DATE, TYPE, ICON, TEXT, URL, PARENT_OID
+        OID, `NAME`, `INDEX`, CREATE_DATE, UPDATE_DATE, `TYPE`, ICON, `TEXT`, URL, `VALID`,
+    PARENT_OID
     </sql>
     <select id="selectByExample" parameterType="cn.jianwoo.blog.entity.example.MenuExample" resultMap="BaseResultMap">
         select
@@ -100,8 +101,10 @@
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete
-        from menu
-        where OID = #{oid,jdbcType=BIGINT}
+        from
+            menu
+        where
+            OID = #{oid,jdbcType=BIGINT}
     </delete>
     <delete id="deleteByExample" parameterType="cn.jianwoo.blog.entity.example.MenuExample">
         delete from menu
@@ -110,13 +113,18 @@
         </if>
     </delete>
     <insert id="insert" parameterType="cn.jianwoo.blog.entity.Menu">
-        insert into menu (OID, NAME, `INDEX`,
-                          CREATE_DATE, UPDATE_DATE, TYPE,
-                          ICON, TEXT, URL, PARENT_OID)
-        values (#{oid,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{index,jdbcType=INTEGER},
-                #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, #{type,jdbcType=INTEGER},
-                #{icon,jdbcType=VARCHAR}, #{text,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR},
-                #{parentOid,jdbcType=BIGINT})
+        insert
+        into
+            menu
+            (OID, `NAME`, `INDEX`,
+             CREATE_DATE, UPDATE_DATE, `TYPE`,
+             ICON, `TEXT`, URL, `VALID`,
+             PARENT_OID)
+        values
+            (#{oid,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{index,jdbcType=INTEGER},
+             #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, #{type,jdbcType=INTEGER},
+             #{icon,jdbcType=VARCHAR}, #{text,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{valid,jdbcType=CHAR},
+             #{parentOid,jdbcType=BIGINT})
     </insert>
     <insert id="insertSelective" parameterType="cn.jianwoo.blog.entity.Menu">
         insert into menu
@@ -125,7 +133,7 @@
                 OID,
             </if>
             <if test="name != null">
-                NAME,
+                `NAME`,
             </if>
             <if test="index != null">
                 `INDEX`,
@@ -137,16 +145,19 @@
                 UPDATE_DATE,
             </if>
             <if test="type != null">
-                TYPE,
+                `TYPE`,
             </if>
             <if test="icon != null">
                 ICON,
             </if>
             <if test="text != null">
-                TEXT,
+                `TEXT`,
             </if>
             <if test="url != null">
                 URL,
+            </if>
+            <if test="valid != null">
+                `VALID`,
             </if>
             <if test="parentOid != null">
                 PARENT_OID,
@@ -180,6 +191,9 @@
             <if test="url != null">
                 #{url,jdbcType=VARCHAR},
             </if>
+            <if test="valid != null">
+                #{valid,jdbcType=CHAR},
+            </if>
             <if test="parentOid != null">
                 #{parentOid,jdbcType=BIGINT},
             </if>
@@ -198,7 +212,7 @@
                 OID = #{record.oid,jdbcType=BIGINT},
             </if>
             <if test="record.name != null">
-                NAME = #{record.name,jdbcType=VARCHAR},
+                `NAME` = #{record.name,jdbcType=VARCHAR},
             </if>
             <if test="record.index != null">
                 `INDEX` = #{record.index,jdbcType=INTEGER},
@@ -210,16 +224,19 @@
                 UPDATE_DATE = #{record.updateDate,jdbcType=TIMESTAMP},
             </if>
             <if test="record.type != null">
-                TYPE = #{record.type,jdbcType=INTEGER},
+                `TYPE` = #{record.type,jdbcType=INTEGER},
             </if>
             <if test="record.icon != null">
                 ICON = #{record.icon,jdbcType=VARCHAR},
             </if>
             <if test="record.text != null">
-                TEXT = #{record.text,jdbcType=VARCHAR},
+                `TEXT` = #{record.text,jdbcType=VARCHAR},
             </if>
             <if test="record.url != null">
                 URL = #{record.url,jdbcType=VARCHAR},
+            </if>
+            <if test="record.valid != null">
+                `VALID` = #{record.valid,jdbcType=CHAR},
             </if>
             <if test="record.parentOid != null">
                 PARENT_OID = #{record.parentOid,jdbcType=BIGINT},
@@ -232,14 +249,15 @@
     <update id="updateByExample" parameterType="map">
         update menu
         set OID = #{record.oid,jdbcType=BIGINT},
-        NAME = #{record.name,jdbcType=VARCHAR},
+        `NAME` = #{record.name,jdbcType=VARCHAR},
         `INDEX` = #{record.index,jdbcType=INTEGER},
         CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
         UPDATE_DATE = #{record.updateDate,jdbcType=TIMESTAMP},
-        TYPE = #{record.type,jdbcType=INTEGER},
+        `TYPE` = #{record.type,jdbcType=INTEGER},
         ICON = #{record.icon,jdbcType=VARCHAR},
-        TEXT = #{record.text,jdbcType=VARCHAR},
+        `TEXT` = #{record.text,jdbcType=VARCHAR},
         URL = #{record.url,jdbcType=VARCHAR},
+        `VALID` = #{record.valid,jdbcType=CHAR},
         PARENT_OID = #{record.parentOid,jdbcType=BIGINT}
         <if test="_parameter != null">
             <include refid="Update_By_Example_Where_Clause"/>
@@ -249,7 +267,7 @@
         update menu
         <set>
             <if test="name != null">
-                NAME = #{name,jdbcType=VARCHAR},
+                `NAME` = #{name,jdbcType=VARCHAR},
             </if>
             <if test="index != null">
                 `INDEX` = #{index,jdbcType=INTEGER},
@@ -261,16 +279,19 @@
                 UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
             </if>
             <if test="type != null">
-                TYPE = #{type,jdbcType=INTEGER},
+                `TYPE` = #{type,jdbcType=INTEGER},
             </if>
             <if test="icon != null">
                 ICON = #{icon,jdbcType=VARCHAR},
             </if>
             <if test="text != null">
-                TEXT = #{text,jdbcType=VARCHAR},
+                `TEXT` = #{text,jdbcType=VARCHAR},
             </if>
             <if test="url != null">
                 URL = #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="valid != null">
+                `VALID` = #{valid,jdbcType=CHAR},
             </if>
             <if test="parentOid != null">
                 PARENT_OID = #{parentOid,jdbcType=BIGINT},
@@ -280,16 +301,19 @@
     </update>
     <update id="updateByPrimaryKey" parameterType="cn.jianwoo.blog.entity.Menu">
         update menu
-        set NAME        = #{name,jdbcType=VARCHAR},
+        set
+            `NAME`      = #{name,jdbcType=VARCHAR},
             `INDEX`     = #{index,jdbcType=INTEGER},
             CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
             UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
-            TYPE        = #{type,jdbcType=INTEGER},
+            `TYPE`      = #{type,jdbcType=INTEGER},
             ICON        = #{icon,jdbcType=VARCHAR},
-            TEXT        = #{text,jdbcType=VARCHAR},
+            `TEXT`      = #{text,jdbcType=VARCHAR},
             URL         = #{url,jdbcType=VARCHAR},
+            `VALID`     = #{valid,jdbcType=CHAR},
             PARENT_OID  = #{parentOid,jdbcType=BIGINT}
-        where OID = #{oid,jdbcType=BIGINT}
+        where
+            OID = #{oid,jdbcType=BIGINT}
     </update>
     <sql id="MySQLDialectSuffix">
         <if test="start != null and rows != null">

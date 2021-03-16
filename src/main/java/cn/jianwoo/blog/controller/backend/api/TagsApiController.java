@@ -4,23 +4,33 @@ import cn.jianwoo.blog.annotation.PageId;
 import cn.jianwoo.blog.annotation.SubToken;
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
-import cn.jianwoo.blog.config.page.TagsApiUrlConfig;
+import cn.jianwoo.blog.builder.JwBuilder;
+import cn.jianwoo.blog.config.router.TagsApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
+import cn.jianwoo.blog.dao.base.TagsTransDao;
 import cn.jianwoo.blog.dto.request.EntityOidRequest;
 import cn.jianwoo.blog.dto.request.TagListRequest;
 import cn.jianwoo.blog.dto.request.TagRequest;
+import cn.jianwoo.blog.dto.response.TagListResponse;
+import cn.jianwoo.blog.dto.response.vo.TagsListVO;
+import cn.jianwoo.blog.entity.Tags;
 import cn.jianwoo.blog.enums.PageIdEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.TagsBizService;
 import cn.jianwoo.blog.validation.BizValidation;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author GuLihua
@@ -33,6 +43,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class TagsApiController extends BaseController {
     @Autowired
     private TagsBizService tagsBizService;
+    @Autowired
+    private TagsTransDao tagsTransDao;
 
     /**
      * 标签添加(标签页面)<br/>
@@ -149,4 +161,61 @@ public class TagsApiController extends BaseController {
 
     }
 
+
+    /**
+     * 获取所有标签<br/>
+     * url:/api/admin/tag/list<br/>
+     *
+     * @return 返回响应 {@link TagListResponse}
+     * status<br/>
+     * data<br/>
+     * --id<br/>
+     * --name<br/>
+     * @author gulihua
+     */
+    @GetMapping(TagsApiUrlConfig.URL_TAG_LIST)
+    public String getTagsList() {
+        TagListResponse response = TagListResponse.getInstance();
+        List<TagsListVO> list = new ArrayList<TagsListVO>();
+        List<Tags> tags = tagsTransDao.queryAllTags();
+        if (CollectionUtils.isNotEmpty(tags)) {
+            for (Tags tag : tags) {
+                TagsListVO vo = JwBuilder.of(TagsListVO::new)
+                        .with(TagsListVO::setId, tag.getOid())
+                        .with(TagsListVO::setName, StringEscapeUtils.escapeHtml4(tag.getContent())).build();
+                list.add(vo);
+            }
+        }
+
+        response.setData(list);
+        return super.responseToJSONString(response);
+
+    }
+
+    /**
+     * 获取文章标签<br/>
+     * url:/api/admin/tag/article/list/{artId}<br/>
+     *
+     * @return 返回响应 {@link TagListResponse}
+     * status<br/>
+     * data<br/>
+     * --id<br/>
+     * --name<br/>
+     * @author gulihua
+     */
+    @GetMapping(TagsApiUrlConfig.URL_TAG_ARTICLE_LIST)
+    public String getTagsListByArtOid(@PathVariable("artId") Long artId) {
+        TagListResponse response = TagListResponse.getInstance();
+        List<TagsListVO> list = new ArrayList<TagsListVO>();
+        List<Tags> artTags = tagsBizService.queryTagsByArtOid(artId);
+        for (Tags tag : artTags) {
+            TagsListVO vo = JwBuilder.of(TagsListVO::new)
+                    .with(TagsListVO::setId, tag.getOid())
+                    .with(TagsListVO::setName, StringEscapeUtils.escapeHtml4(tag.getContent())).build();
+            list.add(vo);
+        }
+        response.setData(list);
+        return super.responseToJSONString(response);
+
+    }
 }

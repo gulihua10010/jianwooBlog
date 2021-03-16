@@ -1,16 +1,22 @@
 package cn.jianwoo.blog;
 
-import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
+import cn.jianwoo.blog.entity.extension.MenuExt;
+import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.service.biz.MenuBizService;
+import cn.jianwoo.blog.util.DomainUtil;
 import com.alibaba.fastjson.JSON;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
 
 @MapperScan(basePackages = {"cn.jianwoo.blog.dao.base.mapper", "cn.jianwoo.blog.dao.biz.mapper", "com.baidu.fsg.uid.worker.dao"})
 @SpringBootTest
 class BlogApplicationTests {
-//    @Autowired
+    //    @Autowired
 //    CommentBizService commentBizService;
 //    @Autowired
 //    WebconfBizService webconfBizService;
@@ -18,7 +24,8 @@ class BlogApplicationTests {
 //    private TagsBizService tagsBizService;
 //    @Autowired
 //    private UidGenService uidGenService;
-
+    @Autowired
+    private MenuBizService menuBizService;
 
     @Test
     void contextLoads() {
@@ -58,6 +65,18 @@ class BlogApplicationTests {
 
 
         System.out.println(JSON.toJSONString(new BaseResponseDto()));
+    }
+
+
+    @Test
+    public void test1() {
+        try {
+            List<MenuExt> menuExtList = menuBizService.queryBackGroudMenuList();
+            DomainUtil.printLog(menuExtList);
+        } catch (JwBlogException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

@@ -1,9 +1,8 @@
 package cn.jianwoo.blog.config;
 
-import cn.hutool.extra.spring.SpringUtil;
-import cn.jianwoo.blog.config.page.CommApiUrlConfig;
-import cn.jianwoo.blog.config.page.CommBackendPageUrlConfig;
-import cn.jianwoo.blog.config.page.LoginApiUrlConfig;
+import cn.jianwoo.blog.config.router.CommApiUrlConfig;
+import cn.jianwoo.blog.config.router.CommBackendPageUrlConfig;
+import cn.jianwoo.blog.config.router.LoginApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.interceptor.LoginHandleInterceptor;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,8 +46,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(loginHandleInterceptor()
-        ).addPathPatterns(Constants.ALL_PATH_PATTERNS).excludePathPatterns(EXCLUDE_PATH);
+//        registry.addInterceptor(loginHandleInterceptor()
+//        ).addPathPatterns(Constants.ALL_PATH_PATTERNS).excludePathPatterns(EXCLUDE_PATH);
 
     }
 

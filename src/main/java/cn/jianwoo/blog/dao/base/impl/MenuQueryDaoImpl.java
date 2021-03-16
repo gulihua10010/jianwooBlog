@@ -32,6 +32,13 @@ public class MenuQueryDaoImpl implements MenuQueryDao {
         return menuMapper.selectByExample(example);
     }
 
+    @Override
+    public List<Menu> queryEffectiveMenuByType(Integer type) {
+        MenuExample example = new MenuExample();
+        example.createCriteria().andTypeEqualTo(type).andValidEqualTo(true);
+        return menuMapper.selectByExample(example);
+    }
+
 
     @Override
     public List<Menu> queryMenuByParentIdAndType(Long parentOid, Integer type) {

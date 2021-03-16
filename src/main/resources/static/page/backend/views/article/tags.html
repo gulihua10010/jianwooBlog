@@ -1,0 +1,96 @@
+<title>文章标签</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>文章管理</cite></a>
+        <a><cite>文章标签</cite></a>
+    </div>
+</div>
+<script type="text/html" template>
+    <link rel="stylesheet" href="{{ layui.setter.base }}style/jw_admin.css?v={{ layui.admin.v }}-1" media="all">
+    <link href="{{ layui.setter.base }}style/mouseRightMenu.css?v={{ layui.admin.v }}-1" media="all" rel="stylesheet">
+</script>
+
+<style>
+    .tags-show-block {
+        line-height: 35px;
+        padding: 2px 0;
+        white-space: nowrap;
+        height: 100%;
+
+
+    }
+
+    .tags-show {
+        background-color: #eee;
+        line-height: 35px;
+        padding: 3px 7px;
+        border-radius: 5px;
+        text-align: center;
+        font-size: 20px;
+        /*border-right: 1px #aaa solid;*/
+        overflow: hidden;
+        margin: 0 3px;
+        white-space: nowrap;
+        width: 100%;
+    }
+
+
+</style>
+</head>
+<body>
+
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">文章标签</div>
+                <div class="layui-card-body">
+                    <div class="tags-content">
+                        <script type="text/html" template lay-url="/api/admin/tag/list" id="JW_ARTICLE_TAGS"
+                                lay-done="renderTags(d)">
+                            <div lay-templateid="JW_ARTICLE_TAGS" class="article-tags">
+                                <ul>
+                                    {{# layui.each(d.data, function(index, item){ }}
+                                    <li data-id="{{item.id}}" data-text="{{item.name}}">
+                                        <span>{{ item.name}}</span>
+                                    </li>
+                                    {{# }); }}
+                                </ul>
+                            </div>
+                        </script>
+
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header">添加标签</div>
+                <div class="layui-card-body">
+                    <div class="add-tags">
+                        <span class="tags-show-block layui-input">
+                              <input class="add-tags-dynamic-input " name="text" type="text"
+                                     id="tags-add-text"
+                                     autocomplete="off">
+                        </span>
+
+                    </div>
+                    <div class="add-tags-btn">
+                        <span>添加标签，可用逗号(,)分隔<br/>逗号(,)为一个标签的结束符，当您提交一个标签的时候，可以这样写: TAG,</span>
+                        <input class="layui-btn" id="add-tags"
+                               type="button" value="添加">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function renderTags() {
+        layui.use('tags', layui.factory('tags')).use(['admin', 'tags', 'form', 'table'], function () {
+
+        })
+    }
+
+</script>

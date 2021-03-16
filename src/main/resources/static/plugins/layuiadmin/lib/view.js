@@ -178,7 +178,7 @@ layui.define(['laytpl', 'layer'], function (exports) {
             , type: 'get'
             , dataType: 'html'
             , data: {
-                v: layui.cache.version
+                v: layui.cache.version + "." + new Date()
             }
             , success: function (html) {
                 html = '<div>' + html + '</div>';

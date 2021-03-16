@@ -1,0 +1,206 @@
+<title>文章发布</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>文章管理</cite></a>
+        <a><cite>文章发布</cite></a>
+    </div>
+</div>
+<script type="text/html" template>
+    <link rel="stylesheet" href="{{ layui.setter.base }}style/jw_admin.css?v={{ layui.admin.v }}-1" media="all">
+</script>
+<div class="layui-fluid layui-form" lay-filter="layuiadmin-form-comment">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md9 art-left">
+            <div class="layui-card">
+                <div class="layui-card-header">撰写新文章</div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-form-item">
+                        <input autocomplete="off" class="layui-input" id="art-title" name="title" placeholder="键入标题"
+                               type="text" lay-verify="required|maxLength" lay-max="50"
+                               value="">
+                    </div>
+                    <div class="layui-form-item">
+                        <input autocomplete="off" class="layui-input" id="art-author"
+                               name="author" lay-verify="required|maxLength" lay-max="10"
+                               placeholder="请输入作者"
+                               type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-body" id="article-content">
+                    <textarea id="article-content-text" name="article"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md3 art-right-side">
+            <div class="layui-card">
+                <div class="layui-card-header">文章标签</div>
+                <div class="layui-card-body">
+                    <div class="choose-tags">
+                        <div class="choosed">
+                        </div>
+                        <div class="separation-line"></div>
+                        <div class="tags">
+                            <script type="text/html" template lay-url="/api/admin/tag/list" id="JW_ARTICLE_PUBLISH_TAGS"
+                                    lay-done="renderTags(d)">
+                                <div lay-templateid="JW_ARTICLE_PUBLISH_TAGS" class="publish-tags">
+                                    {{# layui.each(d.data, function(index, item){ }}
+                                    <span class="publish-tags-content">{{ item.name}}
+                                      <span class="tags-id" style="display: none">{{ item.id}}</span>
+                                     </span>
+                                    {{# }); }}
+                                </div>
+
+                            </script>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header">文章分类</div>
+                <div class="layui-card-body">
+                    <div class="article-type">
+                        <script type="text/html" template lay-url="/api/admin/menu/article/type/list">
+                            <div class="layui-card layui-form" lay-filter="component-form-element" id="type-select">
+                                <select lay-search lay-verify="required" name="typeId" id="typeId">
+                                    <option style="font-weight: bold;color: black" value="-1"></option>
+                                    {{# layui.each(d.data, function(index, item){ }}
+                                    <option style="color: #777" value="{{ item.id }}">{{ item.name }}</option>
+                                    {{# }); }}
+                                </select>
+                            </div>
+                        </script>
+                    </div>
+
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header">缩略图</div>
+                <div class="layui-card-body">
+                    <div class="article-img">
+                        <div class="layui-upload">
+                            <button class="layui-btn" id="art-img" type="button">上传图片</button>
+                            <div class="layui-upload-list imgupload">
+                                <img class="pre-upd-img" id="breimg" style="margin-left: 5px" width="100">
+                                <p id="demoText"></p>
+                                <input id="imgsrc" name="imgsrc" style="visibility: hidden" value=""/>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header">操作</div>
+                <div class="layui-card-body">
+                    <div class="published-btns-opt">
+                        <div class="btns-opt">
+                            <button class="layui-btn layui-btn-primary layui-btn-sm wd30p wdmin70"
+                                    lay-filter="submit-article"
+                                    lay-submit id="save-draft">保存草稿
+                            </button>
+                            <button class="layui-btn layui-btn-primary layui-btn-sm wd30p wdmin70" id="articlePreview">
+                                文章预览
+                            </button>
+                        </div>
+                        <div class="separation-line"></div>
+                        <a><i class="iconfont">&#xe606;</i> 公开度：<span id="published-public">公开</span></a>&nbsp;
+                        <a id="edit">编辑</a>
+                        <form class="layui-form" lay-filter="component-form-element" method="post">
+                            <div class="layui-form-item" id="ispublic-form">
+                                <div class="layui-input-block">
+                                    <input checked class="ispublic-radio" id="public" lay-filter="public"
+                                           name="isPublic" title="公开"
+                                           type="radio" value="1">
+                                    <span id="hometop1"><input id="hometop" lay-skin="primary" title="将文章置于首页顶端"
+                                                               type="checkbox" name="hometop"
+                                                               value="2"></span><br>
+                                    <input class="ispublic-radio" id="passw" lay-filter="passw" name="isPublic"
+                                           title="密码保护"
+                                           type="radio"
+                                           value="-1">
+                                    <input autocomplete="off" class="layui-input wd80p" id="passw-content"
+                                           placeholder="密码"
+                                           type="password">
+                                    <input autocomplete="off" class="layui-input wd80p" id="passw-content-confirm"
+                                           placeholder="确认密码"
+                                           type="password"><br>
+                                    <input class="ispublic-radio" id="secret" lay-filter="secret" name="isPublic"
+                                           title="私密"
+                                           type="radio" value="0">
+
+                                </div>
+                                <span id="pwd-tips" style="color: red;display: none"></span>
+                                <div class="btns-opt" id="btns0" style="display: block">
+                                    <button class="layui-btn layui-btn-sm" id="btn-ispublic-sure">确定</button>
+                                    <button class="layui-btn layui-btn-primary layui-btn-sm" id="btn-ispublic-cancel">
+                                        取消
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <div id="isComment">
+                                    <input checked id="is-comment" name="isComment" title="是否可以评论" type="checkbox">
+                                </div>
+                            </div>
+                        </form>
+                        <div class="separation-line"></div>
+                        <script type="text/html" template lay-url="/api/admin/token/generate"
+                                lay-data="{pageId: 'A11'}" lay-type="post">
+                            <input type="hidden" name="subToken" id="subToken" value="{{d.token}}">
+                        </script>
+                        <div class="btn-group">
+                            <div class="negative-btn">
+                                <button class="layui-btn layui-btn-primary" id="cancel">重置</button>
+                                <button class="layui-btn layui-btn-danger wd50p" lay-filter="submit-article" lay-submit
+                                        id="remove-del">移至回收站
+                                </button>
+                            </div>
+                            <div class="positive-btn">
+                                <button class="layui-btn positive-btn-right wd50p" id="published-sure"
+                                        lay-filter="submit-article" lay-submit>
+                                    发布
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function renderTags() {
+        layui.define(['element', 'form'], function (exports) {
+            var form = layui.form
+                , $ = layui.jquery
+                , element = layui.element
+            ;
+            element.render()
+            form.render()
+            var tags = $('.choose-tags').find('.publish-tags-content');
+            tags.each(function (i) {
+                var color = Math.random();
+                var r = parseInt((color * (i + 1) * 1234) % 254);
+                var g = parseInt((color * (i + 1) * 4321) % 254);
+                var b = parseInt((color * (i + 1) * 2222) % 254);
+                $(this).css("background-color", "rgba(" + r + "," + g + "," + b + ",0.1)")
+                $(this).css("border", "  1px rgba(" + r + "," + g + "," + b + ",1) solid")
+            })
+
+        });
+
+    }
+
+    layui.use('articlePublish', layui.factory('articlePublish')).use(['admin', 'articlePublish', 'form', 'table'], function () {
+
+    })
+</script>
