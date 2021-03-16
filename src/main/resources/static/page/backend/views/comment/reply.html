@@ -1,0 +1,22 @@
+<div class="layui-form" id="layuiadmin-form-comment" lay-filter="layuiadmin-form-comment"
+     style="padding: 20px 30px 0 0;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">评论内容</label>
+        <div class="layui-input-block">
+            <textarea class="layui-textarea" lay-verify="required|maxLength" lay-max="500" name="content"
+                      placeholder="请输入"></textarea>
+        </div>
+    </div>
+    <script type="text/html" template lay-url="/api/admin/token/generate"
+            lay-data="{pageId: 'C14'}" lay-type="post">
+        <input type="hidden" name="subToken" id="subToken" value="{{d.token}}">
+    </script>
+    <div class="layui-form-item">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-block">
+            <input class="layui-btn" style="float: right" id="comment-reply-submit" lay-filter="JW-comment-reply-submit"
+                   lay-submit
+                   type="button" value="确认">
+        </div>
+    </div>
+</div>

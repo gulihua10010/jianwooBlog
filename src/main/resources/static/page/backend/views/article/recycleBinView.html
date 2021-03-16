@@ -1,0 +1,151 @@
+<title>文章编辑</title>
+<style>
+    input {
+        border: none !important;
+    }
+
+    .layui-card {
+        padding-left: 0 !important;
+        margin-left: 0 !important;
+    }
+
+    .commentView-card {
+        margin-top: 20px;
+    }
+
+</style>
+<script type="text/html" template>
+    <link rel="stylesheet" href="{{ layui.setter.base }}style/jw_admin.css?v={{ layui.admin.v }}-1" media="all">
+</script>
+<div class="layui-fluid" id="layuiadmin-form-comment" lay-filter="layuiadmin-form-comment">
+    <script type="text/html" template lay-url="/api/admin/article/info/{{ d.params.oid }}"
+            lay-done="doView(d);">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md12 art-left">
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        <div>
+                            <h1 style="font-weight: bold">{{ d.data.title }}</h1>
+                        </div>
+                        <span style="color: #aaa"> &nbsp;&nbsp;&nbsp;------ {{ d.data.author }}</span>
+                    </div>
+                </div>
+                <div class="layui-card">
+                    <div class="layui-card-header">
+                        <span style="color: #aaa">{{ d.data.menuName == null ? "" : ("类别: " + d.data.menuName) }}</span>
+                        <span style="color: #aaa">标签:</span>
+                        {{# layui.each(d.data.artTagsList, function(index, item){ }}
+                        <span style="color: #aaa">
+                                 {{#  if(index !== 0){ }}
+                                  ,
+                                 {{#  } }}
+                                {{ item.name}}
+                            </span>
+                        {{# }); }}
+                    </div>
+                </div>
+                <div class="layui-card">
+                    <div class="layui-card-body" id="article-content">
+                        {{ d.data.content }}
+                    </div>
+                </div>
+
+                <div class="layui-card commentView-card">
+                    <div class="layui-card-body">
+                        <!--                        comment-->
+                        <div class="commentView" id="commentView"></div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </script>
+
+</div>
+
+<script id="commentTemplate" type="text/html">
+
+    <div class="comment-content ">
+        {{# layui.each(d, function(index, comm){ }}
+        <div class="comment-list">
+            <div class="media-body">
+                <a href="javascript:" class="media-left" style="float: left;">
+                    <img src="{{ comm.headImg }}" height="46px"
+                         width="46px">
+                </a>
+                <div class="pad-btm">
+                    <p class="fontColor">
+                        <a href="javascript:">{{ comm.user }}</a>
+                    </p>
+                    <p class="min-font">
+                        <a href="javascript:">{{ comm.date }}</a>
+                    </p>
+                </div>
+                <p class="message-text">{{=comm.content}}</p>
+            </div>
+            <div class="comment-content-reply">
+                {{# layui.each(comm.replyList, function(index, rep){ }}
+                <div>
+                    <div class="media-body">
+                        <a href="javascript:" class="media-left" style="float: left;">
+                            <img src="{{rep.headImg}}" height="46px"
+                                 width="46px">
+                        </a>
+                        <div class="pad-btm">
+                            <p class="fontColor">
+                                <a href="javascript:">{{rep.user}}</a>
+                            </p>
+                            <p class="min-font">
+                                <a href="javascript:">回复给{{rep.parentUserName}}</a>
+                                <a href="javascript:">{{rep.date}}</a>
+                            </p>
+                        </div>
+                        <p class="message-text">{{=rep.content}}</p>
+                    </div>
+                </div>
+                {{# }); }}
+            </div>
+        </div>
+        {{# }); }}
+    </div>
+
+
+</script>
+
+<script>
+    doView = function (d) {
+        layui.use(['admin', 'form', 'table', 'element', 'laytpl'], function () {
+            var $ = layui.jquery
+                , form = layui.form
+                , laytpl = layui.laytpl
+                , element = layui.element;
+            element.render()
+            form.render()
+            renderComm(d.data.id);
+
+            function renderComm(artOid) {
+                ajaxApiPost(
+                    "/api/admin/comment/query/article/list",
+                    JSON.stringify({
+                        entityOid: artOid,
+                    }),
+                    function (res) {
+                        data = res.commentList;
+                        var getTpl = document.getElementById('commentTemplate').innerHTML
+                            , view = document.getElementById('commentView');
+                        laytpl(getTpl).render(data, function (html) {
+                            view.innerHTML = html;
+                        });
+                        if (data.length === 0) {
+                            $('.commentView-card').hide()
+                        }
+                    }
+                );
+
+            }
+        })
+    }
+
+
+</script>

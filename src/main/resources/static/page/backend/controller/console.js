@@ -9,6 +9,10 @@ layui.define(['table', 'form'], function (exports) {
             {field: 'desc', title: '文章概览', align: 'center'}
 
         ]]
+        , response: {
+            statusName: 'status'
+            , statusCode: '000000'
+        }
         , page: false
         , text: {none: '无数据'}
 
@@ -20,6 +24,10 @@ layui.define(['table', 'form'], function (exports) {
             {field: 'desc', title: '文章概览', align: 'center'}
 
         ]]
+        , response: {
+            statusName: 'status'
+            , statusCode: '000000'
+        }
         , page: false
         , text: {none: '无数据'}
 
@@ -31,6 +39,10 @@ layui.define(['table', 'form'], function (exports) {
             {field: 'desc', title: '评论概览', align: 'center'}
 
         ]]
+        , response: {
+            statusName: 'status'
+            , statusCode: '000000'
+        }
         , page: false
         , text: {none: '无数据'}
 

@@ -8,6 +8,10 @@ layui.define(['table', 'form'], function (exports) {
             {field: 'desc', title: '访问记录', align: 'center'}
 
         ]]
+        , response: {
+            statusName: 'status'
+            , statusCode: '000000'
+        }
         , page: true
         , text: {none: '无数据'}
 
@@ -19,6 +23,10 @@ layui.define(['table', 'form'], function (exports) {
             {field: 'desc', title: '访问记录', align: 'center'}
 
         ]]
+        , response: {
+            statusName: 'status'
+            , statusCode: '000000'
+        }
         , page: true
         , text: {none: '无数据'}
 

@@ -11,7 +11,6 @@ import cn.jianwoo.blog.dao.base.TagsTransDao;
 import cn.jianwoo.blog.dto.request.EntityOidRequest;
 import cn.jianwoo.blog.dto.request.TagListRequest;
 import cn.jianwoo.blog.dto.request.TagRequest;
-import cn.jianwoo.blog.dto.response.BackendMenuResponse;
 import cn.jianwoo.blog.dto.response.TagListResponse;
 import cn.jianwoo.blog.dto.response.vo.TagsListVO;
 import cn.jianwoo.blog.entity.Tags;
@@ -20,6 +19,7 @@ import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.TagsBizService;
 import cn.jianwoo.blog.validation.BizValidation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -178,12 +178,15 @@ public class TagsApiController extends BaseController {
         TagListResponse response = TagListResponse.getInstance();
         List<TagsListVO> list = new ArrayList<TagsListVO>();
         List<Tags> tags = tagsTransDao.queryAllTags();
-        for (Tags tag : tags) {
-            TagsListVO vo = JwBuilder.of(TagsListVO::new)
-                    .with(TagsListVO::setId, tag.getOid())
-                    .with(TagsListVO::setName, StringEscapeUtils.escapeHtml4(tag.getContent())).build();
-            list.add(vo);
+        if (CollectionUtils.isNotEmpty(tags)) {
+            for (Tags tag : tags) {
+                TagsListVO vo = JwBuilder.of(TagsListVO::new)
+                        .with(TagsListVO::setId, tag.getOid())
+                        .with(TagsListVO::setName, StringEscapeUtils.escapeHtml4(tag.getContent())).build();
+                list.add(vo);
+            }
         }
+
         response.setData(list);
         return super.responseToJSONString(response);
 

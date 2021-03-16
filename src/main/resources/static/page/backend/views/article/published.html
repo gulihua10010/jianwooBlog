@@ -12,7 +12,7 @@
 </script>
 <div class="layui-fluid layui-form" lay-filter="layuiadmin-form-comment">
     <div class="layui-row layui-col-space15">
-        <div class="layui-col-md9">
+        <div class="layui-col-md9 art-left">
             <div class="layui-card">
                 <div class="layui-card-header">撰写新文章</div>
             </div>
@@ -33,11 +33,11 @@
             </div>
             <div class="layui-card">
                 <div class="layui-card-body" id="article-content">
-                    <textarea id="mytextarea" name="article"></textarea>
+                    <textarea id="article-content-text" name="article"></textarea>
                 </div>
             </div>
         </div>
-        <div class="layui-col-md3">
+        <div class="layui-col-md3 art-right-side">
             <div class="layui-card">
                 <div class="layui-card-header">文章标签</div>
                 <div class="layui-card-body">
@@ -46,12 +46,16 @@
                         </div>
                         <div class="separation-line"></div>
                         <div class="tags">
-                            <script type="text/html" template lay-url="/api/admin/tag/list">
-                                {{#  layui.each(d.data, function(index, item){ }}
-                                <span>{{ item.name}}
-                                     <span class="tags-id" style="display: none">{{ item.id}}</span>
-                                 </span>
-                                {{#  }); }}
+                            <script type="text/html" template lay-url="/api/admin/tag/list" id="JW_ARTICLE_PUBLISH_TAGS"
+                                    lay-done="renderTags(d)">
+                                <div lay-templateid="JW_ARTICLE_PUBLISH_TAGS" class="publish-tags">
+                                    {{# layui.each(d.data, function(index, item){ }}
+                                    <span class="publish-tags-content">{{ item.name}}
+                                      <span class="tags-id" style="display: none">{{ item.id}}</span>
+                                     </span>
+                                    {{# }); }}
+                                </div>
+
                             </script>
 
                         </div>
@@ -97,10 +101,13 @@
                 <div class="layui-card-body">
                     <div class="published-btns-opt">
                         <div class="btns-opt">
-                            <button class="layui-btn layui-btn-primary layui-btn-sm" lay-filter="submit-article"
+                            <button class="layui-btn layui-btn-primary layui-btn-sm wd30p wdmin70"
+                                    lay-filter="submit-article"
                                     lay-submit id="save-draft">保存草稿
                             </button>
-                            <button class="layui-btn layui-btn-primary layui-btn-sm" id="articlePreview">文章预览</button>
+                            <button class="layui-btn layui-btn-primary layui-btn-sm wd30p wdmin70" id="articlePreview">
+                                文章预览
+                            </button>
                         </div>
                         <div class="separation-line"></div>
                         <a><i class="iconfont">&#xe606;</i> 公开度：<span id="published-public">公开</span></a>&nbsp;
@@ -118,9 +125,10 @@
                                            title="密码保护"
                                            type="radio"
                                            value="-1">
-                                    <input autocomplete="off" class="layui-input" id="passw-content" placeholder="密码"
+                                    <input autocomplete="off" class="layui-input wd80p" id="passw-content"
+                                           placeholder="密码"
                                            type="password">
-                                    <input autocomplete="off" class="layui-input" id="passw-content-confirm"
+                                    <input autocomplete="off" class="layui-input wd80p" id="passw-content-confirm"
                                            placeholder="确认密码"
                                            type="password"><br>
                                     <input class="ispublic-radio" id="secret" lay-filter="secret" name="isPublic"
@@ -150,12 +158,12 @@
                         <div class="btn-group">
                             <div class="negative-btn">
                                 <button class="layui-btn layui-btn-primary" id="cancel">重置</button>
-                                <button class="layui-btn layui-btn-danger" lay-filter="submit-article" lay-submit
+                                <button class="layui-btn layui-btn-danger wd50p" lay-filter="submit-article" lay-submit
                                         id="remove-del">移至回收站
                                 </button>
                             </div>
                             <div class="positive-btn">
-                                <button class="layui-btn positive-btn-right" id="published-sure"
+                                <button class="layui-btn positive-btn-right wd50p" id="published-sure"
                                         lay-filter="submit-article" lay-submit>
                                     发布
                                 </button>
@@ -168,9 +176,31 @@
         </div>
     </div>
 </div>
-
-<script src="/static/plugins/tinymce/tinymce.min.js" type="text/javascript"></script>
 <script>
+
+    function renderTags() {
+        layui.define(['element', 'form'], function (exports) {
+            var form = layui.form
+                , $ = layui.jquery
+                , element = layui.element
+            ;
+            element.render()
+            form.render()
+            var tags = $('.choose-tags').find('.publish-tags-content');
+            tags.each(function (i) {
+                var color = Math.random();
+                var r = parseInt((color * (i + 1) * 1234) % 254);
+                var g = parseInt((color * (i + 1) * 4321) % 254);
+                var b = parseInt((color * (i + 1) * 2222) % 254);
+                $(this).css("background-color", "rgba(" + r + "," + g + "," + b + ",0.1)")
+                $(this).css("border", "  1px rgba(" + r + "," + g + "," + b + ",1) solid")
+            })
+
+        });
+
+    }
+
     layui.use('articlePublish', layui.factory('articlePublish')).use(['admin', 'articlePublish', 'form', 'table'], function () {
+
     })
 </script>

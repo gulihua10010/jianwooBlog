@@ -1,5 +1,7 @@
 package cn.jianwoo.blog.dto.response.vo;
 
+import cn.jianwoo.blog.config.LongToStringSerializerConfig;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,6 +24,7 @@ public class ArticleInfoVO implements Serializable {
     /**
      * 主键
      */
+    @JSONField(serializeUsing = LongToStringSerializerConfig.class)
     private Long id;
     /**
      * 标题
@@ -60,6 +63,24 @@ public class ArticleInfoVO implements Serializable {
      * 是否可以评论
      */
     private Integer isComment;
+
+    /**
+     * 文章标签列表
+     */
+    private List<TagsListVO> artTagsList;
+    /**
+     * 标签列表
+     */
+    private List<TagsListVO> tagsList;
+
+    /**
+     * 菜单列表
+     */
+    private List<ArticleMenuVO> menuList;
+    /**
+     * 菜单名字
+     */
+    private String menuName;
 
 
 }

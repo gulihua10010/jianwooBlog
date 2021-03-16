@@ -69,9 +69,21 @@ public class CommentVO implements Serializable {
      */
     private String ip;
     /**
+     * QQ
+     */
+    private String qq;
+    /**
+     * 头像
+     */
+    private String headImg;
+    /**
      * ip所属地域
      */
     private String area;
+    /**
+     * 是否以读
+     */
+    private Integer read;
     /**
      * 显示描述
      */

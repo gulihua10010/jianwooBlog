@@ -358,7 +358,7 @@ layui.define('view', function (exports) {
                     .replace(new RegExp('\/' + setter.entry + '$'), '/'); //过滤路由最后的默认视图文件名（如：index）
             }
 
-            //……
+
         };
 
     //事件
@@ -374,6 +374,8 @@ layui.define('view', function (exports) {
         //刷新
         , refresh: function () {
             layui.index.render();
+            layui.element.render();
+
         }
 
         //输入框搜索
@@ -755,7 +757,7 @@ layui.define('view', function (exports) {
         admin.tabsPage.index = index;
 
         //如果是iframe类型的标签页
-        if (othis.attr('lay-attr') === 'iframe') {
+        if (setter.pageTabs) {
             return admin.tabsBodyChange(index);
         }
         ;

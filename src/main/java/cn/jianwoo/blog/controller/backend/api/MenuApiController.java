@@ -25,6 +25,7 @@ import cn.jianwoo.blog.service.biz.MenuBizService;
 import cn.jianwoo.blog.service.bo.MenuValidateBO;
 import cn.jianwoo.blog.validation.BizValidation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -304,12 +305,15 @@ public class MenuApiController extends BaseController {
         ArticleMenuResponse response = ArticleMenuResponse.getInstance();
         List<ArticleMenuVO> list = new ArrayList<>();
         List<Menu> menuList = menuBizService.querySubMenuOrderedList(MenuTypeEnum.FRONTEND.getValue());
-        for (Menu menu : menuList) {
-            ArticleMenuVO vo = JwBuilder.of(ArticleMenuVO::new)
-                    .with(ArticleMenuVO::setId, menu.getOid())
-                    .with(ArticleMenuVO::setName, StringEscapeUtils.escapeHtml4(menu.getText())).build();
-            list.add(vo);
+        if (CollectionUtils.isNotEmpty(menuList)) {
+            for (Menu menu : menuList) {
+                ArticleMenuVO vo = JwBuilder.of(ArticleMenuVO::new)
+                        .with(ArticleMenuVO::setId, menu.getOid())
+                        .with(ArticleMenuVO::setName, StringEscapeUtils.escapeHtml4(menu.getText())).build();
+                list.add(vo);
+            }
         }
+
         response.setData(list);
         return super.responseToJSONString(response);
 

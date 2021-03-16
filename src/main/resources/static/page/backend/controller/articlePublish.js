@@ -1,22 +1,21 @@
-layui.define(['layer', 'form', 'element', 'upload'], function (exports) {
+layui.extend({
+    tinymce: "{/}" + layui.setter.base + '/lib/extend/tinymce/tinymce'
+}).define(['layer', 'form', 'element', 'upload', 'tinymce'], function (exports) {
     var form = layui.form
         , $ = layui.jquery
-        , upload = layui.upload;
-    tinymceInit("#mytextarea");
-
-    var tags = $('.choose-tags').find('span');
-    for (var i = 0; i < tags.length; i++) {
-        var color = Math.random();
-        var r = parseInt((color * (i + 1) * 1234) % 254);
-        var g = parseInt((color * (i + 1) * 4321) % 254);
-        var b = parseInt((color * (i + 1) * 2222) % 254);
-        $(tags[i]).css("background-color", "rgba(" + r + "," + g + "," + b + ",0.1)")
-        $(tags[i]).css("border", "  1px rgba(" + r + "," + g + "," + b + ",1) solid")
-    }
+        , upload = layui.upload
+        , element = layui.element
+        , tinymce = layui.tinymce
+    ;
+    var edit = tinymce.render({
+        elem: "#article-content-text"
+    }, function (opt, edit) {
+        //加载完成后回调
+    });
     $('.choosed').on('click', 'a', function () {
         $(this).parent().remove();
     })
-    $('.tags>span').click(function () {
+    $('.choose-tags').on('click', '.publish-tags-content', function () {
         var flag = 0, choosed = $('.choosed>span');
         for (var i = 0; i < choosed.length; i++) {
             var obj = $(choosed[i]).clone();
@@ -65,11 +64,7 @@ layui.define(['layer', 'form', 'element', 'upload'], function (exports) {
         form.render();
     });
 
-    layui.use('upload', function () {
-        var index;
-        var $ = layui.jquery
-            , upload = layui.upload;
-
+    var index;
         //普通图片上传
         var uploadInst = upload.render({
             elem: '#art-img'
@@ -117,9 +112,6 @@ layui.define(['layer', 'form', 'element', 'upload'], function (exports) {
             }
         });
 
-
-    });
-
     $('#btn-ispublic-cancel').click(function () {
         $('#ispublic-form').css("display", "none");
         $('#pwd-tips').text('')
@@ -162,6 +154,9 @@ layui.define(['layer', 'form', 'element', 'upload'], function (exports) {
         }
 
         var articleContent = tinyMCE.activeEditor.getContent();
+        // console.log("articleContent")
+        // console.log(articleContent)
+        // return ;
         var contentText = articleContent.replace(new RegExp('\n', 'g'), '');
         if (btnstatus === 1) {
             if (contentText == '<!DOCTYPE html><html><head></head><body></body></html>') {

@@ -9,30 +9,36 @@ import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.config.router.ArticleApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dao.base.ArticleTransDao;
+import cn.jianwoo.blog.dao.base.TagsTransDao;
 import cn.jianwoo.blog.dto.request.ArticlePageRequest;
 import cn.jianwoo.blog.dto.request.ArticleSubmitRequest;
 import cn.jianwoo.blog.dto.request.EntityOidListRequest;
 import cn.jianwoo.blog.dto.request.EntityOidRequest;
 import cn.jianwoo.blog.dto.response.ArticleInfoResponse;
-import cn.jianwoo.blog.dto.response.ArticleMenuResponse;
-import cn.jianwoo.blog.dto.response.ArticleResponse;
-import cn.jianwoo.blog.dto.response.LayuiBaseResponse;
+import cn.jianwoo.blog.dto.response.ArticleSummaryResponse;
 import cn.jianwoo.blog.dto.response.vo.ArticleInfoVO;
+import cn.jianwoo.blog.dto.response.vo.ArticleMenuVO;
 import cn.jianwoo.blog.dto.response.vo.ArticleVO;
+import cn.jianwoo.blog.dto.response.vo.TagsListVO;
 import cn.jianwoo.blog.entity.Article;
+import cn.jianwoo.blog.entity.Menu;
+import cn.jianwoo.blog.entity.Tags;
 import cn.jianwoo.blog.entity.extension.ArticleExt;
 import cn.jianwoo.blog.entity.query.ArticleParam;
 import cn.jianwoo.blog.enums.ArticleStatusEnum;
 import cn.jianwoo.blog.enums.ArticleVisitEnum;
+import cn.jianwoo.blog.enums.MenuTypeEnum;
 import cn.jianwoo.blog.enums.PageIdEnum;
-import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.ArticleBizService;
+import cn.jianwoo.blog.service.biz.MenuBizService;
+import cn.jianwoo.blog.service.biz.TagsBizService;
 import cn.jianwoo.blog.util.DomainUtil;
 import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.validation.BizValidation;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +65,13 @@ public class ArticleApiController extends BaseController {
     private ArticleBizService articleBizService;
     @Autowired
     private ArticleTransDao articleTransDao;
+    @Autowired
+    private TagsBizService tagsBizService;
+    @Autowired
+    private TagsTransDao tagsTransDao;
+    @Autowired
+    private MenuBizService menuBizService;
+
 
     /**
      * 文章提交(文章发布页面)<br/>
@@ -226,9 +239,18 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(request.getArtOid(), "artOid", "文章id不能为空!");
             BizValidation.paramValidate(request.getTitle(), "title", "标题不能为空!");
             BizValidation.paramValidate(request.getArticleContent(), "articleContent", "文章内容不能为空!");
+            BizValidation.paramValidate(JwUtil.clearHtmlWithoutMedia(request.getArticleContent()), "articleContent", "文章内容不能为空!");
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
+            BizValidation.paramValidate(request.getVisitType(), "visitType", "文章访问类型不能为空!");
+            BizValidation.paramValidate(request.getType(), "type", "文章类型不能为空!");
             BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
             BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
+            BizValidation.paramRangeValidate(request.getVisitType(), "visitType", "文章访问类型必须在[-1,0,1,2]中!",
+                    ArticleVisitEnum.PUBLIC.getValue(), ArticleVisitEnum.PASSWORD.getValue(),
+                    ArticleVisitEnum.PRIVATE.getValue(), ArticleVisitEnum.TOP.getValue());
+            if (ArticleVisitEnum.PASSWORD.getValue().equals(request.getVisitType())) {
+                BizValidation.paramValidate(request.getPassword(), "password", "文章密码不能为空!");
+            }
             articleBizService.doUpdateArticle(request.getArtOid(), request.getTitle(), request.getArticleContent(),
                     request.getAuthor(), request.getType(), request.getIsComment(), request.getVisitType(),
                     request.getImgSrc(), request.getPassword(), request.getTags(),
@@ -297,7 +319,7 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(request.getTitle(), "title", "标题不能为空!");
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
             BizValidation.paramValidate(request.getVisitType(), "visitType", "文章访问类型不能为空!");
-            BizValidation.paramValidate(request.getType(), "type", "文章类型不能为空!");
+//            BizValidation.paramValidate(request.getType(), "type", "文章类型不能为空!");
             BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
             BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
             BizValidation.paramRangeValidate(request.getVisitType(), "visitType", "文章访问类型必须在[-1,0,1,2]中!",
@@ -462,7 +484,7 @@ public class ArticleApiController extends BaseController {
      *              title<br/>
      *              text<br/>
      *              status<br/>
-     * @return 返回响应 {@link ArticleResponse}
+     * @return 返回响应 {@link ArticleSummaryResponse}
      * code<br/>
      * count<br/>
      * data<br/>
@@ -500,7 +522,7 @@ public class ArticleApiController extends BaseController {
         artParam.setPageSize(param.getLimit());
         PageInfo<ArticleExt> articleExtPageInfo = articleBizService.queryEffectiveArticleList(artParam);
         List<ArticleVO> articleVOList = new ArrayList<>();
-        ArticleResponse response = ArticleResponse.getInstance();
+        ArticleSummaryResponse response = ArticleSummaryResponse.getInstance();
         for (ArticleExt articleExt : articleExtPageInfo.getList()) {
             ArticleVO vo = new ArticleVO();
             vo.setAuthor(articleExt.getAuthor());
@@ -514,7 +536,6 @@ public class ArticleApiController extends BaseController {
         }
         response.setData(articleVOList);
         response.setCount(articleExtPageInfo.getTotal());
-        response.setCode(LayuiBaseResponse.SUCCESS_CODE);
         return super.responseToJSONString(response);
 
     }
@@ -527,7 +548,7 @@ public class ArticleApiController extends BaseController {
      *              title<br/>
      *              text<br/>
      *              status<br/>
-     * @return 返回响应 {@link ArticleResponse}
+     * @return 返回响应 {@link ArticleSummaryResponse}
      * code<br/>
      * count<br/>
      * data<br/>
@@ -555,7 +576,7 @@ public class ArticleApiController extends BaseController {
         artParam.setPageSize(param.getLimit());
         PageInfo<ArticleExt> articleExtPageInfo = articleBizService.queryRecycleBinArticleList(artParam);
         List<ArticleVO> articleVOList = new ArrayList<>();
-        ArticleResponse response = ArticleResponse.getInstance();
+        ArticleSummaryResponse response = ArticleSummaryResponse.getInstance();
         for (ArticleExt articleExt : articleExtPageInfo.getList()) {
             ArticleVO vo = new ArticleVO();
             vo.setAuthor(articleExt.getAuthor());
@@ -569,7 +590,6 @@ public class ArticleApiController extends BaseController {
         }
         response.setData(articleVOList);
         response.setCount(articleExtPageInfo.getTotal());
-        response.setCode(LayuiBaseResponse.SUCCESS_CODE);
         return super.responseToJSONString(response);
 
     }
@@ -724,13 +744,31 @@ public class ArticleApiController extends BaseController {
 
     /**
      * 获取文章信息<br/>
-     * url:/api/admin/article/info<br/>
+     * url:/api/admin/article/info/{id}<br/>
      *
-     * @return 返回响应 {@link ArticleMenuResponse}
+     * @return 返回响应 {@link ArticleInfoResponse}
      * status<br/>
      * data<br/>
      * --id<br/>
-     * --name<br/>
+     * --title<br/>
+     * --author<br/>
+     * --content<br/>
+     * --menuOid<br/>
+     * --imgSrc<br/>
+     * --status<br/>
+     * --visitType<br/>
+     * --password<br/>
+     * --isComment<br/>
+     * --artTagsList<br/>
+     * --tagsList<br/>
+     * ----id<br/>
+     * ----name<br/>
+     * --menuList<br/>
+     * ----id<br/>
+     * ----name<br/>
+     * ----id<br/>
+     * ----name<br/>
+     * --menuName<br/>
      * @author gulihua
      */
     @GetMapping(ArticleApiUrlConfig.URL_ARTICLE_INFO)
@@ -738,6 +776,7 @@ public class ArticleApiController extends BaseController {
         ArticleInfoResponse response = ArticleInfoResponse.getInstance();
         Article article;
         try {
+            BizValidation.paramValidate(id, "id", "文章id不能为空!");
             article = articleTransDao.queryArticleByPrimaryKey(id);
             ArticleInfoVO vo = JwBuilder.of(ArticleInfoVO::new)
                     .with(ArticleInfoVO::setId, article.getOid())
@@ -752,8 +791,44 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleInfoVO::setStatus, article.getStatus())
                     .build();
 
+
+            List<Tags> artTags = tagsBizService.queryTagsByArtOid(id);
+            List<TagsListVO> tagsList = new ArrayList<TagsListVO>();
+            if (CollectionUtils.isNotEmpty(artTags)) {
+                for (Tags tag : artTags) {
+                    TagsListVO tagsListVO = JwBuilder.of(TagsListVO::new)
+                            .with(TagsListVO::setId, tag.getOid())
+                            .with(TagsListVO::setName, StringEscapeUtils.escapeHtml4(tag.getContent())).build();
+                    tagsList.add(tagsListVO);
+                }
+                vo.setArtTagsList(tagsList);
+            }
+            List<Tags> allTags = tagsTransDao.queryAllTags();
+            List<TagsListVO> allTagsList = new ArrayList<TagsListVO>();
+            if (CollectionUtils.isNotEmpty(allTags)) {
+                for (Tags tag : allTags) {
+                    TagsListVO tagsListVO = JwBuilder.of(TagsListVO::new)
+                            .with(TagsListVO::setId, tag.getOid())
+                            .with(TagsListVO::setName, StringEscapeUtils.escapeHtml4(tag.getContent())).build();
+                    allTagsList.add(tagsListVO);
+                }
+                vo.setTagsList(allTagsList);
+            }
+
+            List<Menu> menuList = menuBizService.querySubMenuOrderedList(MenuTypeEnum.FRONTEND.getValue());
+            List<ArticleMenuVO> menuVoList = new ArrayList<>();
+            if (CollectionUtils.isNotEmpty(menuList)) {
+                for (Menu menu : menuList) {
+                    ArticleMenuVO menuVo = JwBuilder.of(ArticleMenuVO::new)
+                            .with(ArticleMenuVO::setId, menu.getOid())
+                            .with(ArticleMenuVO::setName, StringEscapeUtils.escapeHtml4(menu.getText())).build();
+                    menuVoList.add(menuVo);
+                }
+                vo.setMenuList(menuVoList);
+            }
+
             response.setData(vo);
-        } catch (DaoException e) {
+        } catch (Exception e) {
             log.error(">> AdminPageController.articleEdit exec failed, exception: \n", e);
             log.error(">> Article {} cannot be found", id);
             return super.exceptionToString(e);

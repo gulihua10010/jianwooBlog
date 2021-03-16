@@ -1,5 +1,6 @@
 package cn.jianwoo.blog.dto.response;
 
+import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.dto.response.vo.CommentListVO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +18,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentListResponse extends LayuiBaseResponse {
+public class CommentListResponse extends BaseResponseDto {
 
     private static final long serialVersionUID = -4171515102409676030L;
     private List<CommentListVO> commentList;

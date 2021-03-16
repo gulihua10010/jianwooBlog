@@ -7,13 +7,15 @@
 
  */
 
-layui.define(function (exports) {
+layui.define("form", function (exports) {
     var $ = layui.$
         , layer = layui.layer
         , laytpl = layui.laytpl
         , setter = layui.setter
         , view = layui.view
         , admin = layui.admin
+        , form = layui.form;
+
 
     //公共业务的逻辑处理可以写在此处，切换任何页面都会执行
 
@@ -48,6 +50,45 @@ layui.define(function (exports) {
             }
         });
 
+    }
+
+
+    ajaxApiPost = function (url, data, call) {
+
+        admin.req({
+            type: 'post',
+            data: data,
+            dataType: 'json',
+            // contentType: "application/json",
+            async: true,
+            url: url,
+            success: function (data) {
+                if (data.status == '000000') {
+                    typeof call === 'function' && call(data);
+                } else {
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            }
+
+        })
+    }
+
+
+    /**
+     * 统计区分中英文字符字数
+     */
+    getWordsCnt = function (str) {
+        var n = 0;
+        for (var i = 0; i < str.length; i++) {
+            var ch = str.charCodeAt(i);
+            if (ch > 255) { // 中文字符集
+                n += 2;
+            } else {
+                n++;
+            }
+        }
+        return n;
     }
 
 
@@ -111,7 +152,8 @@ layui.define(function (exports) {
 
     //富文本编辑器
 
-    tinymceInit = function (id, power_paste = "propmt") {
+    tinymceInit = function (id, content = "", power_paste = "propmt") {
+        console.log("===== tinymce init")
         tinymce.init({
             selector: id,
             max_height: 550,
@@ -121,11 +163,11 @@ layui.define(function (exports) {
             plugins: [
                 "advlist  autolink   link image lists   print preview hr anchor  ",
                 "searchreplace wordcount     code   insertdatetime media nonbreaking",
-                "table contextmenu directionality emoticons   textcolor paste fullpage  powerpaste toc   uploadvideo importcss textcolor colorpicker uploadimage"
+                "table contextmenu directionality emoticons   textcolor paste fullpage  powerpaste toc   codesample uploadvideo importcss textcolor colorpicker uploadimage"
             ],
             toolbar1: "undo redo | cut copy paste | bold italic underline strikethrough |" +
                 " alignleft aligncenter alignright alignjustify |   formatselect fontselect fontsizeselect",
-            toolbar2: " searchreplace | bullist numlist | outdent indent blockquote | link unlink   uploadimage uploadvideo  code |" +
+            toolbar2: " searchreplace | bullist numlist | outdent indent blockquote | link unlink   uploadimage uploadvideo  codesample image |" +
                 " inserttime preview | forecolor backcolor",
             toolbar3: "table | hr removeformat | subscript superscript |   emoticons |  " +
                 "   nonbreaking    restoredraft  |  code      ",
@@ -152,6 +194,11 @@ layui.define(function (exports) {
             powerpaste_allow_local_images: true,
             paste_data_images: true,
             paste_merge_formats: true,
+            init_instance_callback: function (plugin, args) {
+                if (content != undefined && content != "") {
+                    tinyMCE.activeEditor.setContent(content);
+                }
+            },
             paste_preprocess: function (plugin, args) {
                 function load(src) {
                     loadImageToBlob(src, function (blobFile) {
@@ -171,7 +218,7 @@ layui.define(function (exports) {
                 var blob = blobInfo.blob();
                 var formData = new FormData();
                 formData.append('file', blob);
-                $jq.ajax({
+                $.ajax({
                     url: "/api/file/upload",
                     crossDomain: true,
                     data: formData,
@@ -187,6 +234,59 @@ layui.define(function (exports) {
         });
     }
 
+
+    form.verify({
+        maxLength: function (value, item) {
+            var len = item.getAttribute('lay-max');
+            if (len == undefined || len == null) len = 200;
+            if (value.length > len) {
+                return '字段长度不能大于' + len + '位';
+            }
+        },
+        menuName: [/^[_#$@\d\w]*$/, '菜单文本必须是字母、数字、符号\'_#$@\'，不能包含其他特殊字符!'],
+        pass: function (value, item) {
+            if ($('#passw').is(":checked")) {
+                var patt = /(.+){6,12}$/;
+                if (!patt.test(value)) {
+                    return '密码必须6到12位';
+                }
+            }
+
+        },
+        repass: function (value, item) {
+            if ($('#passw').is(":checked") &&
+                $('#passw-content').val() != value) {
+                return '两次密码不一致';
+            }
+        },
+
+
+    })
+
+    /**用正则表达式实现html解码（反转义）（另一种写法）*/
+    escape2Html = function (str) {
+        var arrEntities = {'lt': '<', 'gt': '>', 'nbsp': ' ', 'amp': '&', 'quot': '"'};
+        return str.replace(/&(lt|gt|nbsp|amp|quot);/ig, function (all, t) {
+            return arrEntities[t];
+        });
+    }
+
+
+    /** 用正则表达式实现html编码（转义）（另一种写法）*/
+    html2Escape = function (sHtml) {
+        return sHtml.replace(/[<>&"]/g, function (c) {
+            return {'<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;'}[c];
+        });
+    }
+
+    formatStr = function (str) {
+        if (undefined === str || str === null) {
+            return "";
+        }
+        return str.trim();
+    }
+
+
     //退出
     admin.events.logout = function () {
         //执行退出接口
@@ -201,7 +301,6 @@ layui.define(function (exports) {
             }
         });
     };
-
 
     //对外暴露的接口
     exports('common', {});

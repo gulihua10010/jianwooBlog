@@ -221,7 +221,7 @@ input:-webkit-autofill {
 
 .comment-content {
     display: block;
-    padding: 10px 20px 60px;
+    padding: 10px 20px 10px;
 }
 
 .comment-content .media-body, .comment-content-reply .media-body {
@@ -267,7 +267,7 @@ input:-webkit-autofill {
     font-size: 0
 }
 
-.tags-content > ul > li {
+.tags-content ul > li {
     display: inline-block;
     height: 50px;
     border: 1px solid rgba(0, 0, 0, .2);
@@ -282,15 +282,15 @@ input:-webkit-autofill {
 
 }
 
-.tags-content > ul > li:last-child {
+.tags-content ul > li:last-child {
     cursor: pointer
 }
 
-.tags-content > ul > li:last-child > i {
+.tags-content ul > li:last-child > i {
     font-size: 30px
 }
 
-.tags-content > ul > li:last-child:hover {
+.tags-content ul > li:last-child:hover {
     background-color: hsla(0, 0%, 97%, .7)
 }
 
@@ -445,4 +445,20 @@ input:-webkit-autofill {
 
 .layui-card-body-row1 {
     height: 300px;
+}
+
+.wd30p {
+    width: 30% !important;
+}
+
+.wd50p {
+    width: 50% !important;
+}
+
+.wd80p {
+    width: 80% !important;
+}
+
+.wdmin70 {
+    min-width: 70px;
 }

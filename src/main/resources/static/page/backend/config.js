@@ -14,7 +14,7 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function (exports) {
         , views: layui.cache.base + 'views/' //视图所在目录
         , entry: 'index' //默认视图文件名
         , engine: '.html' //视图文件后缀名
-        , pageTabs: false //是否开启页面选项卡功能。单页版不推荐开启
+        , pageTabs: false     //是否开启页面选项卡功能。单页版不推荐开启
 
         , name: '简窝后台管理系统'
         , tableName: 'layuiAdmin' //本地存储表名
@@ -35,6 +35,7 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function (exports) {
             statusName: 'status' //数据状态的字段名称
             , statusCode: {
                 ok: "000000" //数据状态一切正常的状态码
+                , error: "999999" //错误状态码：需要顶部弹出的消息;设置false则不弹出
                 , logout: "1001" //登录状态失效的状态码
             }
             , msgName: 'msg' //状态信息的字段名称

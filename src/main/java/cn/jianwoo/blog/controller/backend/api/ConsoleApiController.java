@@ -5,10 +5,9 @@ import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.config.router.ConsoleApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
-import cn.jianwoo.blog.dto.response.ArticleResponse;
-import cn.jianwoo.blog.dto.response.CommentResponse;
+import cn.jianwoo.blog.dto.response.ArticleSummaryResponse;
+import cn.jianwoo.blog.dto.response.CommentSummaryResponse;
 import cn.jianwoo.blog.dto.response.ConsoleCountResponse;
-import cn.jianwoo.blog.dto.response.LayuiBaseResponse;
 import cn.jianwoo.blog.dto.response.vo.ArticleVO;
 import cn.jianwoo.blog.dto.response.vo.CommentVO;
 import cn.jianwoo.blog.dto.response.vo.ConsoleCountVO;
@@ -48,7 +47,7 @@ public class ConsoleApiController extends BaseController {
      * 查詢已发布的最近10篇文章列表(控制台首页)<br/>
      * url:/api/admin/console/recent/article/published/query<br/>
      *
-     * @return 返回响应 {@link ArticleResponse}
+     * @return 返回响应 {@link ArticleSummaryResponse}
      * code<br/>
      * count<br/>
      * data<br/>
@@ -65,7 +64,7 @@ public class ConsoleApiController extends BaseController {
     @GetMapping(ConsoleApiUrlConfig.URL_RECENT_ARTICLE_PUBLISHED_QUERY)
     public String queryPublishedArticleList() {
         List<Article> articleList = articleBizService.queryRecentPublishedArts(10);
-        ArticleResponse response = ArticleResponse.getInstance();
+        ArticleSummaryResponse response = ArticleSummaryResponse.getInstance();
         if (CollectionUtils.isNotEmpty(articleList)) {
             List<ArticleVO> articleVOList = articleList.stream().map(data -> {
                 ArticleVO vo = new ArticleVO();
@@ -77,7 +76,6 @@ public class ConsoleApiController extends BaseController {
             }).collect(Collectors.toList());
             response.setData(articleVOList);
         }
-        response.setCode(LayuiBaseResponse.SUCCESS_CODE);
         return super.responseToJSONString(response);
     }
 
@@ -85,7 +83,7 @@ public class ConsoleApiController extends BaseController {
      * 查詢最近10篇文章草稿列表(控制台首页)<br/>
      * url:/api/admin/console/recent/article/draft/query<br/>
      *
-     * @return 返回响应 {@link ArticleResponse}
+     * @return 返回响应 {@link ArticleSummaryResponse}
      * code<br/>
      * count<br/>
      * data<br/>
@@ -102,7 +100,7 @@ public class ConsoleApiController extends BaseController {
     @GetMapping(ConsoleApiUrlConfig.URL_RECENT_ARTICLE_DRAFT_QUERY)
     public String queryDraftArticleList() {
         List<Article> articleList = articleBizService.queryRecentDraft(10);
-        ArticleResponse response = ArticleResponse.getInstance();
+        ArticleSummaryResponse response = ArticleSummaryResponse.getInstance();
         if (CollectionUtils.isNotEmpty(articleList)) {
             List<ArticleVO> articleVOList = articleList.stream().map(data -> {
                 ArticleVO vo = new ArticleVO();
@@ -114,7 +112,6 @@ public class ConsoleApiController extends BaseController {
             }).collect(Collectors.toList());
             response.setData(articleVOList);
         }
-        response.setCode(LayuiBaseResponse.SUCCESS_CODE);
         return super.responseToJSONString(response);
     }
 
@@ -122,7 +119,7 @@ public class ConsoleApiController extends BaseController {
      * 查詢最近10个文章评论列表(控制台首页)<br/>
      * url:/api/admin/console/recent/comment/query<br/>
      *
-     * @return 返回响应 {@link CommentResponse}
+     * @return 返回响应 {@link CommentSummaryResponse}
      * code<br/>
      * count<br/>
      * data<br/>
@@ -143,7 +140,7 @@ public class ConsoleApiController extends BaseController {
     @GetMapping(ConsoleApiUrlConfig.URL_RECENT_COMMENT_QUERY)
     public String queryCommentList() {
         List<CommentExt> commentExtList = commentBizService.queryRecentComments(10);
-        CommentResponse response = CommentResponse.getInstance();
+        CommentSummaryResponse response = CommentSummaryResponse.getInstance();
         if (CollectionUtils.isNotEmpty(commentExtList)) {
             List<CommentVO> list = new ArrayList<>();
             commentExtList.forEach(domain -> {
@@ -163,7 +160,6 @@ public class ConsoleApiController extends BaseController {
             });
             response.setData(list);
         }
-        response.setCode(LayuiBaseResponse.SUCCESS_CODE);
         return super.responseToJSONString(response);
     }
 

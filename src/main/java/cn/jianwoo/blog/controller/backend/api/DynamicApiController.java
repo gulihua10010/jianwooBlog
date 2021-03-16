@@ -6,8 +6,7 @@ import cn.jianwoo.blog.config.router.DynamicApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dto.request.CommentPageRequest;
 import cn.jianwoo.blog.dto.request.VisitPageRequest;
-import cn.jianwoo.blog.dto.response.CommentResponse;
-import cn.jianwoo.blog.dto.response.LayuiBaseResponse;
+import cn.jianwoo.blog.dto.response.CommentSummaryResponse;
 import cn.jianwoo.blog.dto.response.VisitResponse;
 import cn.jianwoo.blog.dto.response.vo.CommentVO;
 import cn.jianwoo.blog.dto.response.vo.VisitVO;
@@ -84,7 +83,6 @@ public class DynamicApiController extends BaseController {
             response.setData(list);
             response.setCount(pageInfo.getTotal());
         }
-        response.setCode(LayuiBaseResponse.SUCCESS_CODE);
         return super.responseToJSONString(response);
 
     }
@@ -95,7 +93,7 @@ public class DynamicApiController extends BaseController {
      * url:/api/admin/dynamic/visit/query<br/>
      *
      * @param param JSON 参数({@link VisitPageRequest})
-     * @return 返回响应 {@link CommentResponse}
+     * @return 返回响应 {@link CommentSummaryResponse}
      * code<br/>
      * count<br/>
      * data<br/>
@@ -121,7 +119,7 @@ public class DynamicApiController extends BaseController {
         pageParam.setPageNo(param.getPage());
         pageParam.setPageSize(param.getLimit());
         PageInfo<CommentExt> pageInfo = commentBizService.queryAllCommentPage(pageParam);
-        CommentResponse response = CommentResponse.getInstance();
+        CommentSummaryResponse response = CommentSummaryResponse.getInstance();
         if (CollectionUtils.isNotEmpty(pageInfo.getList())) {
             List<CommentVO> list = new ArrayList<>();
             pageInfo.getList().forEach(domain -> {
@@ -142,7 +140,6 @@ public class DynamicApiController extends BaseController {
             response.setData(list);
             response.setCount(pageInfo.getTotal());
         }
-        response.setCode(LayuiBaseResponse.SUCCESS_CODE);
         return super.responseToJSONString(response);
 
     }

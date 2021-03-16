@@ -1,0 +1,352 @@
+layui.define(['table', 'form', 'laytpl', 'element'], function (exports) {
+    var table = layui.table
+        , $ = layui.$
+        , form = layui.form
+        , view = layui.view
+        , admin = layui.admin
+        , laytpl = layui.laytpl
+        , element = layui.element;
+
+    ;
+
+    table.render({
+        elem: '#comment-table'
+        , url: "/api/admin/comment/query"
+        , cols: [[
+            {type: 'checkbox', fixed: 'right'}
+            , {type: 'numbers', width: 40, title: 'SEQ',}
+            , {field: 'artTitle', width: 200, title: '文章标题', align: 'center'}
+            , {field: 'user', width: 80, title: '用户', sort: true, align: 'center'}
+            , {field: 'date', width: 200, title: '时间', sort: true, align: 'center'}
+            , {field: 'replyTo', title: '回复至', width: 80, align: 'center'}
+            , {field: 'content', title: '内容', align: 'center'}
+            , {title: '操作', width: 300, align: 'center', fixed: 'right', toolbar: '#table-content-com'}
+
+        ]]
+        , response: {
+            statusName: 'status'
+            , statusCode: '000000'
+        }
+        , page: true
+        , text: {none: '无数据'}
+
+    });
+
+    //监听搜索
+    form.on('submit(contcomm-search)', function (data) {
+        var field = data.field;
+        //执行重载
+        table.reload('comment-table', {
+            where: field
+        });
+    });
+
+    form.on('switch(comment-unread)', function (data) {
+        var isChecked = data.elem.checked
+        table.reload('comment-table', {
+            where: {unread: isChecked ? 1 : 0}
+        });
+
+    });
+
+    //点击事件
+    var active = {
+        batchdel: function () {
+            var checkStatus = table.checkStatus('comment-table')
+                , checkData = checkStatus.data; //得到选中的数据
+
+            if (checkData.length === 0) {
+                return layer.msg('请选择数据');
+            }
+            var entityOidArr = [];
+            for (i in checkData) {
+                entityOidArr.push(checkData[i].oid);
+            }
+
+            layer.confirm('确定删除吗，将删除全部评论和回复评论？', function (index) {
+                ajaxPost(
+                    "/api/admin/comment/remove/list",
+                    JSON.stringify({entityOidList: entityOidArr}),
+                    "删除成功",
+                    function () {
+                        table.reload('comment-table')
+                    }
+                );
+            });
+        },
+        read: function () {
+            var checkStatus = table.checkStatus('comment-table')
+                , checkData = checkStatus.data; //得到选中的数据
+
+            if (checkData.length === 0) {
+                return layer.msg('请选择数据');
+            }
+            var entityOidArr = [];
+            for (i in checkData) {
+                entityOidArr.push(checkData[i].oid);
+            }
+
+            layer.confirm('确定将勾选评论标记为已读？', function (index) {
+                ajaxPost(
+                    "/api/admin/comment/read/list",
+                    JSON.stringify({entityOidList: entityOidArr}),
+                    "标记成功",
+                    function () {
+                        table.reload('comment-table')
+                    }
+                );
+            });
+        }
+    }
+
+    $('.layui-btn.layuiadmin-btn-comm').on('click', function () {
+        var type = $(this).data('type');
+        active[type] ? active[type].call(this) : '';
+    });
+
+
+    //监听工具条
+    table.on('tool(content-comm)', function (obj) {
+        var data = obj.data;
+        if (obj.event === 'del') {
+            layer.confirm('确定删除此条评论？', function (index) {
+                ajaxPost(
+                    "/api/admin/comment/remove",
+                    JSON.stringify({entityOid: data.oid}),
+                    "删除成功",
+                    function () {
+                        obj.del();
+                        layer.close(index);
+                    }
+                );
+
+            });
+        } else if (obj.event === 'reply') {
+            admin.popup({
+                title: '回复评论'
+                , area: ['450px', '300px']
+                , id: 'LAY-popup-comment-reply'
+                , success: function (layero, index) {
+                    view(this.id).render('comment/reply', data).done(function () {
+                        form.render(null, 'LAY-popup-comment-reply');
+                        form.on('submit(JW-comment-reply-submit)', function (formData) {
+                            var field = formData.field; //获取提交的字段
+                            var headImgUrl = "/static/comm/img/headimg/" + Math.ceil(Math.random() * 10) + ".jpg";
+
+                            //提交 Ajax 成功后，静态更新表格中的数据
+                            ajaxPost(
+                                "/api/admin/comment/reply",
+                                JSON.stringify({
+                                    content: field.content,
+                                    parentOid: data.oid,
+                                    artOid: data.artOid,
+                                    headImgUrl: headImgUrl,
+                                    subToken: field.subToken
+                                }),
+                                "回复成功",
+                                function () {
+                                    table.reload('comment-table'); //数据刷新
+                                    layer.close(index); //关闭弹层
+                                }
+                            );
+
+                        })
+                    });
+                }
+            });
+        } else if (obj.event === 'view') {
+            admin.popup({
+                title: '评论查看'
+                , area: ['900px', '600px']
+                , id: 'LAY-popup-comment-view'
+                , success: function (layero, index) {
+                    view(this.id).render('comment/view', data.oid).done(function () {
+                        layui.sessionData('comment-view-history', {
+                            key: 'history'
+                            , value: [data.oid]
+                        });
+                        layui.sessionData('comment-view-history', {
+                            key: 'index'
+                            , value: 0
+                        });
+                        form.render(null, 'LAY-popup-comment-view');
+
+                    });
+                }
+            });
+        }
+
+    });
+
+    //评论列表 渲染、操作
+
+    var commToken;//subToken
+    var artOid = layui.router().search.id;
+    if (artOid === undefined || artOid === null) {
+        artOid = $('#artOid').val();
+    }
+    renderComm = function (artOid, call) {
+
+        ajaxApiPost(
+            "/api/admin/token/generate",
+            JSON.stringify({
+                pageId: 'C14',
+            }),
+            function (res) {
+                commToken = res.token;
+            }
+        );
+
+        ajaxApiPost(
+            "/api/admin/comment/query/article/list",
+            JSON.stringify({
+                entityOid: artOid,
+            }),
+            function (res) {
+                var data = res.commentList;
+                var getTpl = document.getElementById('commentTemplate').innerHTML
+                    , view = document.getElementById('commentView');
+                laytpl(getTpl).render(data, function (html) {
+                    view.innerHTML = html;
+                });
+                element.render()
+                form.render()
+                $('.commentView-card').show();
+                if (data.length === 0) {
+                    $('.commentView-card').hide()
+                }
+                typeof call === 'function' && call();
+
+
+            }
+        );
+
+    }
+
+    function stopBubble(e) {
+        if (e && e.stopPropagation) {
+            e.stopPropagation();
+        } else {
+            window.event.cancelBubble = true;
+        }
+    }
+
+    //评论操作
+    var btnShow = false;
+    $('.add-comment').click(function () {
+        if (!btnShow) {
+            $(".comment-input").css('display', 'block');
+            btnShow = true;
+        } else {
+            $(".comment-input").css('display', 'none');
+            btnShow = false;
+        }
+    })
+
+
+    $('#commentView').on('click', '.reply', function (e) {
+        stopBubble(e)
+        var poid = $(this).attr('data-id')
+        // console.log(poid)
+        layer.open({
+            type: 2
+            , title: '回复评论'
+            , content: '/admin/comment/reply'
+            , area: ['450px', '300px']
+            , btn: ['确定', '取消']
+            , yes: function (index, layero) {
+                var iframeWindow = window['layui-layer-iframe' + index]
+                    , submitID = 'replyComm-submit'
+                    , submit = layero.find('iframe').contents().find('#' + submitID)
+                    , commTips = layero.find('iframe').contents().find('.comment-tips')
+                    , commTipsSpan = layero.find('iframe').contents().find('#comment-tips-text')
+
+                //监听提交
+                iframeWindow.layui.form.on('submit(' + submitID + ')', function (formData) {
+                    var field = formData.field; //获取提交的字段
+                    var headImgUrl = "/static/comm/img/headimg/" + Math.ceil(Math.random() * 10) + ".jpg";
+
+                    //提交 Ajax 成功后，静态更新表格中的数据
+                    ajaxPost(
+                        "/api/admin/comment/reply",
+                        JSON.stringify({
+                            content: field.content,
+                            parentOid: poid,
+                            artOid: artOid,
+                            headImgUrl: headImgUrl,
+                            subToken: field.subToken
+                        }),
+                        "回复成功",
+                        function () {
+                            renderComm(artOid);
+                            layer.close(index); //关闭弹层
+                        }
+                    );
+
+                });
+
+                submit.trigger('click');
+            }
+            , success: function (layero, index) {
+
+            }
+        });
+    });
+
+    $('.art-comment').on('click', '.comment-btn', function () {
+        var username = '博主:';
+        var qq = '00000000';
+        var headImgUrl = "/static/comm/img/headimg/" + Math.ceil(Math.random() * 10) + ".jpg";
+        var commentext = $('#comm-content').val();
+        var replyId = 0;
+        if (isEmpty(commentext)) {
+            alertFail("提示", "评论内容不能为空")
+            return false;
+        }
+
+        ajaxPost(
+            "/api/admin/comment/reply",
+            JSON.stringify({
+                content: commentext,
+                username: username,
+                qq: qq,
+                artOid: artOid,
+                parentOid: replyId,
+                headImgUrl: headImgUrl,
+                subToken: commToken
+            }),
+            "评论成功",
+            function () {
+                renderComm(artOid);
+                $('#comm-content').val('');
+                $(".comment-input").css('display', 'none');
+                btnShow = false;
+            }
+        );
+
+
+    })
+
+
+    $('#commentView').on('click', '.del', function (e) {
+        stopBubble(e)
+        var oid = $(this).attr('data-id');
+        alertAsk('确定要删除此评论(所有回复评论也将会全部删除)?', function () {
+            ajaxPost(
+                "/api/admin/comment/remove",
+                JSON.stringify({entityOid: oid}),
+                "删除成功",
+                function () {
+                    renderComm(artOid);
+                }
+            );
+
+
+        })
+
+
+    });
+
+
+    exports('comment', {})
+});
