@@ -12,6 +12,7 @@ layui.extend({
     }, function (opt, edit) {
         //加载完成后回调
     });
+
     $('.choosed').on('click', 'a', function () {
         $(this).parent().remove();
     })

@@ -3,6 +3,8 @@
 layui.define(['jquery'], function (exports) {
     var $ = layui.$
 
+    var admin = layui.admin || {}
+
     var modFile = layui.cache.modules['tinymce'];
 
     var modPath = modFile.substr(0, modFile.lastIndexOf('.'))
@@ -24,23 +26,27 @@ layui.define(['jquery'], function (exports) {
         , resize: true
         , paste_merge_formats: true
         , paste_data_images: true
-        // , powerpaste_word_import: power_paste
-        // , powerpaste_html_import: power_paste
+        , powerpaste_word_import: 'propmt'
+        , powerpaste_html_import: 'propmt'
         , response: {//后台返回数据格式设置
             statusName: response.statusName || 'code'//返回状态字段
             , msgName: response.msgName || 'msg'//返回消息字段
             , dataName: 'file' //返回的数据
-            , fileField: 'url'  // 上传接口返回的文件路由
+            , urlField: 'url'  // 上传接口返回的文件路由
+            , filenameField: 'fileName'  // 上传接口返回的文件名
             , statusCode: response.statusCode || {
                 ok: 0//数据正常
             }
         }
-        , success: function (res, succFun, failFun) {//图片上传完成回调 根据自己需要修改
-            if (res[this.response.statusName] == this.response.statusCode.ok) {
-                console.log(res)
-                succFun(this.response.fileField ? res[this.response.dataName][this.response.fileField] : this.response.dataName);
+        , success: function (res, succFun) {//图片上传完成回调 根据自己需要修改
+            if (res[this.response.statusName] === this.response.statusCode.ok) {
+                // console.log(res)
+                // succFun(res.file.url,{ text: res.msg });
+
+                succFun(this.response.urlField ? res[this.response.dataName][this.response.urlField] : this.response.dataName
+                    , this.response.filenameField ? res[this.response.dataName][this.response.filenameField] : this.response.filenameField);
             } else {
-                failFun(res[this.response.msgName]);
+                createNotify(res[this.response.msgName], 'error');
             }
         }
     };
@@ -48,6 +54,8 @@ layui.define(['jquery'], function (exports) {
     //  ----------------  以下代码无需修改  ----------------
 
     var t = {};
+
+    var elem;
 
     //初始化
     t.render = function (options, callback) {
@@ -63,6 +71,8 @@ layui.define(['jquery'], function (exports) {
         }
 
         tinymce.init(option);
+
+        elem = option.elem;
 
         return t.get(option.elem);
     };
@@ -105,9 +115,24 @@ layui.define(['jquery'], function (exports) {
         return t.render(optionCache, callback)
     }
 
-    function initOptions(option, callback) {
+    function createNotify(msg, type) {
+        if (!elem) {
+            return;
+        }
 
-        var admin = layui.admin || {}
+        if (type !== 'success' && type !== 'info' && type !== 'warning' && type !== 'error') {
+            type = 'info';
+        }
+        var editor = t.get(elem)
+        if (editor) {
+            editor.notificationManager.open({
+                text: msg,
+                type: type,
+            });
+        }
+    }
+
+    function initOptions(option, callback) {
 
         var form = option.form || {}
 
@@ -131,9 +156,10 @@ layui.define(['jquery'], function (exports) {
 
         option.plugins = isset(option.plugins) ? option.plugins
             : 'code quickbars print preview searchreplace autolink fullscreen image link media ' +
-            'codesample table charmap hr advlist lists wordcount imagetools indent2em importword';
+            'codesample table charmap hr advlist lists wordcount imagetools indent2em importword ' +
+            'powerpaste layout letterspacing lineheight upfile attachment';
 
-        option.toolbar = isset(option.toolbar) ? option.toolbar : 'code undo redo importword| forecolor backcolor bold italic underline strikethrough | indent2em alignleft aligncenter alignright alignjustify outdent indent | link bullist numlist image table codesample | formatselect fontselect fontsizeselect | image';
+        option.toolbar = isset(option.toolbar) ? option.toolbar : 'code undo redo importword layout lineheight letterspacing upfile attachment| forecolor backcolor bold italic underline strikethrough | indent2em alignleft aligncenter alignright alignjustify outdent indent | link bullist numlist image table codesample | formatselect fontselect fontsizeselect | image';
 
         option.resize = isset(option.resize) ? option.resize : false;
 
@@ -145,9 +171,9 @@ layui.define(['jquery'], function (exports) {
 
         option.paste_merge_formats = isset(option.paste_merge_formats) ? option.paste_merge_formats : false;
 
-        option.powerpaste_word_import = isset(option.powerpaste_word_import) ? option.powerpaste_word_import : 'propmt';
+        option.powerpaste_word_import = isset(option.powerpaste_word_import) ? option.powerpaste_word_import : settings.powerpaste_word_import;
 
-        option.powerpaste_html_import = isset(option.powerpaste_html_import) ? option.powerpaste_html_import : 'propmt';
+        option.powerpaste_html_import = isset(option.powerpaste_html_import) ? option.powerpaste_html_import : settings.powerpaste_html_import;
 
         option.contextmenu_never_use_native = isset(option.contextmenu_never_use_native) ? option.contextmenu_never_use_native : true;
 
@@ -162,7 +188,6 @@ layui.define(['jquery'], function (exports) {
             },
             table: {title: '表格', items: 'inserttable tableprops deletetable | cell row column'},
         };
-
         option.init_instance_callback = isset(option.init_instance_callback) ? option.init_instance_callback : function (inst) {
             if (typeof callback == 'function') callback(option, inst)
         };
@@ -170,10 +195,7 @@ layui.define(['jquery'], function (exports) {
         option.images_upload_url = isset(option.images_upload_url) ? option.images_upload_url : settings.images_upload_url;
 
         option.images_upload_handler = isset(option.images_upload_handler) ? option.images_upload_handler : function (blobInfo, succFun, failFun) {
-            if (isEmpty(option.images_upload_url)) {
-                failFun("上传接口未配置");
-                return console.error('images_upload_url未配置');
-            }
+
             var formData = new FormData();
             formData.append(file_field, blobInfo.blob());
             if (typeof form_data == 'object') {
@@ -181,32 +203,83 @@ layui.define(['jquery'], function (exports) {
                     formData.append(key, form_data[key]);
                 }
             }
-            var ajaxOpt = {
-                url: option.images_upload_url,
-                dataType: 'json',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (res) {
-                    settings.success(res, succFun, failFun)
-                },
-                error: function (res) {
-                    failFun("网络错误：" + res.status);
-                }
-            };
-            if (typeof admin.req == 'function') {
-                admin.req(ajaxOpt);
-            } else {
-                $.ajax(ajaxOpt);
-            }
+            doUpload(option.images_upload_url, formData, succFun);
         }
+
+        option.file_picker_callback = isset(option.file_picker_callback) ? option.file_picker_callback : function (succFun, value, meta) { //自定义文件上传函数
+            var filetype = '.pdf, .txt, .zip, .rar, .7z, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .mp3, .mp4';
+            var input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', filetype);
+            input.click();
+            input.onchange = function () {
+                var file = this.files[0];
+                var data = new FormData();
+                data.append("file", file);
+                doUpload(option.images_upload_url, data, succFun);
+
+
+            }
+        },
+            option.file_callback = isset(option.file_callback) ? option.file_callback : function (file, succFun) { //文件上传  file:文件对象 succFun(url|string,obj) 成功回调
+                var data = new FormData();
+                data.append("file", file);
+                doUpload(option.images_upload_url, data, succFun);
+
+            },
+            option.attachment_assets_path = isset(option.attachment_assets_path) ? option.attachment_assets_path : settings.base_url + '/plugins/attachment/icons',
+            option.attachment_upload_handler = isset(option.attachment_upload_handler) ? option.attachment_upload_handler : function (file, succFun, failFun, progressCallback) {
+                var data = new FormData();
+                data.append("file", file);
+                doUpload(option.images_upload_url, data, succFun);
+
+
+            }
 
         layui.sessionData('layui-tinymce', {
             key: option.selector,
             value: option
         })
         return option
+    }
+
+    var doUpload = function (url, data, succFun) {
+        if (isEmpty(url)) {
+            createNotify("上传接口未配置", 'error');
+            return console.error('images_upload_url未配置');
+        }
+        var ajaxOpt = {
+            url: url,
+            dataType: 'json',
+            type: 'POST',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                settings.success(res, succFun)
+            },
+            error: function (res) {
+                createNotify("错误：" + res.msg, 'error');
+            }
+        };
+        if (typeof admin.req == 'function') {
+            admin.req(ajaxOpt);
+        } else {
+            $.ajax(ajaxOpt);
+        }
+    }
+
+    var xhrOnProgress = function (fun) {
+        xhrOnProgress.onprogress = fun;
+        return function () {
+            var xhr = $.ajaxSettings.xhr();
+            if (typeof xhrOnProgress.onprogress !== 'function')
+                return xhr;
+            if (xhrOnProgress.onprogress && xhr.upload) {
+                xhr.upload.onprogress = xhrOnProgress.onprogress;
+            }
+            return xhr;
+        }
     }
 
     function initTinymce() {
