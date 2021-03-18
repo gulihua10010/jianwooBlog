@@ -157,9 +157,9 @@ layui.define(['jquery'], function (exports) {
         option.plugins = isset(option.plugins) ? option.plugins
             : 'code quickbars print preview searchreplace autolink fullscreen image link media ' +
             'codesample table charmap hr advlist lists wordcount imagetools indent2em importword ' +
-            'powerpaste layout letterspacing lineheight upfile attachment';
+            'powerpaste layout letterspacing lineheight upfile attachment formatpainter';
 
-        option.toolbar = isset(option.toolbar) ? option.toolbar : 'code undo redo importword layout lineheight letterspacing upfile attachment| forecolor backcolor bold italic underline strikethrough | indent2em alignleft aligncenter alignright alignjustify outdent indent | link bullist numlist image table codesample | formatselect fontselect fontsizeselect | image';
+        option.toolbar = isset(option.toolbar) ? option.toolbar : 'code undo redo  formatpainter importword layout lineheight letterspacing upfile attachment| forecolor backcolor bold italic underline strikethrough | indent2em alignleft aligncenter alignright alignjustify outdent indent | link bullist numlist image table codesample | formatselect fontselect fontsizeselect | image';
 
         option.resize = isset(option.resize) ? option.resize : false;
 
@@ -206,21 +206,6 @@ layui.define(['jquery'], function (exports) {
             doUpload(option.images_upload_url, formData, succFun);
         }
 
-        option.file_picker_callback = isset(option.file_picker_callback) ? option.file_picker_callback : function (succFun, value, meta) { //自定义文件上传函数
-            var filetype = '.pdf, .txt, .zip, .rar, .7z, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .mp3, .mp4';
-            var input = document.createElement('input');
-            input.setAttribute('type', 'file');
-            input.setAttribute('accept', filetype);
-            input.click();
-            input.onchange = function () {
-                var file = this.files[0];
-                var data = new FormData();
-                data.append("file", file);
-                doUpload(option.images_upload_url, data, succFun);
-
-
-            }
-        },
             option.file_callback = isset(option.file_callback) ? option.file_callback : function (file, succFun) { //文件上传  file:文件对象 succFun(url|string,obj) 成功回调
                 var data = new FormData();
                 data.append("file", file);
