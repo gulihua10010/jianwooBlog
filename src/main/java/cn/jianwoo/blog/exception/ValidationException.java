@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ValidationException extends JwBlogException {
     public static final String DEFAULT_VALIDATION_MSG = "Parameter verified failed,the content is emtpy";
+    public static final String DEFAULT_FILE_SIZE_VALIDATION_MSG = "Parameter verified failed,the file size exceeds the maximum limit";
     public static final ValidationException VALIDATOR_PARAM_IS_NULL = new ValidationException(
             ExceptionConstants.VALIDATION_FAILED_NULL, DEFAULT_VALIDATION_MSG);
     public static final ValidationException VALIDATOR_PARAM_IS_EMPTY = new ValidationException(
@@ -19,6 +20,8 @@ public class ValidationException extends JwBlogException {
             ExceptionConstants.VALIDATION_FAILED_LIST_EMPTY, DEFAULT_VALIDATION_MSG);
     public static final ValidationException VALIDATOR_ARRAY_PARAM_IS_EMPTY = new ValidationException(
             ExceptionConstants.VALIDATION_FAILED_ARRAY_EMPTY, DEFAULT_VALIDATION_MSG);
+    public static final ValidationException VALIDATOR_FILE_SIZE_MAX = new ValidationException(
+            ExceptionConstants.VALIDATOR_FILE_SIZE_MAX, DEFAULT_FILE_SIZE_VALIDATION_MSG);
     private static final Logger logger = LoggerFactory.getLogger(ValidationException.class);
     private static final long serialVersionUID = -2634310359657973291L;
 

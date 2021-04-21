@@ -1,11 +1,28 @@
-layui.define(['layer', 'form', 'element', 'upload'], function (exports) {
+layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (exports) {
     var form = layui.form
         , $ = layui.jquery
         , upload = layui.upload
         , laytpl = layui.laytpl
+        , admin = layui.admin
+        , tinymce = layui.tinymce
+
     ;
     var artOid = layui.router().search.id;
+    var edit;
 
+    function getEdit(onChange, callback) {
+        if (edit) return edit;
+        edit = tinymce.render({
+            elem: "#article-content-text-edit"
+            , onChange: function () {
+                typeof onChange === "function" && onChange();
+            }
+        }, function (opt, edit) {
+            typeof callback === "function" && callback(opt, edit);
+
+        });
+        return edit;
+    }
 
     $('.choosed').on('click', 'a', function () {
         $(this).parent().remove();
@@ -153,7 +170,7 @@ layui.define(['layer', 'form', 'element', 'upload'], function (exports) {
         } else if ($(this).attr('id') == 'remove-del') {
             btnType = -1;
         }
-        var articleContent = tinyMCE.activeEditor.getContent();
+        var articleContent = edit.getContent();
         var contentText = articleContent.replace(new RegExp('\n', 'g'), '');
         if (btnType == 1 && contentText == '<!DOCTYPE html><html><head></head><body></body></html>') {
             alertFail('提示', '文章内容不可为空！', '#article-content')
@@ -211,7 +228,7 @@ layui.define(['layer', 'form', 'element', 'upload'], function (exports) {
                 }),
                 "更新成功",
                 function () {
-                    location.reload();
+                    admin.events.refresh();
                 }
             );
 
@@ -232,7 +249,7 @@ layui.define(['layer', 'form', 'element', 'upload'], function (exports) {
                 }),
                 "保存成功",
                 function () {
-                    location.reload();
+                    admin.events.refresh();
                 }
             )
         } else if (btnType == 3) {
@@ -253,7 +270,7 @@ layui.define(['layer', 'form', 'element', 'upload'], function (exports) {
                 }),
                 "发布成功",
                 function () {
-                    location.reload();
+                    admin.events.refresh();
                 }
             )
         } else if (btnType == -1) {
@@ -287,13 +304,15 @@ layui.define(['layer', 'form', 'element', 'upload'], function (exports) {
 
     $('#cancel').click(function () {
         alertAsk('确认清除所有输入的数据，恢复初始状态?', function () {
-            location.reload()
+            admin.events.refresh();
         })
     })
+
+
     $('#articlePreview').click(function () {
         var title = $('#art-title').val();
         var author = $('#art-author').val();
-        var articleContent = tinyMCE.activeEditor.getContent();
+        var articleContent = edit.getContent();
         var type = $('.article-type select:selected').text();
         $('#artpre-title').val(title);
         $('#artpre-author').val(author);
@@ -301,9 +320,10 @@ layui.define(['layer', 'form', 'element', 'upload'], function (exports) {
         $('#artpre-type').val(type);
 
         $('#form-articlePreview').submit();
-        window.alert = function () {
-            return false;
-        };
+        // window.alert = function () {
+        //     return false;
+        // };
     })
-    exports('articleEdit', {})
+
+    exports('articleEdit', {'getEdit': getEdit})
 });

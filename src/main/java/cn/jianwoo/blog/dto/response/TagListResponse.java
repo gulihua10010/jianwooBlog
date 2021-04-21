@@ -1,7 +1,7 @@
 package cn.jianwoo.blog.dto.response;
 
 import cn.jianwoo.blog.base.BaseResponseDto;
-import cn.jianwoo.blog.dto.response.vo.TagsListVO;
+import cn.jianwoo.blog.dto.response.vo.TagsVO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 public class TagListResponse extends BaseResponseDto {
     private static final long serialVersionUID = 1970975993765800810L;
-    private List<TagsListVO> data;
+    private List<TagsVO> data;
 
     public static TagListResponse getInstance() {
         return new TagListResponse();

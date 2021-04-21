@@ -1,0 +1,62 @@
+<title>添加菜单</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>菜单管理</cite></a>
+        <a><cite>添加菜单</cite></a>
+    </div>
+</div>
+
+<div class="layui-form" id="layuiadmin-form-comment" lay-filter="layuiadmin-form-comment"
+     style="padding: 20px 30px 0 0;">
+    <div class="layui-card-body">
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜单名字</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="name" lay-verify="required|maxLength|menuName" autocomplete="off"
+                       lay-max="10"
+                       placeholder="必填(必须是字母、数字、符号'_#$@'，不能包含其他特殊字符)"
+                       type="text">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜单文本</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="text" lay-verify="required|maxLength" lay-max="10" autocomplete="off"
+                       placeholder="必填(用于页面显示)"
+                       type="text">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜单图标</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="icon" autocomplete="off" lay-verify="maxLength" lay-max="20"
+                       type="text">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜单url</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="url" autocomplete="off" lay-verify="maxLength" lay-max="200"
+                       type="text">
+            </div>
+        </div>
+        <div class="layui-form-item menu-tips" style="display: none">
+            <div class="layui-input-block">
+                <span style="color: red" id="menu-tips-text"></span>
+            </div>
+        </div>
+        <script type="text/html" template lay-url="/api/admin/token/generate"
+                lay-data="{pageId: 'M11'}" lay-type="post">
+            <input type="hidden" name="subToken" id="subToken" value="{{d.token}}">
+        </script>
+        <div class="layui-form-item">
+            <label class="layui-form-label"></label>
+            <div class="layui-input-block">
+                <input class="layui-btn" style="float: right" id="menu-add-submit" lay-filter="menu-add-submit" lay-submit
+                       type="button" value="确认">
+            </div>
+        </div>
+    </div>
+</div>

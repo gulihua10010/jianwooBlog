@@ -1,5 +1,6 @@
 package cn.jianwoo.blog.dto.response.vo;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,6 +30,17 @@ public class FileUploadResVO implements Serializable {
      * 文件 web url
      */
     private String url;
+
+    /**
+     * 原文件名
+     */
+    private String realFileName;
+
+    /**
+     *
+     * 媒体信息（视频/音频）
+     */
+    private JSONObject mediaInfo;
 
 
 }

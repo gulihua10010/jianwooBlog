@@ -13,4 +13,5 @@ public class TagsApiUrlConfig {
     public static final String URL_TAG_UPDATE = "/update";
     public static final String URL_TAG_LIST = "/list";
     public static final String URL_TAG_ARTICLE_LIST = "/article/list/{artId}";
+    public static final String URL_TAG_INFO = "/info/{id}";
 }

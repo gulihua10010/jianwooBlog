@@ -1,6 +1,7 @@
 package cn.jianwoo.blog.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.lang.NonNull;
 
 import java.util.Date;
@@ -25,7 +26,15 @@ public class DateUtil extends cn.hutool.core.date.DateUtil {
     }
 
     public static String formatTimestamp(Date date) {
+        if (null == date)
+            return "";
         return cn.hutool.core.date.DateUtil.format(date, DATE_FORMAT_YYYYMMDDHHMMSS_TIMESTAMP);
+    }
+
+    public static Date parseTimestamp(String timestamp) {
+        if (StringUtils.isBlank(timestamp))
+            return null;
+        return cn.hutool.core.date.DateUtil.parse(timestamp, DATE_FORMAT_YYYYMMDDHHMMSS_TIMESTAMP);
     }
 
     public static String getNowTimestamp() {

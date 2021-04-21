@@ -68,4 +68,14 @@ public class ArticleSubmitRequest extends BaseRequestDto {
      */
     private Long artOid;
 
+    /**
+     * temp article oldOid
+     */
+    private Long oldOid;
+
+    /**
+     * temp article page
+     */
+    private Integer page;
+
 }

@@ -20,15 +20,15 @@ public class ClearCacheRequest extends BaseRequestDto {
     /**
      * 临时目录
      */
-    private boolean temp;
+    private Boolean temp;
     /**
      * 日志目录
      */
-    private boolean log;
+    private Boolean log;
     /**
      * 缓存目录
      */
-    private boolean cache;
+    private Boolean cache;
 
 
 

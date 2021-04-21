@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>upfile</title>
+    <title>uploadFile</title>
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
     <meta name="apple-mobile-web-app-capable" content="yes"/>
     <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
@@ -16,10 +16,14 @@
             background: #fff;
         }
 
-        ul {
+        .tox {
             margin: 0;
             padding: 0;
-            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            overflow: hidden;
+            height: 330px;
+
         }
 
         #wrap {
@@ -109,7 +113,7 @@
         .tox .tox-dialog__body-content {
             box-sizing: border-box;
             display: flex;
-            flex: 1;
+            flex: 6;
             flex-direction: column;
             -ms-flex-preferred-size: auto;
             max-height: 650px;
@@ -118,17 +122,7 @@
             padding: 16px 16px;
         }
 
-        .tox .tox-dialog__body-content {
-            box-sizing: border-box;
-            display: flex;
-            flex: 1;
-            flex-direction: column;
-            -ms-flex-preferred-size: auto;
-            max-height: 650px;
-            overflow: auto;
-            -webkit-overflow-scrolling: touch;
-            padding: 16px 16px;
-        }
+
 
         .tox .tox-dialog__body-content > * {
             margin-bottom: 0;
@@ -313,31 +307,86 @@
             box-shadow: none;
             color: #222f3e;
         }
+
+        .tox .progress {
+            height: 10px;
+            width: 100%;
+            border: 1px solid #1c6ca1;
+            position: relative;
+            border-radius: 5px;
+            margin-top: 5px;
+            /*display: none;*/
+        }
+
+        .tox .progress-item {
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #1c6ca1;
+            border-radius: 5px;
+            transition: width .3s linear;
+        }
+
+        .tox .upload-console {
+            width: 100%;
+            display: flex;
+            flex: 4;
+            box-sizing: border-box;
+            flex-direction: column;
+            -ms-flex-preferred-size: auto;
+            height: 330px;
+            overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 16px 16px;
+            scroll-behavior: smooth;
+            /*overscroll-behavior: contain;*/
+        }
+
+        .tox .upload-console p {
+
+            color: rgba(34, 47, 62, .7)
+        }
+
+        ::-webkit-scrollbar-track-piece {
+            background: rgba(242, 242, 242, 1);
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #aaa;
+            background-clip: padding-box;
+        }
     </style>
 
 </head>
 <body>
 <div id="wrap">
-    <!-- <div id="topbar"><button class="addfile primary">+ 添加文件</button> -->
-    <!-- <button class="upall primary">全部上传</button>
-    <button class="removeall">清空列表</button></div> -->
-    <ul id="file_list" class="tox">
+<!--      <div id="topbar"><button class="addfile primary">+ 添加文件</button>-->
+<!--      <button class="upall primary">全部上传</button>-->
+<!--    <button class="removeall">清空列表</button></div>-->
+    <div id="file_list" class="tox">
         <div role="tabpanel" class="tox-dialog__body-content" style="height: 336px; flex-basis: 210px;"
              aria-labelledby="aria_5965197812761603939544315">
             <div class="tox-form">
                 <div class="tox-form__group">
-                    <label class="tox-label" for="form-field_8471486645261603941857554">链接</label>
+                    <label class="tox-label" for="upFileUrlID">链接</label>
                     <div class="tox-form__controls-h-stack">
                         <div class="tox-control-wrap">
-                            <input type="url" aria-errormessage="aria-invalid_348682591591603941621447" role="combobox"
+                            <input type="url" autocomplete="off" role="combobox"
                                    aria-autocomplete="list" aria-haspopup="true" tabindex="-1" data-alloy-tabstop="true"
                                    class="tox-textfield" aria-expanded="false" id="upFileUrlID">
                         </div>
                     </div>
                 </div>
                 <div class="tox-form__group">
-                    <label class="tox-label" for="form-field_2497330145271603941857555">显示文字</label>
-                    <input type="text" tabindex="-1" data-alloy-tabstop="true" class="tox-textfield" id="upFileTextID">
+                    <label class="tox-label" for="upFileTextID">显示文字</label>
+                    <input type="text" tabindex="-1" autocomplete="off" data-alloy-tabstop="true" class="tox-textfield"
+                           id="upFileTextID">
                 </div>
                 <div style="height: 10px;"></div>
                 <div class="tox-form__group tox-form__group--stretched">
@@ -347,79 +396,259 @@
                             <button id="upfileID" type="button" onclick="getFile()" data-alloy-tabstop="true"
                                     tabindex="-1" class="tox-button tox-button--secondary"
                                     style="position: relative; min-height: 30px; overflow: visible;">浏览文件<input
-                                    type="file" accept="image/*" style="display: none;"></button>
-                            <input id="upfileNameID"
+                                    type="file" style="display: none;"></button>
+                            <input id="upfileNameID" disabled
                                    style="margin: 5px auto;font-size: 12px; color:rgba(34,47,62,.7); width: 300px; text-align: center;"
                                    type="text" value="">
+                            <span class="tips" id="error-tip" style="color:red;display: none">不支持文件夹上传</span>
+
                         </div>
+
                     </div>
                 </div>
+
             </div>
             <button title="上传文件" type="button" onclick="sendUpFile()"
-                    style="width: 80%;position: absolute;bottom:10px;left: 10%; margin: 0 auto;letter-spacing: 2px; display: block;"
+                    style="width: 90%; margin: 4px auto 0px auto;letter-spacing: 2px; display: block;"
                     class="tox-button">
                 <svg width="24" height="24" style="margin-top:5px;">
                     <path fill="#fff"
                           d="M19 4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4v-2h4V8H5v10h4v2H5a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2h14zm-8 9.4l-2.3 2.3a1 1 0 1 1-1.4-1.4l4-4a1 1 0 0 1 1.4 0l4 4a1 1 0 0 1-1.4 1.4L13 13.4V20a1 1 0 0 1-2 0v-6.6z"
                           fill-rule="nonzero"></path>
                 </svg>
-                <span style="top:-6px; position: relative; margin-left: 5px">开始上传</span></button>
+                <span style="top:-6px; position: relative; margin-left: 5px">开始上传</span>
+            </button>
         </div>
-    </ul>
+        <div class="upload-console">
+            <p>文件列表</p>
+            <div id="progress-list">
+
+
+            </div>
+
+            <span class="tips" id="tips" style="color:rgba(34,47,62,.7);display: none">正在上传中...</span>
+
+        </div>
+    </div>
 </div>
 
 <script>
     var editor = parent.tinymce.activeEditor;
     var upfile = parent.upfile;
     var upload_handler = upfile.file_callback;
-    var upfileData = ""
+    var upfileData = []
     var upfileUrl = null
+    upfile.res = [];
+
 
     function addFile(file) {
-        console.log(file)
-        upfileData = file[0];
-        document.getElementById('upfileNameID').value = file[0].name;
+        if (file === undefined || file.length === 0)
+            return false;
+
+        file.forEach(o => {
+            o.uuid = guid();
+            o.isUpload = false;
+            upfileData.push(o)
+        })
+        // console.log(file)
+
+        var nameArr = upfileData.map(o => o.name).join(",")
+        var len = getWordsCnt(nameArr);
+        // console.log(nameArr)
+        // console.log(len)
+        if (len > 38) {
+            nameArr = substr(nameArr, 0, 38) + "..." + (upfileData.length > 1 ? ("等" + upfileData.length + "个文件") : "");
+
+        }
+        // console.log(nameArr)
+        document.getElementById('upfileNameID').value = nameArr;
     }
 
     let inputUrl = document.getElementById('upFileUrlID');
     let inputText = document.getElementById('upFileTextID');
+    let tips = document.getElementById('tips');
+    let errTips = document.getElementById('error-tip');
+    let progressList = document.getElementById('progress-list');
+
+
+    function guid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
 
     function sendUpFile() {
-        upload_handler(upfileData, function (url, _obj) {
-            inputUrl.value = url;
-            inputText.value ? '' : inputText.value = url;
-            _obj && _obj.text ? inputText.value = _obj.text : '';
-            upfile.res.url = upfileUrl = url;
-            upfile.res.text = inputText.value;
+        if (upfileData === undefined || upfileData.length === 0)
+            return false;
+        if (upfileData.length === upfile.res.length) return false;
+        errTips.style.display = "none"
+        tips.style.display = "inline"
+        if (upfileData.length > 1) {
+            inputUrl.setAttribute("disabled", "disabled")
+            inputText.setAttribute("disabled", "disabled")
+            inputUrl.value = "共" + upfileData.length + "个文件，暂不可编辑";
+        }
 
-        })
+        for (let i = 0; i < upfileData.length; i++) {
+            if (upfileData[i].isUpload === true)
+                continue;
+
+            var name = upfileData[i].name;
+            var len = getWordsCnt(name);
+            if (len > 10) {
+                name = substr(name, 0, 10) + '...'
+            }
+            progressList.insertAdjacentHTML('beforeend', '<p class="progress-file">' + name + '<span id="progress-file-per-' + upfileData[i].uuid + '"></span></p>' +
+                ' <div class="progress" id="progress-' + upfileData[i].uuid + '">' +
+                '                    <div class="progress-item" id="progress-item-' + upfileData[i].uuid + '"></div>' +
+                '                </div>');
+            upload_handler(upfileData[i], function (url, text) {
+
+
+                if (upfileData.length === 1) {
+                    inputUrl.value = url;
+                    if (inputText.value.trim() === '' && text) {
+                        inputText.value = text;
+                    }
+                }
+                var file = {
+                    url: url,
+                    text: upfileData.length === 1 ? inputText.value : text,
+                    filename: upfileData[i].name,
+                    size: upfileData[i].size
+                }
+                upfile.res.push(file)
+                upfileData[i].isUpload = true;
+                if (upfileData.length === upfile.res.length) {
+                    tips.innerText = "上传完成!"
+                }
+                render(100,i)
+
+            }, function (percent) {
+
+                  render(percent,i)
+
+            })
+        }
+        // console.log(progressList.innerHTML)
+        // tips.style.display = "none"
+    }
+
+    function render(percent,i)
+    {
+        let progressItem = document.getElementById('progress-item-' + upfileData[i].uuid);
+        let progressFilePer = document.getElementById('progress-file-per-' + upfileData[i].uuid);
+            if (percent>=100) percent=99;
+            if (upfileData[i].isUpload) percent=100
+            progressItem.style.width = percent + "%";
+            progressFilePer.innerText = '(' + percent + '%)'
     }
 
     inputUrl.oninput = function () {
-        upfile.res.url = inputUrl.value;
-        upfileUrl === null ? inputText.value = inputUrl.value : ''
+        upfile.res[0].url = inputUrl.value;
     }
     inputText.oninput = function () {
-        upfile.res.text = inputText.value;
-        upfileUrl = "123";
+        upfile.res[0].text = inputText.value;
     }
+
+    function getWordsCnt(str) {
+        var n = 0;
+        for (var i = 0; i < str.length; i++) {
+            var ch = str.charCodeAt(i);
+            if (ch > 255) { // 中文字符集
+                n += 2;
+            } else {
+                n++;
+            }
+        }
+        return n;
+    }
+
+    function substr(str, start, len) {
+        var l = str.length, i = 0, n = 0;
+        var substr = "";
+        while (n < len && i < l) {
+            var ch = str.charCodeAt(i);
+            if (ch > 255) {
+                n++;
+            }
+            substr += str.charAt(i);
+            i++;
+            n++;
+        }
+        return substr;
+
+    }
+
     //拖拽添加
     document.addEventListener('dragover', function (e) {
+        errTips.style.display = "none"
         e.stopPropagation();
         e.preventDefault();
         e.dataTransfer.dropEffect = 'copy';
-    });
+    }, false);
+    document.addEventListener("dragleave", function (e) {
+        errTips.style.display = "none"
+        e.preventDefault();
+        e.stopPropagation();
+    }, false);
     document.addEventListener('drop', function (e) {
+        errTips.style.display = "none"
         e.stopPropagation();
         e.preventDefault();
         if (!e.dataTransfer.files) {
             return false;
         }
-        var dropfiles = e.dataTransfer.files;
-        if (!(dropfiles.length > 0)) {
+        var dropFiles = [];
+        var allFileLen = e.dataTransfer.files.length; // 所有的文件的数量，给非Chrome浏览器使用的变量
+        if (e.dataTransfer.items !== undefined) {
+            // Chrome有items属性，对Chrome的单独处理
+            for (var i = 0; i < e.dataTransfer.items.length; i++) {
+                var item = e.dataTransfer.items[i];
+                // 用webkitGetAsEntry禁止上传目录
+                if (item.kind === "file" && item.webkitGetAsEntry().isFile) {
+                    var file = item.getAsFile();
+                    dropFiles.push(file);
+                } else {
+                    errTips.style.display = "inline"
+                    console.log("不支持文件夹上传")
+                }
+            }
+        } else {
+            // 非Chrome拖拽文件逻辑
+            for (var i = 0; i < allFileLen; i++) {
+                var dropFile = e.dataTransfer.files[i];
+                if (dropFile.type) {
+                    dropFiles.push(dropFile);
+                } else {
+                    try {
+                        var fileReader = new FileReader();
+                        fileReader.readAsDataURL(dropFile.slice(0, 3));
+
+                        fileReader.addEventListener('load', function (e) {
+                            console.log(e, 'load');
+                            dropFiles.push(dropFile);
+                        }, false);
+
+                        fileReader.addEventListener('error', function (e) {
+                            errTips.style.display = "inline"
+                            console.log("不支持文件夹上传")
+                        }, false);
+
+                    } catch (e) {
+                        errTips.style.display = "inline"
+                        console.log("不支持文件夹上传")
+
+                    }
+                }
+            }
+        }
+        // console.log(dropFiles)
+        if (!(dropFiles.length > 0)) {
             return false;
         }
-        addFile(dropfiles);
+        addFile(dropFiles);
     });
 
     var global$1 = upfile.tinymce.util.Tools.resolve('tinymce.util.Promise');
@@ -427,6 +656,7 @@
     var global$3 = upfile.tinymce.util.Tools.resolve('tinymce.util.Delay');
     var pickFile = function (a) {
         return new global$1(function (e) {
+            errTips.style.display = "none"
             var c = document.createElement("input");
             c.type = "file";
             c.style.position = "fixed";

@@ -1,6 +1,7 @@
 package cn.jianwoo.blog.service.biz;
 
 import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.service.bo.CacheBO;
 
 /**
  * @author GuLihua
@@ -18,4 +19,13 @@ public interface ClearCacheBizService {
      * @author gulihua
      */
     void clearCache(boolean isClearCache, boolean isClearLog, boolean isClearTemp) throws JwBlogException;
+
+
+    /**
+     * 获取缓存信息
+     *
+     * @return
+     * @author gulihua
+     */
+    CacheBO queryCacheInfo();
 }

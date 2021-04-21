@@ -7,7 +7,10 @@
 
  */
 
-layui.define("form", function (exports) {
+layui.extend({
+    tinymce: "{/}" + layui.setter.base + '/lib/extend/tinymce/tinymce'
+    , mouseRightMenu: "{/}" + layui.setter.base + '/lib/extend/mouseRightMenu'
+}).define("form", function (exports) {
     var $ = layui.$
         , layer = layui.layer
         , laytpl = layui.laytpl
@@ -20,7 +23,10 @@ layui.define("form", function (exports) {
     //公共业务的逻辑处理可以写在此处，切换任何页面都会执行
 
     ajaxPost = function (url, data, msg, success, failed) {
-        var index = layer.load(0, {shade: false, offset: '400px'});
+        var index;
+        if (msg) {
+            index = layer.load(0, {shade: false, offset: '400px'});
+        }
         admin.req({
             url: url
             , type: 'post'
@@ -29,8 +35,10 @@ layui.define("form", function (exports) {
             , async: true
             , success: function (data) {
                 if (data.status == '000000') {
-                    layer.close(index);
-                    alertSuccess('提示', msg)
+                    if (msg) {
+                        layer.close(index);
+                        alertSuccess('提示', msg)
+                    }
                     setTimeout(function () {
                         typeof success === 'function' && success();
                     }, 1000)
@@ -112,7 +120,7 @@ layui.define("form", function (exports) {
             , shift: 6
             , offset: '400px'
         });
-        if (input_dom != undefined) {
+        if (input_dom !== undefined) {
             $(input_dom).css('border', '1px solid rgb(255,87,34)')
             scrollPosition(input_dom, 0)
         }
@@ -134,7 +142,7 @@ layui.define("form", function (exports) {
     }
 
     isEmpty = function (field) {
-        if (field == undefined || field == null || field.trim() == '') {
+        if (field === undefined || field === null || field.trim() === '') {
             return true;
         }
         return false;
@@ -149,90 +157,6 @@ layui.define("form", function (exports) {
         })
     }
 
-
-    //富文本编辑器
-
-    tinymceInit = function (id, content = "", power_paste = "propmt") {
-        console.log("===== tinymce init")
-        tinymce.init({
-            selector: id,
-            max_height: 550,
-            height: 500,
-            convert_urls: false,
-            branding: false,
-            plugins: [
-                "advlist  autolink   link image lists   print preview hr anchor  ",
-                "searchreplace wordcount     code   insertdatetime media nonbreaking",
-                "table contextmenu directionality emoticons   textcolor paste fullpage  powerpaste toc   codesample uploadvideo importcss textcolor colorpicker uploadimage"
-            ],
-            toolbar1: "undo redo | cut copy paste | bold italic underline strikethrough |" +
-                " alignleft aligncenter alignright alignjustify |   formatselect fontselect fontsizeselect",
-            toolbar2: " searchreplace | bullist numlist | outdent indent blockquote | link unlink   uploadimage uploadvideo  codesample image |" +
-                " inserttime preview | forecolor backcolor",
-            toolbar3: "table | hr removeformat | subscript superscript |   emoticons |  " +
-                "   nonbreaking    restoredraft  |  code      ",
-            menubar: false,
-            toolbar_items_size: 'small',
-            font_formats: "宋体=宋体;微软雅黑=微软雅黑;新宋体=新宋体;微软雅黑='微软雅黑';黑体='黑体';仿宋='仿宋';楷体='楷体';隶书='隶书';幼圆='幼圆';" +
-                "Arial='Arial';Times New Roman='Times New Roman'",
-            automatic_uploads: true,
-            uploadimage_url: "/api/file/upload",
-            uploadvideo_url: "/api/file/upload",
-            content_css: "/static/comm/css/tinymce.css",
-            textcolor_map: [
-                "000000", "Black", "993300", "Burnt orange", "333300", "Dark olive", "003300", "Dark green", "003366", "Dark azure", "000080", "Navy Blue",
-                "333399", "Indigo", "333333", "Very dark gray", "800000", "Maroon", "FF6600", "Orange", "808000", "Olive", "008000",
-                "Green", "008080", "Teal", "0000FF", "Blue", "666699", "Grayish blue", "808080", "Gray", "FF0000", "Red", "FF9900",
-                "Amber", "99CC00", "Yellow green", "339966", "Sea green", "33CCCC", "Turquoise", "3366FF", "Royal blue", "800080",
-                "Purple", "999999", "Medium gray", "FF00FF", "Magenta", "FFCC00", "Gold", "FFFF00", "Yellow", "00FF00", "Lime",
-                "00FFFF", "Aqua", "00CCFF", "Sky blue", "993366", "Red violet", "FFFFFF", "White", "FF99CC", "Pink", "FFCC99", "Peach",
-                "FFFF99", "Light yellow", "CCFFCC", "Pale green", "CCFFFF", "Pale cyan", "99CCFF", "Light sky blue", "CC99FF", "Plum"
-            ],
-            language: 'zh_CN',
-            powerpaste_word_import: power_paste,// 参数可以是propmt, merge, clear，效果自行切换对比
-            powerpaste_html_import: power_paste,// propmt, merge, clear
-            powerpaste_allow_local_images: true,
-            paste_data_images: true,
-            paste_merge_formats: true,
-            init_instance_callback: function (plugin, args) {
-                if (content != undefined && content != "") {
-                    tinyMCE.activeEditor.setContent(content);
-                }
-            },
-            paste_preprocess: function (plugin, args) {
-                function load(src) {
-                    loadImageToBlob(src, function (blobFile) {
-                        var x = new XMLHttpRequest();
-                        x.onreadystatechange = function () {
-                            if (this.readyState == 4 && this.status == 200) {
-                                data = this.responseText;
-                                // console.log('response data: ' + data);
-                            }
-                        };
-                        x.open('POST', "/api/file/upload");
-                        x.send(blobFile);
-                    });
-                }
-            },
-            images_upload_handler: function (blobInfo, success, failure) {
-                var blob = blobInfo.blob();
-                var formData = new FormData();
-                formData.append('file', blob);
-                $.ajax({
-                    url: "/api/file/upload",
-                    crossDomain: true,
-                    data: formData,
-                    dataType: 'json',
-                    type: 'POST',
-                    contentType: false,
-                    processData: false,
-                    success: function (res) {
-                        success(res.file.url);
-                    }
-                });
-            }
-        });
-    }
 
 
     form.verify({
@@ -278,14 +202,6 @@ layui.define("form", function (exports) {
             return {'<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;'}[c];
         });
     }
-
-    formatStr = function (str) {
-        if (undefined === str || str === null) {
-            return "";
-        }
-        return str.trim();
-    }
-
 
     //退出
     admin.events.logout = function () {

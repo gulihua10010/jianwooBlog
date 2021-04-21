@@ -10,8 +10,11 @@ import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.base.FileUploadService;
 import cn.jianwoo.blog.util.DateUtil;
 import cn.jianwoo.blog.util.JwUtil;
+import com.alibaba.fastjson.JSONObject;
+import it.sauronsoftware.jave.AudioInfo;
 import it.sauronsoftware.jave.Encoder;
 import it.sauronsoftware.jave.MultimediaInfo;
+import it.sauronsoftware.jave.VideoInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -38,6 +42,8 @@ public class FileUploadServiceImpl implements FileUploadService {
     private String uploadPath;
     @Autowired
     private FileUploadTransDao fileUploadTransDao;
+    public static final String[] mediaExt = {"mp3", "wma", "wav", "cda", "ape", "ogm", "flv", "wmv", "mpg", "webm", "ogv", "asx", "mpeg", "mp4", "avi", "amv", "rmvb", "mov", "mtv", "wmv", "3gp", "amv"};
+
 
     public static String getMD5(File file) {
         FileInputStream fileInputStream = null;
@@ -59,7 +65,8 @@ public class FileUploadServiceImpl implements FileUploadService {
                     fileInputStream.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("FileUploadServiceImpl.getMD5 exec failed.\n", e);
+
             }
         }
     }
@@ -97,8 +104,12 @@ public class FileUploadServiceImpl implements FileUploadService {
         long fileSize = multipartFile.getSize();
         fileUpload.setOldFileName(oldName);
         fileUpload.setFileName(newFilename);
-        if ("mp3mp4".indexOf(fileType) > -1) {
-            fileUpload.setMediaTime(getDuration(filePath));
+
+        if (Arrays.asList(mediaExt).contains(fileType)) {
+            JSONObject o = getMediaInfo(filePath);
+            if (null != o) {
+                fileUpload.setMediaInfo(o.toJSONString());
+            }
         }
         fileUpload.setPath(filePath);
         fileUpload.setFileUuid(uuid);
@@ -119,11 +130,12 @@ public class FileUploadServiceImpl implements FileUploadService {
         return fileUpload;
     }
 
+
     private String getFileExt(String fileName) {
         if (StringUtils.isBlank(fileName)) {
             return Constants.BLANK;
         }
-        if (fileName.indexOf(Constants.FILE_POINT) == -1) {
+        if (!fileName.contains(Constants.FILE_POINT)) {
             return Constants.BLANK;
         }
         return StringUtils.trim(fileName.substring(fileName.lastIndexOf(Constants.FILE_POINT) + 1)).toLowerCase();
@@ -133,23 +145,45 @@ public class FileUploadServiceImpl implements FileUploadService {
         if (StringUtils.isBlank(name)) {
             return Constants.BLANK;
         }
-        if (name.indexOf(Constants.FILE_POINT) == -1) {
+        if (!name.contains(Constants.FILE_POINT)) {
             return name;
         }
         return name.substring(0, name.lastIndexOf(Constants.FILE_POINT));
     }
 
-    private long getDuration(String filePath) {
-
+    private JSONObject getMediaInfo(String filePath) {
+        JSONObject media = new JSONObject();
         File source = new File(filePath);
         Encoder encoder = new Encoder();
         try {
             MultimediaInfo m = encoder.getInfo(source);
-            return m.getDuration();
+            media.put("format", m.getFormat());
+            media.put("duration", m.getDuration());
+            AudioInfo audioInfo = m.getAudio();
+            if (null != audioInfo) {
+                JSONObject audioObj = new JSONObject();
+                audioObj.put("bitRate", m.getAudio().getBitRate());
+                audioObj.put("channels", m.getAudio().getChannels());
+                audioObj.put("decoder", m.getAudio().getDecoder());
+                audioObj.put("samplingRate", m.getAudio().getSamplingRate());
+                media.put("audioInfo", audioObj);
+            }
+
+            VideoInfo videoInfo = m.getVideo();
+            if (null != videoInfo) {
+                JSONObject videoObj = new JSONObject();
+
+                videoObj.put("videoBitRate", m.getVideo().getBitRate());
+                videoObj.put("width", m.getVideo().getSize().getWidth());
+                videoObj.put("height", m.getVideo().getSize().getHeight());
+                media.put("videoInfo", videoObj);
+
+            }
+            return media;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("FileUploadServiceImpl.getMediaInfo exec failed.\n", e);
         }
-        return 0;
+        return null;
     }
 }

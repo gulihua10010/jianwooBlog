@@ -1,11 +1,16 @@
 package cn.jianwoo.blog.service.bo;
 
+import cn.jianwoo.blog.enums.FormTypeEnum;
+import cn.jianwoo.blog.enums.ValidateTypeEnum;
+import cn.jianwoo.blog.enums.ValueTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @author GuLihua
@@ -18,64 +23,42 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class WebconfBO implements Serializable {
     /**
-     * 网站标题
+     * 键名
+     */
+    private String key;
+    /**
+     * 配置描述
+     */
+    private String desc;
+    /**
+     * 配置标题/标签
      */
     private String title;
-
     /**
-     * 网站作者
+     * 值类型  {@link ValueTypeEnum}
      */
-    private String author;
-
+    private String valueType;
     /**
-     * 网站关键词
+     * 表单类型  {@link FormTypeEnum}
      */
-    private String keywords;
-
+    private String formType;
     /**
-     * 网站描述
+     * 值
      */
-    private String description;
-
+    private String value;
     /**
-     * 网站备案
+     * 是否必填
      */
-    private String record;
-
+    private Boolean mandatory;
     /**
-     * 网站域名
+     * 验证类型  {@link ValidateTypeEnum}
      */
-    private String domain;
-
+    private String validateType;
     /**
-     * 网站底部html
+     * 验证值
      */
-    private String footHtml;
-
-    /**
-     * 网站logo
-     */
-    private String logoImg;
-
-    /**
-     * 网站主页顶部图片
-     */
-    private String homeImg;
-
-    /**
-     * 文章每页显示
-     */
-    private Integer numPerPage;
-
-    /**
-     * 是否可以评论
-     */
-    private Boolean isComment;
+    private String validateValue;
 
 
-    /**
-     * 登录是否需要验证码
-     */
-    private Boolean isCaptchaOn;
 
 }

@@ -4,6 +4,7 @@ import cn.jianwoo.blog.entity.Article;
 import cn.jianwoo.blog.entity.extension.ArticleExt;
 import cn.jianwoo.blog.entity.query.ArticleParam;
 import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.service.bo.ArticleBO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.lang.NonNull;
 
@@ -26,14 +27,25 @@ public interface ArticleBizService {
      * @return
      * @author gulihua
      */
+    @Deprecated
     void doSaveArticle(@NonNull String title, String content, String author, Integer typeId, Integer isComment,
                        Integer visitType, String imsSrc, String password, Integer[] tags, Integer status) throws JwBlogException;
 
 
     /**
+     * * 保存文章
+     *
+     * @param article 文章
+     * @return
+     * @author gulihua
+     */
+    void doSaveArticle(ArticleBO article) throws JwBlogException;
+
+
+    /**
      * *
      *
-     * @param oid       标题 article.oid [ARTICLE.OID]
+     * @param oid       主键 article.oid [ARTICLE.OID]
      * @param title     标题 article.title [ARTICLE.TITLE]
      * @param author    作者 article.author [ARTICLE.AUTHOR]
      * @param typeId    类别id article.typeId [ARTICLE.TYPE_ID]
@@ -45,8 +57,19 @@ public interface ArticleBizService {
      * @return
      * @author gulihua
      */
+    @Deprecated
     void doUpdateArticleInfo(Long oid, String title, String author, Integer typeId, Integer isComment,
                              Integer visitType, String imsSrc, String password, Integer[] tags) throws JwBlogException;
+
+
+    /**
+     * * 更新文章信息
+     *
+     * @param article 文章
+     * @return
+     * @author gulihua
+     */
+    void doUpdateArticleInfo(ArticleBO article) throws JwBlogException;
 
 
     /**
@@ -66,9 +89,19 @@ public interface ArticleBizService {
      * @return
      * @author gulihua
      */
+    @Deprecated
     void doUpdateArticle(Long oid, String title, String content, String author, Integer typeId, Integer isComment,
                          Integer visitType, String imsSrc, String password, Integer[] tags, Integer status) throws JwBlogException;
 
+
+    /**
+     * * 更新文章
+     *
+     * @param article 文章
+     * @return
+     * @author gulihua
+     */
+    void doUpdateArticle(ArticleBO article) throws JwBlogException;
 
     /**
      * 把文章移动到回收站 status = -1

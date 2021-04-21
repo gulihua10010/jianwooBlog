@@ -127,10 +127,15 @@ public class MenuBizServiceImpl implements MenuBizService {
     }
 
 
+    @Override
+    public List<MenuExt> queryAllFrontDeskMenuList() throws JwBlogException {
+        List<Menu> menus = menuTransDao.queryMenuByType(MenuTypeEnum.FRONTEND.getValue());
+        return queryMenuWithLevel(menus);
+    }
 
     @Override
-    public List<MenuExt> queryFrontDeskMenuList() throws JwBlogException {
-        List<Menu> menus = menuTransDao.queryMenuByType(MenuTypeEnum.FRONTEND.getValue());
+    public List<MenuExt> queryEffectiveFrontDeskMenuList() throws JwBlogException {
+        List<Menu> menus = menuTransDao.queryEffectiveMenuByType(MenuTypeEnum.FRONTEND.getValue());
         return queryMenuWithLevel(menus);
     }
 
@@ -156,6 +161,7 @@ public class MenuBizServiceImpl implements MenuBizService {
                 .with(Menu::setIcon, icon)
                 .with(Menu::setText, text)
                 .with(Menu::setUrl, url)
+                .with(Menu::setValid, true)
                 .with(Menu::setCreateDate, now)
                 .with(Menu::setUpdateDate, now)
                 .build();
@@ -278,7 +284,7 @@ public class MenuBizServiceImpl implements MenuBizService {
 
     @Override
     public List<Menu> querySubMenuOrderedList(Integer type) {
-        final List<Menu> menuList = menuTransDao.queryMenuByType(type);
+        final List<Menu> menuList = menuTransDao.queryEffectiveMenuByType(type);
         List<Menu> newMenuList = menuList.stream().filter(menu -> (menu.getParentOid().compareTo(0L) != 0))
                 .collect(Collectors.toList());
 //        Map<Long, List<Menu>> menuMap = menuList.stream().collect(Collectors.groupingBy(Menu::getParentOid));
@@ -324,13 +330,14 @@ public class MenuBizServiceImpl implements MenuBizService {
 
 
     @Override
-    public void doUpdateMenu(Long oid, String text, String name, String icon, String url) throws JwBlogException {
+    public void doUpdateMenu(Long oid, String text, String name, String icon, String url, Boolean valid) throws JwBlogException {
         Menu menu = new Menu();
         menu.setOid(oid);
         menu.setName(name);
         menu.setText(text);
         menu.setIcon(icon);
         menu.setUrl(url);
+        menu.setValid(valid);
         menu.setUpdateDate(new Date());
         try {
             menuTransDao.doUpdateByPrimaryKeySelective(menu);

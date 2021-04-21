@@ -8,4 +8,5 @@ package cn.jianwoo.blog.config.router;
 public class WeconfApiUrlConfig {
     public static final String URL_PREFIX = "/api/admin/webconf";
     public static final String URL_WEBCONF_UPDATE = "/update";
+    public static final String URL_WEBCONF_INFO = "/info";
 }

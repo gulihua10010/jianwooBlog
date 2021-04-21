@@ -1,0 +1,80 @@
+<title>菜单管理</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>菜单管理</cite></a>
+        <a><cite>菜单管理</cite></a>
+    </div>
+</div>
+<script type="text/html" template>
+    <link rel="stylesheet" href="{{ layui.setter.base }}style/jw_admin.css?v={{ layui.admin.v }}-1" media="all">
+    <link href="{{ layui.setter.base }}style/mouseRightMenu.css?v={{ layui.admin.v }}-1" media="all" rel="stylesheet">
+</script>
+<link href="/static/plugins/jquery-ui/jquery-ui.min.css" media="all" rel="stylesheet">
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">菜单管理</div>
+                <div class="layui-card-body">
+                    <script type="text/html" template lay-url="/api/admin/menu/home/list" id="JW_HOME_MENU"
+                            lay-done="renderMenu(d)">
+                        <ul class="sortable menu-list">
+                            {{# layui.each(d.data, function(index, item){ }}
+                            <li class="sorts" data-id="{{ item.id }}">
+                                <div class="menu_content" data-data="{{ item.text }}" data-id="{{ item.id }}">
+                                <span>
+                                    {{ item.text.length <=6 ? item.text : item.text.substring(0,6) + '...' }}
+                                </span>
+                                </div>
+                                <ul>
+                                    {{# layui.each(item.subMenuList, function(index, sub){ }}
+                                    <li>
+                                        <div class="menu_content" data-data="{{ sub.text }}" data-id="{{ sub.id }}">
+                                        <span>
+                                            {{ sub.text.length <=6 ? sub.text : sub.text.substring(0,6) + '...' }}
+                                        </span>
+                                        </div>
+                                    </li>
+                                    {{# }); }}
+                                    <li class="addMenu" data-id="{{ item.id }}">
+                                        <div class="menu_content">
+                                        <span>
+                                            <i class="iconfont">&#xe613;</i>
+                                        </span>
+                                        </div>
+                                    </li>
+                                </ul>
+
+                            </li>
+                            {{# }); }}
+                            {{# if(d.data.length < 9){ }}
+                            <li class="addMenu" data-id="0">
+                                <div class="menu_content">
+                                <span>
+                                <i class="iconfont">&#xe613;</i>
+                                </span>
+                                </div>
+                            </li>
+                            {{# } }}
+                        </ul>
+                    </script>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/static/comm/js/jquery.min.js"></script>
+<script src="/static/plugins/jquery-ui/jquery-ui.min.js"></script>
+
+<script>
+    renderMenu = function () {
+        layui.use('menu', layui.factory('menu')).use(['admin', 'menu', 'form', 'table'], function () {
+        })
+    }
+
+
+</script>

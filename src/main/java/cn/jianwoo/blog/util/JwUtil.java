@@ -2,7 +2,10 @@ package cn.jianwoo.blog.util;
 
 import cn.jianwoo.blog.constants.Constants;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Calendar;
 
 /**
@@ -65,6 +68,85 @@ public class JwUtil {
     public static String clearHtml(String html) {
         return html.replaceAll(Constants.CLEAR_HTML_TAGS_REGEX, Constants.BLANK).
                 replaceAll(Constants.NEW_LINE_REGEX, Constants.BLANK).trim();
+    }
+    /**
+     *
+     * 计算字符串字节大小为long类型<br>
+     *     eg:1024MB==>1073741824
+     *
+     * @author gulihua
+     * @param maxSize
+     * @return
+     */
+    public static Long processMaxSizeStr(String maxSize) {
+        if (StringUtils.isBlank(maxSize))
+            return 0L;
+        int i = 0;
+        long baseBit = 1;
+        long size = 0;
+        boolean bitFlag = false;
+
+        while (i < maxSize.length()) {
+            char d = maxSize.charAt(i);
+
+            if (d >= '0' && d <= '9') {
+                size = size * 10 + Integer.parseInt(String.valueOf(d));
+            } else {
+                switch (d) {
+                    case 'b':
+                        bitFlag = true;
+                        break;
+                    case 'B':
+                        bitFlag = false;
+                        break;
+                    case 'k':
+                    case 'K':
+                        baseBit = 1024;
+                        break;
+                    case 'm':
+                    case 'M':
+                        baseBit = 1024 * 1024;
+                        break;
+                    case 'g':
+                    case 'G':
+                        baseBit = 1024 * 1024 * 1024;
+                        break;
+                    case 't':
+                    case 'T':
+                        baseBit = 1024 * 1024 * 1024 * 1024;
+                        break;
+                    case 'p':
+                    case 'P':
+                        baseBit = 1024 * 1024 * 1024 * 1024 * 1024;
+                        break;
+                    default:
+                        baseBit = 1;
+                }
+            }
+            i++;
+
+        }
+        return bitFlag ? baseBit * size / 8 : baseBit * size;
+    }
+
+    /**
+     *
+     * 解析long字节为字符串<br>
+     *  eg:1073741824==>1.00GB
+     * @author gulihua
+     * @param %param name% %param description%
+     * @return
+     */
+    public static String parseSize(long size) {
+        String[] unit = {"B", "KB", "MB", "GB", "TB", "PB"};
+        long s;
+        int i = 0;
+        while (( s = size / 1024) >= 1 && i < 6){
+            size=s;
+            i++;
+        }
+        BigDecimal sizeStr = new BigDecimal(String.valueOf(size));
+        return sizeStr.setScale(2, RoundingMode.HALF_UP).toString().concat(unit[i]);
     }
 
 }

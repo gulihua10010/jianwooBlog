@@ -1,17 +1,28 @@
-layui.extend({
-    tinymce: "{/}" + layui.setter.base + '/lib/extend/tinymce/tinymce'
-}).define(['layer', 'form', 'element', 'upload', 'tinymce'], function (exports) {
+layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (exports) {
     var form = layui.form
         , $ = layui.jquery
         , upload = layui.upload
         , element = layui.element
         , tinymce = layui.tinymce
+        , admin = layui.admin
+
     ;
-    var edit = tinymce.render({
-        elem: "#article-content-text"
-    }, function (opt, edit) {
-        //加载完成后回调
-    });
+    var isChange = false;
+    var edit;
+
+    function getEdit(onChange, callback) {
+        if (edit) return edit;
+        edit = tinymce.render({
+            elem: "#article-content-text-edit"
+            , onChange: function () {
+                typeof onChange === "function" && onChange();
+            }
+        }, function (opt, edit) {
+            typeof callback === "function" && callback(opt, edit);
+
+        });
+        return edit;
+    }
 
     $('.choosed').on('click', 'a', function () {
         $(this).parent().remove();
@@ -154,7 +165,7 @@ layui.extend({
             btnstatus = -1;
         }
 
-        var articleContent = tinyMCE.activeEditor.getContent();
+        var articleContent = edit.getContent();
         // console.log("articleContent")
         // console.log(articleContent)
         // return ;
@@ -217,7 +228,7 @@ layui.extend({
                 }),
                 '发布成功',
                 function () {
-                    location.reload();
+                    admin.events.refresh();
                 });
         } else if (btnstatus === 0) {
             ajaxPost('/api/admin/article/save/draft',
@@ -237,7 +248,7 @@ layui.extend({
                 }),
                 '保存成功',
                 function () {
-                    location.reload();
+                    admin.events.refresh();
                 });
         } else if (btnstatus === -1) {
             layer.confirm('确定把这文章移除到回收站吗？', function (index) {
@@ -258,7 +269,7 @@ layui.extend({
                     }),
                     '移动至回收站成功',
                     function () {
-                        location.reload();
+                        admin.events.refresh();
                     });
             });
 
@@ -270,13 +281,66 @@ layui.extend({
 
     $('#cancel').click(function () {
         alertAsk('确认清除所有输入的数据，恢复初始状态?', function () {
-            location.reload()
+            admin.events.refresh();
         })
     })
+
+    $("input[name=title],input[name=author]").change(function () {
+        isChange = true;
+
+    })
+
+
+    window.onunload = function () {
+        if (!isChange) return;
+        var title = $('input[name=title]').val();
+        var author = $('input[name=author]').val();
+        var typeId = $('select[name=typeId]').val();
+        var subToken = $('input[name=subToken]').val();
+        var imgsrc = $('input[name=imgsrc]').val();
+        var isPublic = $('input[name=isPublic]:checked').val();
+        var articleContent = edit.getContent();
+        var tagsId = [];
+        var data = $('.choosed>span>span')
+        for (var i = 0; i < data.length; i++) {
+            tagsId[i] = data.eq(i).text();
+        }
+        var publishTemp = isPublic;
+        var passw = '';
+        if (publishTemp === '1') {
+            if ($('#hometop').prop('checked')) {
+                publishTemp = 2;
+            }
+        } else if (publishTemp === '-1') {
+            passw = $('#passw-content').val();
+        }
+        var iscomment = 0;
+        if ($('#is-comment').prop('checked')) {
+            iscomment = 1;
+        }
+
+        ajaxPost('/api/admin/article/temp/save',
+            JSON.stringify({
+                title: title,
+                author: author,
+                articleContent: articleContent,
+                tags: tagsId,
+                type: typeId,
+                imgSrc: imgsrc,
+                visitType: publishTemp,
+                password: passw,
+                isComment: iscomment,
+                subToken: subToken,
+                page: 1
+            }));
+
+    }
+
+
     $('#articlePreview').click(function () {
         var title = $('#art-title').val();
         var author = $('#art-author').val();
-        var articleContent = tinyMCE.activeEditor.getContent();
+        var articleContent = edit.getContent();
         var type = $('.article-type select:selected').text();
         $('#artpre-title').val(title);
         $('#artpre-author').val(author);
@@ -284,11 +348,11 @@ layui.extend({
         $('#artpre-type').val(type);
 
         $('#form-articlePreview').submit();
-        window.alert = function () {
-            return false;
-        };
+        // window.alert = function () {
+        //     return false;
+        // };
     })
 
 
-    exports('articlePublish', {})
+    exports('articlePublish', {'getEdit': getEdit})
 });

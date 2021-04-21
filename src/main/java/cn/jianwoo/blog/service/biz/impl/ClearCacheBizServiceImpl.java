@@ -2,7 +2,9 @@ package cn.jianwoo.blog.service.biz.impl;
 
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.ClearCacheBizService;
+import cn.jianwoo.blog.service.bo.CacheBO;
 import cn.jianwoo.blog.util.FileUtil;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,5 +51,23 @@ public class ClearCacheBizServiceImpl implements ClearCacheBizService {
             logger.info("Delete Log folder [{}] successfully!", log);
         }
 
+    }
+
+    @Override
+    public CacheBO queryCacheInfo() {
+        CacheBO bo = new CacheBO();
+        File tempFile = new File(temp);
+        File cacheFile = new File(cache);
+        File logFile = new File(log);
+        if (tempFile.exists() && tempFile.isDirectory()) {
+            bo.setTempSize(FileUtils.sizeOfDirectory(tempFile));
+        }
+        if (cacheFile.exists() && cacheFile.isDirectory()) {
+            bo.setCacheSize(FileUtils.sizeOfDirectory(cacheFile));
+        }
+        if (logFile.exists() && logFile.isDirectory()) {
+            bo.setLogSize(FileUtils.sizeOfDirectory(logFile));
+        }
+        return bo;
     }
 }

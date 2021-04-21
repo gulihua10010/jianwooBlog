@@ -2,17 +2,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.jianwoo.blog.dao.biz.mapper.WebconfBizMapper">
     <resultMap id="BaseResultMap" type="cn.jianwoo.blog.entity.Webconf">
-        <id column="OID" jdbcType="BIGINT" property="oid"/>
-        <result column="KEY" jdbcType="VARCHAR" property="key"/>
-        <result column="STRING_VALUE" jdbcType="VARCHAR" property="stringValue"/>
-        <result column="NUM_VALUE" jdbcType="DECIMAL" property="numValue"/>
-        <result column="BOOLEAN_VALUE" jdbcType="CHAR" property="booleanValue"/>
-        <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate"/>
-        <result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate"/>
+        <id column="OID" jdbcType="BIGINT" property="oid" />
+        <result column="KEY" jdbcType="VARCHAR" property="key" />
+        <result column="DESC" jdbcType="VARCHAR" property="desc" />
+        <result column="TITLE" jdbcType="VARCHAR" property="title" />
+        <result column="VALUE_TYPE" jdbcType="VARCHAR" property="valueType" />
+        <result column="FORM_TYPE" jdbcType="VARCHAR" property="formType" />
+        <result column="STRING_VALUE" jdbcType="VARCHAR" property="stringValue" />
+        <result column="NUM_VALUE" jdbcType="DECIMAL" property="numValue" />
+        <result column="BOOLEAN_VALUE" jdbcType="CHAR" property="booleanValue" />
+        <result column="DATE_VALUE" jdbcType="TIMESTAMP" property="dateValue" />
+        <result column="MANDATORY" jdbcType="CHAR" property="mandatory" />
+        <result column="VALIDATE_TYPE" jdbcType="VARCHAR" property="validateType" />
+        <result column="VALIDATE_VALUE" jdbcType="VARCHAR" property="validateValue" />
+        <result column="VAILD" jdbcType="CHAR" property="vaild" />
+        <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate" />
+        <result column="INDEX" jdbcType="INTEGER" property="index" />
     </resultMap>
+
     <sql id="Base_Column_List">
-        OID
-        , `KEY`, STRING_VALUE, NUM_VALUE, BOOLEAN_VALUE, CREATE_DATE, UPDATE_DATE
+        OID, `KEY`, `DESC`, TITLE, VALUE_TYPE, FORM_TYPE, STRING_VALUE, NUM_VALUE, BOOLEAN_VALUE,
+    DATE_VALUE, MANDATORY, VALIDATE_TYPE, VALIDATE_VALUE, `INDEX`, VAILD, CREATE_DATE,
+    UPDATE_DATE
     </sql>
 
     <select id="selectAllWebconf" resultMap="BaseResultMap">

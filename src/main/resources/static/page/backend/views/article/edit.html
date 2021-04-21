@@ -358,7 +358,6 @@
 
 </script>
 
-<script src="/static/plugins/tinymce/tinymce.min.js" type="text/javascript"></script>
 <script>
     doEdit = function (d) {
         layui.use('articleEdit', layui.factory('articleEdit'))
@@ -366,7 +365,11 @@
             .use(['admin', 'articleEdit', 'form', 'table', 'element', 'comment'], function () {
                 var $ = layui.jquery
                     , form = layui.form
-                    , element = layui.element;
+                    , element = layui.element
+                    , articleEdit = layui.articleEdit
+                ;
+                var artOid = layui.router().search.id;
+                var isChange = false;
                 element.render()
                 form.render()
                 //回收站view
@@ -381,7 +384,14 @@
                     $('#article-content').html(d.data.content)
                 }
                 if (d.data.status !== -1) {
-                    tinymceInit("#article-content-text-edit", d.data.content);
+
+                    var edit = articleEdit.getEdit(function () {
+                        isChange = true
+                    }, function (opt, edit) {
+                        edit.setContent(d.data.content);
+                    });
+
+
                     var tags = $('.choose-tags').find('.publish-tags-content');
                     tags.each(function (i) {
                         var color = Math.random();
@@ -391,9 +401,62 @@
                         $(this).css("background-color", "rgba(" + r + "," + g + "," + b + ",0.1)")
                         $(this).css("border", "  1px rgba(" + r + "," + g + "," + b + ",1) solid")
                     })
+
+
+                    $("input[name=title],input[name=author]").change(function () {
+                        isChange = true;
+
+                    })
+
+
+                    window.onunload = function () {
+                        if (!isChange) return '';
+                        var title = $('input[name=title]').val();
+                        var author = $('input[name=author]').val();
+                        var typeId = $('select[name=typeId]').val();
+                        var subToken = $('input[name=subToken]').val();
+                        var imgsrc = $('input[name=imgsrc]').val();
+                        var isPublic = $('input[name=isPublic]:checked').val();
+                        var articleContent = tinyMCE.activeEditor.getContent();
+                        var tagsId = [];
+                        var data = $('.choosed>span>span')
+                        for (var i = 0; i < data.length; i++) {
+                            tagsId[i] = data.eq(i).text();
+                        }
+                        var publishTemp = isPublic;
+                        var passw = '';
+                        if (publishTemp === '1') {
+                            if ($('#hometop').prop('checked')) {
+                                publishTemp = 2;
+                            }
+                        } else if (publishTemp === '-1') {
+                            passw = $('#passw-content').val();
+                        }
+                        var iscomment = 0;
+                        if ($('#is-comment').prop('checked')) {
+                            iscomment = 1;
+                        }
+
+                        ajaxPost('/api/admin/article/temp/save',
+                            JSON.stringify({
+                                artOid: artOid,
+                                title: title,
+                                author: author,
+                                articleContent: articleContent,
+                                tags: tagsId,
+                                type: typeId,
+                                imgSrc: imgsrc,
+                                visitType: publishTemp,
+                                password: passw,
+                                isComment: iscomment,
+                                subToken: subToken,
+                                page: 1,
+
+                            }));
+
+                    }
                 }
 
-                var artOid = layui.router().search.id;
                 renderComm(artOid, function () {
                     if (d.data.status === -1) {
                         $('button').hide();

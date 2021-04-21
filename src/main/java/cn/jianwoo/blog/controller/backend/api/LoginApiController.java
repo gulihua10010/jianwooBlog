@@ -130,24 +130,24 @@ public class LoginApiController extends BaseController {
             UserRequest requestParam = this.convertParam(param, UserRequest.class);
             BizValidation.paramValidate(requestParam.getUsername(), "username", "用户名不能为空!");
             BizValidation.paramValidate(requestParam.getPassword(), "password", "密码不能为空!");
-            WebconfBO webconf = webconfBizService.queryConfigWithBO();
-            Boolean isCaptchaOn = webconf.getIsCaptchaOn();
-            if (isCaptchaOn) {
-                String tokenStore = cacheStore.get(LOGIN_CAPTCHA_AUTH).orElse(null);
-                String tokenSession = (String) request.getSession().getAttribute(LOGIN_CAPTCHA_AUTH);
-                boolean isCaptcha = null != tokenSession && tokenSession.equals(tokenStore);
-                if (!isCaptcha) {
-                    throw new JwBlogException(ExceptionConstants.LOGIN_CAPTCHA_AUTH_INVALID,
-                            ExceptionConstants.LOGIN_CAPTCHA_AUTH_INVALID_DESC);
-                }
-            }
+//            WebconfBO webconf = webconfBizService.queryConfigWithBO();
+//            Boolean isCaptchaOn = webconf.getIsCaptchaOn();
+//            if (isCaptchaOn) {
+//                String tokenStore = cacheStore.get(LOGIN_CAPTCHA_AUTH).orElse(null);
+//                String tokenSession = (String) request.getSession().getAttribute(LOGIN_CAPTCHA_AUTH);
+//                boolean isCaptcha = null != tokenSession && tokenSession.equals(tokenStore);
+//                if (!isCaptcha) {
+//                    throw new JwBlogException(ExceptionConstants.LOGIN_CAPTCHA_AUTH_INVALID,
+//                            ExceptionConstants.LOGIN_CAPTCHA_AUTH_INVALID_DESC);
+//                }
+//            }
 
 
             AuthToken authToken = adminBizService.authLogin(requestParam.getUsername(), requestParam.getPassword(), requestParam.getClientIp());
-            if (isCaptchaOn) {
-                cacheStore.delete(LOGIN_CAPTCHA_AUTH);
-                request.getSession().removeAttribute(LOGIN_CAPTCHA_AUTH);
-            }
+//            if (isCaptchaOn) {
+//                cacheStore.delete(LOGIN_CAPTCHA_AUTH);
+//                request.getSession().removeAttribute(LOGIN_CAPTCHA_AUTH);
+//            }
 
             request.getSession().setAttribute(LOGIN_SESSION, authToken.getAccessToken());
         } catch (JwBlogException e) {

@@ -1,0 +1,30 @@
+<title>编辑标签</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>文章管理</cite></a>
+        <a><cite>编辑标签</cite></a>
+    </div>
+</div>
+
+<div class="layui-form" id="layuiadmin-form-comment" lay-filter="layuiadmin-form-comment">
+    <div class="layui-form-item">
+        <script type="text/html" template lay-url="/api/admin/tag/info/{{ d.params }}" id="JW_ARTICLE_TAGS_EDIT">
+        <input class="layui-input tags-text" name="text" autocomplete="off" lay-verify="required|maxLength" lay-max="10"
+               placeholder="标签内容"
+               value="{{ d.data.name }}" type="text">
+        </script>
+    </div>
+    <script type="text/html" template lay-url="/api/admin/token/generate"
+            lay-data="{pageId: 'T11'}" lay-type="post">
+        <input type="hidden" name="subToken" id="subToken" value="{{d.token}}">
+    </script>
+    <div class="layui-form-item">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-block">
+            <input class="layui-btn" style="float: right" id="tags-edit-submit" lay-filter="tags-edit-submit" lay-submit
+                   type="button" value="确认">
+        </div>
+    </div>
+</div>

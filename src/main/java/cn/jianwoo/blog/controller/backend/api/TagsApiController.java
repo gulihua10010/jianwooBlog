@@ -12,7 +12,8 @@ import cn.jianwoo.blog.dto.request.EntityOidRequest;
 import cn.jianwoo.blog.dto.request.TagListRequest;
 import cn.jianwoo.blog.dto.request.TagRequest;
 import cn.jianwoo.blog.dto.response.TagListResponse;
-import cn.jianwoo.blog.dto.response.vo.TagsListVO;
+import cn.jianwoo.blog.dto.response.TagResponse;
+import cn.jianwoo.blog.dto.response.vo.TagsVO;
 import cn.jianwoo.blog.entity.Tags;
 import cn.jianwoo.blog.enums.PageIdEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
@@ -176,13 +177,13 @@ public class TagsApiController extends BaseController {
     @GetMapping(TagsApiUrlConfig.URL_TAG_LIST)
     public String getTagsList() {
         TagListResponse response = TagListResponse.getInstance();
-        List<TagsListVO> list = new ArrayList<TagsListVO>();
+        List<TagsVO> list = new ArrayList<TagsVO>();
         List<Tags> tags = tagsTransDao.queryAllTags();
         if (CollectionUtils.isNotEmpty(tags)) {
             for (Tags tag : tags) {
-                TagsListVO vo = JwBuilder.of(TagsListVO::new)
-                        .with(TagsListVO::setId, tag.getOid())
-                        .with(TagsListVO::setName, StringEscapeUtils.escapeHtml4(tag.getContent())).build();
+                TagsVO vo = JwBuilder.of(TagsVO::new)
+                        .with(TagsVO::setId, tag.getOid())
+                        .with(TagsVO::setName, StringEscapeUtils.escapeHtml4(tag.getContent())).build();
                 list.add(vo);
             }
         }
@@ -205,16 +206,51 @@ public class TagsApiController extends BaseController {
      */
     @GetMapping(TagsApiUrlConfig.URL_TAG_ARTICLE_LIST)
     public String getTagsListByArtOid(@PathVariable("artId") Long artId) {
-        TagListResponse response = TagListResponse.getInstance();
-        List<TagsListVO> list = new ArrayList<TagsListVO>();
-        List<Tags> artTags = tagsBizService.queryTagsByArtOid(artId);
-        for (Tags tag : artTags) {
-            TagsListVO vo = JwBuilder.of(TagsListVO::new)
-                    .with(TagsListVO::setId, tag.getOid())
-                    .with(TagsListVO::setName, StringEscapeUtils.escapeHtml4(tag.getContent())).build();
-            list.add(vo);
+        TagListResponse response = null;
+        try {
+            BizValidation.paramValidate(artId, "artId", "文章id不能为空!");
+            response = TagListResponse.getInstance();
+            List<TagsVO> list = new ArrayList<TagsVO>();
+            List<Tags> artTags = tagsBizService.queryTagsByArtOid(artId);
+            for (Tags tag : artTags) {
+                TagsVO vo = JwBuilder.of(TagsVO::new)
+                        .with(TagsVO::setId, tag.getOid())
+                        .with(TagsVO::setName, StringEscapeUtils.escapeHtml4(tag.getContent())).build();
+                list.add(vo);
+            }
+            response.setData(list);
+        } catch (JwBlogException e) {
+            return super.exceptionToString(e);
         }
-        response.setData(list);
+        return super.responseToJSONString(response);
+
+    }
+
+    /**
+     * 获取指定标签信息(标签页面)<br/>
+     * url:/api/admin/tag/info/{id}<br/>
+     *
+     * @param id TAG oid<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
+    @GetMapping(TagsApiUrlConfig.URL_TAG_INFO)
+    public String getTagInfo(@PathVariable("id") Long id) {
+        TagResponse response = TagResponse.getInstance();
+        try {
+            BizValidation.paramValidate(id, "id", "标签oid不能为空!");
+            Tags tags = tagsTransDao.queryTagsByPrimaryKey(id);
+            TagsVO tagsVO = JwBuilder.of(TagsVO::new)
+                    .with(TagsVO::setId, tags.getOid())
+                    .with(TagsVO::setName, tags.getContent())
+                    .build();
+            response.setData(tagsVO);
+
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+        }
         return super.responseToJSONString(response);
 
     }

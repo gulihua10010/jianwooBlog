@@ -1,24 +1,27 @@
 package cn.jianwoo.blog.service.biz.impl;
 
-import cn.jianwoo.blog.config.router.WebConfDataConfig;
 import cn.jianwoo.blog.dao.base.WebconfTransDao;
 import cn.jianwoo.blog.dao.biz.WebconfBizDao;
 import cn.jianwoo.blog.entity.Webconf;
+import cn.jianwoo.blog.enums.ValueTypeEnum;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.exception.WebconfBizException;
 import cn.jianwoo.blog.service.biz.WebconfBizService;
 import cn.jianwoo.blog.service.bo.WebconfBO;
+import cn.jianwoo.blog.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Slf4j
@@ -29,103 +32,87 @@ public class WebconfBizServiceImpl implements WebconfBizService {
     @Autowired
     private WebconfBizDao webconfBizDao;
 
+
     @Override
-    public Map<String, Object> queryConfigWithMap() {
-        List<Webconf> configs = webconfTransDao.queryAllWebconf();
-        Map<String, Object> conf = new HashMap<>();
-        for (Webconf webconf : configs) {
-            if (StringUtils.isNotBlank(webconf.getStringValue())) {
-                conf.put(webconf.getKey(), webconf.getStringValue());
-            } else if (webconf.getNumValue() != null) {
-                conf.put(webconf.getKey(), webconf.getNumValue());
-            } else if (webconf.getBooleanValue() != null) {
-                conf.put(webconf.getKey(), webconf.getBooleanValue());
+    public List<WebconfBO> queryConfig() {
+        List<Webconf> webconfList = webconfTransDao.queryEffectiveWebconf();
+        List<WebconfBO> list = new ArrayList<>();
+        webconfList.sort(Comparator.comparingInt(Webconf::getIndex));
+        if (CollectionUtils.isNotEmpty(webconfList)) {
+            webconfList.forEach(o -> {
+                WebconfBO bo = new WebconfBO();
+                BeanUtils.copyProperties(o, bo);
+                if (ValueTypeEnum.STRING.getValue().equals(o.getValueType())) {
+                    bo.setValue(o.getStringValue());
+                } else if (ValueTypeEnum.NUMBER.getValue().equals(o.getValueType())) {
+                    bo.setValue(format(o.getNumValue()));
+                } else if (ValueTypeEnum.BOOLEAN.getValue().equals(o.getValueType())) {
+                    bo.setValue(format(o.getBooleanValue()));
+                } else if (ValueTypeEnum.DATE.getValue().equals(o.getValueType())) {
+                    bo.setValue(DateUtil.formatTimestamp(o.getDateValue()));
+                }
+                list.add(bo);
+            });
+        }
+        return list;
+
+    }
+    private String format(Object v)
+    {
+        if (v==null)
+        {
+            return "";
+        }
+        return String.valueOf(v);
+
+    }
+
+
+    @Override
+    public void doUpdateConfig(List<WebconfBO> configList) throws JwBlogException {
+
+        if (CollectionUtils.isNotEmpty(configList)) {
+            for (WebconfBO o : configList) {
+                try {
+                    Webconf webconf = new Webconf();
+                    BeanUtils.copyProperties(o, webconf);
+                    if (ValueTypeEnum.STRING.getValue().equals(o.getValueType())) {
+                        webconf.setStringValue(o.getValue());
+                    } else if (ValueTypeEnum.NUMBER.getValue().equals(o.getValueType())) {
+                        webconf.setNumValue(formatNumber(o.getValue()));
+                    } else if (ValueTypeEnum.BOOLEAN.getValue().equals(o.getValueType())) {
+                        webconf.setBooleanValue(Boolean.valueOf(o.getValue()));
+                    } else if (ValueTypeEnum.DATE.getValue().equals(o.getValueType())) {
+                        webconf.setDateValue(DateUtil.parseTimestamp(o.getValue()));
+                    }
+                    Webconf oldWebconf = webconfTransDao.queryWebconfByKey(webconf.getKey());
+                    if (oldWebconf != null) {
+                        oldWebconf.setStringValue(webconf.getStringValue());
+                        oldWebconf.setNumValue(webconf.getNumValue());
+                        oldWebconf.setBooleanValue(webconf.getBooleanValue());
+                        oldWebconf.setDateValue(webconf.getDateValue());
+                        oldWebconf.setUpdateDate(new Date());
+                        webconfTransDao.doUpdateByPrimaryKey(oldWebconf);
+
+                    }
+                } catch (DaoException e) {
+                    throw WebconfBizException.MODIFY_FAILED_EXCEPTION.format(o.getKey()).print();
+
+                }
             }
         }
-        log.info("query data : {}", conf);
-        return conf;
+
     }
 
-
-    @Override
-    public void doUpdateConfigWithMap(Map<String, Object> confs) throws JwBlogException {
-        for (Map.Entry<String, Object> conf : confs.entrySet()) {
-            if (conf.getValue() == null) {
-                continue;
-            }
-            Webconf oldWebconf = webconfTransDao.queryWebconfByKey(conf.getKey());
-            if (null == oldWebconf) {
-                continue;
-            }
-            if (conf.getValue() instanceof String) {
-                oldWebconf.setStringValue((String) conf.getValue());
-            } else if (conf.getValue() instanceof BigDecimal) {
-                oldWebconf.setNumValue((BigDecimal) conf.getValue());
-            } else if (conf.getValue() instanceof Boolean) {
-                oldWebconf.setBooleanValue((Boolean) conf.getValue());
-            }
-            oldWebconf.setUpdateDate(new Date());
-            log.info("update data : {}", oldWebconf);
-
-            try {
-                webconfTransDao.doUpdateByPrimaryKeySelective(oldWebconf);
-            } catch (DaoException e) {
-                throw WebconfBizException.MODIFY_FAILED_EXCEPTION.format(conf.getKey()).print();
-            }
+    private BigDecimal formatNumber(String v)
+    {
+        if (StringUtils.isBlank(v))
+        {
+            return null;
         }
+        return new BigDecimal(v);
+
     }
 
 
-    @Override
-    public WebconfBO convertWebconfMaptoBO(Map<String, Object> conf) {
-        WebconfBO bo = new WebconfBO();
-        bo.setTitle((String) conf.get(WebConfDataConfig.TITLE));
-        bo.setAuthor((String) conf.get(WebConfDataConfig.AUTHOR));
-        bo.setIsComment((Boolean) conf.get(WebConfDataConfig.IS_COMMENT));
-        bo.setIsCaptchaOn((Boolean) conf.get(WebConfDataConfig.IS_LOGIN_NEED_CAPTCHA));
-        bo.setDescription((String) conf.get(WebConfDataConfig.DESCRIPTION));
-        bo.setDomain((String) conf.get(WebConfDataConfig.DOMAIN));
-        bo.setFootHtml((String) conf.get(WebConfDataConfig.FOOT_HTML));
-        bo.setHomeImg((String) conf.get(WebConfDataConfig.TOP_IMG));
-        bo.setKeywords((String) conf.get(WebConfDataConfig.KEYWORDS));
-        bo.setLogoImg((String) conf.get(WebConfDataConfig.LOGO));
-        bo.setNumPerPage(10);
-        if (conf.get(WebConfDataConfig.NUM_PER_PAGE) != null
-                && StringUtils.isNotBlank(String.valueOf(conf.get(WebConfDataConfig.NUM_PER_PAGE)))) {
-            bo.setNumPerPage(Integer.parseInt((String) conf.get(WebConfDataConfig.NUM_PER_PAGE)));
-        }
-        bo.setRecord((String) conf.get(WebConfDataConfig.RECORD));
-        return bo;
-    }
-
-
-    @Override
-    public WebconfBO queryConfigWithBO() {
-        return convertWebconfMaptoBO(queryConfigWithMap());
-    }
-
-
-    @Override
-    public void doUpdateConfigWithBO(WebconfBO bo) throws JwBlogException {
-        doUpdateConfigWithMap(convertBOtoWebconfMap(bo));
-    }
-
-
-    @Override
-    public Map<String, Object> convertBOtoWebconfMap(WebconfBO bo) {
-        Map<String, Object> conf = new HashMap<>();
-        conf.put(WebConfDataConfig.TITLE, bo.getTitle());
-        conf.put(WebConfDataConfig.AUTHOR, bo.getAuthor());
-        conf.put(WebConfDataConfig.IS_COMMENT, bo.getIsComment());
-        conf.put(WebConfDataConfig.DESCRIPTION, bo.getDescription());
-        conf.put(WebConfDataConfig.DOMAIN, bo.getDomain());
-        conf.put(WebConfDataConfig.FOOT_HTML, bo.getFootHtml());
-        conf.put(WebConfDataConfig.TOP_IMG, bo.getHomeImg());
-        conf.put(WebConfDataConfig.KEYWORDS, bo.getKeywords());
-        conf.put(WebConfDataConfig.LOGO, bo.getLogoImg());
-        conf.put(WebConfDataConfig.NUM_PER_PAGE, bo.getNumPerPage());
-        conf.put(WebConfDataConfig.RECORD, bo.getRecord());
-        conf.put(WebConfDataConfig.IS_LOGIN_NEED_CAPTCHA, bo.getIsCaptchaOn());
-        return conf;
-    }
 }

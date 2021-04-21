@@ -21,8 +21,12 @@ public final class ExceptionConstants {
     public static final String VALIDATION_FAILED_ARRAY_EMPTY = "300004";
     public static final String VALIDATION_FAILED_NOT_IN_RANGE = "300005";
     public static final String VALIDATION_FAILED_STRING_LENGTH = "300006";
-    public static final String VALIDATION_FAILED_STRING_TEGEX = "300007";
+    public static final String VALIDATION_FAILED_STRING_REGEX = "300007";
     public static final String VALIDATION_FAILED_LIST_CONTENT_EMPTY = "300008";
+    public static final String VALIDATOR_FILE_SIZE_MAX = "300009";
+    public static final String VALIDATOR_NUMBER_MIN = "300010";
+    public static final String VALIDATOR_NUMBER_MAX = "300011";
+    public static final String VALIDATOR_NUMBER = "300012";
     public static final String VALIDATION_FAILED = "300000";
 
     public static final String ADMIN_PASSWORD_NOT_CORRECT = "400001";

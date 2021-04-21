@@ -11,6 +11,7 @@ public enum PageIdEnum {
     ARTICLE_QUICK_EDIT("A13"),
     ARTICLE_RECYCLE_BIN("A14"),
     ARTICLE_RECYCLE_BIN_VIEW("A15"),
+    ARTICLE_TEMP_SAVE("A17"),
     /**
      * 评论页
      */

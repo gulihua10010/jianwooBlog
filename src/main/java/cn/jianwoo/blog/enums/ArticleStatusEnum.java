@@ -22,6 +22,12 @@ public enum ArticleStatusEnum {
      */
     ALL(2),
 
+
+    /**
+     * 文章删除
+     */
+    DELETE(-2),
+
     ;
 
     /**

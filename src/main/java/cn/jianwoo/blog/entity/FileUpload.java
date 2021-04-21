@@ -4,22 +4,37 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class FileUpload implements Serializable {
-    private static final long serialVersionUID = 1L;
     private Long oid;
+
     private String fileUuid;
+
     private String fileName;
+
     private String oldFileName;
+
     private Long size;
+
     private String type;
-    private Long mediaTime;
+
+    private String mediaInfo;
+
     private String path;
+
     private String url;
+
     private String fileMd5;
+
     private String isChunk;
+
     private String isDelete;
+
     private Date uploadTime;
+
     private Date createDate;
+
     private Date updateDate;
+
+    private static final long serialVersionUID = 1L;
 
     public Long getOid() {
         return oid;
@@ -69,12 +84,12 @@ public class FileUpload implements Serializable {
         this.type = type == null ? null : type.trim();
     }
 
-    public Long getMediaTime() {
-        return mediaTime;
+    public String getMediaInfo() {
+        return mediaInfo;
     }
 
-    public void setMediaTime(Long mediaTime) {
-        this.mediaTime = mediaTime;
+    public void setMediaInfo(String mediaInfo) {
+        this.mediaInfo = mediaInfo == null ? null : mediaInfo.trim();
     }
 
     public String getPath() {
@@ -153,7 +168,7 @@ public class FileUpload implements Serializable {
         sb.append(", oldFileName=").append(oldFileName);
         sb.append(", size=").append(size);
         sb.append(", type=").append(type);
-        sb.append(", mediaTime=").append(mediaTime);
+        sb.append(", mediaInfo=").append(mediaInfo);
         sb.append(", path=").append(path);
         sb.append(", url=").append(url);
         sb.append(", fileMd5=").append(fileMd5);

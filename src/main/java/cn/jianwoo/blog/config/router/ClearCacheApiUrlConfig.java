@@ -8,5 +8,6 @@ package cn.jianwoo.blog.config.router;
 public class ClearCacheApiUrlConfig {
     public static final String URL_PREFIX = "/api/admin/cache";
     public static final String URL_COMMENT_ADD = "/clear";
+    public static final String URL_COMMENT_INFO = "/info";
 
 }

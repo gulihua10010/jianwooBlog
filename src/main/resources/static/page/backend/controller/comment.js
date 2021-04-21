@@ -248,49 +248,37 @@ layui.define(['table', 'form', 'laytpl', 'element'], function (exports) {
         stopBubble(e)
         var poid = $(this).attr('data-id')
         // console.log(poid)
-        layer.open({
-            type: 2
-            , title: '回复评论'
-            , content: '/admin/comment/reply'
+
+        admin.popup({
+            title: '回复评论'
             , area: ['450px', '300px']
-            , btn: ['确定', '取消']
-            , yes: function (index, layero) {
-                var iframeWindow = window['layui-layer-iframe' + index]
-                    , submitID = 'replyComm-submit'
-                    , submit = layero.find('iframe').contents().find('#' + submitID)
-                    , commTips = layero.find('iframe').contents().find('.comment-tips')
-                    , commTipsSpan = layero.find('iframe').contents().find('#comment-tips-text')
-
-                //监听提交
-                iframeWindow.layui.form.on('submit(' + submitID + ')', function (formData) {
-                    var field = formData.field; //获取提交的字段
-                    var headImgUrl = "/static/comm/img/headimg/" + Math.ceil(Math.random() * 10) + ".jpg";
-
-                    //提交 Ajax 成功后，静态更新表格中的数据
-                    ajaxPost(
-                        "/api/admin/comment/reply",
-                        JSON.stringify({
-                            content: field.content,
-                            parentOid: poid,
-                            artOid: artOid,
-                            headImgUrl: headImgUrl,
-                            subToken: field.subToken
-                        }),
-                        "回复成功",
-                        function () {
-                            renderComm(artOid);
-                            layer.close(index); //关闭弹层
-                        }
-                    );
-
-                });
-
-                submit.trigger('click');
-            }
+            , id: 'LAY-popup-art-comment-reply'
             , success: function (layero, index) {
-
+                view(this.id).render('comment/reply').done(function () {
+                    form.render(null, 'LAY-popup-art-comment-reply');
+                    form.on('submit(JW-comment-reply-submit)', function (formData) {
+                        var field = formData.field;
+                        var headImgUrl = "/static/comm/img/headimg/" + Math.ceil(Math.random() * 10) + ".jpg";
+                        ajaxPost(
+                            "/api/admin/comment/reply",
+                            JSON.stringify({
+                                content: field.content,
+                                parentOid: poid,
+                                artOid: artOid,
+                                headImgUrl: headImgUrl,
+                                subToken: field.subToken
+                            }),
+                            "回复成功",
+                            function () {
+                                renderComm(artOid);
+                                layer.close(index); //关闭弹层
+                            }
+                        );
+                    })
+                });
             }
         });
+
     });
 
     $('.art-comment').on('click', '.comment-btn', function () {

@@ -67,11 +67,11 @@ public class ArticleInfoVO implements Serializable {
     /**
      * 文章标签列表
      */
-    private List<TagsListVO> artTagsList;
+    private List<TagsVO> artTagsList;
     /**
      * 标签列表
      */
-    private List<TagsListVO> tagsList;
+    private List<TagsVO> tagsList;
 
     /**
      * 菜单列表

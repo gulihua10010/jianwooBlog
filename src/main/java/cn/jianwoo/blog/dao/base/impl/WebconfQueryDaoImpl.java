@@ -27,8 +27,9 @@ public class WebconfQueryDaoImpl implements WebconfQueryDao {
 
 
     @Override
-    public List<Webconf> queryAllWebconf() {
+    public List<Webconf> queryEffectiveWebconf() {
         WebconfExample example = new WebconfExample();
+        example.createCriteria().andValidEqualTo(true);
         return webconfMapper.selectByExample(example);
     }
 

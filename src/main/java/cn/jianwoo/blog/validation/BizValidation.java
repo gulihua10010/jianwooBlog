@@ -8,7 +8,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -97,10 +99,69 @@ public class BizValidation {
 
     }
 
+    public static void paramNumberMinValidate(String paramValue, String min, String paramName, String msg) throws JwBlogException {
+        BigDecimal v;
+        try {
+            v = new BigDecimal(paramValue);
+        } catch (Exception e) {
+            String errMsg = String.format("Parameter verified failed, the value of parameter '%s' is not a number. ", paramName);
+            logger.error(errMsg);
+            throw new ValidationException(ExceptionConstants.VALIDATOR_NUMBER, errMsg);
+        }
+        BigDecimal minV;
+        try {
+            minV = new BigDecimal(min);
+        } catch (Exception e) {
+            String errMsg = String.format("The value of min '%s' is not a number. ", min);
+            logger.error(errMsg);
+            minV = new BigDecimal("0");
+        }
+        if (v.compareTo(minV) < 0) {
+            logger.error("Parameter verified failed, the value of parameter '{}' is letter than {}. ", paramName, min);
+            throw new ValidationException(ExceptionConstants.VALIDATOR_NUMBER_MIN, msg);
+
+        }
+
+    }
+
+    public static void paramNumberMaxValidate(String paramValue, String max, String paramName, String msg) throws JwBlogException {
+        BigDecimal v;
+        try {
+            v = new BigDecimal(paramValue);
+        } catch (Exception e) {
+            String errMsg = String.format("Parameter verified failed, the value of parameter '%s' is not a number. ", paramName);
+            logger.error(errMsg);
+            throw new ValidationException(ExceptionConstants.VALIDATOR_NUMBER, errMsg);
+        }
+        BigDecimal maxV;
+        try {
+            maxV = new BigDecimal(max);
+        } catch (Exception e) {
+            String errMsg = String.format("The value of max '%s' is not a number. ", max);
+            logger.error(errMsg);
+            maxV = new BigDecimal("0");
+        }
+        if (v.compareTo(maxV) > 0) {
+            logger.error("Parameter verified failed, the value of parameter '{}' is greater than {}. ", paramName, max);
+            throw new ValidationException(ExceptionConstants.VALIDATOR_NUMBER_MAX, msg);
+
+        }
+
+    }
+
     public static void paramRegexValidate(String paramValue, String regex, String paramName, String msg) throws JwBlogException {
         if (StringUtils.isNotBlank(paramValue) && !Pattern.matches(regex, paramValue)) {
             logger.error("Parameter verified failed, the regular expression is {}, but field[{}] value is {}. ", regex, paramName, paramValue);
-            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_STRING_TEGEX, msg);
+            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_STRING_REGEX, msg);
+
+        }
+
+    }
+
+    public static void paramNumberValidate(String paramValue, String paramName, String msg) throws JwBlogException {
+        if (StringUtils.isNotBlank(paramValue)) {
+            logger.error("Parameter verified failed, the value of parameter '{}' is not a number", paramName);
+            throw new ValidationException(ExceptionConstants.VALIDATOR_NUMBER, msg);
 
         }
 
@@ -147,6 +208,18 @@ public class BizValidation {
                 }
             }
 
+        }
+
+    }
+
+    public static void paramFileSizeValidate(MultipartFile fileObj, Long maxSize, String msg) throws JwBlogException {
+        if (null != fileObj) {
+            if (fileObj.getSize() > maxSize) {
+                logger.error("Parameter verified failed,the file size exceeds the maximum limit: {}, current size: {}", maxSize, fileObj.getSize());
+                throw ValidationException.VALIDATOR_FILE_SIZE_MAX
+                        .getNewInstance(msg, maxSize)
+                        .print();
+            }
         }
 
     }

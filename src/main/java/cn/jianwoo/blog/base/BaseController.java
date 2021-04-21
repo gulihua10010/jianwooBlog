@@ -8,8 +8,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletContext;
@@ -18,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Random;
+import java.util.UUID;
 
 @Slf4j
 public class BaseController implements Serializable {
@@ -37,11 +35,13 @@ public class BaseController implements Serializable {
     protected ServletContext application;
 
     protected void printRequestParams(String param) {
-        log.info("receive the request with param :: {}", param);
+        String clazzName = Thread.currentThread().getStackTrace()[2].getClassName();
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        log.info("receive the request in method {}.{} with param :: {}", clazzName, methodName, param);
     }
 
 
-    protected <T> T convertParam(String param, Class<T> class1) throws ControllerBizException {
+    public  <T> T convertParam(String param, Class<T> class1) throws ControllerBizException {
         T result;
         if (StringUtils.isBlank(param)) {
             throw ControllerBizException.JSON_IS_NULL.print();
@@ -49,6 +49,7 @@ public class BaseController implements Serializable {
         try {
             result = JSONObject.parseObject(param, class1);
         } catch (Exception e) {
+            log.error("Parameter conversion failed, JSON string exception: e" + e.getMessage(), e);
             throw ControllerBizException.JSON_CONVERT_ERROR.print();
         }
         try {
@@ -58,22 +59,27 @@ public class BaseController implements Serializable {
             DomainUtil.fillStringValue(result, "sessionId", request.getRequestedSessionId());
             DomainUtil.fillDateValue(result, "requestDate", new Date());
         } catch (Exception e) {
-            throw ControllerBizException.JSON_CONVERT_ERROR.print();
+            log.error("Invalid method name parameter: e" + e.getMessage(), e);
+            throw ControllerBizException.INVALID_PARAM.print();
 
         }
+        String clazzName = Thread.currentThread().getStackTrace()[2].getClassName();
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        log.info("convertParam the request in method {}.{} with param :: {}",
+                clazzName, methodName, JSONObject.toJSONString(result));
         return result;
     }
 
 
     private String getRequestId() {
-        String ch = "1234567890";
-        StringBuffer sb = new StringBuffer();
-        Random random = new Random();
-        for (int i = 0; i < 10; i++) {
-            sb.append(ch.charAt(Math.abs(random.nextInt()) % (ch.length())));
-        }
-        return sb.toString();
+        StringBuilder sb = new StringBuilder();
+        String currentTime = String.valueOf(System.currentTimeMillis());
+        String uuid = UUID.randomUUID().toString();
+        String prefix = uuid.substring(0, 8);
+        String suffix = uuid.substring(28, 36);
+        String requestId = sb.append(prefix).append(currentTime).append(suffix).toString();
 
+        return requestId;
     }
 
 

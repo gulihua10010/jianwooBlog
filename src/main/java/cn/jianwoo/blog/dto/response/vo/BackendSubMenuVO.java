@@ -19,7 +19,16 @@ import java.io.Serializable;
 public class BackendSubMenuVO implements Serializable {
 
     private static final long serialVersionUID = 1020808623699146901L;
+    /**
+     * 菜单名
+     */
     private String name;
+    /**
+     * 菜单文本(MENU.TEXT)
+     */
     private String title;
+    /**
+     * 菜单跳转地址
+     */
     private String jump;
 }

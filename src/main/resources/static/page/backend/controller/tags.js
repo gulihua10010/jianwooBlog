@@ -1,6 +1,4 @@
-layui.extend({
-    mouseRightMenu: "{/}" + layui.setter.base + '/lib/extend/mouseRightMenu'
-}).define(['form', 'mouseRightMenu'], function (exports) {
+layui.define(['form', 'mouseRightMenu'], function (exports) {
     var $ = layui.jquery
         , mouseRightMenu = layui.mouseRightMenu
         , view = layui.view
@@ -33,49 +31,38 @@ layui.extend({
 
         ]
         mouseRightMenu.open(menu_data, false, function (d) {
-            if (d.type == 1) {
-                layer.open({
-                    type: 2
-                    , title: '标签编辑'
-                    , content: '/admin/tags/edit/' + d.data.oid
+            if (d.type === 1) {
+                admin.popup({
+                    title: '标签编辑'
                     , area: ['450px', '200px']
-                    , btn: ['确定', '取消']
-                    , yes: function (index, layero) {
-                        var iframeWindow = window['layui-layer-iframe' + index]
-                            , submitID = 'replyComm-submit'
-                            , submit = layero.find('iframe').contents().find('#' + submitID);
-
-                        //监听提交
-                        iframeWindow.layui.form.on('submit(' + submitID + ')', function (formData) {
-                            var field = formData.field; //获取提交的字段
-
-                            ajaxPost(
-                                '/api/admin/tag/update',
-                                JSON.stringify({tagText: field.text, oid: d.data.oid, subToken: field.subToken}),
-                                "更新成功",
-                                function () {
-                                    location.reload();
-                                }
-                            );
-
-                        });
-
-                        submit.trigger('click');
-                    }
+                    , id: 'LAY-popup-tags-edit'
                     , success: function (layero, index) {
-
+                        view(this.id).render('article/tagsEdit', d.data.oid).done(function () {
+                            form.render(null, 'LAY-popup-tags-edit');
+                            form.on('submit(tags-edit-submit)', function (formData) {
+                                var field = formData.field; //获取提交的字段
+                                ajaxPost(
+                                    '/api/admin/tag/update',
+                                    JSON.stringify({tagText: field.text, oid: d.data.oid, subToken: field.subToken}),
+                                    "更新成功",
+                                    function () {
+                                        admin.events.refresh();
+                                    }
+                                );
+                            })
+                        });
                     }
                 });
 
 
-            } else if (d.type == 2) {
+            } else if (d.type === 2) {
                 alertAsk('确定要删除吗?', function () {
                     ajaxPost(
                         '/api/admin/tag/remove',
                         JSON.stringify({entityOid: d.data.oid}),
                         "删除成功",
                         function () {
-                            location.reload();
+                            admin.events.refresh();
                         }
                     );
                     // $a.css('display','none');

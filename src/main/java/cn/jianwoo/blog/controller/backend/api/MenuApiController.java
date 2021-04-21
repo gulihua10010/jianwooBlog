@@ -7,15 +7,21 @@ import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.config.router.MenuApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
+import cn.jianwoo.blog.dao.base.MenuTransDao;
 import cn.jianwoo.blog.dto.request.EntityOidListRequest;
 import cn.jianwoo.blog.dto.request.EntityOidRequest;
 import cn.jianwoo.blog.dto.request.MenuVoRequest;
 import cn.jianwoo.blog.dto.response.ArticleMenuResponse;
 import cn.jianwoo.blog.dto.response.BackendMenuResponse;
+import cn.jianwoo.blog.dto.response.HomeMenuResponse;
+import cn.jianwoo.blog.dto.response.MenuInfoResponse;
 import cn.jianwoo.blog.dto.response.MenuValidateResponse;
 import cn.jianwoo.blog.dto.response.vo.ArticleMenuVO;
 import cn.jianwoo.blog.dto.response.vo.BackendMenuVO;
 import cn.jianwoo.blog.dto.response.vo.BackendSubMenuVO;
+import cn.jianwoo.blog.dto.response.vo.HomeMenuVO;
+import cn.jianwoo.blog.dto.response.vo.HomeSubMenuVO;
+import cn.jianwoo.blog.dto.response.vo.MenuVO;
 import cn.jianwoo.blog.entity.Menu;
 import cn.jianwoo.blog.entity.extension.MenuExt;
 import cn.jianwoo.blog.enums.MenuTypeEnum;
@@ -30,6 +36,7 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,6 +57,8 @@ import java.util.List;
 public class MenuApiController extends BaseController {
     @Autowired
     private MenuBizService menuBizService;
+    @Autowired
+    private MenuTransDao menuTransDao;
 
     /**
      * 菜单排序(菜单页面)<br/>
@@ -146,7 +155,7 @@ public class MenuApiController extends BaseController {
             BizValidation.paramLengthValidate(request.getText(), Constants.MENU_LENGTH, "text", "菜单文本不能大于10个字符!");
             BizValidation.paramRegexValidate(request.getName(), Constants.MENU_NAME_REGEX, "name", "菜单文本必须是字母、数字、符号\\'_#$@\\'，不能包含其他特殊字符!");
             menuBizService.doUpdateMenu(request.getOid(), request.getText(), request.getName(), request.getIcon(),
-                    request.getUrl());
+                    request.getUrl(),request.getValid());
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
 
@@ -290,7 +299,7 @@ public class MenuApiController extends BaseController {
     }
 
     /**
-     * 获取前台菜单<br/>
+     * 获取前台菜单(文章类别)<br/>
      * url:/api/admin/menu/article/type/list<br/>
      *
      * @return 返回响应 {@link ArticleMenuResponse}
@@ -301,7 +310,7 @@ public class MenuApiController extends BaseController {
      * @author gulihua
      */
     @GetMapping(MenuApiUrlConfig.URL_MENU_ARTICLE_TYPE_LIST)
-    public String getFrontendMenuList() {
+    public String getArticleTypeMenuList() {
         ArticleMenuResponse response = ArticleMenuResponse.getInstance();
         List<ArticleMenuVO> list = new ArrayList<>();
         List<Menu> menuList = menuBizService.querySubMenuOrderedList(MenuTypeEnum.FRONTEND.getValue());
@@ -315,6 +324,107 @@ public class MenuApiController extends BaseController {
         }
 
         response.setData(list);
+        return super.responseToJSONString(response);
+
+    }
+
+
+    /**
+     * 获取前台首页菜单<br/>
+     * url:/api/admin/menu/home/list<br/>
+     *
+     * @return 返回响应 {@link ArticleMenuResponse}
+     * status<br/>
+     * data<br/>
+     * --id<br/>
+     * --name<br/>
+     * --index<br/>
+     * --icon<br/>
+     * --text<br/>
+     * --url<br/>
+     * --valid<br/>
+     * --subMenuList<br/>
+     * ----id<br/>
+     * ----name<br/>
+     * ----index<br/>
+     * ----icon<br/>
+     * ----text<br/>
+     * ----url<br/>
+     * ----valid<br/>
+     * ----parentOid<br/>
+     * @author gulihua
+     */
+    @GetMapping(MenuApiUrlConfig.URL_MENU_HOME_LIST)
+    public String getHomeMenuList() {
+        HomeMenuResponse response = HomeMenuResponse.getInstance();
+        List<HomeMenuVO> list = new ArrayList<>();
+        List<MenuExt> menuExtList = null;
+        try {
+            menuExtList = menuBizService.queryAllFrontDeskMenuList();
+            if (CollectionUtils.isNotEmpty(menuExtList)) {
+                for (MenuExt menuExt : menuExtList) {
+                    List<HomeSubMenuVO> subMenuVOList = new ArrayList<>();
+                    HomeMenuVO vo = new HomeMenuVO();
+                    BeanUtils.copyProperties(menuExt, vo);
+                    vo.setId(menuExt.getOid());
+                    if (CollectionUtils.isNotEmpty(menuExt.getSubMenus())) {
+                        for (MenuExt subMenu : menuExt.getSubMenus()) {
+                            HomeSubMenuVO homeSubMenuVO = new HomeSubMenuVO();
+                            BeanUtils.copyProperties(subMenu, homeSubMenuVO);
+                            homeSubMenuVO.setId(subMenu.getOid());
+                            subMenuVOList.add(homeSubMenuVO);
+                        }
+                    }
+
+                    vo.setSubMenuList(subMenuVOList);
+                    list.add(vo);
+                }
+            }
+
+        } catch (JwBlogException e) {
+            return super.exceptionToString(e);
+
+        }
+
+        response.setData(list);
+        return super.responseToJSONString(response);
+
+    }
+
+
+    /**
+     * 获取前台首页菜单<br/>
+     * url:/api/admin/menu/info/{id}<br/>
+     *
+     * @return 返回响应 {@link ArticleMenuResponse}
+     * status<br/>
+     * data<br/>
+     * --id<br/>
+     * --name<br/>
+     * --index<br/>
+     * --icon<br/>
+     * --text<br/>
+     * --url<br/>
+     * --valid<br/>
+     * @author gulihua
+     */
+    @GetMapping(MenuApiUrlConfig.URL_MENU_INFO)
+    public String getMenuInfo(@PathVariable("id") Long id) {
+        MenuInfoResponse response = MenuInfoResponse.getInstance();
+        MenuVO vo = new MenuVO();
+        Menu menu = null;
+        try {
+            BizValidation.paramValidate(id, "id", "菜单Oid不能为空!");
+            menu = menuTransDao.queryMenuByPrimaryKey(id);
+            BeanUtils.copyProperties(menu, vo);
+            vo.setId(menu.getOid());
+            response.setData(vo);
+
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+
+        }
+
         return super.responseToJSONString(response);
 
     }

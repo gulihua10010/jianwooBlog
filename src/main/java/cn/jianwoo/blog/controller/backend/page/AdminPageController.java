@@ -23,8 +23,6 @@ import cn.jianwoo.blog.service.biz.MenuBizService;
 import cn.jianwoo.blog.service.biz.TagsBizService;
 import cn.jianwoo.blog.service.biz.VisitBizService;
 import cn.jianwoo.blog.service.biz.WebconfBizService;
-import cn.jianwoo.blog.service.bo.WebconfBO;
-import cn.jianwoo.blog.util.DomainUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -366,7 +364,7 @@ public class AdminPageController {
     public String menuMg(Model model) {
         List<MenuExt> menuExtList = null;
         try {
-            menuExtList = menuBizService.queryFrontDeskMenuList();
+            menuExtList = menuBizService.queryAllFrontDeskMenuList();
         } catch (JwBlogException e) {
 
             log.error(">> AdminPageController.menuMg exec failed, exception: \n", e);
@@ -457,9 +455,9 @@ public class AdminPageController {
     @PageId(PageIdEnum.WEB_CONFIG)
     @RequestMapping(CommBackendPageUrlConfig.URL_WEB_CONFIG)
     public String webConfig(Model model) {
-        WebconfBO webConf = webconfBizService.queryConfigWithBO();
-        log.info("==>> query webconf data: {}", DomainUtil.toString(webConf));
-        model.addAttribute("webConf", webConf);
+//        WebconfBO webConf = webconfBizService.queryConfigWithBO();
+//        log.info("==>> query webconf data: {}", DomainUtil.toString(webConf));
+//        model.addAttribute("webConf", webConf);
 
         return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.PAGE_WEB_CONFIG;
     }
@@ -496,9 +494,9 @@ public class AdminPageController {
     @PageId(PageIdEnum.ADMIN_LOGIN)
     @RequestMapping(CommBackendPageUrlConfig.URL_LOGIN)
     public String login(Model model) {
-        WebconfBO webconf = webconfBizService.queryConfigWithBO();
-        Boolean isCaptcha = webconf.getIsCaptchaOn();
-        model.addAttribute("isCaptcha", isCaptcha);
+//        WebconfBO webconf = webconfBizService.queryConfigWithBO();
+//        Boolean isCaptcha = webconf.getIsCaptchaOn();
+//        model.addAttribute("isCaptcha", isCaptcha);
         return CommBackendPageTemplateConfig.PAGE_PREFIX + CommBackendPageTemplateConfig.LOGIN;
     }
 

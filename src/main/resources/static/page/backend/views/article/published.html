@@ -36,6 +36,7 @@
                     <textarea id="article-content-text" name="article"></textarea>
                 </div>
             </div>
+
         </div>
         <div class="layui-col-md3 art-right-side">
             <div class="layui-card">
@@ -155,6 +156,10 @@
                                 lay-data="{pageId: 'A11'}" lay-type="post">
                             <input type="hidden" name="subToken" id="subToken" value="{{d.token}}">
                         </script>
+                        <script type="text/html" template lay-url="/api/admin/article/last/temp/info"
+                                lay-done="renderTemp(d)">
+                            <input type="hidden" name="tempData" id="tempData" value="{{d.data.id}}">
+                        </script>
                         <div class="btn-group">
                             <div class="negative-btn">
                                 <button class="layui-btn layui-btn-primary" id="cancel">重置</button>
@@ -176,6 +181,7 @@
         </div>
     </div>
 </div>
+
 <script>
 
     function renderTags() {
@@ -200,7 +206,28 @@
 
     }
 
-    layui.use('articlePublish', layui.factory('articlePublish')).use(['admin', 'articlePublish', 'form', 'table'], function () {
 
-    })
+    function renderTemp(d)
+    {
+        layui.use('articlePublish', layui.factory('articlePublish')).use(['admin', 'articlePublish', 'form'], function () {
+            var form = layui.form
+                , $ = layui.jquery
+                , element = layui.element
+
+            ;
+            element.render()
+            form.render()
+            if (d.data.id) {
+                alertAsk('系统存在之前未完成的临时文章，是否恢复?', function () {
+                    $('input[name=title]').val();
+                    $('input[name=author]').val();
+                    $('select[name=typeId]').val();
+                    $('input[name=subToken]').val();
+                    $('input[name=imgsrc]').val();
+                })
+            }
+        });
+
+
+    }
 </script>

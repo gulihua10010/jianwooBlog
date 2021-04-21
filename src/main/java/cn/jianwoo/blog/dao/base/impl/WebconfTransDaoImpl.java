@@ -3,6 +3,7 @@ package cn.jianwoo.blog.dao.base.impl;
 import cn.jianwoo.blog.dao.base.WebconfTransDao;
 import cn.jianwoo.blog.dao.base.mapper.WebconfMapper;
 import cn.jianwoo.blog.entity.Webconf;
+import cn.jianwoo.blog.entity.example.WebconfExample;
 import cn.jianwoo.blog.exception.DaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,5 +55,13 @@ public class WebconfTransDaoImpl extends WebconfQueryDaoImpl implements WebconfT
         if (1 != delRlt) {
             throw DaoException.DAO_DELETE_RESULT_0.print();
         }
+    }
+
+    @Override
+    public void doUpdateByKey(Webconf record) throws DaoException {
+        WebconfExample example = new WebconfExample();
+        example.createCriteria().andKeyEqualTo(record.getKey());
+        webconfMapper.updateByExample(record, example);
+
     }
 }

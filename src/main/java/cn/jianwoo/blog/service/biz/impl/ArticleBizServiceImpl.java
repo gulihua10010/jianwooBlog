@@ -18,6 +18,7 @@ import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.ArticleBizService;
 import cn.jianwoo.blog.service.biz.UidGenService;
+import cn.jianwoo.blog.service.bo.ArticleBO;
 import cn.jianwoo.blog.util.DateUtil;
 import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.util.TestUtil;
@@ -64,7 +65,6 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         Article article = JwBuilder.of(Article::new)
                 .with(Article::setOid, oid)
                 .with(Article::setAuthor, author)
-                .with(Article::setOid, oid)
                 .with(Article::setCommentCount, 0L)
                 .with(Article::setTitle, title)
                 .with(Article::setTypeId, typeId)
@@ -110,6 +110,65 @@ public class ArticleBizServiceImpl implements ArticleBizService {
 
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void doSaveArticle(ArticleBO articleBO) throws JwBlogException {
+        log.info("==========>Start insert article,title = {}", articleBO.getTitle());
+
+        Long oid = uidGenService.getUid();
+        Date now = DateUtil.getNow();
+
+        articleBO.setIsComment(articleBO.getIsComment() == null ? ArtCommStatusEnum.NO_COMMENT.getValue() : articleBO.getIsComment());
+        if (articleBO.getVisitType() == null) {
+            articleBO.setVisitType(ArticleVisitEnum.PUBLIC.getValue());
+        }
+        Article article = JwBuilder.of(Article::new)
+                .with(Article::setOid, oid)
+                .with(Article::setAuthor, articleBO.getAuthor())
+                .with(Article::setCommentCount, 0L)
+                .with(Article::setTitle, articleBO.getTitle())
+                .with(Article::setTypeId, articleBO.getTypeId())
+                .with(Article::setStatus, articleBO.getStatus())
+                .with(Article::setIsComment, articleBO.getIsComment())
+                .with(Article::setImgSrc, articleBO.getImgSrc())
+                .with(Article::setVisitType, articleBO.getVisitType())
+                .with(Article::setContent, articleBO.getContent())
+                .with(Article::setPraiseCount, 0L)
+                .with(Article::setReadCount, 0L)
+                .with(Article::setText, JwUtil.clearHtml(articleBO.getContent()))
+                .with(Article::setCreateDate, now)
+                .with(Article::setUpdateDate, now)
+                .with(Article::setPushDate, now)
+                .with(Article::setModifiedDate, now)
+                .build();
+
+        if (ArticleVisitEnum.PASSWORD.getValue().equals(articleBO.getVisitType())) {
+            article.setPassword(articleBO.getPassword());
+        }
+        try {
+            articleTransDao.doInsert(article);
+        } catch (DaoException e) {
+            throw ArticleBizException.CREATE_FAILED_EXCEPTION.format(articleBO.getTitle()).print();
+        }
+        if (articleBO.getTags() != null) {
+            for (Integer t : articleBO.getTags()) {
+                ArticleTags articleTags = JwBuilder.of(ArticleTags::new)
+                        .with(ArticleTags::setArticleOid, oid)
+                        .with(ArticleTags::setTagsOid, t)
+                        .with(ArticleTags::setCreateDate, now)
+                        .with(ArticleTags::setUpdateDate, now).build();
+                try {
+                    articleTagsTransDao.doInsert(articleTags);
+                } catch (DaoException e) {
+                    throw ArticleTagsBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + oid + ",tagsOid:" + t).print();
+
+                }
+            }
+        }
+
+        log.info("==========>Insert article successfully,title = {}", articleBO.getTitle());
+    }
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -133,7 +192,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         if (imsSrc != null) {
             article.setImgSrc(imsSrc);
         }
-        if (visitType == -1) {
+        if (ArticleVisitEnum.PASSWORD.getValue().equals(visitType)) {
             article.setPassword(password);
         }
         article.setUpdateDate(new Date());
@@ -160,6 +219,55 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         log.info("==========>Update article successfully,title = {}", title);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void doUpdateArticleInfo(ArticleBO articleBO) throws JwBlogException {
+        log.info("==========>Start update article info,title = {}", articleBO.getTitle());
+
+        Article article = null;
+        Date now = DateUtil.getNow();
+        try {
+            article = articleTransDao.queryArticleByPrimaryKey(articleBO.getOid());
+        } catch (DaoException e) {
+            throw ArticleBizException.NOT_EXIST_EXCEPTION.format(articleBO.getOid()).print();
+
+        }
+        article.setAuthor(articleBO.getAuthor());
+        article.setTitle(articleBO.getTitle());
+        article.setModifiedDate(new Date());
+        article.setTypeId(articleBO.getTypeId());
+        article.setIsComment(articleBO.getIsComment() == null ?
+                ArtCommStatusEnum.NO_COMMENT.getValue() : articleBO.getIsComment());
+        if (articleBO.getImgSrc() != null) {
+            article.setImgSrc(articleBO.getImgSrc());
+        }
+        if (ArticleVisitEnum.PASSWORD.getValue().equals(articleBO.getVisitType())) {
+            article.setPassword(articleBO.getPassword());
+        }
+        article.setUpdateDate(new Date());
+        article.setVisitType(articleBO.getVisitType() == null ? ArticleVisitEnum.PUBLIC.getValue() : articleBO.getVisitType());
+        try {
+            articleTransDao.doUpdateByPrimaryKeySelective(article);
+        } catch (DaoException e) {
+            throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(articleBO.getOid()).print();
+        }
+        articleTagsTransDao.doDeleteByArticleOid(articleBO.getOid());
+
+        for (Integer t : articleBO.getTags()) {
+            ArticleTags articleTags = JwBuilder.of(ArticleTags::new)
+                    .with(ArticleTags::setArticleOid, articleBO.getOid())
+                    .with(ArticleTags::setTagsOid, t)
+                    .with(ArticleTags::setCreateDate, now)
+                    .with(ArticleTags::setUpdateDate, now).build();
+            try {
+                articleTagsTransDao.doInsert(articleTags);
+            } catch (DaoException e) {
+                throw ArticleTagsBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + articleBO.getOid() + ",tagsOid:" + t).print();
+            }
+        }
+        log.info("==========>Update article info successfully,title = {}", articleBO.getTitle());
+    }
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -181,14 +289,15 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         article.setTypeId(typeId);
         article.setIsComment(isComment == null ? ArtCommStatusEnum.NO_COMMENT.getValue() : isComment);
         article.setImgSrc(imsSrc);
-        if (visitType == -1) {
+        if (ArticleVisitEnum.PASSWORD.getValue().equals(visitType)) {
+
             article.setPassword(password);
         }
         article.setUpdateDate(new Date());
         article.setModifiedDate(new Date());
         article.setVisitType(visitType == null ? ArticleVisitEnum.PUBLIC.getValue() : visitType);
         article.setContent(content);
-        article.setText(content.replaceAll("\\<.*?>", "").replaceAll("\n", ""));
+        article.setText(JwUtil.clearHtml(content));
         if (status != null) {
             article.setStatus(status);
         }
@@ -212,6 +321,57 @@ public class ArticleBizServiceImpl implements ArticleBizService {
             }
         }
         log.info("==========>Update article successfully,title = {}", title);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void doUpdateArticle(ArticleBO articleBO) throws JwBlogException {
+        log.info("==========>Start update article,title = {}", articleBO.getTitle());
+
+        Date now = DateUtil.getNow();
+        Article article = null;
+        try {
+            article = articleTransDao.queryArticleByPrimaryKey(articleBO.getOid());
+        } catch (DaoException e) {
+            throw ArticleBizException.NOT_EXIST_EXCEPTION.format(articleBO.getOid()).print();
+
+        }
+        article.setAuthor(articleBO.getAuthor());
+        article.setTitle(articleBO.getTitle());
+        article.setTypeId(articleBO.getTypeId());
+        article.setIsComment(articleBO.getIsComment() == null ? ArtCommStatusEnum.NO_COMMENT.getValue() : articleBO.getIsComment());
+        article.setImgSrc(articleBO.getImgSrc());
+        if (ArticleVisitEnum.PASSWORD.getValue().equals(articleBO.getVisitType())) {
+            article.setPassword(articleBO.getPassword());
+        }
+        article.setUpdateDate(new Date());
+        article.setModifiedDate(new Date());
+        article.setVisitType(articleBO.getVisitType() == null ? ArticleVisitEnum.PUBLIC.getValue() : articleBO.getVisitType());
+        article.setContent(articleBO.getContent());
+        article.setText(JwUtil.clearHtml(articleBO.getContent()));
+        if (articleBO.getStatus() != null) {
+            article.setStatus(articleBO.getStatus());
+        }
+        try {
+            articleTransDao.doUpdateByPrimaryKeySelective(article);
+        } catch (DaoException e) {
+            throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(articleBO.getOid()).print();
+        }
+        articleTagsTransDao.doDeleteByArticleOid(articleBO.getOid());
+
+        for (Integer t : articleBO.getTags()) {
+            ArticleTags articleTags = JwBuilder.of(ArticleTags::new)
+                    .with(ArticleTags::setArticleOid, articleBO.getOid())
+                    .with(ArticleTags::setTagsOid, t)
+                    .with(ArticleTags::setCreateDate, now)
+                    .with(ArticleTags::setUpdateDate, now).build();
+            try {
+                articleTagsTransDao.doInsert(articleTags);
+            } catch (DaoException e) {
+                throw ArticleTagsBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + articleBO.getOid() + ",tagsOid:" + t).print();
+            }
+        }
+        log.info("==========>Update article successfully,title = {}", articleBO.getTitle());
     }
 
 
@@ -244,7 +404,11 @@ public class ArticleBizServiceImpl implements ArticleBizService {
 
         }
         try {
-            articleTransDao.doDeleteByPrimaryKey(oid);
+            Article newArticle = new Article();
+            newArticle.setOid(article.getOid());
+            newArticle.setStatus(ArticleStatusEnum.DELETE.getValue());
+            newArticle.setUpdateDate(new Date());
+            articleTransDao.doUpdateByPrimaryKeySelective(newArticle);
         } catch (DaoException e) {
             throw ArticleBizException.DELETE_FAILED_EXCEPTION.format(oid).print();
 

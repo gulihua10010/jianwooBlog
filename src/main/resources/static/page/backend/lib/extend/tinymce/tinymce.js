@@ -21,19 +21,24 @@ layui.define(['jquery'], function (exports) {
         base_url: modPath
         , images_upload_url: '/api/file/upload'//图片上传接口，可在option传入，也可在这里修改，option的值优先
         , language: 'zh_CN'//语言，可在option传入，也可在这里修改，option的值优先
-        , height: 500
-        , max_height: 550
+        , height: 800
+        , max_height: 1000
         , resize: true
         , paste_merge_formats: true
         , paste_data_images: true
         , powerpaste_word_import: 'propmt'
         , powerpaste_html_import: 'propmt'
+        , content_css: '/static/comm/css/prism.css'
+        , codesample_global_prismjs: false
+        , toolbar_items_size: 'small'
+        , maxUploadFileSize: 1024 * 1024 * 1024 //最大上传文件大小
         , response: {//后台返回数据格式设置
             statusName: response.statusName || 'code'//返回状态字段
             , msgName: response.msgName || 'msg'//返回消息字段
             , dataName: 'file' //返回的数据
             , urlField: 'url'  // 上传接口返回的文件路由
-            , filenameField: 'fileName'  // 上传接口返回的文件名
+            , filenameField: 'realFileName'  // 上传接口返回的文件名
+            , mediaInfoField: 'mediaInfo'  // 上传接口返回的媒体信息（音视频）
             , statusCode: response.statusCode || {
                 ok: 0//数据正常
             }
@@ -44,7 +49,8 @@ layui.define(['jquery'], function (exports) {
                 // succFun(res.file.url,{ text: res.msg });
 
                 succFun(this.response.urlField ? res[this.response.dataName][this.response.urlField] : this.response.dataName
-                    , this.response.filenameField ? res[this.response.dataName][this.response.filenameField] : this.response.filenameField);
+                    , this.response.filenameField ? res[this.response.dataName][this.response.filenameField] : ''
+                    , this.response.mediaInfoField ? res[this.response.dataName][this.response.mediaInfoField] : '');
             } else {
                 createNotify(res[this.response.msgName], 'error');
             }
@@ -68,6 +74,12 @@ layui.define(['jquery'], function (exports) {
 
         if (edit) {
             edit.destroy();
+        }
+        if (!option.content_css || option.content_css === '') {
+            delete option.content_css;
+        }
+        if (!option.codesample_content_css || option.codesample_content_css === '') {
+            delete option.codesample_content_css;
         }
 
         tinymce.init(option);
@@ -150,22 +162,35 @@ layui.define(['jquery'], function (exports) {
 
         option.height = isset(option.height) ? option.height : settings.height
 
+        option.toolbar_items_size = isset(option.toolbar_items_size) ? option.toolbar_items_size : settings.toolbar_items_size
+
         option.selector = isset(option.selector) ? option.selector : option.elem
+
+        option.typeahead_urls = isset(option.typeahead_urls) ? option.typeahead_urls : true
+
+        option.toolbar_mode = isset(option.toolbar_mode) ? option.toolbar_mode : 'sliding'
 
         option.quickbars_selection_toolbar = isset(option.quickbars_selection_toolbar) ? option.quickbars_selection_toolbar : 'cut copy | bold italic underline strikethrough '
 
-        option.plugins = isset(option.plugins) ? option.plugins
-            : 'code quickbars print preview searchreplace autolink fullscreen image link media ' +
+        option.plugins = isset(option.plugins) ? option.plugins :
+            'code quickbars print preview searchreplace autolink fullscreen image link media ' +
             'codesample table charmap hr advlist lists wordcount imagetools indent2em importword ' +
-            'powerpaste layout letterspacing lineheight upfile attachment formatpainter';
+            'powerpaste layout letterspacing lineheight uploadfile  formatpainter uploadvideo';
 
-        option.toolbar = isset(option.toolbar) ? option.toolbar : 'code undo redo  formatpainter importword layout lineheight letterspacing upfile attachment| forecolor backcolor bold italic underline strikethrough | indent2em alignleft aligncenter alignright alignjustify outdent indent | link bullist numlist image table codesample | formatselect fontselect fontsizeselect | image';
+        option.toolbar1 = isset(option.toolbar1) ? option.toolbar1 : 'undo redo | cut copy paste |formatpainter | forecolor backcolor bold italic underline strikethrough bullist numlist subscript superscript charmap|' +
+            ' indent2em alignleft aligncenter alignright alignjustify outdent indent| formatselect fontselect fontsizeselect';
+
+        option.toolbar2 = isset(option.toolbar2) ? option.toolbar2 : 'blockquote | link unlink |table | hr removeformat |' +
+            ' importword  layout lineheight letterspacing inserttime uploadfile link image uploadvideo| codesample code';
+
 
         option.resize = isset(option.resize) ? option.resize : false;
 
         option.elementpath = isset(option.elementpath) ? option.elementpath : false;
 
         option.branding = isset(option.branding) ? option.branding : false;
+
+        option.maxUploadFileSize = isset(option.maxUploadFileSize) ? option.maxUploadFileSize : settings.maxUploadFileSize;
 
         option.paste_data_images = isset(option.paste_data_images) ? option.paste_data_images : false;
 
@@ -179,8 +204,28 @@ layui.define(['jquery'], function (exports) {
 
         option.menubar = isset(option.menubar) ? option.menubar : 'file edit insert format table';
 
+        option.content_css = isset(option.content_css) ? option.content_css : settings.content_css;
+
+        option.codesample_languages = isset(option.codesample_languages) ? option.codesample_languages :
+            [
+                {text: 'HTML/XML', value: 'markup'},
+                {text: 'JavaScript', value: 'javascript'},
+                {text: 'CSS', value: 'css'},
+                {text: 'PHP', value: 'php'},
+                {text: 'Ruby', value: 'ruby'},
+                {text: 'Python', value: 'python'},
+                {text: 'Java', value: 'java'},
+                {text: 'C', value: 'c'},
+                {text: 'C#', value: 'csharp'},
+                {text: 'C++', value: 'cpp'}
+            ];
+
+        option.codesample_content_css = '/static/comm/css/prism.css';
+
+        option.codesample_global_prismjs = isset(option.codesample_global_prismjs) ? option.codesample_global_prismjs : settings.codesample_global_prismjs;
+
         option.menu = isset(option.menu) ? option.menu : {
-            file: {title: '文件', items: 'newdocument | print preview fullscreen | wordcount'},
+            file: {title: '文件', items: 'print preview | wordcount'},
             edit: {title: '编辑', items: 'undo redo | cut copy paste pastetext selectall | searchreplace'},
             format: {
                 title: '格式',
@@ -194,6 +239,12 @@ layui.define(['jquery'], function (exports) {
 
         option.images_upload_url = isset(option.images_upload_url) ? option.images_upload_url : settings.images_upload_url;
 
+        option.autosave_ask_before_unload = isset(option.autosave_ask_before_unload) ? option.autosave_ask_before_unload : true;
+
+        option.powerpaste_keep_unsupported_src = isset(option.powerpaste_keep_unsupported_src) ? option.powerpaste_keep_unsupported_src : true;
+
+        option.powerpaste_allow_local_images = isset(option.powerpaste_allow_local_images) ? option.powerpaste_allow_local_images : true;
+
         option.images_upload_handler = isset(option.images_upload_handler) ? option.images_upload_handler : function (blobInfo, succFun, failFun) {
 
             var formData = new FormData();
@@ -206,20 +257,26 @@ layui.define(['jquery'], function (exports) {
             doUpload(option.images_upload_url, formData, succFun);
         }
 
-            option.file_callback = isset(option.file_callback) ? option.file_callback : function (file, succFun) { //文件上传  file:文件对象 succFun(url|string,obj) 成功回调
-                var data = new FormData();
-                data.append("file", file);
-                doUpload(option.images_upload_url, data, succFun);
+        option.file_callback = isset(option.file_callback) ? option.file_callback : function (file, succFun, processPercent) { //文件上传  file:文件对象 succFun(url|string,obj) 成功回调
+            var data = new FormData();
+            data.append(file_field, file);
+            doUpload(option.images_upload_url, data, succFun, processPercent);
 
-            },
-            option.attachment_assets_path = isset(option.attachment_assets_path) ? option.attachment_assets_path : settings.base_url + '/plugins/attachment/icons',
+        },
+            option.attachment_assets_path = isset(option.attachment_assets_path) ? option.attachment_assets_path : '/static/comm/img/icons/tinymce',
             option.attachment_upload_handler = isset(option.attachment_upload_handler) ? option.attachment_upload_handler : function (file, succFun, failFun, progressCallback) {
                 var data = new FormData();
-                data.append("file", file);
+                data.append(file_field, file);
                 doUpload(option.images_upload_url, data, succFun);
 
 
             }
+        if (isset(option.onChange)) {
+            option.setup = function (editor) {
+                editor.on('Change', option.onChange);
+            }
+        }
+
 
         layui.sessionData('layui-tinymce', {
             key: option.selector,
@@ -228,7 +285,7 @@ layui.define(['jquery'], function (exports) {
         return option
     }
 
-    var doUpload = function (url, data, succFun) {
+    var doUpload = function (url, data, succFun, processPercent) {
         if (isEmpty(url)) {
             createNotify("上传接口未配置", 'error');
             return console.error('images_upload_url未配置');
@@ -240,6 +297,20 @@ layui.define(['jquery'], function (exports) {
             data: data,
             processData: false,
             contentType: false,
+            xhr: function () {
+                myXhr = $.ajaxSettings.xhr();
+                if (myXhr.upload) {
+                    myXhr.upload.addEventListener('progress', function (e) {
+                        var loaded = e.loaded; //已经上传大小情况
+                        var tot = e.total; //附件总大小
+                        var per = Math.floor(100 * loaded / tot);  //已经上传的百分比
+                        typeof processPercent === 'function' && processPercent(per)
+                        // console.log('附件总大小 = ' + loaded);
+                        // console.log('已经上传大小 = ' + tot);
+                    }, false);
+                }
+                return myXhr;
+            },
             success: function (res) {
                 settings.success(res, succFun)
             },
@@ -275,6 +346,7 @@ layui.define(['jquery'], function (exports) {
                 cache: true,
                 async: false,
             });
+
         }
     }
 

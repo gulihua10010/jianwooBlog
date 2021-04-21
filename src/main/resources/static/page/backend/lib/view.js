@@ -249,7 +249,7 @@ layui.define(['laytpl', 'layer'], function (exports) {
                 params: router.params
             }, options.res);
 
-            options.dataElem.after(tpl.render(res));
+            options.dataElem.after(tpl.render(res).replaceAll(/undefined/g,''));
             typeof callback === 'function' && callback();
 
             try {

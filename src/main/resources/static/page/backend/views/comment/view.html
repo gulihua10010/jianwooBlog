@@ -1,4 +1,4 @@
-<title>文章编辑</title>
+<title>文章评论</title>
 <style>
 
     .artTitle:hover {
@@ -91,7 +91,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">评论者IP</label>
                         <div class="layui-input-block">
-                            <input class="layui-input" disabled name="ip" value="{{ formatStr(d.data.ip) }}"
+                            <input class="layui-input" disabled name="ip" value="{{ d.data.ip }}"
                                    type="text">
                         </div>
                     </div>
@@ -106,7 +106,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">评论QQ</label>
                         <div class="layui-input-block">
-                            <input class="layui-input" disabled name="qq" value="{{ formatStr(d.data.qq)}}" type="text">
+                            <input class="layui-input" disabled name="qq" value="{{ d.data.qq}}" type="text">
                         </div>
                     </div>
                     <div class="layui-form-item">

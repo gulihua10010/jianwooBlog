@@ -1,9 +1,14 @@
 package cn.jianwoo.blog;
 
+import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
+import cn.jianwoo.blog.dao.base.TempArticleTransDao;
+import cn.jianwoo.blog.dto.request.ArticleSubmitRequest;
+import cn.jianwoo.blog.entity.TempArticle;
 import cn.jianwoo.blog.entity.extension.MenuExt;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.MenuBizService;
+import cn.jianwoo.blog.service.biz.TempArticleBizService;
 import cn.jianwoo.blog.util.DomainUtil;
 import com.alibaba.fastjson.JSON;
 import org.junit.jupiter.api.Test;
@@ -26,6 +31,8 @@ class BlogApplicationTests {
 //    private UidGenService uidGenService;
     @Autowired
     private MenuBizService menuBizService;
+    @Autowired
+    private TempArticleTransDao tempArticleTransDao;
 
     @Test
     void contextLoads() {
@@ -74,6 +81,19 @@ class BlogApplicationTests {
             List<MenuExt> menuExtList = menuBizService.queryBackGroudMenuList();
             DomainUtil.printLog(menuExtList);
         } catch (JwBlogException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    public void test2() {
+        try {
+//            TempArticle article=tempArticleTransDao.queryLastestTempArticle();
+            BaseController controller=new BaseController();
+            controller.convertParam("{\"title\":\"啊\",\"author\":\"正则\",\"articleContent\":\"<p>邓东东</p>\",\"tags\":\"40\",\"type\":\"40\",\"imgSrc\":\"\",\"visitType\":\"1\",\"password\":\"\",\"isComment\":1,\"subToken\":\"2797665c3ee240fbbe9a6ba478d4724f\",\"access_token\":\"\"}", ArticleSubmitRequest.class);
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

@@ -10,12 +10,12 @@ public interface WebconfQueryDao {
 
 
     /**
-     * 获取所有网站配置
+     * 获取有效的网站配置
      *
      * @return List<Webconf>
      * @author gulihua
      */
-    List<Webconf> queryAllWebconf();
+    List<Webconf> queryEffectiveWebconf();
 
 
     /**

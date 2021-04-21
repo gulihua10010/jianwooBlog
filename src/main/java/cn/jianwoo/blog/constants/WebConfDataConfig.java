@@ -1,4 +1,4 @@
-package cn.jianwoo.blog.config.router;
+package cn.jianwoo.blog.constants;
 
 /**
  * @author GuLihua

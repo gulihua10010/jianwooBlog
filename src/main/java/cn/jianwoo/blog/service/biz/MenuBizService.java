@@ -19,12 +19,20 @@ public interface MenuBizService {
 
 
     /**
-     * 获取前台的菜单
+     * 获取所有前台的菜单
      *
      * @return
      * @author gulihua
      */
-    List<MenuExt> queryFrontDeskMenuList() throws JwBlogException;
+    List<MenuExt> queryAllFrontDeskMenuList() throws JwBlogException;
+
+    /**
+     * 获取有效的前台的菜单
+     *
+     * @return
+     * @author gulihua
+     */
+    List<MenuExt> queryEffectiveFrontDeskMenuList() throws JwBlogException;
 
 
     /**
@@ -148,15 +156,16 @@ public interface MenuBizService {
     /**
      * 更新菜单名字
      *
-     * @param text 菜单文本
-     * @param oid  菜单主键
-     * @param name 菜单名字
-     * @param icon 菜单图标
-     * @param url  菜单url
+     * @param text  菜单文本
+     * @param oid   菜单主键
+     * @param name  菜单名字
+     * @param icon  菜单图标
+     * @param url   菜单url
+     * @param valid 是否有效
      * @return
      * @author gulihua
      */
-    void doUpdateMenu(Long oid, String text, String name, String icon, String url) throws JwBlogException;
+    void doUpdateMenu(Long oid, String text, String name, String icon, String url, Boolean valid) throws JwBlogException;
 
 
     /**

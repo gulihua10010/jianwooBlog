@@ -41,4 +41,10 @@ public class MenuVoRequest extends BasePageRequestDto {
      * 菜单图标
      */
     private String icon;
+    /**
+     * 是否有效
+     */
+    private Boolean valid;
+
+
 }
