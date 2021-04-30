@@ -4,17 +4,18 @@ import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.dao.base.TempArticleTransDao;
 import cn.jianwoo.blog.entity.TempArticle;
 import cn.jianwoo.blog.enums.ArtCommStatusEnum;
-import cn.jianwoo.blog.enums.ArticleStatusEnum;
 import cn.jianwoo.blog.enums.ArticleVisitEnum;
 import cn.jianwoo.blog.enums.TempArticleStatusEnum;
 import cn.jianwoo.blog.exception.ArticleBizException;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.TempArticleBizService;
-import cn.jianwoo.blog.service.bo.ArticleBO;
+import cn.jianwoo.blog.service.bo.TempArticleBO;
 import cn.jianwoo.blog.util.DateUtil;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +35,7 @@ public class TempArticleBizServiceImpl implements TempArticleBizService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void doSaveTempArticle(ArticleBO articleBO) throws JwBlogException {
+    public void doSaveTempArticle(TempArticleBO articleBO) throws JwBlogException {
 
         log.info("==========>Start insert Temp article,title = {}", articleBO.getTitle());
         Date now = DateUtil.getNow();
@@ -61,17 +62,32 @@ public class TempArticleBizServiceImpl implements TempArticleBizService {
         if (ArticleVisitEnum.PASSWORD.getValue().equals(articleBO.getVisitType())) {
             article.setPassword(articleBO.getPassword());
         }
-        if (articleBO.getTags() != null) {
-            JSONArray tags = new JSONArray();
-            for (Integer t : articleBO.getTags()) {
-                tags.add(t);
-            }
-            article.setTags(tags.toJSONString());
+        if (CollectionUtils.isNotEmpty(articleBO.getTags())) {
+            article.setTags(JSON.toJSONString(articleBO.getTags()));
+        } else {
+            article.setTags(JSON.toJSONString(new JSONArray()));
+
         }
-        try {
-            tempArticleTransDao.doInsert(article);
-        } catch (DaoException e) {
-            throw ArticleBizException.CREATE_FAILED_EXCEPTION.format(articleBO.getTitle()).print();
+
+//        if (article.getOldOid()!=null)
+//        {
+//            article.setRestoreOid(article.getOldOid());
+//        }
+        if (articleBO.getOid() != null) {
+            try {
+                article.setOid(articleBO.getOid());
+                tempArticleTransDao.doUpdateByPrimaryKeySelective(article);
+            } catch (DaoException e) {
+                log.error("TempArticleBizServiceImpl.doSaveTempArticle exec failed, e:\n", e);
+                throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(articleBO.getTitle()).print();
+            }
+        } else {
+            try {
+                tempArticleTransDao.doInsert(article);
+            } catch (DaoException e) {
+                log.error("TempArticleBizServiceImpl.doSaveTempArticle exec failed, e:\n", e);
+                throw ArticleBizException.CREATE_FAILED_EXCEPTION.format(articleBO.getTitle()).print();
+            }
         }
 
 
@@ -80,7 +96,7 @@ public class TempArticleBizServiceImpl implements TempArticleBizService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void doUpdateTempArticle(ArticleBO articleBO) throws JwBlogException {
+    public void doUpdateTempArticle(TempArticleBO articleBO) throws JwBlogException {
         log.info("==========>Start update Temp article,title = {}", articleBO.getTitle());
 
         Date now = DateUtil.getNow();
@@ -88,6 +104,7 @@ public class TempArticleBizServiceImpl implements TempArticleBizService {
         try {
             article = tempArticleTransDao.queryTempArticleByPrimaryKey(articleBO.getOid());
         } catch (DaoException e) {
+            log.error("TempArticleBizServiceImpl.doUpdateTempArticle exec failed, e:\n", e);
             throw ArticleBizException.NOT_EXIST_EXCEPTION.format(articleBO.getOid()).print();
 
         }
@@ -105,16 +122,13 @@ public class TempArticleBizServiceImpl implements TempArticleBizService {
         if (articleBO.getStatus() != null) {
             article.setStatus(articleBO.getStatus());
         }
-        if (articleBO.getTags() != null) {
-            JSONArray tags = new JSONArray();
-            for (Integer t : articleBO.getTags()) {
-                tags.add(t);
-            }
-            article.setTags(tags.toJSONString());
+        if (CollectionUtils.isNotEmpty(articleBO.getTags())) {
+            article.setTags(JSON.toJSONString(articleBO.getTags()));
         }
         try {
             tempArticleTransDao.doUpdateByPrimaryKeySelective(article);
         } catch (DaoException e) {
+            log.error("TempArticleBizServiceImpl.doUpdateTempArticle exec failed, e:\n", e);
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(articleBO.getOid()).print();
         }
 
@@ -122,13 +136,18 @@ public class TempArticleBizServiceImpl implements TempArticleBizService {
     }
 
     @Override
-    public void doUpdateTempArticleStatus(Long oid, ArticleStatusEnum status) throws JwBlogException {
+    public void doUpdateTempArticleStatus(Long oid, TempArticleStatusEnum status, Long restoreOid) throws JwBlogException {
         TempArticle article = new TempArticle();
         article.setOid(oid);
         article.setStatus(status.getValue());
+        article.setUpdateDate(new Date());
+        if (TempArticleStatusEnum.RESTORE.equals(status)) {
+            article.setRestoreOid(restoreOid);
+        }
         try {
             tempArticleTransDao.doUpdateByPrimaryKeySelective(article);
         } catch (DaoException e) {
+            log.error("TempArticleBizServiceImpl.doUpdateTempArticleStatus exec failed, e:\n", e);
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
         }
     }

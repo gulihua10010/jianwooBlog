@@ -14,13 +14,15 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
         if (edit) return edit;
         edit = tinymce.render({
             elem: "#article-content-text-edit"
-            , onChange: function () {
-                typeof onChange === "function" && onChange();
-            }
         }, function (opt, edit) {
             typeof callback === "function" && callback(opt, edit);
 
+        }, function (editor) {
+            editor.on('keypress', function (){
+                typeof onChange === "function" && onChange(editor);
+            });
         });
+
         return edit;
     }
 
@@ -172,27 +174,27 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
         }
         var articleContent = edit.getContent();
         var contentText = articleContent.replace(new RegExp('\n', 'g'), '');
-        if (btnType == 1 && contentText == '<!DOCTYPE html><html><head></head><body></body></html>') {
+        if (btnType === 1 && contentText == '<!DOCTYPE html><html><head></head><body></body></html>') {
             alertFail('提示', '文章内容不可为空！', '#article-content')
             return false;
         }
-        if (btnType == 1 && (isEmpty(field.typeId) || field.typeId == -1)) {
+        if (btnType === 1 && (isEmpty(field.typeId) || field.typeId == -1)) {
             alertFail('提示', '请选择类别！', '#type-select')
             return false;
 
         }
 
-        console.log(field)
+        // console.log(field)
         var tagsId = [];
         var publishTemp = 1;
         var passw = '';
 
-        var data = $('.choosed>span>span');
+        var data = $('.choosed>span');
         for (var i = 0; i < data.length; i++) {
-            tagsId[i] = data.eq(i).text();
+            tagsId[i] = data.eq(i).data('id');
         }
         publishTemp = field.isPublic
-        if (publishTemp == 1 == 1) {
+        if (publishTemp == 1) {
             if ($('#hometop').prop('checked')) {
                 publishTemp = 2;
 
@@ -209,8 +211,11 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
         var tags = tagsId;
         var published = publishTemp == undefined ? 1 : publishTemp;
         var password = passw;
+        var tempArtOid = $('#tempData').val();
 
-        if (btnType == 1) {
+        // return
+
+        if (btnType === 1) {
             ajaxPost(
                 '/api/admin/article/update',
                 JSON.stringify({
@@ -224,15 +229,16 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
                     visitType: published,
                     password: password,
                     isComment: iscomment,
+                    tempArtOid: tempArtOid,
                     subToken: field.subToken
                 }),
                 "更新成功",
                 function () {
-                    admin.events.refresh();
+                    admin.events.refreshWithoutEvent();
                 }
             );
 
-        } else if (btnType == 2) {
+        } else if (btnType === 2) {
             ajaxPost('/api/admin/article/draft/save',
                 JSON.stringify({
                     artOid: artOid,
@@ -245,14 +251,15 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
                     visitType: published,
                     password: password,
                     isComment: iscomment,
+                    tempArtOid: tempArtOid,
                     subToken: field.subToken
                 }),
                 "保存成功",
                 function () {
-                    admin.events.refresh();
+                    admin.events.refreshWithoutEvent();
                 }
             )
-        } else if (btnType == 3) {
+        } else if (btnType === 3) {
             ajaxPost('/api/admin/article/draft/publish',
                 JSON.stringify({
                     artOid: artOid,
@@ -265,15 +272,16 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
                     visitType: published,
                     password: password,
                     isComment: iscomment,
+                    tempArtOid: tempArtOid,
                     subToken: field.subToken
 
                 }),
                 "发布成功",
                 function () {
-                    admin.events.refresh();
+                    admin.events.refreshWithoutEvent();
                 }
             )
-        } else if (btnType == -1) {
+        } else if (btnType === -1) {
             layer.confirm('确定把这文章移除到回收站吗？', function (index) {
                 ajaxPost('/api/admin/article/save/remove/recycle',
                     JSON.stringify({
@@ -287,6 +295,7 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
                         visitType: published,
                         password: password,
                         isComment: iscomment,
+                        tempArtOid: tempArtOid,
                         subToken: field.subToken
 
                     }),
@@ -294,7 +303,9 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
                     function () {
                         //重点在这里
                         //关闭当前的tab
-                        parent.layui.admin.events.closeThisTabs()
+                        // parent.layui.admin.events.closeThisTabs()
+                        admin.events.refreshWithoutEvent();
+
                     });
             });
         }
@@ -304,7 +315,7 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
 
     $('#cancel').click(function () {
         alertAsk('确认清除所有输入的数据，恢复初始状态?', function () {
-            admin.events.refresh();
+            admin.events.refreshWithoutEvent();
         })
     })
 

@@ -1,4 +1,4 @@
-layui.define(['table', 'form'], function (exports) {
+layui.define(function (exports) {
     var table = layui.table
         , $ = layui.$
         , form = layui.form
@@ -37,6 +37,12 @@ layui.define(['table', 'form'], function (exports) {
         table.reload('article-table', {
             where: field
         });
+    });
+
+    $(".search-art").on('keypress', function (e) {
+        if (e.keyCode === 13) {
+            $(".search-btn").trigger("click");
+        }
     });
 
     //点击事件
@@ -152,9 +158,10 @@ layui.define(['table', 'form'], function (exports) {
                 );
 
             });
-        } else if (obj.event === 'edit') {
-            top.layui.index.openTabsPage("/article/edit/id=" + data.oid, '文章编辑');
         }
+        // else if (obj.event === 'edit') {
+        //     // top.layui.index.openTabsPage("/article/edit/id=" + data.oid, '文章编辑');
+        // }
 
     });
 

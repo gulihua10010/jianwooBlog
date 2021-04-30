@@ -33,7 +33,7 @@
                         <div>
                             <h1 style="font-weight: bold">{{ d.data.title }}</h1>
                         </div>
-                        <span style="color: #aaa"> &nbsp;&nbsp;&nbsp;------ {{ d.data.author }}</span>
+                        <span style="color: #aaa"> &nbsp;&nbsp;&nbsp;作者: {{ d.data.author }}</span>
                         {{# } }}
                         {{# if(d.data.status !== -1){ }}
                         <div class="layui-form-item">
@@ -49,14 +49,17 @@
                                    placeholder="请输入作者"
                                    type="text">
                         </div>
+                        <input type="hidden" name="tempData" id="tempData" value="{{d.data.tempArticleInfo && d.data.tempArticleInfo.id}}">
                         {{# } }}
                     </div>
                 </div>
-                {{# if(d.data.status === -1){ }}
+                {{# if(d.data.status === -1 && d.data.menuName == null && d.data.artTagsList){ }}
                 <div class="layui-card" style="color: #aaa">
                     <div class="layui-card-header">
                         <span style="color: #aaa">{{ d.data.menuName == null ? "" : ("类别: " + d.data.menuName) }}</span>
+                        {{# if(d.data.artTagsList){ }}
                         <span style="color: #aaa">标签:</span>
+                        {{# } }}
                         {{# layui.each(d.data.artTagsList, function(index, item){ }}
                         <span style="color: #aaa">
                                  {{#  if(index !== 0){ }}
@@ -115,8 +118,8 @@
                         <div class="choose-tags">
                             <div class="choosed">
                                 {{# layui.each(d.data.artTagsList, function(index, item){ }}
-                                <span class="publish-tags-content">{{ item.name}}
-                                         <span class="tags-id" style="display: none">{{ item.id}}</span><a>×</a>
+                                <span class="publish-tags-content" data-id="{{ item.id }}"
+                                      data-text="{{ item.name }}">{{ item.name}}<a>×</a>
                                      </span>
                                 {{# }); }}
 
@@ -124,9 +127,8 @@
                             <div class="separation-line"></div>
                             <div class="tags">
                                 {{# layui.each(d.data.tagsList, function(index, item){ }}
-                                <span class="publish-tags-content">{{ item.name}}
-                                     <span class="tags-id" style="display: none">{{ item.id}}</span>
-                                 </span>
+                                <span class="publish-tags-content" data-id="{{ item.id }}"
+                                      data-text="{{ item.name }}">{{ item.name}}</span>
                                 {{# }); }}
                             </div>
                         </div>
@@ -192,7 +194,7 @@
                             <div class="separation-line"></div>
                             <a><i class="iconfont">&#xe606;</i> 公开度：
                                 <span id="published-public">
-                            {{#  if(d.data.visitType === 1){ }}
+                            {{#  if(d.data.visitType === -1){ }}
                                 密码
                             {{#  } }}
                             {{# if(d.data.visitType === 0){ }}
@@ -295,6 +297,7 @@
             lay-data="{pageId: 'A12'}" lay-type="post">
         <input type="hidden" name="subToken" id="subToken" value="{{d.token}}">
     </script>
+
 </div>
 
 <script id="commentTemplate" type="text/html">
@@ -367,6 +370,7 @@
                     , form = layui.form
                     , element = layui.element
                     , articleEdit = layui.articleEdit
+                    , admin = layui.admin
                 ;
                 var artOid = layui.router().search.id;
                 var isChange = false;
@@ -391,7 +395,7 @@
                         edit.setContent(d.data.content);
                     });
 
-
+                    // edit.setContent('<strong>Some contents</strong>');
                     var tags = $('.choose-tags').find('.publish-tags-content');
                     tags.each(function (i) {
                         var color = Math.random();
@@ -405,56 +409,23 @@
 
                     $("input[name=title],input[name=author]").change(function () {
                         isChange = true;
-
                     })
 
-
                     window.onunload = function () {
-                        if (!isChange) return '';
-                        var title = $('input[name=title]').val();
-                        var author = $('input[name=author]').val();
-                        var typeId = $('select[name=typeId]').val();
-                        var subToken = $('input[name=subToken]').val();
-                        var imgsrc = $('input[name=imgsrc]').val();
-                        var isPublic = $('input[name=isPublic]:checked').val();
-                        var articleContent = tinyMCE.activeEditor.getContent();
-                        var tagsId = [];
-                        var data = $('.choosed>span>span')
-                        for (var i = 0; i < data.length; i++) {
-                            tagsId[i] = data.eq(i).text();
-                        }
-                        var publishTemp = isPublic;
-                        var passw = '';
-                        if (publishTemp === '1') {
-                            if ($('#hometop').prop('checked')) {
-                                publishTemp = 2;
-                            }
-                        } else if (publishTemp === '-1') {
-                            passw = $('#passw-content').val();
-                        }
-                        var iscomment = 0;
-                        if ($('#is-comment').prop('checked')) {
-                            iscomment = 1;
-                        }
-
-                        ajaxPost('/api/admin/article/temp/save',
-                            JSON.stringify({
-                                artOid: artOid,
-                                title: title,
-                                author: author,
-                                articleContent: articleContent,
-                                tags: tagsId,
-                                type: typeId,
-                                imgSrc: imgsrc,
-                                visitType: publishTemp,
-                                password: passw,
-                                isComment: iscomment,
-                                subToken: subToken,
-                                page: 1,
-
-                            }));
-
+                        saveTempArticle();
                     }
+                    admin.on('refresh', function (router) {
+                        saveTempArticle()
+                    });
+
+                    admin.on('hash(article)', function(router){
+
+                        if (admin.prevRouter && admin.prevRouter.href.startsWith('/article/edit'))
+                        {
+                            saveTempArticle();
+                        }
+                    });
+
                 }
 
                 renderComm(artOid, function () {
@@ -463,8 +434,133 @@
                     }
                 });
 
+
+                if (d.data.tempArticleInfo && d.data.tempArticleInfo.id) {
+                    alertAsk('系统存在之前未完成的临时文章，是否恢复?', function () {
+                        var tmpData=d.data.tempArticleInfo;
+                        var index = layer.load(0, {shade: false, offset: '400px'});
+                        $('input[name=title]').val(tmpData.title);
+                        $('input[name=author]').val(tmpData.author);
+                        $('select[name=typeId]').val(tmpData.menuOid);
+                        $('input[name=imgsrc]').val(tmpData.imgSrc);
+                        var publicStr = "公开"
+                        if (tmpData.visitType === -1) {
+                            publicStr = "密码";
+                        } else if (tmpData.visitType === 0) {
+                            publicStr = "私密";
+                        } else if (tmpData.visitType === 2) {
+                            publicStr = "置顶";
+                        }
+                        $('#published-public').text(publicStr)
+                        $('input[name=isPublic][value="' + tmpData.visitType + '"]').attr("checked", true);
+                        if (tmpData.visitType === 2) {
+                            $('input[name=isPublic][value="1"]').attr("checked", true);
+                            $('input[name=hometop]').attr("checked", true);
+                        }
+                        if (tmpData.visitType === -1) {
+                            $('#passw-content').val(tmpData.password)
+                            $('#hometop1').hide();
+                            $('#passw-content').show();
+                            $('#passw-content-confirm').show();
+                        }
+                        $('#breimg').attr('src', tmpData.imgSrc);
+                        if (tmpData.isComment === 1) {
+                            $('input[name=isComment]').attr("checked", true);
+                        } else {
+                            $('input[name=isComment]').removeAttr("checked");
+                        }
+                        form.render();
+                        edit.setContent(tmpData.content);
+                        var tagsHtml = "";
+                        if (tmpData.artTagsList) {
+                            layui.each(tmpData.artTagsList, function (key, item) {
+                                tagsHtml += '<span class="publish-tags-content" ' +
+                                    'data-id="' + item.id + '" data-text="' + item.name + '">' + (item.name) + '<a>×</a></span>';
+                            })
+                            $('.choosed').html(tagsHtml);
+                            var tags = $('.choosed').find('.publish-tags-content');
+                            tags.each(function (i) {
+                                var color = Math.random();
+                                var r = parseInt((color * (i + 1) * 1234) % 254);
+                                var g = parseInt((color * (i + 1) * 4321) % 254);
+                                var b = parseInt((color * (i + 1) * 2222) % 254);
+                                $(this).css("background-color", "rgba(" + r + "," + g + "," + b + ",0.1)")
+                                $(this).css("border", "  1px rgba(" + r + "," + g + "," + b + ",1) solid")
+                            })
+                        }
+                        else {
+                            $('.choosed').html("");
+                        }
+                        layer.close(index);
+
+                    }, function () {
+                        ajaxPost('/api/admin/article/temp/update/void',
+                            JSON.stringify({
+                                entityOid: d.data.tempArticleInfo.id
+                            }));
+                    })
+
+                }
+
+                function saveTempArticle() {
+                    if (!isChange) return '';
+                    var title = $('input[name=title]').val();
+                    var author = $('input[name=author]').val();
+                    var typeId = $('select[name=typeId]').val();
+                    var subToken = $('input[name=subToken]').val();
+                    var imgsrc = $('input[name=imgsrc]').val();
+                    var isPublic = $('input[name=isPublic]:checked').val();
+                    var articleContent = tinyMCE.activeEditor.getContent();
+                    var tagsId = [];
+                    var data = $('.choosed>span')
+                    for (let i = 0; i < data.length; i++) {
+                        let o = {};
+                        o.id = data.eq(i).data('id');
+                        o.name = data.eq(i).data('text');
+                        tagsId.push(o)
+                    }
+                    var publishTemp = isPublic;
+                    var passw = '';
+                    if (publishTemp === '1') {
+                        if ($('#hometop').prop('checked')) {
+                            publishTemp = 2;
+                        }
+                    } else if (publishTemp === '-1') {
+                        passw = $('#passw-content').val();
+                    }
+                    var iscomment = 0;
+                    if ($('#is-comment').prop('checked')) {
+                        iscomment = 1;
+                    }
+                    var oid = null;
+                    if (d.data.tempArticleInfo && d.data.tempArticleInfo.id) {
+                        oid = d.data.tempArticleInfo.id;
+                    }
+
+                    ajaxPost('/api/admin/article/temp/save',
+                        JSON.stringify({
+                            oid: oid,
+                            oldOid: artOid,
+                            title: title,
+                            author: author,
+                            articleContent: articleContent,
+                            tags: tagsId,
+                            type: typeId,
+                            imgSrc: imgsrc,
+                            visitType: publishTemp,
+                            password: passw,
+                            isComment: iscomment,
+                            subToken: subToken,
+                            page: 2,
+
+                        }));
+                }
+
+
             })
     }
+
+
 
 
 </script>

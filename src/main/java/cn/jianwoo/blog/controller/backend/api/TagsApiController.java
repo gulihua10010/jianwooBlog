@@ -5,7 +5,7 @@ import cn.jianwoo.blog.annotation.SubToken;
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.builder.JwBuilder;
-import cn.jianwoo.blog.config.router.TagsApiUrlConfig;
+import cn.jianwoo.blog.config.router.admin.TagsApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dao.base.TagsTransDao;
 import cn.jianwoo.blog.dto.request.EntityOidRequest;

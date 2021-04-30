@@ -3,7 +3,7 @@ package cn.jianwoo.blog.controller.backend.api;
 import cn.hutool.core.date.DateUtil;
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.builder.JwBuilder;
-import cn.jianwoo.blog.config.router.ConsoleApiUrlConfig;
+import cn.jianwoo.blog.config.router.admin.ConsoleApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dto.response.ArticleSummaryResponse;
 import cn.jianwoo.blog.dto.response.CommentSummaryResponse;

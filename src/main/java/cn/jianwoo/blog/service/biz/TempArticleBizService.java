@@ -1,8 +1,9 @@
 package cn.jianwoo.blog.service.biz;
 
-import cn.jianwoo.blog.enums.ArticleStatusEnum;
+import cn.jianwoo.blog.enums.TempArticleStatusEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.bo.ArticleBO;
+import cn.jianwoo.blog.service.bo.TempArticleBO;
 
 /**
  * @author GuLihua
@@ -18,7 +19,7 @@ public interface TempArticleBizService {
      * @return
      * @author gulihua
      */
-    void doSaveTempArticle(ArticleBO article) throws JwBlogException;
+    void doSaveTempArticle(TempArticleBO article) throws JwBlogException;
 
 
     /**
@@ -28,15 +29,16 @@ public interface TempArticleBizService {
      * @return
      * @author gulihua
      */
-    void doUpdateTempArticle(ArticleBO article) throws JwBlogException;
+    void doUpdateTempArticle(TempArticleBO article) throws JwBlogException;
 
     /**
      * * 更新临时文章状态
      *
      * @param oid    文章主键
      * @param status 文章状态
+     * @param restoreOid 恢复文章的oid
      * @return
      * @author gulihua
      */
-    void doUpdateTempArticleStatus(Long oid, ArticleStatusEnum status) throws JwBlogException;
+    void doUpdateTempArticleStatus(Long oid, TempArticleStatusEnum status, Long restoreOid) throws JwBlogException;
 }

@@ -4,29 +4,47 @@ import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.dao.base.ArticleTagsTransDao;
 import cn.jianwoo.blog.dao.base.ArticleTransDao;
+import cn.jianwoo.blog.dao.base.TagsTransDao;
+import cn.jianwoo.blog.dao.base.TempArticleTransDao;
 import cn.jianwoo.blog.dao.biz.ArticleBizDao;
 import cn.jianwoo.blog.entity.Article;
 import cn.jianwoo.blog.entity.ArticleTags;
+import cn.jianwoo.blog.entity.Menu;
+import cn.jianwoo.blog.entity.Tags;
+import cn.jianwoo.blog.entity.TempArticle;
 import cn.jianwoo.blog.entity.extension.ArticleExt;
 import cn.jianwoo.blog.entity.query.ArticleParam;
 import cn.jianwoo.blog.enums.ArtCommStatusEnum;
 import cn.jianwoo.blog.enums.ArticleStatusEnum;
 import cn.jianwoo.blog.enums.ArticleVisitEnum;
+import cn.jianwoo.blog.enums.MenuTypeEnum;
+import cn.jianwoo.blog.enums.TempArticlePageEnum;
+import cn.jianwoo.blog.enums.TempArticleStatusEnum;
 import cn.jianwoo.blog.exception.ArticleBizException;
 import cn.jianwoo.blog.exception.ArticleTagsBizException;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.ArticleBizService;
+import cn.jianwoo.blog.service.biz.MenuBizService;
+import cn.jianwoo.blog.service.biz.TagsBizService;
+import cn.jianwoo.blog.service.biz.TempArticleBizService;
 import cn.jianwoo.blog.service.biz.UidGenService;
 import cn.jianwoo.blog.service.bo.ArticleBO;
+import cn.jianwoo.blog.service.bo.ArticleMenuBO;
+import cn.jianwoo.blog.service.bo.TagsBO;
+import cn.jianwoo.blog.service.bo.TempArticleInfoBO;
 import cn.jianwoo.blog.util.DateUtil;
 import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.util.TestUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +66,16 @@ public class ArticleBizServiceImpl implements ArticleBizService {
     private ArticleBizDao articleBizDao;
     @Autowired
     private UidGenService uidGenService;
+    @Autowired
+    private TempArticleBizService tempArticleBizService;
+    @Autowired
+    private MenuBizService menuBizService;
+    @Autowired
+    private TagsTransDao tagsTransDao;
+    @Autowired
+    private TagsBizService tagsBizService;
+    @Autowired
+    private TempArticleTransDao tempArticleTransDao;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -148,6 +176,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         try {
             articleTransDao.doInsert(article);
         } catch (DaoException e) {
+            log.error("ArticleBizServiceImpl.doSaveArticle exec failed, e:\n", e);
             throw ArticleBizException.CREATE_FAILED_EXCEPTION.format(articleBO.getTitle()).print();
         }
         if (articleBO.getTags() != null) {
@@ -160,10 +189,15 @@ public class ArticleBizServiceImpl implements ArticleBizService {
                 try {
                     articleTagsTransDao.doInsert(articleTags);
                 } catch (DaoException e) {
+                    log.error("ArticleBizServiceImpl.doSaveArticle exec failed, e:\n", e);
                     throw ArticleTagsBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + oid + ",tagsOid:" + t).print();
 
                 }
             }
+        }
+        if (articleBO.getTempArtOid() != null) {
+            tempArticleBizService.doUpdateTempArticleStatus(articleBO.getTempArtOid(),
+                    TempArticleStatusEnum.RESTORE, article.getOid());
         }
 
         log.info("==========>Insert article successfully,title = {}", articleBO.getTitle());
@@ -249,6 +283,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         try {
             articleTransDao.doUpdateByPrimaryKeySelective(article);
         } catch (DaoException e) {
+            log.error("ArticleBizServiceImpl.doUpdateArticleInfo exec failed, e:\n", e);
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(articleBO.getOid()).print();
         }
         articleTagsTransDao.doDeleteByArticleOid(articleBO.getOid());
@@ -262,6 +297,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
             try {
                 articleTagsTransDao.doInsert(articleTags);
             } catch (DaoException e) {
+                log.error("ArticleBizServiceImpl.doUpdateArticleInfo exec failed, e:\n", e);
                 throw ArticleTagsBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + articleBO.getOid() + ",tagsOid:" + t).print();
             }
         }
@@ -355,6 +391,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         try {
             articleTransDao.doUpdateByPrimaryKeySelective(article);
         } catch (DaoException e) {
+            log.error("ArticleBizServiceImpl.doUpdateArticle exec failed, e:\n", e);
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(articleBO.getOid()).print();
         }
         articleTagsTransDao.doDeleteByArticleOid(articleBO.getOid());
@@ -368,8 +405,13 @@ public class ArticleBizServiceImpl implements ArticleBizService {
             try {
                 articleTagsTransDao.doInsert(articleTags);
             } catch (DaoException e) {
+                log.error("ArticleBizServiceImpl.doUpdateArticle exec failed, e:\n", e);
                 throw ArticleTagsBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + articleBO.getOid() + ",tagsOid:" + t).print();
             }
+        }
+        if (articleBO.getTempArtOid() != null) {
+            tempArticleBizService.doUpdateTempArticleStatus(articleBO.getTempArtOid(),
+                    TempArticleStatusEnum.RESTORE, article.getOid());
         }
         log.info("==========>Update article successfully,title = {}", articleBO.getTitle());
     }
@@ -389,6 +431,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         try {
             articleTransDao.doUpdateByPrimaryKeySelective(article);
         } catch (DaoException e) {
+            log.error("ArticleBizServiceImpl.doRemoveToRecycle exec failed, e:\n", e);
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
         }
     }
@@ -400,6 +443,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         try {
             article = articleTransDao.queryArticleByPrimaryKey(oid);
         } catch (DaoException e) {
+            log.error("ArticleBizServiceImpl.doDeleteArticle exec failed, e:\n", e);
             throw ArticleBizException.NOT_EXIST_EXCEPTION.format(oid).print();
 
         }
@@ -410,6 +454,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
             newArticle.setUpdateDate(new Date());
             articleTransDao.doUpdateByPrimaryKeySelective(newArticle);
         } catch (DaoException e) {
+            log.error("ArticleBizServiceImpl.doDeleteArticle exec failed, e:\n", e);
             throw ArticleBizException.DELETE_FAILED_EXCEPTION.format(oid).print();
 
         }
@@ -422,6 +467,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         try {
             article = articleTransDao.queryArticleByPrimaryKey(oid);
         } catch (DaoException e) {
+            log.error(" ArticleBizServiceImpl.doRemoveToDraft exec failed, e:\n", e);
             throw ArticleBizException.NOT_EXIST_EXCEPTION.format(oid).print();
 
         }
@@ -429,6 +475,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         try {
             articleTransDao.doUpdateByPrimaryKeySelective(article);
         } catch (DaoException e) {
+            log.error("  ArticleBizServiceImpl.doRemoveToDraft exec failed, e:\n", e);
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
         }
     }
@@ -441,6 +488,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         try {
             article = articleTransDao.queryArticleByPrimaryKey(oid);
         } catch (DaoException e) {
+            log.error("  ArticleBizServiceImpl.doPublishedArticle exec failed, e:\n", e);
             throw ArticleBizException.NOT_EXIST_EXCEPTION.format(oid).print();
 
         }
@@ -448,6 +496,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         try {
             articleTransDao.doUpdateByPrimaryKeySelective(article);
         } catch (DaoException e) {
+            log.error("ArticleBizServiceImpl.doPublishedArticle exec failed, e:\n", e);
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
         }
     }
@@ -512,6 +561,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         try {
             article = articleTransDao.queryArticleByPrimaryKey(oid);
         } catch (DaoException e) {
+            log.error("ArticleBizServiceImpl.doRestoreRecycleBinArts exec failed, e:\n", e);
             throw ArticleBizException.NOT_EXIST_EXCEPTION.format(oid).print();
 
         }
@@ -525,6 +575,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         try {
             articleTransDao.doUpdateByPrimaryKeySelective(article);
         } catch (DaoException e) {
+            log.error("ArticleBizServiceImpl.doRestoreRecycleBinArts exec failed, e:\n", e);
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
         }
     }
@@ -602,6 +653,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         try {
             article = articleTransDao.queryArticleByPrimaryKey(artOid);
         } catch (DaoException e) {
+            log.error("ArticleBizServiceImpl.doAddPraise exec failed, e:\n", e);
             throw ArticleBizException.NOT_EXIST_EXCEPTION.format(artOid).print();
 
         }
@@ -611,6 +663,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         try {
             articleTransDao.doUpdateByPrimaryKeySelective(article);
         } catch (DaoException e) {
+            log.error("ArticleBizServiceImpl.doAddPraise exec failed, e:\n", e);
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(artOid).print();
         }
     }
@@ -652,6 +705,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
                 try {
                     this.doRestoreRecycleBinArts(oid);
                 } catch (JwBlogException e) {
+                    log.error("ArticleBizServiceImpl.doRestoreRecycleToDraftList exec failed, e:\n", e);
                     throw ArticleBizException.DELETE_FAILED_EXCEPTION.format(oid).print();
                 }
             }
@@ -666,10 +720,110 @@ public class ArticleBizServiceImpl implements ArticleBizService {
                 try {
                     this.doDeleteArticle(oid);
                 } catch (JwBlogException e) {
+                    log.error("ArticleBizServiceImpl.doDeleteRecycleBinList exec failed, e:\n", e);
                     throw ArticleBizException.DELETE_FAILED_EXCEPTION.format(oid).print();
                 }
             }
         }
+    }
+
+    @Override
+    public ArticleBO queryArticleEditInfo(Long artOid) throws JwBlogException {
+        Article article;
+        ArticleBO bo = null;
+        try {
+            article = articleTransDao.queryArticleByPrimaryKey(artOid);
+            bo = JwBuilder.of(ArticleBO::new)
+                    .with(ArticleBO::setOid, article.getOid())
+                    .with(ArticleBO::setTitle, StringEscapeUtils.escapeHtml4(article.getTitle()))
+                    .with(ArticleBO::setAuthor, StringEscapeUtils.escapeHtml4(article.getAuthor()))
+                    .with(ArticleBO::setContent, article.getContent())
+                    .with(ArticleBO::setTypeId, article.getTypeId())
+                    .with(ArticleBO::setImgSrc, article.getImgSrc())
+                    .with(ArticleBO::setIsComment, article.getIsComment())
+                    .with(ArticleBO::setPassword, article.getPassword())
+                    .with(ArticleBO::setVisitType, article.getVisitType())
+                    .with(ArticleBO::setStatus, article.getStatus())
+                    .build();
+
+            List<Tags> artTags = tagsBizService.queryTagsByArtOid(artOid);
+            List<TagsBO> tagsList = new ArrayList<TagsBO>();
+            if (CollectionUtils.isNotEmpty(artTags)) {
+                for (Tags tag : artTags) {
+                    TagsBO tagsListVO = JwBuilder.of(TagsBO::new)
+                            .with(TagsBO::setId, tag.getOid())
+                            .with(TagsBO::setName, StringEscapeUtils.escapeHtml4(tag.getContent())).build();
+                    tagsList.add(tagsListVO);
+                }
+                bo.setArtTagsList(tagsList);
+            }
+            List<Tags> allTags = tagsTransDao.queryAllTags();
+            List<TagsBO> allTagsList = new ArrayList<TagsBO>();
+            if (CollectionUtils.isNotEmpty(allTags)) {
+                for (Tags tag : allTags) {
+                    TagsBO tagsListVO = JwBuilder.of(TagsBO::new)
+                            .with(TagsBO::setId, tag.getOid())
+                            .with(TagsBO::setName, StringEscapeUtils.escapeHtml4(tag.getContent())).build();
+                    allTagsList.add(tagsListVO);
+                }
+                bo.setTagsList(allTagsList);
+            }
+
+            List<Menu> menuList = menuBizService.querySubMenuOrderedList(MenuTypeEnum.FRONTEND.getValue());
+            List<ArticleMenuBO> menuVoList = new ArrayList<>();
+            if (CollectionUtils.isNotEmpty(menuList)) {
+                for (Menu menu : menuList) {
+                    ArticleMenuBO menuVo = JwBuilder.of(ArticleMenuBO::new)
+                            .with(ArticleMenuBO::setId, menu.getOid())
+                            .with(ArticleMenuBO::setName, StringEscapeUtils.escapeHtml4(menu.getText())).build();
+                    menuVoList.add(menuVo);
+                }
+                bo.setMenuList(menuVoList);
+            }
+            TempArticle tempArticle = tempArticleTransDao.queryLastestTempArticle(artOid, TempArticlePageEnum.EDIT.getValue());
+
+            if (null != tempArticle) {
+                TempArticleInfoBO tempArticleInfoBO = JwBuilder.of(TempArticleInfoBO::new)
+                        .with(TempArticleInfoBO::setId, tempArticle.getOid())
+                        .with(TempArticleInfoBO::setTitle, StringEscapeUtils.escapeHtml4(tempArticle.getTitle()))
+                        .with(TempArticleInfoBO::setAuthor, StringEscapeUtils.escapeHtml4(tempArticle.getAuthor()))
+                        .with(TempArticleInfoBO::setContent, tempArticle.getContent())
+                        .with(TempArticleInfoBO::setMenuOid, tempArticle.getTypeId())
+                        .with(TempArticleInfoBO::setImgSrc, tempArticle.getImgSrc())
+                        .with(TempArticleInfoBO::setIsComment, tempArticle.getIsComment())
+                        .with(TempArticleInfoBO::setPassword, tempArticle.getPassword())
+                        .with(TempArticleInfoBO::setVisitType, tempArticle.getVisitType())
+                        .with(TempArticleInfoBO::setStatus, tempArticle.getStatus())
+                        .build();
+
+
+                if (StringUtils.isNotBlank(tempArticle.getTags())) {
+                    JSONArray jsonArray = JSON.parseArray(tempArticle.getTags());
+                    List<TagsBO> TemptagsList = new ArrayList<TagsBO>();
+                    if (jsonArray != null && jsonArray.size() > 0) {
+                        for (int i = 0; i < jsonArray.size(); i++) {
+                            JSONObject o = jsonArray.getJSONObject(i);
+                            TagsBO tagsListVO = JwBuilder.of(TagsBO::new)
+                                    .with(TagsBO::setId, o.getLong("id"))
+                                    .with(TagsBO::setName, StringEscapeUtils.escapeHtml4(o.getString("name")))
+                                    .build();
+                            TemptagsList.add(tagsListVO);
+                        }
+                        tempArticleInfoBO.setArtTagsList(TemptagsList);
+                    }
+                }
+
+
+                bo.setTempArticleInfo(tempArticleInfoBO);
+            }
+
+        } catch (DaoException e) {
+            log.error("==>>ArticleBizServiceImpl.queryArticleEditInfo exec failed, e\n", e);
+            throw ArticleBizException.QUERY_FAILED_EXCEPTION.format(artOid).print();
+
+        }
+
+        return bo;
     }
 
     // public static void main(String[] args)

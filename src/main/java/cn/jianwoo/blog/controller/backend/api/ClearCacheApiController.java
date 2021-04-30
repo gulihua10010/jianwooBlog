@@ -2,7 +2,7 @@ package cn.jianwoo.blog.controller.backend.api;
 
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
-import cn.jianwoo.blog.config.router.ClearCacheApiUrlConfig;
+import cn.jianwoo.blog.config.router.admin.ClearCacheApiUrlConfig;
 import cn.jianwoo.blog.dto.request.ClearCacheRequest;
 import cn.jianwoo.blog.dto.response.CacheResponse;
 import cn.jianwoo.blog.dto.response.WebconfResponse;

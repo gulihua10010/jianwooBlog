@@ -96,8 +96,11 @@ public class WebconfBizServiceImpl implements WebconfBizService {
 
                     }
                 } catch (DaoException e) {
+                    log.error("WebconfBizServiceImpl.doUpdateConfig exec failed, e:\n", e);
                     throw WebconfBizException.MODIFY_FAILED_EXCEPTION.format(o.getKey()).print();
 
+                } catch (JwBlogException e) {
+                    e.printStackTrace();
                 }
             }
         }

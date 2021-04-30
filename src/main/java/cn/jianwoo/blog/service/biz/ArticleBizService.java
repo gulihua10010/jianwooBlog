@@ -320,4 +320,14 @@ public interface ArticleBizService {
      * @author gulihua
      */
     void doDeleteRecycleBinList(List<Long> oidList) throws JwBlogException;
+
+
+    /**
+     * 查询文章编辑信息
+     *
+     * @param artOid 文章oid
+     * @return ArticleBO
+     * @author gulihua
+     */
+    ArticleBO queryArticleEditInfo(Long artOid) throws JwBlogException;
 }

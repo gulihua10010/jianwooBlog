@@ -6,7 +6,7 @@ import cn.jianwoo.blog.annotation.SubToken;
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.builder.JwBuilder;
-import cn.jianwoo.blog.config.router.ArticleApiUrlConfig;
+import cn.jianwoo.blog.config.router.admin.ArticleApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dao.base.ArticleTransDao;
 import cn.jianwoo.blog.dao.base.TagsTransDao;
@@ -15,38 +15,44 @@ import cn.jianwoo.blog.dto.request.ArticlePageRequest;
 import cn.jianwoo.blog.dto.request.ArticleSubmitRequest;
 import cn.jianwoo.blog.dto.request.EntityOidListRequest;
 import cn.jianwoo.blog.dto.request.EntityOidRequest;
+import cn.jianwoo.blog.dto.request.TempArticleQueryRequest;
+import cn.jianwoo.blog.dto.request.TempArticleSaveRequest;
+import cn.jianwoo.blog.dto.request.TempArticleStatusRequest;
 import cn.jianwoo.blog.dto.response.ArticleInfoResponse;
 import cn.jianwoo.blog.dto.response.ArticleSummaryResponse;
+import cn.jianwoo.blog.dto.response.TempArticleInfoResponse;
 import cn.jianwoo.blog.dto.response.vo.ArticleInfoVO;
 import cn.jianwoo.blog.dto.response.vo.ArticleMenuVO;
 import cn.jianwoo.blog.dto.response.vo.ArticleVO;
 import cn.jianwoo.blog.dto.response.vo.TagsVO;
-import cn.jianwoo.blog.entity.Article;
-import cn.jianwoo.blog.entity.Menu;
-import cn.jianwoo.blog.entity.Tags;
+import cn.jianwoo.blog.dto.response.vo.TempArticleInfoVO;
 import cn.jianwoo.blog.entity.TempArticle;
 import cn.jianwoo.blog.entity.extension.ArticleExt;
 import cn.jianwoo.blog.entity.query.ArticleParam;
 import cn.jianwoo.blog.enums.ArticleStatusEnum;
 import cn.jianwoo.blog.enums.ArticleVisitEnum;
-import cn.jianwoo.blog.enums.MenuTypeEnum;
 import cn.jianwoo.blog.enums.PageIdEnum;
+import cn.jianwoo.blog.enums.TempArticleStatusEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.ArticleBizService;
 import cn.jianwoo.blog.service.biz.MenuBizService;
 import cn.jianwoo.blog.service.biz.TagsBizService;
 import cn.jianwoo.blog.service.biz.TempArticleBizService;
 import cn.jianwoo.blog.service.bo.ArticleBO;
+import cn.jianwoo.blog.service.bo.TagsBO;
+import cn.jianwoo.blog.service.bo.TempArticleBO;
 import cn.jianwoo.blog.util.DomainUtil;
 import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.validation.BizValidation;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -134,6 +140,7 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTags, request.getTags())
+                    .with(ArticleBO::setTempArtOid, request.getTempArtOid())
                     .with(ArticleBO::setStatus, ArticleStatusEnum.PUBLISHED.getValue()).build();
             articleBizService.doSaveArticle(articleBO);
         } catch (JwBlogException e) {
@@ -186,6 +193,7 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTags, request.getTags())
+                    .with(ArticleBO::setTempArtOid, request.getTempArtOid())
                     .with(ArticleBO::setStatus, ArticleStatusEnum.DRAFT.getValue()).build();
             articleBizService.doSaveArticle(articleBO);
         } catch (JwBlogException e) {
@@ -223,7 +231,7 @@ public class ArticleApiController extends BaseController {
             super.printRequestParams(param);
             ArticleSubmitRequest request = this.convertParam(param, ArticleSubmitRequest.class);
             BizValidation.paramValidate(request.getTitle(), "title", "标题不能为空!");
-            BizValidation.paramValidate(request.getArticleContent(), "articleContent", "文章内容不能为空!");
+//            BizValidation.paramValidate(request.getArticleContent(), "articleContent", "文章内容不能为空!");
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
             BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
             BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
@@ -237,6 +245,7 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTags, request.getTags())
+                    .with(ArticleBO::setTempArtOid, request.getTempArtOid())
                     .with(ArticleBO::setStatus, ArticleStatusEnum.RECYCLE.getValue()).build();
             articleBizService.doSaveArticle(articleBO);
         } catch (JwBlogException e) {
@@ -299,6 +308,7 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTags, request.getTags())
+                    .with(ArticleBO::setTempArtOid, request.getTempArtOid())
                     .with(ArticleBO::setStatus, ArticleStatusEnum.PUBLISHED.getValue()).build();
 
             articleBizService.doUpdateArticle(articleBO);
@@ -438,6 +448,7 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTags, request.getTags())
+                    .with(ArticleBO::setTempArtOid, request.getTempArtOid())
                     .with(ArticleBO::setStatus, ArticleStatusEnum.DRAFT.getValue()).build();
 
             articleBizService.doUpdateArticle(articleBO);
@@ -491,6 +502,7 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTags, request.getTags())
+                    .with(ArticleBO::setTempArtOid, request.getTempArtOid())
                     .with(ArticleBO::setStatus, ArticleStatusEnum.RECYCLE.getValue()).build();
             articleBizService.doUpdateArticle(articleBO);
         } catch (JwBlogException e) {
@@ -553,6 +565,7 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTags, request.getTags())
+                    .with(ArticleBO::setTempArtOid, request.getTempArtOid())
                     .with(ArticleBO::setStatus, ArticleStatusEnum.PUBLISHED.getValue()).build();
             articleBizService.doUpdateArticle(articleBO);
         } catch (JwBlogException e) {
@@ -860,60 +873,60 @@ public class ArticleApiController extends BaseController {
     @GetMapping(ArticleApiUrlConfig.URL_ARTICLE_INFO)
     public String getArticleInfo(@PathVariable("id") Long id) {
         ArticleInfoResponse response = ArticleInfoResponse.getInstance();
-        Article article;
         try {
             BizValidation.paramValidate(id, "id", "文章id不能为空!");
-            article = articleTransDao.queryArticleByPrimaryKey(id);
-            ArticleInfoVO vo = JwBuilder.of(ArticleInfoVO::new)
-                    .with(ArticleInfoVO::setId, article.getOid())
-                    .with(ArticleInfoVO::setTitle, StringEscapeUtils.escapeHtml4(article.getTitle()))
-                    .with(ArticleInfoVO::setAuthor, StringEscapeUtils.escapeHtml4(article.getAuthor()))
-                    .with(ArticleInfoVO::setContent, article.getContent())
-                    .with(ArticleInfoVO::setMenuOid, article.getTypeId())
-                    .with(ArticleInfoVO::setImgSrc, article.getImgSrc())
-                    .with(ArticleInfoVO::setIsComment, article.getIsComment())
-                    .with(ArticleInfoVO::setPassword, article.getPassword())
-                    .with(ArticleInfoVO::setVisitType, article.getVisitType())
-                    .with(ArticleInfoVO::setStatus, article.getStatus())
-                    .build();
-
-
-            List<Tags> artTags = tagsBizService.queryTagsByArtOid(id);
-            List<TagsVO> tagsList = new ArrayList<TagsVO>();
-            if (CollectionUtils.isNotEmpty(artTags)) {
-                for (Tags tag : artTags) {
-                    TagsVO tagsListVO = JwBuilder.of(TagsVO::new)
-                            .with(TagsVO::setId, tag.getOid())
-                            .with(TagsVO::setName, StringEscapeUtils.escapeHtml4(tag.getContent())).build();
-                    tagsList.add(tagsListVO);
+            ArticleBO articleBO = articleBizService.queryArticleEditInfo(id);
+            if (articleBO != null) {
+                ArticleInfoVO articleInfoVO = new ArticleInfoVO();
+                BeanUtils.copyProperties(articleBO, articleInfoVO);
+                articleInfoVO.setId(articleBO.getOid());
+                articleInfoVO.setMenuOid(articleBO.getTypeId());
+                if (CollectionUtils.isNotEmpty(articleBO.getArtTagsList())) {
+                    List<TagsVO> tagsVOS = new ArrayList<>(articleBO.getArtTagsList().size());
+                    articleBO.getArtTagsList().forEach(o -> {
+                        TagsVO tagsVO = new TagsVO();
+                        BeanUtils.copyProperties(o, tagsVO);
+                        tagsVOS.add(tagsVO);
+                    });
+                    articleInfoVO.setArtTagsList(tagsVOS);
                 }
-                vo.setArtTagsList(tagsList);
-            }
-            List<Tags> allTags = tagsTransDao.queryAllTags();
-            List<TagsVO> allTagsList = new ArrayList<TagsVO>();
-            if (CollectionUtils.isNotEmpty(allTags)) {
-                for (Tags tag : allTags) {
-                    TagsVO tagsListVO = JwBuilder.of(TagsVO::new)
-                            .with(TagsVO::setId, tag.getOid())
-                            .with(TagsVO::setName, StringEscapeUtils.escapeHtml4(tag.getContent())).build();
-                    allTagsList.add(tagsListVO);
+                if (CollectionUtils.isNotEmpty(articleBO.getTagsList())) {
+                    List<TagsVO> tagsVOS = new ArrayList<>(articleBO.getTagsList().size());
+                    articleBO.getTagsList().forEach(o -> {
+                        TagsVO tagsVO = new TagsVO();
+                        BeanUtils.copyProperties(o, tagsVO);
+                        tagsVOS.add(tagsVO);
+                    });
+                    articleInfoVO.setTagsList(tagsVOS);
                 }
-                vo.setTagsList(allTagsList);
-            }
-
-            List<Menu> menuList = menuBizService.querySubMenuOrderedList(MenuTypeEnum.FRONTEND.getValue());
-            List<ArticleMenuVO> menuVoList = new ArrayList<>();
-            if (CollectionUtils.isNotEmpty(menuList)) {
-                for (Menu menu : menuList) {
-                    ArticleMenuVO menuVo = JwBuilder.of(ArticleMenuVO::new)
-                            .with(ArticleMenuVO::setId, menu.getOid())
-                            .with(ArticleMenuVO::setName, StringEscapeUtils.escapeHtml4(menu.getText())).build();
-                    menuVoList.add(menuVo);
+                if (CollectionUtils.isNotEmpty(articleBO.getMenuList())) {
+                    List<ArticleMenuVO> menuVOList = new ArrayList<>(articleBO.getMenuList().size());
+                    articleBO.getMenuList().forEach(o -> {
+                        ArticleMenuVO menuVO = new ArticleMenuVO();
+                        BeanUtils.copyProperties(o, menuVO);
+                        menuVOList.add(menuVO);
+                    });
+                    articleInfoVO.setMenuList(menuVOList);
                 }
-                vo.setMenuList(menuVoList);
-            }
+                if (null != articleBO.getTempArticleInfo()) {
+                    TempArticleInfoVO tempArticleInfoBO = new TempArticleInfoVO();
+                    BeanUtils.copyProperties(articleBO.getTempArticleInfo(), tempArticleInfoBO);
+                    if (CollectionUtils.isNotEmpty(articleBO.getTempArticleInfo().getArtTagsList())) {
+                        List<TagsVO> tagsVOS = new ArrayList<>(articleBO.getTempArticleInfo()
+                                .getArtTagsList().size());
+                        articleBO.getTempArticleInfo().getArtTagsList().forEach(o -> {
+                            TagsVO tagsVO = new TagsVO();
+                            BeanUtils.copyProperties(o, tagsVO);
+                            tagsVOS.add(tagsVO);
+                        });
+                        tempArticleInfoBO.setArtTagsList(tagsVOS);
+                    }
+                    articleInfoVO.setTempArticleInfo(tempArticleInfoBO);
+                }
 
-            response.setData(vo);
+                response.setData(articleInfoVO);
+
+            }
         } catch (Exception e) {
             log.error(">> AdminPageController.articleEdit exec failed, exception: \n", e);
             log.error(">> Article {} cannot be found", id);
@@ -927,7 +940,7 @@ public class ArticleApiController extends BaseController {
      * 临时文章保存<br/>
      * url:/api/admin/article/temp/save<br/>
      *
-     * @param param JSON 参数({@link ArticleSubmitRequest})
+     * @param param JSON 参数({@link TempArticleSaveRequest})
      *              title<br/>
      *              author<br/>
      *              articleContent<br/>
@@ -949,22 +962,93 @@ public class ArticleApiController extends BaseController {
     public String doTempArticleSave(@RequestBody String param) {
         try {
             super.printRequestParams(param);
-            ArticleSubmitRequest request = this.convertParam(param, ArticleSubmitRequest.class);
+            TempArticleSaveRequest request = this.convertParam(param, TempArticleSaveRequest.class);
 
-            ArticleBO articleBO = JwBuilder.of(ArticleBO::new)
-                    .with(ArticleBO::setTitle, request.getTitle())
-                    .with(ArticleBO::setContent, request.getArticleContent())
-                    .with(ArticleBO::setAuthor, request.getAuthor())
-                    .with(ArticleBO::setTypeId, request.getType())
-                    .with(ArticleBO::setIsComment, request.getIsComment())
-                    .with(ArticleBO::setVisitType, request.getVisitType())
-                    .with(ArticleBO::setImgSrc, request.getImgSrc())
-                    .with(ArticleBO::setPassword, request.getPassword())
-                    .with(ArticleBO::setTags, request.getTags())
-                    .with(ArticleBO::setOldOid, request.getOldOid())
-                    .with(ArticleBO::setPage, request.getPage())
+            TempArticleBO articleBO = JwBuilder.of(TempArticleBO::new)
+                    .with(TempArticleBO::setOid, request.getOid())
+                    .with(TempArticleBO::setTitle, request.getTitle())
+                    .with(TempArticleBO::setContent, request.getArticleContent())
+                    .with(TempArticleBO::setAuthor, request.getAuthor())
+                    .with(TempArticleBO::setTypeId, request.getType())
+                    .with(TempArticleBO::setIsComment, request.getIsComment())
+                    .with(TempArticleBO::setVisitType, request.getVisitType())
+                    .with(TempArticleBO::setImgSrc, request.getImgSrc())
+                    .with(TempArticleBO::setPassword, request.getPassword())
+                    .with(TempArticleBO::setOldOid, request.getOldOid())
+                    .with(TempArticleBO::setPage, request.getPage())
                     .build();
+            if (CollectionUtils.isNotEmpty(request.getTags())) {
+                List<TagsBO> list = new ArrayList<>();
+                request.getTags().forEach(o -> {
+                    TagsBO bo = new TagsBO();
+                    bo.setId(o.getId());
+                    bo.setName(o.getName());
+                    list.add(bo);
+                });
+                articleBO.setTags(list);
+            }
             tempArticleBizService.doSaveTempArticle(articleBO);
+
+        } catch (JwBlogException e) {
+            return super.exceptionToString(e);
+        }
+
+        return super.responseToJSONString(BaseResponseDto.SUCCESS);
+    }
+
+    /**
+     * 临时文章保存<br/>
+     * url:/api/admin/article/temp/update<br/>
+     *
+     * @param param JSON 参数({@link TempArticleSaveRequest})
+     *              title<br/>
+     *              author<br/>
+     *              articleContent<br/>
+     *              tags<br/>
+     *              type<br/>
+     *              imgSrc<br/>
+     *              visitType
+     *              password<br/>
+     *              isComment<br/>
+     *              oldOid<br/>
+     *              page<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
+    @SubToken
+    @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_TEMP_UPDATE)
+    public String doTempArticleUpdate(@RequestBody String param) {
+        try {
+            super.printRequestParams(param);
+            TempArticleSaveRequest request = this.convertParam(param, TempArticleSaveRequest.class);
+            BizValidation.paramValidate(request.getOid(), "oid", "临时文章id不能为空!");
+
+            TempArticleBO articleBO = JwBuilder.of(TempArticleBO::new)
+                    .with(TempArticleBO::setOid, request.getOid())
+                    .with(TempArticleBO::setTitle, request.getTitle())
+                    .with(TempArticleBO::setContent, request.getArticleContent())
+                    .with(TempArticleBO::setAuthor, request.getAuthor())
+                    .with(TempArticleBO::setTypeId, request.getType())
+                    .with(TempArticleBO::setIsComment, request.getIsComment())
+                    .with(TempArticleBO::setVisitType, request.getVisitType())
+                    .with(TempArticleBO::setImgSrc, request.getImgSrc())
+                    .with(TempArticleBO::setPassword, request.getPassword())
+                    .with(TempArticleBO::setOldOid, request.getOldOid())
+                    .with(TempArticleBO::setPage, request.getPage())
+                    .build();
+            if (CollectionUtils.isNotEmpty(request.getTags())) {
+                List<TagsBO> list = new ArrayList<>();
+                request.getTags().forEach(o -> {
+                    TagsBO bo = new TagsBO();
+                    bo.setId(o.getId());
+                    bo.setName(o.getName());
+                    list.add(bo);
+                });
+                articleBO.setTags(list);
+            }
+            tempArticleBizService.doUpdateTempArticle(articleBO);
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
         }
@@ -976,7 +1060,10 @@ public class ArticleApiController extends BaseController {
      * 获取文章信息<br/>
      * url:/api/admin/article/last/temp/info<br/>
      *
-     * @return 返回响应 {@link ArticleInfoResponse}
+     * @param param JSON 参数({@link TempArticleQueryRequest})
+     *              editArtOid<br/>
+     *              page<br/>
+     * @return 返回响应 {@link TempArticleInfoResponse}
      * status<br/>
      * data<br/>
      * --id<br/>
@@ -993,25 +1080,27 @@ public class ArticleApiController extends BaseController {
      * ----id<br/>
      * @author gulihua
      */
-    @GetMapping(ArticleApiUrlConfig.URL_ARTICLE_LAST_TEMP_INFO)
-    public String getLastTempArticleInfo(Integer page) {
-        ArticleInfoResponse response = ArticleInfoResponse.getInstance();
+    @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_LAST_TEMP_INFO)
+    public String getLastTempArticleInfo(@RequestBody String param) {
+        TempArticleInfoResponse response = TempArticleInfoResponse.getInstance();
         TempArticle article;
         try {
-            article = tempArticleTransDao.queryLastestTempArticle(page);
-            if (null!=article)
-            {
-                ArticleInfoVO vo = JwBuilder.of(ArticleInfoVO::new)
-                        .with(ArticleInfoVO::setId, article.getOid())
-                        .with(ArticleInfoVO::setTitle, StringEscapeUtils.escapeHtml4(article.getTitle()))
-                        .with(ArticleInfoVO::setAuthor, StringEscapeUtils.escapeHtml4(article.getAuthor()))
-                        .with(ArticleInfoVO::setContent, article.getContent())
-                        .with(ArticleInfoVO::setMenuOid, article.getTypeId())
-                        .with(ArticleInfoVO::setImgSrc, article.getImgSrc())
-                        .with(ArticleInfoVO::setIsComment, article.getIsComment())
-                        .with(ArticleInfoVO::setPassword, article.getPassword())
-                        .with(ArticleInfoVO::setVisitType, article.getVisitType())
-                        .with(ArticleInfoVO::setStatus, article.getStatus())
+            TempArticleQueryRequest request = this.convertParam(param, TempArticleQueryRequest.class);
+            BizValidation.paramValidate(request.getPage(), "page", "page不能为空!");
+
+            article = tempArticleTransDao.queryLastestTempArticle(request.getEditArtOid(), request.getPage());
+            if (null != article) {
+                TempArticleInfoVO vo = JwBuilder.of(TempArticleInfoVO::new)
+                        .with(TempArticleInfoVO::setId, article.getOid())
+                        .with(TempArticleInfoVO::setTitle, StringEscapeUtils.escapeHtml4(article.getTitle()))
+                        .with(TempArticleInfoVO::setAuthor, StringEscapeUtils.escapeHtml4(article.getAuthor()))
+                        .with(TempArticleInfoVO::setContent, article.getContent())
+                        .with(TempArticleInfoVO::setMenuOid, article.getTypeId())
+                        .with(TempArticleInfoVO::setImgSrc, article.getImgSrc())
+                        .with(TempArticleInfoVO::setIsComment, article.getIsComment())
+                        .with(TempArticleInfoVO::setPassword, article.getPassword())
+                        .with(TempArticleInfoVO::setVisitType, article.getVisitType())
+                        .with(TempArticleInfoVO::setStatus, article.getStatus())
                         .build();
 
 
@@ -1020,8 +1109,10 @@ public class ArticleApiController extends BaseController {
                     List<TagsVO> tagsList = new ArrayList<TagsVO>();
                     if (jsonArray != null && jsonArray.size() > 0) {
                         for (int i = 0; i < jsonArray.size(); i++) {
+                            JSONObject o = jsonArray.getJSONObject(i);
                             TagsVO tagsListVO = JwBuilder.of(TagsVO::new)
-                                    .with(TagsVO::setId, jsonArray.getLong(i))
+                                    .with(TagsVO::setId, o.getLong("id"))
+                                    .with(TagsVO::setName, StringEscapeUtils.escapeHtml4(o.getString("name")))
                                     .build();
                             tagsList.add(tagsListVO);
                         }
@@ -1041,4 +1132,57 @@ public class ArticleApiController extends BaseController {
 
     }
 
+    /**
+     * 临时文章状态更新为恢复<br/>
+     * url:/api/admin/article/temp/update/restore<br/>
+     *
+     * @param param JSON 参数({@link EntityOidRequest})
+     *              entityOid<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
+    @SubToken
+    @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_TEMP_UPDATE_RESTORE)
+    public String doTempStatusUpdateRestore(@RequestBody String param) {
+        try {
+            super.printRequestParams(param);
+            TempArticleStatusRequest request = this.convertParam(param, TempArticleStatusRequest.class);
+            BizValidation.paramValidate(request.getEntityOid(), "entityOid", "临时文章id不能为空!");
+            BizValidation.paramValidate(request.getEntityOid(), "restoreOid", "恢复文章id不能为空!");
+            tempArticleBizService.doUpdateTempArticleStatus(request.getEntityOid(), TempArticleStatusEnum.RESTORE,
+                    request.getRestoreOid());
+        } catch (JwBlogException e) {
+            return super.exceptionToString(e);
+        }
+
+        return super.responseToJSONString(BaseResponseDto.SUCCESS);
+    }
+
+    /**
+     * 临时文章状态更新为作废<br/>
+     * url:/api/admin/article/temp/update/void<br/>
+     *
+     * @param param JSON 参数({@link EntityOidRequest})
+     *              entityOid<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)
+     * msg
+     * @author gulihua
+     */
+    @SubToken
+    @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_TEMP_UPDATE_VOID)
+    public String doTempStatusUpdateVoid(@RequestBody String param) {
+        try {
+            super.printRequestParams(param);
+            EntityOidRequest request = this.convertParam(param, EntityOidRequest.class);
+            BizValidation.paramValidate(request.getEntityOid(), "entityOid", "临时文章id不能为空!");
+            tempArticleBizService.doUpdateTempArticleStatus(request.getEntityOid(), TempArticleStatusEnum.VOID, null);
+        } catch (JwBlogException e) {
+            return super.exceptionToString(e);
+        }
+
+        return super.responseToJSONString(BaseResponseDto.SUCCESS);
+    }
 }

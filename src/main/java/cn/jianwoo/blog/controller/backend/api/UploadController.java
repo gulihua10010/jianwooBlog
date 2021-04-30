@@ -1,7 +1,7 @@
 package cn.jianwoo.blog.controller.backend.api;
 
 import cn.jianwoo.blog.base.BaseController;
-import cn.jianwoo.blog.config.router.CommApiUrlConfig;
+import cn.jianwoo.blog.config.router.admin.CommApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dto.response.FileUploadResponse;
 import cn.jianwoo.blog.dto.response.vo.FileUploadResVO;
@@ -13,7 +13,6 @@ import cn.jianwoo.blog.validation.BizValidation;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;

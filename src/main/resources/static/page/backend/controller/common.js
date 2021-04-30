@@ -127,17 +127,17 @@ layui.extend({
 
     }
 
-    alertAsk = function (msg = '', yes) {
+    alertAsk = function (msg = '', yes, no) {
         //询问框
         layer.confirm(msg, {
             btn: ['确定', '取消'] //按钮
             , offset: '400px'
         }, function () {
-            yes();
+            typeof yes === "function" && yes();
             layer.closeAll()
 
         }, function () {
-
+            typeof no === "function" && no();
         })
     }
 

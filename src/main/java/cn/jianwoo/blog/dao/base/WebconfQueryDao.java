@@ -2,6 +2,7 @@ package cn.jianwoo.blog.dao.base;
 
 import cn.jianwoo.blog.entity.Webconf;
 import cn.jianwoo.blog.exception.DaoException;
+import cn.jianwoo.blog.exception.JwBlogException;
 
 import java.util.List;
 
@@ -25,5 +26,5 @@ public interface WebconfQueryDao {
      * @return
      * @author gulihua
      */
-    Webconf queryWebconfByKey(String key);
+    Webconf queryWebconfByKey(String key) throws JwBlogException;
 }

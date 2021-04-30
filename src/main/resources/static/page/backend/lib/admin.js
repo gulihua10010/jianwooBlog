@@ -191,7 +191,7 @@ layui.define('view', function (exports) {
                 var that = this, runResizeTable = function () {
                     that.tabsBody(admin.tabsPage.index).find('.layui-table-view').each(function () {
                         var tableID = $(this).attr('lay-id');
-                        layui.table.resize(tableID);
+                        layui.table && layui.table.resize(tableID);
                     });
                 };
                 if (!layui.table) return;
@@ -373,6 +373,18 @@ layui.define('view', function (exports) {
 
         //刷新
         , refresh: function () {
+            layui.index.render();
+            layui.element.render();
+            layui.event.call(this, setter.MOD_NAME, 'refresh({*})', layui.router() );
+
+        }
+        , refreshWithoutEvent: function () {
+            layui.index.render();
+            layui.element.render();
+
+        }
+        , refreshAndCallback: function (callback) {
+            typeof callback === "function" && callback();
             layui.index.render();
             layui.element.render();
 
@@ -648,10 +660,20 @@ layui.define('view', function (exports) {
 
     }();
 
-    //admin.prevRouter = {}; //上一个路由
+
+
+    admin.prevRouter = {}; //上一个路由
+    admin.prevUrl = ""; //上一个url
+    admin.routerHistory = []; //历史记录
+    admin.routerHistory.push(layui.router())
 
     //监听 hash 改变侧边状态
     admin.on('hash(side)', function (router) {
+
+        admin.routerHistory.push(router);
+        admin.prevRouter = admin.routerHistory[admin.routerHistory.length-2]
+        // console.log(admin.prevRouter)
+        admin.prevUrl = admin.prevRouter ? admin.prevRouter.href : "";
         var path = router.path, getData = function (item) {
                 return {
                     list: item.children('.layui-nav-child')
@@ -786,7 +808,9 @@ layui.define('view', function (exports) {
             , router = layui.router();
 
         admin.tabsPage.elem = othis;
-        //admin.prevRouter[router.path[0]] = router.href; //记录上一次各菜单的路由信息
+        // admin.prevRouter[router.path[0]] = router.href; //记录上一次各菜单的路由信息
+        // admin.prevRouter = router; //记录上一次各菜单的路由信息
+        // admin.prevUrl = router; //记录上一次各菜单的路由信息
 
         //执行跳转
         location.hash = admin.correctRouter(href);

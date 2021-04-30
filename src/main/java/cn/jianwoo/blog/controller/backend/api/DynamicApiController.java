@@ -2,7 +2,7 @@ package cn.jianwoo.blog.controller.backend.api;
 
 import cn.hutool.core.date.DateUtil;
 import cn.jianwoo.blog.base.BaseController;
-import cn.jianwoo.blog.config.router.DynamicApiUrlConfig;
+import cn.jianwoo.blog.config.router.admin.DynamicApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dto.request.CommentPageRequest;
 import cn.jianwoo.blog.dto.request.VisitPageRequest;

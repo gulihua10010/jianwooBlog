@@ -1,8 +1,8 @@
 package cn.jianwoo.blog.config;
 
-import cn.jianwoo.blog.config.router.CommApiUrlConfig;
-import cn.jianwoo.blog.config.router.CommBackendPageUrlConfig;
-import cn.jianwoo.blog.config.router.LoginApiUrlConfig;
+import cn.jianwoo.blog.config.router.admin.CommApiUrlConfig;
+import cn.jianwoo.blog.config.router.admin.CommBackendPageUrlConfig;
+import cn.jianwoo.blog.config.router.admin.LoginApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.interceptor.LoginHandleInterceptor;
 import org.springframework.beans.factory.annotation.Value;

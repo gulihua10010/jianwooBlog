@@ -314,16 +314,16 @@ ALTER TABLE ARTICLE MODIFY COLUMN `STATUS` int(11) NOT NULL COMMENT '文章状�
 
 CREATE TABLE `TEMP_ARTICLE` (
    `OID` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '表自增唯一id',
-   `AUTHOR` varchar(10) NOT NULL COMMENT '文章作者',
+   `AUTHOR` varchar(500) DEFAULT NULL COMMENT '文章作者',
    `TITLE` text NULL COMMENT '文章标题',
    `CONTENT` longtext NULL COMMENT '文章内容(html格式)',
    `TYPE_ID` int(11) DEFAULT '0' COMMENT '文章类型',
    `IS_COMMENT` int(11) DEFAULT NULL COMMENT '是否可以被评论',
    `IMG_SRC` varchar(1024) DEFAULT NULL COMMENT '文章缩略图',
    `VISIT_TYPE` int(11) DEFAULT '1' COMMENT '公开度 -1：密码  , 1：公开 ,私密:0 ,置顶:2',
-   `PASSWORD` varchar(50) DEFAULT NULL COMMENT '当公开度为-1时设置',
+   `PASSWORD` varchar(500) DEFAULT NULL COMMENT '当公开度为-1时设置',
    `OLD_OID` bigint(20) unsigned DEFAULT NULL COMMENT '当文章是已有文章时,文章的OID,当是新文章时为-1',
-   `TAGS` varchar(1000) DEFAULT NULL COMMENT '文章标签的JSON数组',
+   `TAGS` varchar(2000) DEFAULT NULL COMMENT '文章标签的JSON数组',
    `PAGE` int(2) NOT NULL COMMENT '1:发布页面 2编辑页面',
    `STATUS` int(11) NOT NULL COMMENT '临时文章状态 1已经恢复  0临时缓存状态  -1作废',
    `RESTORE_OID` bigint(20) unsigned DEFAULT NULL COMMENT '恢复文章的OID',
@@ -332,6 +332,9 @@ CREATE TABLE `TEMP_ARTICLE` (
    PRIMARY KEY (`OID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='临时文章表';
 
+
+ALTER TABLE MENU MODIFY COLUMN `CREATE_DATE` datetime NOT NULL AFTER PARENT_OID;
+ALTER TABLE MENU MODIFY COLUMN `UPDATE_DATE` datetime NOT NULL AFTER CREATE_DATE;
 
 
 

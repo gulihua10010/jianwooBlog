@@ -2,7 +2,7 @@ package cn.jianwoo.blog.controller.backend.api;
 
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.builder.JwBuilder;
-import cn.jianwoo.blog.config.router.UserApiUrlConfig;
+import cn.jianwoo.blog.config.router.admin.UserApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dao.base.AdminTransDao;
 import cn.jianwoo.blog.dto.response.UserResponse;

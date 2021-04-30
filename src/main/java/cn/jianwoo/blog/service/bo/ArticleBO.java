@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode()
@@ -70,13 +71,32 @@ public class ArticleBO implements Serializable {
     private Integer[] tags;
 
     /**
-     *  临时文章的OLD_OID
+     * 临时文章oid主键
      */
-    private Long oldOid;
+    private Long tempArtOid;
 
     /**
-     * temp article page
+     * 文章标签列表
      */
-    private Integer page;
+    private List<TagsBO> artTagsList;
+    /**
+     * 标签列表
+     */
+    private List<TagsBO> tagsList;
+
+    /**
+     * 菜单列表
+     */
+    private List<ArticleMenuBO> menuList;
+    /**
+     * 菜单名字
+     */
+    private String menuName;
+
+    /**
+     * 临时文章数据
+     */
+    private TempArticleInfoBO tempArticleInfo;
+
 
 }

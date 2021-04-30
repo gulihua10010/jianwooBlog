@@ -50,6 +50,7 @@ public class TagsBizServiceImpl implements TagsBizService {
         try {
             tagsTransDao.doInsert(tags);
         } catch (DaoException e) {
+            log.error("TagsBizServiceImpl.doAddTag exec failed, e:\n", e);
             throw TagsBizException.CREATE_FAILED_EXCEPTION.format(name).print();
         }
 
@@ -76,6 +77,7 @@ public class TagsBizServiceImpl implements TagsBizService {
         try {
             tags = tagsTransDao.queryTagsByPrimaryKey(oid);
         } catch (DaoException e) {
+            log.error("TagsBizServiceImpl.queryTagNameByOid exec failed, e:\n", e);
             throw TagsBizException.NOT_EXIST_EXCEPTION.format(oid).print();
         }
 
@@ -89,6 +91,7 @@ public class TagsBizServiceImpl implements TagsBizService {
         try {
             tagsTransDao.doDeleteByPrimaryKey(oid);
         } catch (DaoException e) {
+            log.error("TagsBizServiceImpl.doRemoveTags exec failed, e:\n", e);
             throw TagsBizException.DELETE_FAILED_EXCEPTION.format(oid).print();
         }
     }
@@ -108,6 +111,7 @@ public class TagsBizServiceImpl implements TagsBizService {
         try {
             tagsTransDao.doUpdateByPrimaryKeySelective(tags);
         } catch (DaoException e) {
+            log.error("TagsBizServiceImpl.doUpdateTags exec failed, e:\n", e);
             throw TagsBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
 
         }
@@ -136,6 +140,7 @@ public class TagsBizServiceImpl implements TagsBizService {
             try {
                 tagsTransDao.doInsert(tags);
             } catch (DaoException e) {
+                log.error("TagsBizServiceImpl.doAddTagList exec failed, e:\n", e);
                 throw TagsBizException.CREATE_FAILED_EXCEPTION.format(tagName).print();
             }
         }

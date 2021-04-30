@@ -82,5 +82,10 @@ public class ArticleInfoVO implements Serializable {
      */
     private String menuName;
 
+    /**
+     * 临时文章数据
+     */
+    private TempArticleInfoVO tempArticleInfo;
+
 
 }

@@ -1,7 +1,7 @@
 package cn.jianwoo.blog.dto.response.vo;
 
 import cn.jianwoo.blog.config.LongToStringSerializerConfig;
-import cn.jianwoo.blog.config.router.CommBackendPageUrlConfig;
+import cn.jianwoo.blog.config.router.admin.CommBackendPageUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.util.DomainUtil;
 import com.alibaba.fastjson.annotation.JSONField;

@@ -63,12 +63,13 @@ layui.define(['jquery'], function (exports) {
 
     var elem;
 
+
     //初始化
-    t.render = function (options, callback) {
+    t.render = function (options, callback, event_callback) {
 
         initTinymce();
 
-        var option = initOptions(options, callback)
+        var option = initOptions(options, callback, event_callback)
 
             , edit = t.get(option.elem);
 
@@ -122,6 +123,8 @@ layui.define(['jquery'], function (exports) {
 
         delete optionCache.init_instance_callback
 
+        delete optionCache.setup
+
         $.extend(optionCache, options)
 
         return t.render(optionCache, callback)
@@ -144,7 +147,7 @@ layui.define(['jquery'], function (exports) {
         }
     }
 
-    function initOptions(option, callback) {
+    function initOptions(option, callback, event_callback) {
 
         var form = option.form || {}
 
@@ -270,12 +273,10 @@ layui.define(['jquery'], function (exports) {
                 doUpload(option.images_upload_url, data, succFun);
 
 
-            }
-        if (isset(option.onChange)) {
-            option.setup = function (editor) {
-                editor.on('Change', option.onChange);
-            }
-        }
+            },
+            option.setup = isset(option.setup) ? option.setup : function (editor) {
+                if (typeof event_callback == 'function') event_callback(editor)
+            };
 
 
         layui.sessionData('layui-tinymce', {

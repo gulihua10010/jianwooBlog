@@ -20,6 +20,8 @@ public class ArticleBizException extends JwBlogException {
             ExceptionConstants.BIZ_MODIFY_FAIL, "The article[%s] modification is failed.");
     public static final ArticleBizException DELETE_FAILED_EXCEPTION = new ArticleBizException(
             ExceptionConstants.BIZ_DELETE_FAIL, "The article[%s] deletion is failed.");
+    public static final ArticleBizException QUERY_FAILED_EXCEPTION = new ArticleBizException(
+            ExceptionConstants.BIZ_NOT_EXIST, "The article[%s] query failed.");
     private static final long serialVersionUID = -4477787493913372810L;
     private final Logger logger = LoggerFactory.getLogger(ArticleBizException.class);
 

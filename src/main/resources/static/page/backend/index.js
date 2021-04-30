@@ -196,7 +196,7 @@ layui.extend({
             });
 
             //独立页面
-            if (isIndPage || pathURL === '/user/login') { //此处单独判断登入页，是为了兼容旧版（即未在 config.js 配置 indPage 的情况）
+            if (isIndPage || pathURL === '/passport/login') { //此处单独判断登入页，是为了兼容旧版（即未在 config.js 配置 indPage 的情况）
                 container.render(router.path.join('/')).done(function () {
                     admin.pageType = 'alone';
                 });
@@ -206,7 +206,7 @@ layui.extend({
                 if (setter.interceptor) {
                     var local = layui.data(setter.tableName);
                     if (!local[setter.request.tokenName]) {
-                        return location.hash = '/user/login/redirect=' + encodeURIComponent(pathURL); //跳转到登入页
+                        return location.hash = setter.loginPage + '/redirect=' + encodeURIComponent(pathURL); //跳转到登入页
                     }
                 }
 
@@ -244,7 +244,12 @@ layui.extend({
     window.onhashchange = function () {
         entryPage();
         //执行 {setter.MOD_NAME}.hash 下的事件
+        // var router = {
+        //     prevRouter: admin.prevRouter,
+        //     currRouter: layui.router()
+        // }
         layui.event.call(this, setter.MOD_NAME, 'hash({*})', layui.router());
+
     };
 
     //扩展 lib 目录下的其它模块

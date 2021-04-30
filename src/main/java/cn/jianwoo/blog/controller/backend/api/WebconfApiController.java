@@ -2,7 +2,7 @@ package cn.jianwoo.blog.controller.backend.api;
 
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
-import cn.jianwoo.blog.config.router.WeconfApiUrlConfig;
+import cn.jianwoo.blog.config.router.admin.WebconfApiUrlConfig;
 import cn.jianwoo.blog.dto.request.WebconfRequest;
 import cn.jianwoo.blog.dto.response.WebconfResponse;
 import cn.jianwoo.blog.dto.response.vo.WebconfVO;
@@ -32,7 +32,7 @@ import java.util.List;
  * @date 2020-11-25 14:40
  */
 @RestController
-@RequestMapping(WeconfApiUrlConfig.URL_PREFIX)
+@RequestMapping(WebconfApiUrlConfig.URL_PREFIX)
 @Slf4j
 public class WebconfApiController extends BaseController {
     @Autowired
@@ -59,7 +59,7 @@ public class WebconfApiController extends BaseController {
      * msg
      * @author gulihua
      */
-    @PostMapping(WeconfApiUrlConfig.URL_WEBCONF_UPDATE)
+    @PostMapping(WebconfApiUrlConfig.URL_WEBCONF_UPDATE)
     public String doUpdateWebconf(@RequestBody String param) {
         try {
             super.printRequestParams(param);
@@ -149,7 +149,7 @@ public class WebconfApiController extends BaseController {
      * --validateValue<br/>
      * @author gulihua
      */
-    @GetMapping(WeconfApiUrlConfig.URL_WEBCONF_INFO)
+    @GetMapping(WebconfApiUrlConfig.URL_WEBCONF_INFO)
     public String getWebConfig() {
         WebconfResponse response = WebconfResponse.getInstance();
         try {

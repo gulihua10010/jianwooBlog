@@ -49,6 +49,7 @@ public class AdminBizServiceImpl implements AdminBizService {
         try {
             adminTransDao.doInsertSelective(admin);
         } catch (DaoException e) {
+            log.error("AdminBizServiceImpl.register exec failed, e:\n", e);
             throw AdminBizException.CREATE_FAILED_EXCEPTION.format(name).print();
 
         }
@@ -79,6 +80,7 @@ public class AdminBizServiceImpl implements AdminBizService {
         try {
             adminTransDao.doUpdateByPrimaryKeySelective(admin);
         } catch (DaoException e) {
+            log.error("AdminBizServiceImpl.authLogin exec failed, e:\n", e);
             throw AdminBizException.MODIFY_FAILED_EXCEPTION.format(name).print();
         }
 

@@ -14,17 +14,17 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">文章标题</label>
                     <div class="layui-input-inline">
-                        <input autocomplete="off" class="layui-input" name="title" placeholder="请输入"
+                        <input autocomplete="off" class="layui-input search-art" name="title" placeholder="请输入"
                                type="text">
                     </div>
                     <label class="layui-form-label">文章内容</label>
                     <div class="layui-input-inline">
-                        <input autocomplete="off" class="layui-input" name="text" placeholder="请输入"
+                        <input autocomplete="off" class="layui-input search-art" name="text" placeholder="请输入"
                                type="text">
                     </div>
                     <label class="layui-form-label">文章类型</label>
                     <div class="layui-input-inline">
-                        <select name="status" id="status" lay-verify="">
+                        <select name="status" id="status" lay-verify="" class="search-art-type">
                             <option value="2">所有</option>
                             <option value="1">已发布</option>
                             <option value="0">草稿</option>
@@ -33,7 +33,7 @@
 
                 </div>
                 <div class="layui-inline">
-                    <button class="layui-btn layuiadmin-btn-art" data-type="reload" lay-filter="art-search"
+                    <button class="layui-btn layuiadmin-btn-art search-btn" data-type="reload" lay-filter="art-search"
                             lay-submit>
                         <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
                     </button>
@@ -48,7 +48,8 @@
             <script id="table-content-art" type="text/html">
                 <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="quickEdit"><i
                         class="layui-icon layui-icon-reply-fill"></i>快速编辑</a>
-                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"
+                   lay-href="/article/edit/id={{d.oid}}"><i
                         class="layui-icon layui-icon-form"></i>编辑</a>
                 <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
                         class="layui-icon layui-icon-delete"></i>移入回收站</a>
@@ -63,9 +64,12 @@
 
 <script>
     layui.use('articleList', layui.factory('articleList')).use(['admin', 'articleList', 'form', 'table'], function () {
-        var form = layui.form;
+        var form = layui.form
+            , $ = layui.jquery
+        ;
         var select = document.getElementById("status");
         var mode = layui.router().search.mode;
+        var keywords = layui.router().search.keywords;
         var status = 2;
         if ('PUBLISHED' === mode) {
             status = 1
@@ -74,6 +78,11 @@
         }
         if (select) {
             select.value = status;
+            $(".search-btn").trigger("click");
+        }
+        if (keywords) {
+            $('input[name=title]').val(keywords);
+            $(".search-btn").trigger("click");
         }
         form.render()
     })

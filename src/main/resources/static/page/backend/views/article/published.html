@@ -33,7 +33,11 @@
             </div>
             <div class="layui-card">
                 <div class="layui-card-body" id="article-content">
-                    <textarea id="article-content-text" name="article"></textarea>
+                    <script type="text/html" template lay-url="/api/admin/article/last/temp/info"
+                            lay-data="{page: 1}" lay-type="post" lay-done="renderTemp(d)">
+                        <input type="hidden" name="tempData" id="tempData" value="{{d.data && d.data.id}}">
+                        <textarea id="article-content-text" name="article"></textarea>
+                    </script>
                 </div>
             </div>
 
@@ -51,9 +55,8 @@
                                     lay-done="renderTags(d)">
                                 <div lay-templateid="JW_ARTICLE_PUBLISH_TAGS" class="publish-tags">
                                     {{# layui.each(d.data, function(index, item){ }}
-                                    <span class="publish-tags-content">{{ item.name}}
-                                      <span class="tags-id" style="display: none">{{ item.id}}</span>
-                                     </span>
+                                    <span class="publish-tags-content" data-id="{{ item.id }}"
+                                          data-text="{{ item.name }}">{{ item.name}}</span>
                                     {{# }); }}
                                 </div>
 
@@ -156,10 +159,7 @@
                                 lay-data="{pageId: 'A11'}" lay-type="post">
                             <input type="hidden" name="subToken" id="subToken" value="{{d.token}}">
                         </script>
-                        <script type="text/html" template lay-url="/api/admin/article/last/temp/info"
-                                lay-done="renderTemp(d)">
-                            <input type="hidden" name="tempData" id="tempData" value="{{d.data.id}}">
-                        </script>
+
                         <div class="btn-group">
                             <div class="negative-btn">
                                 <button class="layui-btn layui-btn-primary" id="cancel">重置</button>
@@ -181,7 +181,6 @@
         </div>
     </div>
 </div>
-
 <script>
 
     function renderTags() {
@@ -213,18 +212,155 @@
             var form = layui.form
                 , $ = layui.jquery
                 , element = layui.element
+                , articlePublish = layui.articlePublish
+                , admin = layui.admin
 
             ;
             element.render()
             form.render()
-            if (d.data.id) {
+            var isChange = false;
+
+            var edit = articlePublish.getEdit(function () {
+                isChange = true
+            }, function (opt, edit) {
+
+            });
+
+            $("input[name=title],input[name=author]").change(function () {
+                isChange = true;
+
+            })
+
+            window.onunload = function () {
+                saveTempArticle();
+            }
+            admin.on('refresh', function (router) {
+                saveTempArticle();
+            });
+
+            admin.on('hash(article)', function(router){
+
+                if (admin.prevRouter && admin.prevRouter.href.startsWith('/article/published'))
+                {
+                    saveTempArticle();
+                }
+
+            });
+
+            if (d.data && d.data.id) {
                 alertAsk('系统存在之前未完成的临时文章，是否恢复?', function () {
-                    $('input[name=title]').val();
-                    $('input[name=author]').val();
-                    $('select[name=typeId]').val();
-                    $('input[name=subToken]').val();
-                    $('input[name=imgsrc]').val();
+                    var index = layer.load(0, {shade: false, offset: '400px'});
+                    $('input[name=title]').val(d.data.title);
+                    $('input[name=author]').val(d.data.author);
+                    $('select[name=typeId]').val(d.data.menuOid);
+                    $('input[name=imgsrc]').val(d.data.imgSrc);
+                    var publicStr = "公开"
+                    if (d.data.visitType === -1) {
+                        publicStr = "密码";
+                    } else if (d.data.visitType === 0) {
+                        publicStr = "私密";
+                    } else if (d.data.visitType === 2) {
+                        publicStr = "置顶";
+                    }
+                    $('#published-public').text(publicStr)
+                    $('input[name=isPublic][value="' + d.data.visitType + '"]').attr("checked", true);
+                    if (d.data.visitType === 2) {
+                        $('input[name=isPublic][value="1"]').attr("checked", true);
+                        $('input[name=hometop]').attr("checked", true);
+                    }
+                    if (d.data.visitType === -1) {
+                        $('#passw-content').val(d.data.password)
+                        $('#hometop1').hide();
+                        $('#passw-content').show();
+                        $('#passw-content-confirm').show();
+                    }
+                    $('#breimg').attr('src', d.data.imgSrc);
+                    if (d.data.isComment === 1) {
+                        $('input[name=isComment]').attr("checked", true);
+                    } else {
+                        $('input[name=isComment]').removeAttr("checked");
+                    }
+                    form.render();
+                    edit.setContent(d.data.content);
+                    var tagsHtml = "";
+                    if (d.data.artTagsList) {
+                        layui.each(d.data.artTagsList, function (key, item) {
+                            tagsHtml += '<span class="publish-tags-content" ' +
+                                'data-id="' + item.id + '" data-text="' + item.name + '">' + (item.name) + '<a>×</a></span>';
+                        })
+                        $('.choosed').html(tagsHtml);
+                        var tags = $('.choosed').find('.publish-tags-content');
+                        tags.each(function (i) {
+                            var color = Math.random();
+                            var r = parseInt((color * (i + 1) * 1234) % 254);
+                            var g = parseInt((color * (i + 1) * 4321) % 254);
+                            var b = parseInt((color * (i + 1) * 2222) % 254);
+                            $(this).css("background-color", "rgba(" + r + "," + g + "," + b + ",0.1)")
+                            $(this).css("border", "  1px rgba(" + r + "," + g + "," + b + ",1) solid")
+                        })
+                    }
+                    layer.close(index);
+
+                }, function () {
+                    ajaxPost('/api/admin/article/temp/update/void',
+                        JSON.stringify({
+                            entityOid: d.data.id
+                        }));
                 })
+
+            }
+
+
+            function saveTempArticle() {
+                if (!isChange) return;
+                var title = $('input[name=title]').val();
+                var author = $('input[name=author]').val();
+                var typeId = $('select[name=typeId]').val();
+                var subToken = $('input[name=subToken]').val();
+                var imgsrc = $('input[name=imgsrc]').val();
+                var isPublic = $('input[name=isPublic]:checked').val();
+                var articleContent = edit.getContent();
+                var tagsId = [];
+                var data = $('.choosed>span')
+                for (let i = 0; i < data.length; i++) {
+                    let o = {};
+                    o.id = data.eq(i).data('id');
+                    o.name = data.eq(i).data('text');
+                    tagsId.push(o)
+                }
+                var publishTemp = isPublic;
+                var passw = '';
+                if (publishTemp === '1') {
+                    if ($('#hometop').prop('checked')) {
+                        publishTemp = 2;
+                    }
+                } else if (publishTemp === '-1') {
+                    passw = $('#passw-content').val();
+                }
+                var iscomment = 0;
+                if ($('#is-comment').prop('checked')) {
+                    iscomment = 1;
+                }
+                var oid = null;
+                if (d.data && d.data.id) {
+                    oid = d.data.id;
+                }
+
+                ajaxPost('/api/admin/article/temp/save',
+                    JSON.stringify({
+                        oid: oid,
+                        title: title,
+                        author: author,
+                        articleContent: articleContent,
+                        tags: tagsId,
+                        type: typeId,
+                        imgSrc: imgsrc,
+                        visitType: publishTemp,
+                        password: passw,
+                        isComment: iscomment,
+                        subToken: subToken,
+                        page: 1
+                    }));
             }
         });
 

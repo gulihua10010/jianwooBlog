@@ -41,6 +41,12 @@ layui.define(['table', 'form', 'laytpl', 'element'], function (exports) {
         });
     });
 
+    $(".search-comm").on('keypress', function (e) {
+        if (e.keyCode === 13) {
+            $(".search-btn").trigger("click");
+        }
+    });
+
     form.on('switch(comment-unread)', function (data) {
         var isChecked = data.elem.checked
         table.reload('comment-table', {

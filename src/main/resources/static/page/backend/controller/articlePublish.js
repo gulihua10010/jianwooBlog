@@ -7,19 +7,19 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
         , admin = layui.admin
 
     ;
-    var isChange = false;
     var edit;
 
     function getEdit(onChange, callback) {
         if (edit) return edit;
         edit = tinymce.render({
-            elem: "#article-content-text-edit"
-            , onChange: function () {
-                typeof onChange === "function" && onChange();
-            }
+            elem: "#article-content-text"
         }, function (opt, edit) {
             typeof callback === "function" && callback(opt, edit);
 
+        },function (editor) {
+            editor.on('keypress', function (){
+                typeof onChange === "function" && onChange(editor);
+            });
         });
         return edit;
     }
@@ -27,7 +27,7 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
     $('.choosed').on('click', 'a', function () {
         $(this).parent().remove();
     })
-    $('.choose-tags').on('click', '.publish-tags-content', function () {
+    $('.tags').on('click', '.publish-tags-content', function () {
         var flag = 0, choosed = $('.choosed>span');
         for (var i = 0; i < choosed.length; i++) {
             var obj = $(choosed[i]).clone();
@@ -188,9 +188,9 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
         var publishTemp = 1;
         var passw = '';
 
-        var data = $('.choosed>span>span')
+        var data = $('.choosed>span')
         for (var i = 0; i < data.length; i++) {
-            tagsId[i] = data.eq(i).text();
+            tagsId[i] = data.eq(i).data('id')
         }
         publishTemp = field.isPublic
         if (publishTemp == 1) {
@@ -211,6 +211,8 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
         var published = publishTemp == undefined ? 1 : publishTemp;
         var password = passw;
 
+        var tempArtOid = $('#tempData').val();
+
         if (btnstatus === 1) {
             ajaxPost('/api/admin/article/submit',
                 JSON.stringify({
@@ -223,12 +225,13 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
                     visitType: published,
                     password: password,
                     isComment: iscomment,
+                    tempArtOid: tempArtOid,
                     subToken: field.subToken
 
                 }),
                 '发布成功',
                 function () {
-                    admin.events.refresh();
+                    admin.events.refreshWithoutEvent();
                 });
         } else if (btnstatus === 0) {
             ajaxPost('/api/admin/article/save/draft',
@@ -242,13 +245,14 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
                     visitType: published,
                     password: password,
                     isComment: iscomment,
+                    tempArtOid: tempArtOid,
                     subToken: field.subToken
 
 
                 }),
                 '保存成功',
                 function () {
-                    admin.events.refresh();
+                    admin.events.refreshWithoutEvent();
                 });
         } else if (btnstatus === -1) {
             layer.confirm('确定把这文章移除到回收站吗？', function (index) {
@@ -263,13 +267,14 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
                         visitType: published,
                         password: password,
                         isComment: iscomment,
+                        tempArtOid: tempArtOid,
                         subToken: field.subToken
 
 
                     }),
                     '移动至回收站成功',
                     function () {
-                        admin.events.refresh();
+                        admin.events.refreshWithoutEvent();
                     });
             });
 
@@ -281,60 +286,11 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
 
     $('#cancel').click(function () {
         alertAsk('确认清除所有输入的数据，恢复初始状态?', function () {
-            admin.events.refresh();
+            admin.events.refreshWithoutEvent();
         })
     })
 
-    $("input[name=title],input[name=author]").change(function () {
-        isChange = true;
 
-    })
-
-
-    window.onunload = function () {
-        if (!isChange) return;
-        var title = $('input[name=title]').val();
-        var author = $('input[name=author]').val();
-        var typeId = $('select[name=typeId]').val();
-        var subToken = $('input[name=subToken]').val();
-        var imgsrc = $('input[name=imgsrc]').val();
-        var isPublic = $('input[name=isPublic]:checked').val();
-        var articleContent = edit.getContent();
-        var tagsId = [];
-        var data = $('.choosed>span>span')
-        for (var i = 0; i < data.length; i++) {
-            tagsId[i] = data.eq(i).text();
-        }
-        var publishTemp = isPublic;
-        var passw = '';
-        if (publishTemp === '1') {
-            if ($('#hometop').prop('checked')) {
-                publishTemp = 2;
-            }
-        } else if (publishTemp === '-1') {
-            passw = $('#passw-content').val();
-        }
-        var iscomment = 0;
-        if ($('#is-comment').prop('checked')) {
-            iscomment = 1;
-        }
-
-        ajaxPost('/api/admin/article/temp/save',
-            JSON.stringify({
-                title: title,
-                author: author,
-                articleContent: articleContent,
-                tags: tagsId,
-                type: typeId,
-                imgSrc: imgsrc,
-                visitType: publishTemp,
-                password: passw,
-                isComment: iscomment,
-                subToken: subToken,
-                page: 1
-            }));
-
-    }
 
 
     $('#articlePreview').click(function () {

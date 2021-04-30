@@ -104,6 +104,7 @@ public class CommentBizServiceImpl implements CommentBizService {
         try {
             commentTransDao.doInsert(comment);
         } catch (DaoException e) {
+            log.error("CommentBizServiceImpl.doAddComment exec failed, e:\n", e);
             throw CommentBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + artOid).print();
 
         }
@@ -111,6 +112,7 @@ public class CommentBizServiceImpl implements CommentBizService {
         try {
             article = articleTransDao.queryArticleByPrimaryKey(artOid);
         } catch (DaoException e) {
+            log.error("CommentBizServiceImpl.doAddComment exec failed, e:\n", e);
             throw ArticleBizException.NOT_EXIST_EXCEPTION.format(artOid).print();
 
         }
@@ -118,6 +120,7 @@ public class CommentBizServiceImpl implements CommentBizService {
         try {
             articleTransDao.doUpdateByPrimaryKeySelective(article);
         } catch (DaoException e) {
+            log.error("CommentBizServiceImpl.doAddComment exec failed, e:\n", e);
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(artOid).print();
         }
 
@@ -227,6 +230,7 @@ public class CommentBizServiceImpl implements CommentBizService {
         try {
             comment = commentTransDao.queryCommentByPrimaryKey(oid);
         } catch (DaoException e) {
+            log.error("CommentBizServiceImpl.doAddCommentPraise exec failed, e:\n", e);
             throw CommentBizException.NOT_EXIST_EXCEPTION.format(oid).print();
 
         }
@@ -235,6 +239,7 @@ public class CommentBizServiceImpl implements CommentBizService {
         try {
             commentTransDao.doUpdateByPrimaryKey(comment);
         } catch (DaoException e) {
+            log.error("CommentBizServiceImpl.doAddCommentPraise exec failed, e:\n", e);
             throw CommentBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
         }
     }
@@ -327,6 +332,7 @@ public class CommentBizServiceImpl implements CommentBizService {
         try {
             commentTransDao.doUpdateByPrimaryKeySelective(comment);
         } catch (DaoException e) {
+            log.error("CommentBizServiceImpl.doUpdateReadByOid exec failed, e:\n", e);
             throw CommentBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
         }
     }

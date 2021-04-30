@@ -22,7 +22,9 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function (exports) {
 
         , debug: true //是否开启调试模式。如开启，接口异常时会抛出异常 URL 等信息
 
-        , interceptor: false //是否开启未登入拦截
+        , interceptor: true //是否开启未登入拦截
+
+        , loginPage : '/passport/login'
 
         //自定义请求字段
         , request: {
@@ -44,7 +46,7 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function (exports) {
 
         //独立页面路由，可随意添加（无需写参数）
         , indPage: [
-            '/user/login' //登入页
+            '/passport/login' //登入页
             , '/user/reg' //注册页
             , '/user/forget' //找回密码
             , '/template/tips/test' //独立页的一个测试 demo

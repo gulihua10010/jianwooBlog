@@ -109,6 +109,7 @@ public class MenuBizServiceImpl implements MenuBizService {
                 try {
                     DomainUtil.clearProperties(newMenu);
                 } catch (Exception e) {
+                    log.error("MenuBizServiceImpl.processMenu exec failed, e:\n", e);
                     throw new JwBlogException(ExceptionConstants.SYSTEM_EXCEPTION, e).print();
                 }
             }
@@ -168,6 +169,7 @@ public class MenuBizServiceImpl implements MenuBizService {
         try {
             menuTransDao.doInsert(menu);
         } catch (DaoException e) {
+            log.error("MenuBizServiceImpl.doAddMenu exec failed, e:\n", e);
             throw MenuBizException.CREATE_FAILED_EXCEPTION.format(name).print();
         }
     }
@@ -193,6 +195,7 @@ public class MenuBizServiceImpl implements MenuBizService {
             try {
                 menuTransDao.doUpdateByPrimaryKeySelective(menu);
             } catch (DaoException e) {
+                log.error("MenuBizServiceImpl.doReSortMenuByoids exec failed, e:\n", e);
                 throw MenuBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
 
             }
@@ -209,6 +212,7 @@ public class MenuBizServiceImpl implements MenuBizService {
         try {
             menuTransDao.doUpdateByPrimaryKeySelective(menu);
         } catch (DaoException e) {
+            log.error("MenuBizServiceImpl.doUpdateMenuName exec failed, e:\n", e);
             throw MenuBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
 
         }
@@ -222,6 +226,7 @@ public class MenuBizServiceImpl implements MenuBizService {
         try {
             m = menuTransDao.queryMenuByPrimaryKey(oid);
         } catch (DaoException e) {
+            log.error("MenuBizServiceImpl.queryMenuNameById exec failed, e:\n", e);
             throw MenuBizException.NOT_EXIST_EXCEPTION.format(oid).print();
         }
         return m.getText();
@@ -235,6 +240,7 @@ public class MenuBizServiceImpl implements MenuBizService {
         try {
             subMenu = menuTransDao.queryMenuByPrimaryKey(oid);
         } catch (DaoException e) {
+            log.error("MenuBizServiceImpl.queryParentMenuNameBySubId exec failed, e:\n", e);
             throw MenuBizException.NOT_EXIST_EXCEPTION.format(oid).print();
 
         }
@@ -242,6 +248,7 @@ public class MenuBizServiceImpl implements MenuBizService {
         try {
             parentMenu = menuTransDao.queryMenuByPrimaryKey(subMenu.getParentOid());
         } catch (DaoException e) {
+            log.error("MenuBizServiceImpl.queryParentMenuNameBySubId exec failed, e:\n", e);
             throw MenuBizException.NOT_EXIST_EXCEPTION.format(oid).print();
         }
         return parentMenu.getText();
@@ -256,12 +263,14 @@ public class MenuBizServiceImpl implements MenuBizService {
         try {
             subMenu = menuTransDao.queryMenuByPrimaryKey(oid);
         } catch (DaoException e) {
+            log.error("MenuBizServiceImpl.queryParentMenuBySubId exec failed, e:\n", e);
             throw MenuBizException.NOT_EXIST_EXCEPTION.format(oid).print();
         }
         Menu parentMenu = null;
         try {
             parentMenu = menuTransDao.queryMenuByPrimaryKey(subMenu.getParentOid());
         } catch (DaoException e) {
+            log.error("MenuBizServiceImpl.queryParentMenuBySubId exec failed, e:\n", e);
             throw MenuBizException.NOT_EXIST_EXCEPTION.format(oid).print();
         }
         return parentMenu;
@@ -275,6 +284,7 @@ public class MenuBizServiceImpl implements MenuBizService {
         try {
             m = menuTransDao.queryMenuByPrimaryKey(oid);
         } catch (DaoException e) {
+            log.error("MenuBizServiceImpl.querySubMenuByParentId exec failed, e:\n", e);
             throw MenuBizException.NOT_EXIST_EXCEPTION.format(oid).print();
         }
 
@@ -314,12 +324,14 @@ public class MenuBizServiceImpl implements MenuBizService {
                 menu.setUpdateDate(new Date());
 
             } catch (DaoException e) {
+                log.error("MenuBizServiceImpl.doSortFrontMenuList exec failed, e:\n", e);
                 throw MenuBizException.NOT_EXIST_EXCEPTION.format(oid).print();
             }
             if (menu != null) {
                 try {
                     menuTransDao.doUpdateByPrimaryKeySelective(menu);
                 } catch (DaoException e) {
+                    log.error("MenuBizServiceImpl.doSortFrontMenuList exec failed, e:\n", e);
                     throw MenuBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
                 }
             }
@@ -342,6 +354,7 @@ public class MenuBizServiceImpl implements MenuBizService {
         try {
             menuTransDao.doUpdateByPrimaryKeySelective(menu);
         } catch (DaoException e) {
+            log.error("MenuBizServiceImpl.doUpdateMenu exec failed, e:\n", e);
             throw MenuBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
 
         }
@@ -353,6 +366,7 @@ public class MenuBizServiceImpl implements MenuBizService {
         try {
             menuTransDao.doDeleteByPrimaryKey(oid);
         } catch (DaoException e) {
+            log.error("MenuBizServiceImpl.doRemoveMenuById exec failed, e:\n", e);
             throw MenuBizException.DELETE_FAILED_EXCEPTION.format(oid).print();
         }
 
@@ -365,6 +379,7 @@ public class MenuBizServiceImpl implements MenuBizService {
         try {
             menu = menuTransDao.queryMenuByPrimaryKey(oid);
         } catch (DaoException e) {
+            log.error("MenuBizServiceImpl.doValidateSubMenuExist exec failed, e:\n", e);
             throw MenuBizException.NOT_EXIST_EXCEPTION.format(oid).print();
         }
         List<Menu> menuList = querySubMenuByParentId(oid);
@@ -385,6 +400,7 @@ public class MenuBizServiceImpl implements MenuBizService {
         try {
             menu = menuTransDao.queryMenuByPrimaryKey(oid);
         } catch (DaoException e) {
+            log.error("MenuBizServiceImpl.doValidateArticleExistsInMenu exec failed, e:\n", e);
             throw MenuBizException.NOT_EXIST_EXCEPTION.format(oid).print();
         }
         List<Article> articleList = articleTransDao.queryArticleByType(oid.intValue());
