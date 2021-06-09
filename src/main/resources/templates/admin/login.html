@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>管理员登陆 </title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/static/plugins/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/static/page/admin/style/login.css" media="all">
+    <link rel="stylesheet" href="/static/page/admin/style/admin.css" media="all">
+
+    <script>
+        /^http(s*):\/\//.test(location.href) || alert('系统错误');
+    </script>
+</head>
+<body>
+
+
+<style>
+
+    .show {
+        display: block;
+    }
+
+    .hide {
+        display: none;;
+    }
+
+    .layui-btn {
+        -webkit-box-shadow: 0 3px 4px 0 rgba(7, 65, 60, .32),
+        inset 0 -2px 0 0 rgb(6, 141, 129);
+        box-shadow: 0 3px 4px 0 rgba(7, 65, 60, .32),
+        inset 0 -2px 0 0 rgb(6, 141, 129);
+        transition: all .2s;
+        -webkit-transition: all .2s;
+        -moz-transition: all .2s;
+        -ms-transition: all .2s;
+        -o-transition: all .2s;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .layui-btn:active {
+        -webkit-box-shadow: 0 3px 4px 0 rgba(7, 65, 60, .32), inset 0 0px 0 0 rgb(6, 141, 129);
+        box-shadow: 0 3px 4px 0 rgba(7, 65, 60, .32), inset 0 0px 0 0 rgb(6, 141, 129);
+        background-image: -webkit-gradient(linear, left bottom, left top,
+        from(#33ABA0), color-stop(96%, #1a988c));
+        background-image: linear-gradient(0deg, #33ABA0 0%, #1a988c 96%);
+        -webkit-transform: scale(0.98);
+        transform: scale(1);
+        transition: all .4s;
+    }
+
+    .layui-btn:hover {
+        -webkit-box-shadow: 0 8px 20px 0 rgba(7, 65, 60, .4);
+        box-shadow: 0 8px 20px 0 rgba(7, 65, 60, .4);
+        border-radius: 3px;
+        -webkit-transform: scale(1.02);
+        transform: scale(1.01) translateY(-2px);
+    }
+</style>
+<div class="layadmin-user-login layadmin-user-display-show" id="LAY-user-login" style="display: none;">
+
+    <div class="layadmin-user-login-main login-content">
+        <div class="layadmin-user-login-box layadmin-user-login-header">
+            <h2>管理员登录</h2>
+        </div>
+        <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+            <div class="layui-form-item">
+                <label class="layadmin-user-login-icon layui-icon-username layui-icon"
+                       for="LAY-user-login-username"></label>
+                <input class="layui-input" id="LAY-user-login-username" lay-verify="required" name="username"
+                       placeholder="用户名" autocomplete="off" type="text">
+            </div>
+            <div class="layui-form-item" id="USER-PASSWORD">
+                <label class="layadmin-user-login-icon layui-icon layui-icon-password"
+                       for="LAY-user-login-password"></label>
+                <input class="layui-input" id="LAY-user-login-password" lay-verify="required" name="password"
+                       placeholder="密码" type="password">
+            </div>
+
+
+            <div class="layui-form-item" style="margin-bottom: 20px;">
+                <input lay-skin="primary" name="remember" title="记住密码" type="checkbox">
+                <a class="layadmin-user-jump-change layadmin-link" href="forget.html" style="margin-top: 7px;">忘记密码？</a>
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn layui-btn-fluid" lay-filter="user-login-submit" lay-submit>登 录</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script type="text/html" id="LOGIN-CAPTCHA" lay-url="/api/main/config/query"
+        lay-data="{key: 'IS_LOGIN_NEED_CAPTCHA'}" lay-type="post">
+    {{# if(d.data.value === 'TRUE'){ }}
+    <div class="layui-form-item inputs" id="captcha-block">
+        <div id="embed-captcha" style="margin-right: 15px"></div>
+        <p id="wait" class="show">正在加载验证码......</p>
+    </div>
+    {{# } }}
+
+</script>
+<script src="/static/plugins/layui/layui.js"></script>
+<script src="/static/comm/js/geetest.js"></script>
+<script src="/static/comm/js/crypto-js.min.js"></script>
+<script>
+
+    layui.config({
+        base: '/static/page/admin/'
+    }).extend({
+        setter: 'config',
+        view: 'lib/view',
+        admin: 'lib/admin',
+        common: 'controller/common',
+    }).use(['setter', 'admin', 'common'], function () {
+        var $ = layui.$
+            , laytpl = layui.laytpl
+            , setter = layui.setter
+            , form = layui.form
+        ;
+
+        var url = $('#LOGIN-CAPTCHA').attr('lay-url');
+
+
+        var cryptoKey = setter.cryptoKey;
+        ajaxApiPost(url
+            , {key: 'IS_LOGIN_NEED_CAPTCHA'}
+            , function (d) {
+                var getTpl = document.getElementById('LOGIN-CAPTCHA').innerHTML;
+                var password = $('#USER-PASSWORD');
+
+                laytpl(getTpl).render(d, function (html) {
+                    password.after(html)
+                });
+
+
+                if (d.data.value === 'TRUE') {
+                    var handlerEmbed = function (captchaObj) {
+                        layui.form.on('submit(user-login-submit)', function (formData) {
+                            captchaLogin(captchaObj, formData);
+                        });
+                        $("input").on('keypress', function (e) {
+                            if (e.keyCode === 13) {
+                                $(".layui-btn").trigger("click");
+                            }
+                        });
+                        // 将验证码加到id为captcha的元素里，同时会有三个input的值：geetest_challenge, geetest_validate, geetest_seccode
+
+                        captchaObj.appendTo("#embed-captcha");
+                        captchaObj.onReady(function () {
+                            $("#wait")[0].className = "hide";
+                        });
+                        // 更多接口参考：http://www.geetest.com/install/sections/idx-client-sdk.html
+                    };
+
+                    $.ajax({
+                        // 获取id，challenge，success（是否启用failback）
+                        url: "/api/passport/login/captcha/init?t=" + (new Date).getTime(), // 加随机数防止缓存
+                        type: "get",
+                        dataType: "json",
+                        success: function (res) {
+                            // 使用initGeetest接口
+                            // 参数1：配置参数
+                            // 参数2：回调，回调的第一个参数验证码对象，之后可以使用它做appendTo之类的事件
+                            initGeetest({
+                                gt: res.gt,
+                                challenge: res.challenge,
+                                new_captcha: res.newCaptcha,
+                                product: "float", // 产品形式，包括：float，embed，popup。注意只对PC版验证码有效
+                                offline: !res.success,// 表示用户后台检测极验服务器是否宕机，一般不需要关注
+                                width: '315px',
+                            }, handlerEmbed);
+                        },
+
+                    });
+                } else {
+                    layui.form.on('submit(user-login-submit)', function (formData) {
+                        var field = formData.field;
+                        login(field);
+
+                    });
+                    $("input").on('keypress', function (e) {
+                        if (e.keyCode === 13) {
+                            $(".layui-btn").trigger("click");
+                        }
+                    });
+                }
+            })
+        var isCheck = layui.data(setter.tableName).isRememberPwd;
+
+
+        if (isCheck === true) {
+            var username = layui.data(setter.tableName).username;
+            var password = layui.data(setter.tableName).password;
+            $('input[name=username]').val(username);
+            $('input[name=password]').val(aesDecrypt(password, cryptoKey));
+            $('input[name=remember]').attr("checked", true);
+            form.render();
+        }
+
+
+        function captchaLogin(captchaObj, formData) {
+            var validate = captchaObj.getValidate();
+            var field = formData.field;
+            if (!validate) {
+                alertFail("提示", "请先完成验证!");
+            } else {
+                $.ajax({
+                    url: "/api/passport/login/captcha/verify",
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+
+                        geetest_challenge: validate.geetest_challenge,
+                        geetest_validate: validate.geetest_validate,
+                        geetest_seccode: validate.geetest_seccode,
+                    },
+                    success: function (data) {
+                        if (data.status === "000000") {
+                            login(field, captchaObj, data.token);
+
+                        } else {
+                            alertFail("验证失败", "验证码验证失败，请刷新页面重试！")
+                            setTimeout(function () {
+                                captchaObj && captchaObj.reset(); // 调用该接口进行重置
+                            }, 1000);
+                        }
+
+
+                    }
+                })
+            }
+        }
+
+
+        function login(field, captchaObj, token) {
+            var isCheck = $('input[name=remember]').is(':checked')
+            layui.data(setter.tableName, {
+                key: "isRememberPwd"
+                , value: isCheck
+            });
+
+            ajaxPostForm(
+                "/api/passport/login/auth",
+                {
+                    username: field.username,
+                    password: field.password,
+                    access_token: token,
+                },
+                "登录成功",
+                function () {
+                    if (isCheck) {
+                        layui.data(setter.tableName, {
+                            key: "username"
+                            , value: field.username
+                        });
+                        layui.data(setter.tableName, {
+                            key: "password"
+                            , value: aesEncrypt(field.password, cryptoKey)
+                        });
+                    }
+                    var idx = location.href.indexOf('#')
+
+                    location.href = idx !== -1 ? "/admin" + decodeURIComponent(location.href.substr(idx)) : '/admin';
+
+                },
+                function () {
+                    captchaObj && captchaObj.reset(); // 调用该接口进行重置
+                },
+                function (xhr, data) {
+                    var access_token = xhr.getResponseHeader(setter.request.tokenName);
+                    //请求成功后，写入 access_token
+                    layui.data(setter.tableName, {
+                        key: setter.request.tokenName
+                        , value: access_token
+                    });
+                }
+            );
+        }
+
+    });
+
+</script>
+</body>
+</html>

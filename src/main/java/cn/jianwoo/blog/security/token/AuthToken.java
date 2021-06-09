@@ -11,13 +11,18 @@ import lombok.Data;
 public class AuthToken {
 
     /**
+     * USER OID
+     */
+    private Long uid;
+
+    /**
      * Access token.
      */
     private String accessToken;
     /**
      * Expired in. (seconds)
      */
-    private int expiredIn;
+    private Long expiredIn;
     /**
      * Refresh token.
      */

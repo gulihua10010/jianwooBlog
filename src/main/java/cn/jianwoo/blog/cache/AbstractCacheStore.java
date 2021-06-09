@@ -44,7 +44,8 @@ public abstract class AbstractCacheStore<K, V> implements CacheStore<K, V> {
         Assert.notNull(key, "Cache key must not be blank");
         return getInternal(key).map(cacheWrapper -> {
                     if (cacheWrapper.getIsSetExpire() && null != cacheWrapper.getExpireAt() && cacheWrapper.getExpireAt().before(DateUtil.getNow())) {
-                        log.warn("Cache key: [{}] has been expired", key);
+                        log.warn("Cache key: [{}] has been expired, create date: [{}], expire date [{}] ",
+                                key, DateUtil.getStandardFormat(cacheWrapper.getCreateAt()), DateUtil.getStandardFormat(cacheWrapper.getExpireAt()));
                         delete(key);
                         return null;
                     }

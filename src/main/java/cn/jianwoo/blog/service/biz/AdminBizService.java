@@ -20,10 +20,10 @@ public interface AdminBizService {
      * 登录
      *
      * @param name     用户名
-     * @param password 密码
+     //* @param password 密码 (已经移除，在security做校验)
      * @param ip       ip
      * @return
      * @author gulihua
      */
-    AuthToken authLogin(@NonNull String name, @NonNull String password, @NonNull String ip) throws JwBlogException;
+    AuthToken authLogin(@NonNull String name, @NonNull String ip) throws JwBlogException;
 }

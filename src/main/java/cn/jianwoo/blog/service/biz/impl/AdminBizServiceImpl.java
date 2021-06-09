@@ -29,7 +29,7 @@ public class AdminBizServiceImpl implements AdminBizService {
     @Autowired
     private CacheStore<String, String> jwCacheStore;
     @Value("${access.token.expired.seconds}")
-    private int accessTokenExpiredSeconds;
+    private Long accessTokenExpiredSeconds;
     @Value("${access.token.expired.days}")
     private int accessTokenExpiredDays;
 
@@ -58,20 +58,21 @@ public class AdminBizServiceImpl implements AdminBizService {
 
 
     @Override
-    public AuthToken authLogin(String name, String password, String ip) throws JwBlogException {
+    public AuthToken authLogin(String name, String ip) throws JwBlogException {
 
         log.info("========>> Start admin login,name= {},ip= {}", name, ip);
 
         Admin admin = adminTransDao.queryAdminByName(name);
-        if (admin == null) {
-            throw AdminBizException.NOT_EXIST_EXCEPTION_CN.format(name).print();
-        }
-        String pwd = DigestUtils.md5DigestAsHex(password.getBytes());
-        if (!pwd.equals(admin.getPassword())) {
-            log.warn("Admin [name = {}, ip = {}] login failed", name, ip);
-            throw AdminBizException.USERNAME_OR_PASSWORD_INCORRECT.print();
-
-        }
+        //security已经做过校验，这里不再做
+//        if (admin == null) {
+//            throw AdminBizException.NOT_EXIST_EXCEPTION_CN.format(name).print();
+//        }
+//        String pwd = DigestUtils.md5DigestAsHex(password.getBytes());
+//        if (!pwd.equals(admin.getPassword())) {
+//            log.warn("Admin [name = {}, ip = {}] login failed", name, ip);
+//            throw AdminBizException.USERNAME_OR_PASSWORD_INCORRECT.print();
+//
+//        }
 
         admin.setUpdateDate(new Date());
         admin.setIp(ip);
@@ -84,17 +85,21 @@ public class AdminBizServiceImpl implements AdminBizService {
             throw AdminBizException.MODIFY_FAILED_EXCEPTION.format(name).print();
         }
 
+        //生成jwt token对象
         AuthToken authToken = JwBuilder.of(AuthToken::new)
+                .with(AuthToken::setUid, admin.getOid())
                 .with(AuthToken::setAccessToken, JwUtil.randomUUIDWithoutDash())
                 .with(AuthToken::setRefreshToken, JwUtil.randomUUIDWithoutDash())
                 .with(AuthToken::setExpiredIn, accessTokenExpiredSeconds).build();
+        //生成user对象(移除密码等敏感信息)
         UserBO user = JwBuilder.of(UserBO::new)
                 .with(UserBO::setId, admin.getOid())
                 .with(UserBO::setName, admin.getUsername()).build();
-        jwCacheStore.put("user", user.getId().toString());
         jwCacheStore.put(SecurityUtils.buildAccessTokenKey(user), authToken.getAccessToken(), accessTokenExpiredSeconds, TimeUnit.SECONDS);
 
-        log.info("========>> Admin [username={}, ip={}] login successfully!!1", name, ip);
+
+
+        log.info("========>> Admin [username={}, ip={}] login successfully!!!", name, ip);
 
         return authToken;
 

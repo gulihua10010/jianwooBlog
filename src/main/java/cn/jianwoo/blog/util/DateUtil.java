@@ -41,6 +41,17 @@ public class DateUtil extends cn.hutool.core.date.DateUtil {
         return formatTimestamp(getNow());
     }
 
+    public static String getStandardFormat(Date date) {
+        if (null == date)
+            return "";
+        return cn.hutool.core.date.DateUtil.format(date, DATE_FORMAT_YYYYMMDDHHMMSS);
+    }
+
+
+    public static String getNowStandardFormat() {
+        return getStandardFormat(getNow());
+    }
+
 
     /**
      * 时间的加法

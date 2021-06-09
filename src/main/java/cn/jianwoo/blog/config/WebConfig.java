@@ -1,7 +1,7 @@
 package cn.jianwoo.blog.config;
 
+import cn.jianwoo.blog.config.router.admin.CommAdminPageUrlConfig;
 import cn.jianwoo.blog.config.router.admin.CommApiUrlConfig;
-import cn.jianwoo.blog.config.router.admin.CommBackendPageUrlConfig;
 import cn.jianwoo.blog.config.router.admin.LoginApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.interceptor.LoginHandleInterceptor;
@@ -13,6 +13,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
@@ -21,7 +22,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${file.upload.path}")
     private String uploadPath;
     private static final String[] EXCLUDE_PATH = {
-            CommBackendPageUrlConfig.URL_PREFIX + CommBackendPageUrlConfig.URL_LOGIN,
+            CommAdminPageUrlConfig.URL_PREFIX + CommAdminPageUrlConfig.URL_LOGIN,
             LoginApiUrlConfig.URL_PREFIX + LoginApiUrlConfig.URL_PREFIX,
             LoginApiUrlConfig.URL_PREFIX + LoginApiUrlConfig.URL_LOGIN_CAPTCHA_INIT,
             LoginApiUrlConfig.URL_PREFIX + LoginApiUrlConfig.URL_LOGIN_CAPTCHA_VERIFY,
@@ -46,8 +47,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        //废弃通过session方法控制登录
 //        registry.addInterceptor(loginHandleInterceptor()
-//        ).addPathPatterns(Constants.ALL_PATH_PATTERNS).excludePathPatterns(EXCLUDE_PATH);
+//        ).addPathPatterns(Constants.ALL_ADMIN_PAGE);
 
     }
 

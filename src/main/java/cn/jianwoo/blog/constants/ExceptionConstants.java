@@ -3,6 +3,7 @@ package cn.jianwoo.blog.constants;
 public final class ExceptionConstants {
 
     public static final String SYSTEM_EXCEPTION = "999999";
+    public static final String UNAUTHORIZED = "900001";
     public static final String DAO_INSERT_RESULT_0 = "100001";
     public static final String DAO_UPDATE_RESULT_0 = "100002";
     public static final String DAO_DELETE_RESULT_0 = "100003";
@@ -57,6 +58,7 @@ public final class ExceptionConstants {
 
     public static final String LOGIN_CAPTCHA_AUTH_INVALID = "400010";
     public static final String LOGIN_CAPTCHA_AUTH_INVALID_DESC = "验证码验证失败，请刷新页面重试！";
+    public static final String UNAUTHORIZED_DESC = "接口鉴权失败，未经授权的操作!";
 
     private ExceptionConstants() {
     }

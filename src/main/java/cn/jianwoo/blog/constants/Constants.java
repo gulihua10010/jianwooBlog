@@ -26,6 +26,7 @@ public class Constants {
     public static final String SYMBOL_AIT = "@";
     public static final String DEFAULT_CHARSET = "UTF-8";
     public static final String HASH_ALGORITHM = "MD5";
+    public static final String CONTENT_TYPE_JSON = "application/json;charset=UTF-8";
 
     public static final String SEPARATE_HYPHEN = "_";
     public static final String FILE_POINT = ".";
@@ -54,9 +55,27 @@ public class Constants {
     public static final String ALL_PATH_PATTERNS = "/**";
     public static final String ALL_STATIC_PATTERNS = "/static/**";
     public static final String ALL_RES_PATTERNS = "/res/**";
+    public static final String ALL_ADMIN_API = "/api/admin/**";
+    public static final String ALL_FILE_API = "/api/file/**";
+    public static final String ALL_ADMIN_PAGE= "/admin**";
+    public static final String ALL_ADMIN_PASSPORT= "/admin/passport";
 
     //admin
     public static final String ADMIN = "admin";
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
+    public static final String ACCESS_TOKEN = "access_token";
+    public static final String LOGIN_IP = "login_ip";
+    public static final String AUTH_TOKEN = "AUTH_TOKEN";
+    public static final String WRONG_PASSWORD = "用户名或密码错误!";
+    public static final String SUCCESS_LOGIN = "登录成功!!";
+    public static final String USER_KEY = "USER_ID";
+    public static final String REFRESH_TOKEN = "REFRESH_TOKEN";
+    public static final String ROLE_PREFIX = "ROLE_";
+    public static final String CURRENT_USER = "CURRENT_USER";
+
+    public static final String LOGIN_CAPTCHA_AUTH = "JIANWOO.LOGIN.CAPTCHA.AUTH";
+    public static final String LOGIN_SESSION = "JIANWOO.LOGIN.SESSION";
 
 
 }

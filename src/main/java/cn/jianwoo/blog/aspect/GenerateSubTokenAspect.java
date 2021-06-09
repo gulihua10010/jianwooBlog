@@ -28,7 +28,7 @@ public class GenerateSubTokenAspect {
     public static final String PAGE_ID = "PAGE_ID";
     public static final String OPEN = "_OPEN";
 
-    @Pointcut("execution(public * cn.jianwoo.blog.controller.backend.page.AdminPageController.*(..))")
+    @Pointcut("execution(public * cn.jianwoo.blog.controller.admin.page.AdminPageController.*(..))")
     public void generateToken() {
     }
 

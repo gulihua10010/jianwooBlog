@@ -1,6 +1,6 @@
 package cn.jianwoo.blog.dto.response.vo;
 
-import cn.jianwoo.blog.config.router.admin.CommBackendPageUrlConfig;
+import cn.jianwoo.blog.config.router.admin.CommAdminPageUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.util.DomainUtil;
 import lombok.AllArgsConstructor;
@@ -54,7 +54,7 @@ public class VisitVO implements Serializable {
     public String getDesc() {
         return String.format(TEMPLATE, DomainUtil.format(this.area, Constants.UNKNOW),
                 DomainUtil.format(this.ip, Constants.UNKNOW), this.visitDate,
-                CommBackendPageUrlConfig.URL_ARTICLE_EDIT.replace("{id}", String.valueOf(this.articleOid)),
+                CommAdminPageUrlConfig.URL_ARTICLE_EDIT.replace("{id}", String.valueOf(this.articleOid)),
                 this.articleTitle);
     }
 

@@ -25,7 +25,7 @@ public class BaseRequestDto implements Serializable {
     private String clientIp;
     private String clientName;
     private String sessionId;
-    private String token;
+    private String access_token;
     private Date requestDate = new Date();
 
 }

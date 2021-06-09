@@ -1,7 +1,7 @@
 package cn.jianwoo.blog.dto.response.vo;
 
 import cn.jianwoo.blog.config.LongToStringSerializerConfig;
-import cn.jianwoo.blog.config.router.admin.CommBackendPageUrlConfig;
+import cn.jianwoo.blog.config.router.admin.CommAdminPageUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.util.DomainUtil;
 import com.alibaba.fastjson.annotation.JSONField;
@@ -63,7 +63,7 @@ public class ArticleVO implements Serializable {
     public String getDesc() {
         return String.format(TEMPLATE, DomainUtil.format(this.author, Constants.ANAONYMOUS),
                 this.publishDate,
-                CommBackendPageUrlConfig.URL_PREFIX + CommBackendPageUrlConfig.URL_ARTICLE_EDIT.replace("{id}", String.valueOf(this.oid)),
+                CommAdminPageUrlConfig.URL_PREFIX + CommAdminPageUrlConfig.URL_ARTICLE_EDIT.replace("{id}", String.valueOf(this.oid)),
                 this.title);
     }
 

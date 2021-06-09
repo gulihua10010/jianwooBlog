@@ -34,6 +34,10 @@ public class SecurityUtils {
         return TOKEN_ACCESS_CACHE_PREFIX + user.getId();
     }
 
+    public static String buildAccessTokenKey(@NonNull Long id) {
+        return TOKEN_ACCESS_CACHE_PREFIX + id;
+    }
+
     public static String buildRefreshTokenKey(@NonNull UserBO user) {
         return TOKEN_REFRESH_CACHE_PREFIX + user.getId();
     }

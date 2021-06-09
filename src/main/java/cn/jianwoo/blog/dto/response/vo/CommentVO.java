@@ -1,6 +1,6 @@
 package cn.jianwoo.blog.dto.response.vo;
 
-import cn.jianwoo.blog.config.router.admin.CommBackendPageUrlConfig;
+import cn.jianwoo.blog.config.router.admin.CommAdminPageUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.util.DomainUtil;
 import lombok.AllArgsConstructor;
@@ -94,11 +94,11 @@ public class CommentVO implements Serializable {
         if ("DYNAMIC_TEMPLATE".equals(templateName)) {
             desc = String.format(DYNAMIC_TEMPLATE, DomainUtil.format(this.area, Constants.UNKNOW),
                     DomainUtil.format(this.ip, Constants.UNKNOW), DomainUtil.format(this.user, Constants.ANAONYMOUS),
-                    this.date, CommBackendPageUrlConfig.URL_PREFIX + CommBackendPageUrlConfig.URL_ARTICLE_EDIT.replace("{id}", String.valueOf(this.artOid)),
+                    this.date, CommAdminPageUrlConfig.URL_PREFIX + CommAdminPageUrlConfig.URL_ARTICLE_EDIT.replace("{id}", String.valueOf(this.artOid)),
                     this.artTitle, this.content);
         } else if ("CONSOLE_TEMPLATE".equals(templateName)) {
             desc = String.format(CONSOLE_TEMPLATE, DomainUtil.format(this.user, Constants.ANAONYMOUS),
-                    this.date, CommBackendPageUrlConfig.URL_PREFIX + CommBackendPageUrlConfig.URL_ARTICLE_EDIT.replace("{id}", String.valueOf(this.artOid)),
+                    this.date, CommAdminPageUrlConfig.URL_PREFIX + CommAdminPageUrlConfig.URL_ARTICLE_EDIT.replace("{id}", String.valueOf(this.artOid)),
                     this.artTitle, this.content);
         }
 
