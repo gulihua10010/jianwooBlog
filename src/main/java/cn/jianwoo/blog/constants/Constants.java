@@ -65,12 +65,13 @@ public class Constants {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
     public static final String ACCESS_TOKEN = "access_token";
+    public static final String CAPTCHA_TOKEN = "captcha_token";
     public static final String LOGIN_IP = "login_ip";
     public static final String AUTH_TOKEN = "AUTH_TOKEN";
     public static final String WRONG_PASSWORD = "用户名或密码错误!";
     public static final String SUCCESS_LOGIN = "登录成功!!";
     public static final String USER_KEY = "USER_ID";
-    public static final String REFRESH_TOKEN = "REFRESH_TOKEN";
+    public static final String REFRESH_TOKEN = "refresh_token";
     public static final String ROLE_PREFIX = "ROLE_";
     public static final String CURRENT_USER = "CURRENT_USER";
 

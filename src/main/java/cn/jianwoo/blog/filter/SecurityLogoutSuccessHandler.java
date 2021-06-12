@@ -32,11 +32,12 @@ public class SecurityLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler 
                                 HttpServletResponse response,
                                 Authentication authentication)
             throws IOException, ServletException {
-        AuthUserTokenBO user = (AuthUserTokenBO) authentication.getPrincipal();
-        log.info("登出成功: {}", user.getUsername());
+        System.out.println(authentication);
+//        AuthUserTokenBO user = (AuthUserTokenBO) authentication.getPrincipal();
+//        log.info("登出成功: {}", user.getUsername());
         Long uid= (Long) request.getSession().getAttribute(Constants.CURRENT_USER);
         jwCacheStore.delete(SecurityUtils.buildAccessTokenKey(uid));
-        request.getSession().removeAttribute(Constants.CURRENT_USER);
+//        request.getSession().removeAttribute(Constants.CURRENT_USER);
 
     }
 

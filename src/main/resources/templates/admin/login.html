@@ -131,7 +131,7 @@
 
         var cryptoKey = setter.cryptoKey;
         ajaxApiPost(url
-            , {key: 'IS_LOGIN_NEED_CAPTCHA'}
+            , { key: 'IS_LOGIN_NEED_CAPTCHA'}
             , function (d) {
                 var getTpl = document.getElementById('LOGIN-CAPTCHA').innerHTML;
                 var password = $('#USER-PASSWORD');
@@ -252,7 +252,7 @@
                 {
                     username: field.username,
                     password: field.password,
-                    access_token: token,
+                    captcha_token: token,
                 },
                 "登录成功",
                 function () {
@@ -277,10 +277,14 @@
                 function (xhr, data) {
                     var access_token = xhr.getResponseHeader(setter.request.tokenName);
                     //请求成功后，写入 access_token
-                    layui.data(setter.tableName, {
-                        key: setter.request.tokenName
-                        , value: access_token
-                    });
+                    if (access_token)
+                    {
+                        layui.data(setter.tableName, {
+                            key: setter.request.tokenName
+                            , value: access_token
+                        });
+                    }
+
                 }
             );
         }

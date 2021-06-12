@@ -11,6 +11,7 @@ import cn.jianwoo.blog.entity.Admin;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.util.JwtUtils;
 import com.alibaba.fastjson.JSONObject;
+import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * @author GuLihua
@@ -44,6 +46,9 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     private static final PathMatcher pathMatcher = new AntPathMatcher();
     static final String USER_KEY = "USER_ID";
 
+    private final static ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("application");
+    public static String accessTokenExpireSec = RESOURCE_BUNDLE.getString("access.token.expired.seconds");
+
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -52,7 +57,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        log.info("==>>JwtAuthenticationFilter.doFilterInternal start...");
+        log.info("==>>JwtAuthenticationFilter.doFilterInternal start, url: [{}]",  request.getServletPath());
         if (isProtectedUrl(request)) {
             JwAuthenticationToken authenticationToken = getAuthentication(request);
             if (authenticationToken == null) {
@@ -88,8 +93,29 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         if (StringUtils.isNotBlank(token)) {
             Long oid = null;
             try {
-                Map<String, Object> map = JwtUtils.parse(token);
-                oid = Long.parseLong(String.valueOf(map.get(USER_KEY)));
+                Claims claims = JwtUtils.parse(token);
+
+                // token签发时间
+                long issuedAt = claims.getIssuedAt().getTime();
+                // 当前时间
+                long currentTimeMillis = System.currentTimeMillis();
+                // token过期时间
+                long expirationTime = claims.getExpiration().getTime();
+
+                // 1. 签发时间 < 当前时间 < (签发时间+((token过期时间-token签发时间) / 3 * 2)) 不刷新token
+                // 2. (签发时间+((token过期时间-token签发时间) / 3 * 2)) < 当前时间 < token过期时间 刷新token并返回给前端
+                // 3. tokne过期时间 < 当前时间 跳转登录，重新登录获取token
+                // 验证token时间有效性
+                if ((issuedAt + ((expirationTime - issuedAt) / 3 * 2 )) < currentTimeMillis && currentTimeMillis < expirationTime) {
+                    log.info("JWT token will expire  in {} Millis, system will refreshToken.",(expirationTime - issuedAt) / 3);
+                    String refreshToken = JwtUtils.sign(claims, Long.parseLong(accessTokenExpireSec) * 1000);
+                    claims.put(Constants.REFRESH_TOKEN, refreshToken);
+
+                }
+
+
+
+                oid = Long.parseLong(String.valueOf(claims.get(USER_KEY)));
                 request.setAttribute(USER_KEY, oid);
             } catch (Exception e) {
                 log.info("==>>JwtAuthenticationFilter.getAuthentication exec failed, e\r\n", e);

@@ -54,10 +54,9 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
         //验证验证码token(如果开启)
         try {
 
-
             Webconf webconf = webconfTransDao.queryWebconfByKey(WebConfDataConfig.IS_LOGIN_NEED_CAPTCHA);
             if (webconf != null && webconf.getBooleanValue()) {
-                String accessToken = (String) param.get(Constants.ACCESS_TOKEN);
+                String accessToken = (String) param.get(Constants.CAPTCHA_TOKEN);
                 String tokenStore = cacheStore.get(Constants.LOGIN_CAPTCHA_AUTH).orElse(null);
                 boolean isCaptcha = null != accessToken && accessToken.equals(tokenStore);
                 if (!isCaptcha) {

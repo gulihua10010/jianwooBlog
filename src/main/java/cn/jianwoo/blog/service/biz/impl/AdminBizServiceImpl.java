@@ -30,8 +30,6 @@ public class AdminBizServiceImpl implements AdminBizService {
     private CacheStore<String, String> jwCacheStore;
     @Value("${access.token.expired.seconds}")
     private Long accessTokenExpiredSeconds;
-    @Value("${access.token.expired.days}")
-    private int accessTokenExpiredDays;
 
     @Override
     public void register(String name, String password) throws JwBlogException {
