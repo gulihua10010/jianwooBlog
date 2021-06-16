@@ -10,6 +10,7 @@
 layui.extend({
     tinymce: "{/}" + layui.setter.base + 'lib/extend/tinymce/tinymce'
     , mouseRightMenu: "{/}" + layui.setter.base + 'lib/extend/mouseRightMenu'
+    , laytable: "{/}" + layui.setter.base + 'lib/extend/laytable'
 }).define("form", function (exports) {
     var $ = layui.$
         , layer = layui.layer
@@ -102,6 +103,19 @@ layui.extend({
 
     }
 
+    parseUrlParam = function (url){
+        var theRequest = new Object()
+        var idx = url.indexOf('?');
+        if (idx !== -1) {
+            var str = url.substr(idx+1) //substr()方法返回从参数值开始到结束的字符串；
+            var strs = str.split('&')
+            for (var i = 0; i < strs.length; i++) {
+                theRequest[strs[i].split('=')[0]] = strs[i].split('=')[1]
+            }
+        }
+        return theRequest;
+
+    }
 
     ajaxApiPost = function (url, data, call) {
 

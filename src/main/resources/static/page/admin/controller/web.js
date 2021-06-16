@@ -1,4 +1,4 @@
-layui.define(['table', 'form', 'upload'], function (exports) {
+layui.define(['form', 'upload'], function (exports) {
     var $ = layui.jquery
         , view = layui.view
         , admin = layui.admin

@@ -11,12 +11,15 @@ layui.extend({
     setter: 'config' //配置文件
     , admin: 'lib/admin' //核心模块
     , view: 'lib/view' //核心模块
-}).define(['setter', 'admin'], function (exports) {
+    , common: 'controller/common' //通用模块
+}).define(['setter', 'admin', 'common'], function (exports) {
     var setter = layui.setter
         , element = layui.element
         , admin = layui.admin
         , tabsPage = admin.tabsPage
         , view = layui.view
+
+
         //打开标签页
         , openTabsPage = function (url, text) {
             //遍历页签选项卡
@@ -148,7 +151,7 @@ layui.extend({
                 admin.tabsBodyChange(tabsPage.index);
 
             }).done(function () {
-                layui.use('common', layui.cache.callback.common);
+                // layui.use('common', layui.cache.callback.common);
                 $win.on('resize', layui.data.resize);
 
                 element.render('breadcrumb', 'breadcrumb');

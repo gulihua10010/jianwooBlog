@@ -82,8 +82,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         AuthUserTokenBO user = (AuthUserTokenBO) authResult.getPrincipal();
         //将userId存入session
         request.getSession().setAttribute(Constants.CURRENT_USER, user.getAuthToken().getUid());
-        String accessToken = request.getParameter(Constants.ACCESS_TOKEN);
-        String refreshToken = request.getParameter(Constants.REFRESH_TOKEN);
+
         generateAccessToken(response,user);
         generateRefreshToken(response,user);
 

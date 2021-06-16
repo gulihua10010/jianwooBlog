@@ -1,5 +1,5 @@
-layui.define(['table', 'form'], function (exports) {
-    var table = layui.table
+layui.define(['laytable', 'form'], function (exports) {
+    var table = layui.laytable
         , $ = layui.$
         , form = layui.form
         , view = layui.view
@@ -23,9 +23,6 @@ layui.define(['table', 'form'], function (exports) {
             statusName: 'status'
             , statusCode: '000000'
         }
-        , where: {
-            access_token: layui.data('layuiAdmin').access_token
-        }
         , page: true
         , text: {none: '无数据'}
 
@@ -34,7 +31,6 @@ layui.define(['table', 'form'], function (exports) {
     //监听搜索
     form.on('submit(art-search)', function (data) {
         var field = data.field;
-        field.access_token = layui.data('layuiAdmin').access_token
         //执行重载
         table.reload('article-table', {
             where: field

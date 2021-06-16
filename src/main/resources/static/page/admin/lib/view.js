@@ -82,6 +82,9 @@ layui.define(['laytpl', 'layer'], function (exports) {
             options.headers[request.tokenName] = request.tokenName in options.headers
                 ? options.headers[request.tokenName]
                 : (layui.data(setter.tableName)[request.tokenName] || '');
+            options.headers[request.refreshTokenName] = request.refreshTokenName in options.headers
+                ? options.headers[request.refreshTokenName]
+                : (layui.data(setter.tableName)[request.refreshTokenName] || '');
         }
         options.data = sendData;
         if (options.type === 'post' && request.type === 'string') {
@@ -141,6 +144,18 @@ layui.define(['laytpl', 'layer'], function (exports) {
 
 
                 typeof error === 'function' && error(e, code);
+            }
+            , complete: function (xhr, data) {
+                var refresh_token = xhr.getResponseHeader(setter.request.refreshAccessTokenName);
+                //请求成功后，写入 access_token
+                if (refresh_token)
+                {
+                    layui.data(setter.tableName, {
+                        key: setter.request.tokenName
+                        , value: refresh_token
+                    });
+                }
+
             }
         }, options));
     };

@@ -1,9 +1,7 @@
 package cn.jianwoo.blog.filter;
 
 import cn.hutool.extra.spring.SpringUtil;
-import cn.jianwoo.blog.base.BaseRequestDto;
 import cn.jianwoo.blog.base.BaseResponseDto;
-import cn.jianwoo.blog.config.router.admin.CommAdminPageUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.dao.base.AdminTransDao;
@@ -31,9 +29,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
@@ -59,7 +58,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         log.info("==>>JwtAuthenticationFilter.doFilterInternal start, url: [{}]",  request.getServletPath());
         if (isProtectedUrl(request)) {
-            JwAuthenticationToken authenticationToken = getAuthentication(request);
+            JwAuthenticationToken authenticationToken = getAuthentication(request,response);
             if (authenticationToken == null) {
                 log.info("==>>JwtAuthenticationFilter.doFilterInternal authenticationToken is null...");
                 //手动设置异常
@@ -81,19 +80,33 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
     }
 
-    private JwAuthenticationToken getAuthentication(HttpServletRequest request) {
+    private JwAuthenticationToken getAuthentication(HttpServletRequest request,HttpServletResponse response) {
         log.info("==>>JwtAuthenticationFilter.getAuthentication start...");
         List<GrantedAuthority> authorities = new ArrayList<>();
-        String token = request.getHeader(Constants.ACCESS_TOKEN);
-        if (StringUtils.isBlank(token))
-        {
-            token = request.getParameter(Constants.ACCESS_TOKEN);
+        String accessToken = request.getHeader(Constants.ACCESS_TOKEN);
+        if (StringUtils.isBlank(accessToken)) {
+            accessToken = request.getParameter(Constants.ACCESS_TOKEN);
         }
-        log.info("==>>JwtAuthenticationFilter.getAuthentication token {}...", token);
-        if (StringUtils.isNotBlank(token)) {
+        String refreshToken = request.getHeader(Constants.ACCESS_TOKEN);
+        if (StringUtils.isBlank(refreshToken)) {
+            refreshToken = request.getParameter(Constants.ACCESS_TOKEN);
+        }
+        log.info("==>>JwtAuthenticationFilter.getAuthentication access token {}...", accessToken);
+        log.info("==>>JwtAuthenticationFilter.getAuthentication refresh token {}...", refreshToken);
+        if (StringUtils.isNotBlank(accessToken)) {
             Long oid = null;
             try {
-                Claims claims = JwtUtils.parse(token);
+                Claims claims = JwtUtils.parse(accessToken);
+                Long refresgOid = null;
+                Date refreshExpiredDate = null;
+                if (StringUtils.isNotBlank(refreshToken)) {
+                    Claims refreshClaims = JwtUtils.parse(refreshToken);
+                    refresgOid = Long.parseLong(String.valueOf(refreshClaims.get(USER_KEY)));
+                    refreshExpiredDate = refreshClaims.getExpiration();
+
+                }
+                oid = Long.parseLong(String.valueOf(claims.get(USER_KEY)));
+                request.setAttribute(USER_KEY, oid);
 
                 // token签发时间
                 long issuedAt = claims.getIssuedAt().getTime();
@@ -106,17 +119,17 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 // 2. (签发时间+((token过期时间-token签发时间) / 3 * 2)) < 当前时间 < token过期时间 刷新token并返回给前端
                 // 3. tokne过期时间 < 当前时间 跳转登录，重新登录获取token
                 // 验证token时间有效性
-                if ((issuedAt + ((expirationTime - issuedAt) / 3 * 2 )) < currentTimeMillis && currentTimeMillis < expirationTime) {
-                    log.info("JWT token will expire  in {} Millis, system will refreshToken.",(expirationTime - issuedAt) / 3);
-                    String refreshToken = JwtUtils.sign(claims, Long.parseLong(accessTokenExpireSec) * 1000);
-                    claims.put(Constants.REFRESH_TOKEN, refreshToken);
-
+                if (Objects.equals(oid, refresgOid) && refreshExpiredDate.getTime() > currentTimeMillis) {
+                    if ((issuedAt + ((expirationTime - issuedAt) / 3 * 2)) < currentTimeMillis && currentTimeMillis < expirationTime) {
+                        log.info("JWT token (url=[{}]) will expire  in {} Millis, system will refreshToken.", request.getServletPath(), (expirationTime - currentTimeMillis));
+                        String refreshAccessToken = JwtUtils.sign(claims, Long.parseLong(accessTokenExpireSec) * 1000);
+                        // 将token放入响应头中
+                        response.setContentType(Constants.CONTENT_TYPE_JSON);
+                        response.addHeader(Constants.REFRESH_ACCESS_TOKEN, refreshAccessToken);
+                    }
                 }
 
 
-
-                oid = Long.parseLong(String.valueOf(claims.get(USER_KEY)));
-                request.setAttribute(USER_KEY, oid);
             } catch (Exception e) {
                 log.info("==>>JwtAuthenticationFilter.getAuthentication exec failed, e\r\n", e);
                 return null;

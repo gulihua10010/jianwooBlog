@@ -72,6 +72,7 @@ public class Constants {
     public static final String SUCCESS_LOGIN = "登录成功!!";
     public static final String USER_KEY = "USER_ID";
     public static final String REFRESH_TOKEN = "refresh_token";
+    public static final String REFRESH_ACCESS_TOKEN = "refresh_access_token";
     public static final String ROLE_PREFIX = "ROLE_";
     public static final String CURRENT_USER = "CURRENT_USER";
 

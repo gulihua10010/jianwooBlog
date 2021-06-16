@@ -31,6 +31,8 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function (exports) {
         //自定义请求字段
         , request: {
             tokenName: 'access_token' //自动携带 token 的字段名。可设置 false 不携带。
+            , refreshTokenName: 'refresh_token' //自动携带 refresh token 的字段名。
+            , refreshAccessTokenName: 'refresh_access_token' // 当access_token过期时，后端返回的新token名
             , type: 'string' //string 或者 json。默认json
         }
 
@@ -45,6 +47,7 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function (exports) {
             , msgName: 'msg' //状态信息的字段名称
             , dataName: 'data' //数据详情的字段名称
         }
+
 
         //独立页面路由，可随意添加（无需写参数）
         , indPage: [

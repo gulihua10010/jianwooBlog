@@ -1,5 +1,5 @@
-layui.define(['table', 'form', 'laytpl', 'element'], function (exports) {
-    var table = layui.table
+layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
+    var table = layui.laytable
         , $ = layui.$
         , form = layui.form
         , view = layui.view
@@ -27,9 +27,6 @@ layui.define(['table', 'form', 'laytpl', 'element'], function (exports) {
             statusName: 'status'
             , statusCode: '000000'
         }
-        , where: {
-            access_token: layui.data('layuiAdmin').access_token
-        }
         , page: true
         , text: {none: '无数据'}
 
@@ -38,7 +35,6 @@ layui.define(['table', 'form', 'laytpl', 'element'], function (exports) {
     //监听搜索
     form.on('submit(contcomm-search)', function (data) {
         var field = data.field;
-        field.access_token = layui.data('layuiAdmin').access_token
         //执行重载
         table.reload('comment-table', {
             where: field

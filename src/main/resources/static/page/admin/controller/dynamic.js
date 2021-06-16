@@ -1,5 +1,5 @@
-layui.define(['table', 'form'], function (exports) {
-    var table = layui.table
+layui.define(['laytable', 'form'], function (exports) {
+    var table = layui.laytable
 
     table.render({
         elem: '#visit-table'
@@ -11,9 +11,6 @@ layui.define(['table', 'form'], function (exports) {
         , response: {
             statusName: 'status'
             , statusCode: '000000'
-        }
-        , where: {
-            access_token: layui.data('layuiAdmin').access_token
         }
         , page: true
         , text: {none: '无数据'}
@@ -29,9 +26,6 @@ layui.define(['table', 'form'], function (exports) {
         , response: {
             statusName: 'status'
             , statusCode: '000000'
-        }
-        , where: {
-            access_token: layui.data('layuiAdmin').access_token
         }
         , page: true
         , text: {none: '无数据'}
