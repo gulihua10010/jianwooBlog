@@ -60,7 +60,7 @@ public abstract class AbstractCacheStore<K, V> implements CacheStore<K, V> {
     }
 
     @Override
-    public void put(@NonNull K key, @NonNull V value, long timeout, @NonNull TimeUnit timeUnit) {
+    public void put(@NonNull K key, @NonNull V value, @NonNull long timeout, @NonNull TimeUnit timeUnit) {
         putInternal(key, buildCacheWrapper(value, timeout, timeUnit));
     }
 

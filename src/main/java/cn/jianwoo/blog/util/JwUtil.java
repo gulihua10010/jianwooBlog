@@ -1,12 +1,17 @@
 package cn.jianwoo.blog.util;
 
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
+import cn.hutool.crypto.symmetric.SymmetricCrypto;
 import cn.jianwoo.blog.constants.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
+import java.util.ResourceBundle;
 
 /**
  * @author GuLihua
@@ -15,6 +20,10 @@ import java.util.Calendar;
  */
 @Slf4j
 public class JwUtil {
+
+
+    private final static ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("application");
+    public static String base64Security = RESOURCE_BUNDLE.getString("aes.secret");
 
     public JwUtil() {
     }
@@ -141,12 +150,34 @@ public class JwUtil {
         String[] unit = {"B", "KB", "MB", "GB", "TB", "PB"};
         long s;
         int i = 0;
-        while (( s = size / 1024) >= 1 && i < 6){
-            size=s;
+        while ((s = size / 1024) >= 1 && i < 6) {
+            size = s;
             i++;
         }
         BigDecimal sizeStr = new BigDecimal(String.valueOf(size));
         return sizeStr.setScale(2, RoundingMode.HALF_UP).toString().concat(unit[i]);
+    }
+
+
+    public static String encrypt(String content) {
+
+        //构建
+        SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, base64Security.getBytes(StandardCharsets.UTF_8));
+        //加密
+        String encryptHex = aes.encryptHex(content);
+
+        return encryptHex;
+
+    }
+
+    public static String decrypt(String encryptHex) {
+
+        //构建
+        SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, base64Security.getBytes(StandardCharsets.UTF_8));
+        //解密为字符串
+        String decryptStr = aes.decryptStr(encryptHex, CharsetUtil.CHARSET_UTF_8);
+        return decryptStr;
+
     }
 
 }

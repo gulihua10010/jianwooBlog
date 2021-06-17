@@ -214,6 +214,7 @@
                 , element = layui.element
                 , articlePublish = layui.articlePublish
                 , admin = layui.admin
+                , setter = layui.setter
 
             ;
             element.render()
@@ -221,7 +222,7 @@
             var isChange = false;
 
             var edit = articlePublish.getEdit(function () {
-                isChange = true
+                isChange = true;
             }, function (opt, edit) {
 
             });
@@ -246,6 +247,12 @@
                 }
 
             });
+
+
+            //每30秒保存一次
+            setInterval(function (){
+                saveTempArticle();
+            }, setter.saveArticleTime);
 
             if (d.data && d.data.id) {
                 alertAsk('系统存在之前未完成的临时文章，是否恢复?', function () {

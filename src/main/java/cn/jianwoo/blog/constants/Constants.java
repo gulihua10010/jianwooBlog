@@ -70,11 +70,14 @@ public class Constants {
     public static final String AUTH_TOKEN = "AUTH_TOKEN";
     public static final String WRONG_PASSWORD = "用户名或密码错误!";
     public static final String SUCCESS_LOGIN = "登录成功!!";
+    public static final String SUCCESS_LOGOUT = "退出成功!!";
     public static final String USER_KEY = "USER_ID";
     public static final String REFRESH_TOKEN = "refresh_token";
     public static final String REFRESH_ACCESS_TOKEN = "refresh_access_token";
     public static final String ROLE_PREFIX = "ROLE_";
     public static final String CURRENT_USER = "CURRENT_USER";
+    public static final String LOGIN_USER_STATUS = "LOGIN_USER_STATUS";
+    public static final String LOGIN_ID_SECRET = "LOGIN_ID_SECRET";
 
     public static final String LOGIN_CAPTCHA_AUTH = "JIANWOO.LOGIN.CAPTCHA.AUTH";
     public static final String LOGIN_SESSION = "JIANWOO.LOGIN.SESSION";

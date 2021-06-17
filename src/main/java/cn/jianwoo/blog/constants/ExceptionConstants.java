@@ -34,6 +34,7 @@ public final class ExceptionConstants {
     public static final String ARTICLE_STATUS_NOT_MATCH = "400002";
     public static final String ARTICLE_STATUS_NOT_MATCH_DESC = "Current status (%s) for article (%s) is not valid.";
     public static final String SYSTEM_EXCEPTION_DESC = "Some errors occur.";
+    public static final String LOGOUT_FAILED = "410001";
 
     public static final String FILE_PATH_INVAILD = "400005";
     public static final String FILE_PATH_INVAILD_DESC = "The path is invalid";

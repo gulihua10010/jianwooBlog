@@ -77,7 +77,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .logout()
                 .logoutUrl(LoginApiUrlConfig.URL_PREFIX + LoginApiUrlConfig.URL_LOGIN_OUT)
-//                .logoutSuccessHandler(securityLogoutSuccessHandler)
+                .logoutSuccessHandler(securityLogoutSuccessHandler)
                 .logoutSuccessUrl(CommAdminPageUrlConfig.URL_PREFIX + CommAdminPageUrlConfig.URL_LOGIN)
                 .permitAll()
                 .and()

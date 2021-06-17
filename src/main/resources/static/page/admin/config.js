@@ -28,6 +28,8 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function (exports) {
 
         , cryptoKey : '11111111'
 
+        , saveArticleTime : 30000
+
         //自定义请求字段
         , request: {
             tokenName: 'access_token' //自动携带 token 的字段名。可设置 false 不携带。

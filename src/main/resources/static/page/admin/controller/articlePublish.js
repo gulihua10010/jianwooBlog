@@ -17,7 +17,7 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
             typeof callback === "function" && callback(opt, edit);
 
         },function (editor) {
-            editor.on('keypress', function (){
+            editor.on('keyup', function (){
                 typeof onChange === "function" && onChange(editor);
             });
         });

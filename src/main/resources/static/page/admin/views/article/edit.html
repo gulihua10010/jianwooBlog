@@ -371,6 +371,7 @@
                     , element = layui.element
                     , articleEdit = layui.articleEdit
                     , admin = layui.admin
+                    , setter = layui.setter
                 ;
                 var artOid = layui.router().search.id;
                 var isChange = false;
@@ -425,6 +426,11 @@
                             saveTempArticle();
                         }
                     });
+
+                    //每30秒保存一次
+                    setInterval(function (){
+                        saveTempArticle();
+                    }, setter.saveArticleTime);
 
                 }
 

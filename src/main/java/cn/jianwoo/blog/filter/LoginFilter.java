@@ -1,10 +1,12 @@
 package cn.jianwoo.blog.filter;
 
+import cn.hutool.crypto.SecureUtil;
 import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.security.token.AuthUserTokenBO;
 import cn.jianwoo.blog.util.DateUtil;
+import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.util.JwtUtils;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
@@ -86,6 +88,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         generateAccessToken(response,user);
         generateRefreshToken(response,user);
 
+        String encryptStr=JwUtil.encrypt(String.valueOf(user.getAuthToken().getUid()));
+        response.addHeader(Constants.LOGIN_ID_SECRET, encryptStr);
         response.getWriter().write(processSuccessMsg(Constants.SUCCESS_LOGIN));
 
         log.info("==>>LoginFilter.successfulAuthentication end...");

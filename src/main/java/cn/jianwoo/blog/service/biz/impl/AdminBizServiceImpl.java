@@ -2,6 +2,7 @@ package cn.jianwoo.blog.service.biz.impl;
 
 import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.cache.CacheStore;
+import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dao.base.AdminTransDao;
 import cn.jianwoo.blog.entity.Admin;
 import cn.jianwoo.blog.exception.AdminBizException;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -27,7 +30,7 @@ public class AdminBizServiceImpl implements AdminBizService {
     @Autowired
     private AdminTransDao adminTransDao;
     @Autowired
-    private CacheStore<String, String> jwCacheStore;
+    private CacheStore<String, Object> jwCacheStore;
     @Value("${access.token.expired.seconds}")
     private Long accessTokenExpiredSeconds;
 
@@ -94,8 +97,9 @@ public class AdminBizServiceImpl implements AdminBizService {
                 .with(UserBO::setId, admin.getOid())
                 .with(UserBO::setName, admin.getUsername()).build();
         jwCacheStore.put(SecurityUtils.buildAccessTokenKey(user), authToken.getAccessToken(), accessTokenExpiredSeconds, TimeUnit.SECONDS);
-
-
+        Map<Long, Object> userLogin = (Map<Long, Object>) jwCacheStore.get(Constants.LOGIN_USER_STATUS).orElse(new HashMap<>());
+        userLogin.put(admin.getOid(), true);
+        jwCacheStore.put(Constants.LOGIN_USER_STATUS, userLogin);
 
         log.info("========>> Admin [username={}, ip={}] login successfully!!!", name, ip);
 

@@ -41,7 +41,7 @@ public interface CacheStore<K, V> {
      * @return
      * @author gulihua
      */
-    void put(@NonNull K key, @NonNull V value, long timeout, @NonNull TimeUnit timeUnit);
+    void put(@NonNull K key, @NonNull V value, @NonNull long timeout, @NonNull TimeUnit timeUnit);
 
     /**
      * 删除缓存
