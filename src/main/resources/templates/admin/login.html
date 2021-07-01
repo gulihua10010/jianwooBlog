@@ -282,6 +282,7 @@
                 function (xhr, data) {
                     var access_token = xhr.getResponseHeader(setter.request.tokenName);
                     var refresh_token = xhr.getResponseHeader(setter.request.refreshTokenName);
+                    var login_id_secret = xhr.getResponseHeader(setter.request.loginIdSecret);
                     //请求成功后，写入 access_token
                     if (access_token)
                     {
@@ -295,6 +296,13 @@
                         layui.data(setter.tableName, {
                             key: setter.request.refreshTokenName
                             , value: refresh_token
+                        });
+                    }
+                    if (login_id_secret)
+                    {
+                        layui.data(setter.tableName, {
+                            key: setter.request.loginIdSecret
+                            , value: login_id_secret
                         });
                     }
 

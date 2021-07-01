@@ -281,16 +281,25 @@ layui.extend({
 
     //退出
     admin.events.logout = function () {
+        var headers = {};
+        headers[setter.request.loginIdSecret] = (layui.data(setter.tableName)[setter.request.loginIdSecret] || '')
+        headers[setter.request.tokenName] = (layui.data(setter.tableName)[setter.request.tokenName] || '')
         //执行退出接口
         admin.req({
             url: '/api/passport/login/exit'
-            , type: 'get'
+            , type: 'post'
             , data: {}
+            , headers: headers
             , done: function (res) { //这里要说明一下：done 是只有 response 的 code 正常才会执行。而 succese 则是只要 http 为 200 就会执行
 
                 //清空本地记录的 token，并跳转到登入页
                 admin.exit();
             }
+            , fail :function (res)
+            {
+                alertFail('提示', res[setter.response.msgName]);
+            }
+
         });
     };
 

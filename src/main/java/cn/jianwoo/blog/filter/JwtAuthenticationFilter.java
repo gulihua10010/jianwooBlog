@@ -2,6 +2,8 @@ package cn.jianwoo.blog.filter;
 
 import cn.hutool.extra.spring.SpringUtil;
 import cn.jianwoo.blog.base.BaseResponseDto;
+import cn.jianwoo.blog.cache.CacheStore;
+import cn.jianwoo.blog.constants.CacaheKeyConstants;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.dao.base.AdminTransDao;
@@ -13,7 +15,6 @@ import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,6 +30,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -108,6 +110,13 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 }
                 oid = Long.parseLong(String.valueOf(claims.get(USER_KEY)));
                 request.setAttribute(USER_KEY, oid);
+
+                //验证是否失效
+                CacheStore<String, Object> jwCacheStore = SpringUtil.getBean(CacheStore.class);
+                String invalidTokenKey = MessageFormat.format(CacaheKeyConstants.INVALID_TOKEN, accessToken);
+                if (jwCacheStore.hasKey(invalidTokenKey)) {
+                    return null;
+                }
 
                 // token签发时间
                 long issuedAt = claims.getIssuedAt().getTime();

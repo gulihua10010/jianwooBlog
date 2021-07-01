@@ -47,6 +47,10 @@ layui.define(['laytpl', 'layer'], function (exports) {
             key: setter.request.tokenName
             , remove: true
         });
+        layui.data(setter.tableName, {
+            key: setter.request.loginIdSecret
+            , remove: true
+        });
 
         //跳转到登入页
         location.href =  setter.loginPage;
@@ -120,7 +124,7 @@ layui.define(['laytpl', 'layer'], function (exports) {
                         ].join('');
                         view.error(error);
                     }
-
+                    typeof options.fail === 'function' && options.fail(res);
                 }
 
                 //只要 http 状态码正常，无论 response 的 code 是否正常都执行 success

@@ -1,6 +1,7 @@
 package cn.jianwoo.blog.cache;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -27,5 +28,15 @@ public class JwCacheStore<K, V> extends AbstractCacheStore<K, V> {
     @Override
     public void delete(K key) {
         cacheContainer.remove(key);
+    }
+
+    @Override
+    public boolean hasKey(K key) {
+        return cacheContainer.containsKey(key);
+    }
+
+    @Override
+    public Set<K> keySet() {
+        return cacheContainer.keySet();
     }
 }

@@ -3,6 +3,7 @@ package cn.jianwoo.blog.cache;
 import org.springframework.lang.NonNull;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -51,4 +52,23 @@ public interface CacheStore<K, V> {
      * @author gulihua
      */
     void delete(@NonNull K key);
+
+
+    /**
+     * 根据key查询是否存在
+     *
+     * @param key 缓存键
+     * @return
+     * @author gulihua
+     */
+    boolean hasKey(@NonNull K key);
+
+
+    /**
+     * 遍历map的key键
+     *
+     * @return
+     * @author gulihua
+     */
+    Set<K> keySet();
 }

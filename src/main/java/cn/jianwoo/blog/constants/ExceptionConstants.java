@@ -60,6 +60,8 @@ public final class ExceptionConstants {
     public static final String LOGIN_CAPTCHA_AUTH_INVALID = "400010";
     public static final String LOGIN_CAPTCHA_AUTH_INVALID_DESC = "验证码验证失败，请刷新页面重试！";
     public static final String UNAUTHORIZED_DESC = "接口鉴权失败，未经授权的操作!";
+    public static final String LOGOUT_FAILED_MSG_1 = "退出登录失败, 用户ID secret为空!";
+    public static final String LOGOUT_FAILED_MSG_2 = "退出登录失败, 用户未登录!";
 
     private ExceptionConstants() {
     }

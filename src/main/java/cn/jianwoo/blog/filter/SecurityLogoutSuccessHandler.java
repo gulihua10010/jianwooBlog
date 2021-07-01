@@ -2,6 +2,7 @@ package cn.jianwoo.blog.filter;
 
 import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.cache.CacheStore;
+import cn.jianwoo.blog.constants.CacaheKeyConstants;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.security.util.SecurityUtils;
@@ -18,8 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.MessageFormat;
 
 /**
  * 登出成功处理器
@@ -38,38 +38,44 @@ public class SecurityLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler 
                                 Authentication authentication)
             throws IOException, ServletException {
         String loginEncryptStr = request.getHeader(Constants.LOGIN_ID_SECRET);
+        String accessToken = request.getHeader(Constants.ACCESS_TOKEN);
+        response.setContentType(Constants.CONTENT_TYPE_JSON);
+        if (StringUtils.isBlank(loginEncryptStr)) {
+            log.error("======>>user logout failed, login Secret is empty.");
+            response.getWriter().write(processFailMsg(ExceptionConstants.LOGOUT_FAILED_MSG_1));
+            return;
+        }
         String decryptStr = null;
         try {
             decryptStr = JwUtil.decrypt(loginEncryptStr);
         } catch (Exception e) {
             log.error("======>>user logout failed, e:\r\n", e);
-            response.getWriter().write(processSuccessMsg(Constants.SUCCESS_LOGOUT));
+            response.getWriter().write(processFailMsg(e.getMessage()));
             return;
         }
         if (StringUtils.isBlank(decryptStr)) {
             log.error("======>>user logout failed, login Secret is empty.");
-            response.getWriter().write(processSuccessMsg(Constants.SUCCESS_LOGOUT));
+            response.getWriter().write(processFailMsg(ExceptionConstants.LOGOUT_FAILED_MSG_1));
             return;
 
         }
-
-        Map<Long, Object> userLogin = (Map<Long, Object>) jwCacheStore.get(Constants.LOGIN_USER_STATUS).orElse(new HashMap<>());
-        Boolean isLogin = (Boolean) userLogin.get(Long.parseLong(decryptStr));
+        Long uid = Long.parseLong(decryptStr);
+        String loginIdCacheKey = MessageFormat.format(CacaheKeyConstants.LOGIN_USER_STATUS, uid);
+        boolean isLogin = (Boolean) jwCacheStore.get(loginIdCacheKey).orElse(false);
         if (!Boolean.TRUE.equals(isLogin)) {
             log.error("======>>user logout failed, user does not login.");
-            response.getWriter().write(processSuccessMsg(Constants.SUCCESS_LOGOUT));
+            response.getWriter().write(processFailMsg(ExceptionConstants.LOGOUT_FAILED_MSG_2));
             return;
         }
-        userLogin.put(Long.parseLong(decryptStr), false);
-        jwCacheStore.put(Constants.LOGIN_USER_STATUS, userLogin);
+        jwCacheStore.put(loginIdCacheKey, false);
         response.getWriter().write(processSuccessMsg(Constants.SUCCESS_LOGOUT));
 
+        //把token存放缓存，置以失效
+        String invalidTokenKey = MessageFormat.format(CacaheKeyConstants.INVALID_TOKEN, accessToken);
+        jwCacheStore.put(invalidTokenKey, accessToken);
 
-//        AuthUserTokenBO user = (AuthUserTokenBO) authentication.getPrincipal();
-//        log.info("登出成功: {}", user.getUsername());
-        Long uid = (Long) request.getSession().getAttribute(Constants.CURRENT_USER);
+        log.info("logout successfully: [id = {}]", uid);
         jwCacheStore.delete(SecurityUtils.buildAccessTokenKey(uid));
-//        request.getSession().removeAttribute(Constants.CURRENT_USER);
 
     }
 

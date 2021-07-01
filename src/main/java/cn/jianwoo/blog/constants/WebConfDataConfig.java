@@ -5,7 +5,7 @@ package cn.jianwoo.blog.constants;
  * @Description
  * @date 2020-11-25 15:09
  */
-public class WebConfDataConfig {
+public final class WebConfDataConfig {
     public static final String TITLE = "TITLE";
     public static final String AUTHOR = "AUTHOR";
     public static final String KEYWORDS = "KEYWORDS";

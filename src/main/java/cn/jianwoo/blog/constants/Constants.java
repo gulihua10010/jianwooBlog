@@ -5,7 +5,7 @@ package cn.jianwoo.blog.constants;
  * @Description
  * @date 2020-08-04 17:18
  */
-public class Constants {
+public final class Constants {
     public static final String YES = "Y";
     public static final String NO = "N";
     public static final String TRUE = "TRUE";
@@ -77,7 +77,7 @@ public class Constants {
     public static final String ROLE_PREFIX = "ROLE_";
     public static final String CURRENT_USER = "CURRENT_USER";
     public static final String LOGIN_USER_STATUS = "LOGIN_USER_STATUS";
-    public static final String LOGIN_ID_SECRET = "LOGIN_ID_SECRET";
+    public static final String LOGIN_ID_SECRET = "login_id_secret";
 
     public static final String LOGIN_CAPTCHA_AUTH = "JIANWOO.LOGIN.CAPTCHA.AUTH";
     public static final String LOGIN_SESSION = "JIANWOO.LOGIN.SESSION";

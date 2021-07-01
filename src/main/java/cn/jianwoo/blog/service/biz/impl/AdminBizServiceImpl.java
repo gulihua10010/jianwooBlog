@@ -2,6 +2,7 @@ package cn.jianwoo.blog.service.biz.impl;
 
 import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.cache.CacheStore;
+import cn.jianwoo.blog.constants.CacaheKeyConstants;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dao.base.AdminTransDao;
 import cn.jianwoo.blog.entity.Admin;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -96,10 +98,10 @@ public class AdminBizServiceImpl implements AdminBizService {
         UserBO user = JwBuilder.of(UserBO::new)
                 .with(UserBO::setId, admin.getOid())
                 .with(UserBO::setName, admin.getUsername()).build();
-        jwCacheStore.put(SecurityUtils.buildAccessTokenKey(user), authToken.getAccessToken(), accessTokenExpiredSeconds, TimeUnit.SECONDS);
-        Map<Long, Object> userLogin = (Map<Long, Object>) jwCacheStore.get(Constants.LOGIN_USER_STATUS).orElse(new HashMap<>());
-        userLogin.put(admin.getOid(), true);
-        jwCacheStore.put(Constants.LOGIN_USER_STATUS, userLogin);
+        String accessCacheKey = MessageFormat.format(CacaheKeyConstants.TOKEN_ACCESS_CACHE, user.getId());
+        jwCacheStore.put(accessCacheKey, authToken.getAccessToken(), accessTokenExpiredSeconds, TimeUnit.SECONDS);
+        String loginIdCacheKey = MessageFormat.format(CacaheKeyConstants.LOGIN_USER_STATUS, user.getId());
+        jwCacheStore.put(loginIdCacheKey, true);
 
         log.info("========>> Admin [username={}, ip={}] login successfully!!!", name, ip);
 
