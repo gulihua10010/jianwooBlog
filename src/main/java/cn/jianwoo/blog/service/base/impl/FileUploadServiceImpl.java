@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -72,6 +73,7 @@ public class FileUploadServiceImpl implements FileUploadService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public FileUpload doUpload(MultipartFile multipartFile, String url, boolean isReName) throws JwBlogException {
         if (StringUtils.isBlank(uploadPath)) {
             throw new JwBlogException(ExceptionConstants.FILE_PATH_INVAILD, "The upload path is invalid");
@@ -118,12 +120,12 @@ public class FileUploadServiceImpl implements FileUploadService {
         fileUpload.setUploadTime(new Date());
         fileUpload.setFileMd5(getMD5(newFile));
         fileUpload.setUrl(url + Constants.URL_SEPARATOR + newFilename);
-        fileUpload.setIsDelete(Constants.NO);
-        fileUpload.setIsChunk(Constants.NO);
-        fileUpload.setCreateDate(new Date());
-        fileUpload.setUpdateDate(new Date());
+        fileUpload.setIsDelete(false);
+        fileUpload.setIsChunk(false);
+        fileUpload.setCreateTime(new Date());
+        fileUpload.setUpdateTime(new Date());
         try {
-            fileUploadTransDao.doInsert(fileUpload);
+            fileUploadTransDao.doInsertSelective(fileUpload);
         } catch (DaoException e) {
             throw FileUploadBizException.CREATE_FAILED_EXCEPTION.print();
         }

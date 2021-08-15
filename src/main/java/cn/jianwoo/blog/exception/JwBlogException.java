@@ -54,7 +54,11 @@ public class JwBlogException extends Exception {
 
 
     public JwBlogException getNewInstance(String code, String msg, Object... args) {
-        return new JwBlogException(this.code, msg, args);
+        return new JwBlogException(code, msg, args);
+    }
+
+    public JwBlogException formatMsg(String msg, Object... args) {
+        return new JwBlogException(code, msg, args);
     }
 
 

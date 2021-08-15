@@ -36,7 +36,7 @@ public class CommentQueryDaoImpl implements CommentQueryDao {
     @Override
     public List<Comment> queryCommentByParentOid(Long oid) {
         CommentExample example = new CommentExample();
-        example.createCriteria().andParentEqualTo(oid);
+        example.createCriteria().andParentOidEqualTo(oid);
         return commentMapper.selectByExample(example);
     }
 

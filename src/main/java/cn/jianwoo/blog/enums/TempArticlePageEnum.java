@@ -3,14 +3,14 @@ package cn.jianwoo.blog.enums;
 public enum TempArticlePageEnum {
 
     /**
-     * 1发布页面
+     * 10发布页面
      */
-    PUBLISH(1),
+    PUBLISH("10"),
 
     /**
-     * 2编辑页面
+     * 20编辑页面
      */
-    EDIT(2),
+    EDIT("20"),
 
 
     ;
@@ -18,17 +18,17 @@ public enum TempArticlePageEnum {
     /**
      * value
      */
-    private Integer value;
+    private String value;
 
-    TempArticlePageEnum(Integer value) {
+    TempArticlePageEnum(String value) {
         this.value = value;
     }
 
 
-    public static TempArticlePageEnum getEnum(Integer name) {
+    public static TempArticlePageEnum getEnum(String name) {
         TempArticlePageEnum[] arry = TempArticlePageEnum.values();
         for (int i = 0; i < arry.length; i++) {
-            if (arry[i].name().equals(name)) {
+            if (arry[i].getValue().equals(name)) {
                 return arry[i];
             }
         }
@@ -36,12 +36,12 @@ public enum TempArticlePageEnum {
     }
 
 
-    public Integer getValue() {
+    public String getValue() {
         return value;
     }
 
 
-    public void setValue(Integer value) {
+    public void setValue(String value) {
         this.value = value;
     }
 

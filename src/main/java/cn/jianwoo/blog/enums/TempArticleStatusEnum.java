@@ -3,19 +3,19 @@ package cn.jianwoo.blog.enums;
 public enum TempArticleStatusEnum {
 
     /**
-     * 1已经恢复
+     * 90已经恢复
      */
-    RESTORE(1),
+    RESTORE("90"),
 
     /**
-     * 0临时缓存状态
+     * 00临时缓存状态
      */
-    TEMP(0),
+    TEMP("00"),
 
     /**
-     * -1作废
+     * 91作废
      */
-    VOID(-1),
+    VOID("91"),
 
 
     ;
@@ -23,17 +23,17 @@ public enum TempArticleStatusEnum {
     /**
      * value
      */
-    private Integer value;
+    private String value;
 
-    TempArticleStatusEnum(Integer value) {
+    TempArticleStatusEnum(String value) {
         this.value = value;
     }
 
 
-    public static TempArticleStatusEnum getEnum(Integer name) {
+    public static TempArticleStatusEnum getEnum(String name) {
         TempArticleStatusEnum[] arry = TempArticleStatusEnum.values();
         for (int i = 0; i < arry.length; i++) {
-            if (arry[i].name().equals(name)) {
+            if (arry[i].getValue().equals(name)) {
                 return arry[i];
             }
         }
@@ -41,12 +41,12 @@ public enum TempArticleStatusEnum {
     }
 
 
-    public Integer getValue() {
+    public String getValue() {
         return value;
     }
 
 
-    public void setValue(Integer value) {
+    public void setValue(String value) {
         this.value = value;
     }
 

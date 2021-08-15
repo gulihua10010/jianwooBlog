@@ -52,4 +52,12 @@ public class TempArticleTransDaoImpl extends TempArticleQueryDaoImpl implements 
             throw DaoException.DAO_DELETE_RESULT_0.print();
         }
     }
+
+    @Override
+    public void doUpdateByPrimaryKeyWithBLOBs(TempArticle record) throws DaoException {
+        int delRlt = tempArticleMapper.updateByPrimaryKeyWithBLOBs(record);
+        if (1 != delRlt) {
+            throw DaoException.DAO_DELETE_RESULT_0.print();
+        }
+    }
 }

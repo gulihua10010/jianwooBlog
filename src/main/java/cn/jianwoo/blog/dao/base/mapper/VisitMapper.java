@@ -2,9 +2,8 @@ package cn.jianwoo.blog.dao.base.mapper;
 
 import cn.jianwoo.blog.entity.Visit;
 import cn.jianwoo.blog.entity.example.VisitExample;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface VisitMapper {
     long countByExample(VisitExample example);

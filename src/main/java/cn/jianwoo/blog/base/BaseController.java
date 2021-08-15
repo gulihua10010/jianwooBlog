@@ -1,5 +1,6 @@
 package cn.jianwoo.blog.base;
 
+import cn.jianwoo.blog.dto.response.ValidationResponse;
 import cn.jianwoo.blog.exception.ControllerBizException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.exception.ValidationException;
@@ -91,7 +92,7 @@ public class BaseController implements Serializable {
                     new BaseResponseDto(((ControllerBizException) e).getCode(), ((ControllerBizException) e).getMsg()));
         } else if (e instanceof ValidationException) {
             return responseToJSONString(
-                    new BaseResponseDto(((ValidationException) e).getCode(), ((ValidationException) e).getMsg()));
+                    new ValidationResponse(((ValidationException) e).getCode(), ((ValidationException) e).getMsg(), ((ValidationException) e).getParamName()));
         } else if (e instanceof JwBlogException) {
             return responseToJSONString(
                     new BaseResponseDto(((JwBlogException) e).getCode(), ((JwBlogException) e).getMsg()));

@@ -3,6 +3,7 @@ package cn.jianwoo.blog.dao.biz;
 import cn.jianwoo.blog.entity.Comment;
 import cn.jianwoo.blog.entity.extension.CommentExt;
 import cn.jianwoo.blog.entity.query.CommentParam;
+import cn.jianwoo.blog.exception.DaoException;
 
 import java.util.List;
 
@@ -82,4 +83,12 @@ public interface CommentBizDao {
     CommentExt queryCommentExtByOid(Long oid);
 
 
+    /**
+     * 更新评论的赞数量
+     *
+     * @param artOid 主键
+     * @return
+     * @author gulihua
+     */
+    void doUpdateCommentPraiseCnt(Long artOid) throws DaoException;
 }

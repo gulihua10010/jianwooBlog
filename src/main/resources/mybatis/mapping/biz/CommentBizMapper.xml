@@ -4,46 +4,39 @@
     <resultMap id="BaseResultMap" type="cn.jianwoo.blog.entity.Comment">
         <id column="OID" jdbcType="BIGINT" property="oid"/>
         <result column="ARTICLE_OID" jdbcType="BIGINT" property="articleOid"/>
-        <result column="USER" jdbcType="VARCHAR" property="user"/>
-        <result column="IP" jdbcType="VARCHAR" property="ip"/>
-        <result column="DATE" jdbcType="TIMESTAMP" property="date"/>
-        <result column="PARENT" jdbcType="BIGINT" property="parent"/>
+        <result column="USER_NAME" jdbcType="VARCHAR" property="userName"/>
+        <result column="CLIENT_IP" jdbcType="VARCHAR" property="clientIp"/>
+        <result column="USER_AREA" jdbcType="VARCHAR" property="userArea"/>
+        <result column="COMMENT_TIME" jdbcType="TIMESTAMP" property="commentTime"/>
+        <result column="PARENT_OID" jdbcType="BIGINT" property="parentOid"/>
         <result column="PRAISE_COUNT" jdbcType="BIGINT" property="praiseCount"/>
-        <result column="QQ" jdbcType="VARCHAR" property="qq"/>
-        <result column="HEAD_IMG" jdbcType="VARCHAR" property="headImg"/>
-        <result column="ART_DEL" jdbcType="INTEGER" property="artDel"/>
-        <result column="IS_READ" jdbcType="INTEGER" property="isRead"/>
-        <result column="AREA" jdbcType="VARCHAR" property="area"/>
-        <result column="CONTENT" jdbcType="LONGVARCHAR" property="content"/>
-        <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate"/>
-        <result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate"/>
+        <result column="CONTACT_QQ" jdbcType="VARCHAR" property="contactQq"/>
+        <result column="CONTACT_WECHAT" jdbcType="VARCHAR" property="contactWechat"/>
+        <result column="CONTACT_WEIBO" jdbcType="VARCHAR" property="contactWeibo"/>
+        <result column="CONTACT_TEL" jdbcType="VARCHAR" property="contactTel"/>
+        <result column="HEAD_IMG_SRC" jdbcType="VARCHAR" property="headImgSrc"/>
+        <result column="ART_DEL_STAUTS" jdbcType="VARCHAR" property="artDelStauts"/>
+        <result column="READ_STATUS" jdbcType="VARCHAR" property="readStatus"/>
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
-    <resultMap id="ResultMapWithExt" type="cn.jianwoo.blog.entity.extension.CommentExt">
-        <id column="OID" jdbcType="BIGINT" property="oid" javaType="java.lang.Long"/>
-        <result column="ARTICLE_OID" property="articleOid" jdbcType="BIGINT" javaType="java.lang.Long"/>
-        <result column="USER" property="user" jdbcType="VARCHAR" javaType="java.lang.String"/>
-        <result column="IP" property="ip" jdbcType="VARCHAR" javaType="java.lang.String"/>
-        <result column="AREA" jdbcType="VARCHAR" property="area" javaType="java.lang.String"/>
-        <result column="DATE" property="date" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
-        <result column="PARENT" property="parent" jdbcType="BIGINT" javaType="java.lang.Long"/>
-        <result column="PRAISE_COUNT" property="praiseCount" jdbcType="BIGINT" javaType="java.lang.Long"/>
-        <result column="QQ" property="qq" jdbcType="VARCHAR" javaType="java.lang.String"/>
-        <result column="HEAD_IMG" property="headImg" jdbcType="VARCHAR" javaType="java.lang.String"/>
-        <result column="ART_DEL" property="artDel" jdbcType="INTEGER" javaType="java.lang.Integer"/>
-        <result column="IS_READ" property="isRead" jdbcType="INTEGER" javaType="java.lang.Integer"/>
-        <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
-        <result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
-        <result column="CONTENT" property="content" jdbcType="LONGVARCHAR" javaType="java.lang.String"/>
+    <resultMap id="ResultMapWithExt" extends="BaseResultMap" type="cn.jianwoo.blog.entity.extension.CommentExt">
         <result column="TITLE" property="title" jdbcType="VARCHAR" javaType="java.lang.String"/>
         <result column="REPLY_TO" property="parentUserName" jdbcType="VARCHAR" javaType="java.lang.String"/>
     </resultMap>
     <sql id="Base_Column_List">
-        OID
-        , ARTICLE_OID, `USER`, IP, AREA, `DATE`, PARENT, PRAISE_COUNT, QQ, HEAD_IMG, ART_DEL, IS_READ,
-    CREATE_DATE, UPDATE_DATE
+        OID, ARTICLE_OID, USER_NAME, CLIENT_IP, USER_AREA, COMMENT_TIME, PARENT_OID, PRAISE_COUNT,
+    CONTACT_QQ, CONTACT_WECHAT, CONTACT_WEIBO, CONTACT_TEL, HEAD_IMG_SRC, ART_DEL_STAUTS,
+    READ_STATUS, CREATE_TIME, UPDATE_TIME
     </sql>
     <sql id="Blob_Column_List">
         CONTENT
+    </sql>
+    <sql id="Ext_Column_List">
+        C.OID, C.ARTICLE_OID, C.USER_NAME, C.CLIENT_IP, C.USER_AREA, C.COMMENT_TIME,
+        C.PARENT_OID, C.PRAISE_COUNT, C.CONTACT_QQ, C.CONTACT_WECHAT, C.CONTACT_WEIBO,
+        C.CONTACT_TEL, C.HEAD_IMG_SRC, C.ART_DEL_STAUTS, C.READ_STATUS, C.CREATE_TIME, C.UPDATE_TIME,
+        C.CONTENT
     </sql>
     <select id="selectLastComment" resultMap="BaseResultMap">
         select
@@ -55,11 +48,16 @@
     </select>
 
     <select id="selectRecentComments" parameterType="java.lang.Integer" resultMap="ResultMapWithExt">
-        SELECT C.*, A.TITLE
-        FROM COMMENTS C
-                 INNER JOIN ARTICLE A ON A.OID = C.ARTICLE_OID
-        ORDER BY C.UPDATE_DATE DESC
-            LIMIT #{limit,jdbcType=INTEGER}
+        SELECT
+        <include refid="Ext_Column_List"/>
+        ,
+        A.TITLE
+        FROM
+        COMMENTS C
+        INNER JOIN ARTICLE A ON A.OID = C.ARTICLE_OID
+        ORDER BY
+        C.UPDATE_TIME DESC
+        LIMIT #{limit,jdbcType=INTEGER}
     </select>
 
     <select id="countWithUnreadComm" resultType="int">
@@ -67,7 +65,7 @@
         FROM
             COMMENTS
         WHERE
-              ART_DEL != -1
+              ART_DEL_STAUTS != -1
           AND IS_READ = 0
     </select>
 
@@ -86,52 +84,67 @@
     </select>
 
     <select id="selectCommentsExtByArticleOid" parameterType="java.lang.Long" resultMap="ResultMapWithExt">
-        SELECT C.*, A.TITLE
+        SELECT
+        <include refid="Ext_Column_List"/>
+        ,
+        A.TITLE
         FROM
-            COMMENTS C
-                INNER JOIN ARTICLE A ON A.OID = C.ARTICLE_OID
+        COMMENTS C
+        INNER JOIN ARTICLE A ON A.OID = C.ARTICLE_OID
         WHERE
-            C.ARTICLE_OID = #{articleOid,jdbcType=BIGINT}
+        C.ARTICLE_OID = #{articleOid,jdbcType=BIGINT}
         ORDER BY
-            C.UPDATE_DATE DESC
+        C.UPDATE_TIME DESC
     </select>
 
     <select id="selectAllCommentsExt" resultMap="ResultMapWithExt"
             parameterType="cn.jianwoo.blog.entity.query.CommentParam">
         SELECT
         C.OID,
-        C.USER,
-        C.DATE,
+        C.USER_NAME,
+        C.COMMENT_TIME,
         C.CONTENT,
         C.ARTICLE_OID,
         A.TITLE,
         IF (
-        P. USER IS NULL,
+        P. USER_NAME IS NULL,
         '文章',
-        P. USER
+        P. USER_NAME
         ) AS REPLY_TO
         FROM
         COMMENTS C
-        LEFT JOIN COMMENTS P ON C.PARENT = P.OID
+        LEFT JOIN COMMENTS P ON C.PARENT_OID = P.OID
         INNER JOIN ARTICLE A ON A.OID = C.ARTICLE_OID
         <where>
             <if test="title != null">
                 A.TITLE LIKE CONCAT('%',#{title,jdbcType=VARCHAR},'%')
             </if>
-            <if test="isRead != null">
-                C.IS_READ = #{isRead}
+            <if test="readStatus != null">
+                C.READ_STATUS = #{readStatus}
             </if>
         </where>
         ORDER BY
         A.TITLE ASC,
-        C.UPDATE_DATE DESC
+        C.UPDATE_TIME DESC
     </select>
     <select id="selectCommentExtByOid" resultMap="ResultMapWithExt" parameterType="java.lang.Long">
-        SELECT C.*,
-               A.TITLE
+        SELECT
+        <include refid="Ext_Column_List"/>
+        ,
+        A.TITLE
         FROM COMMENTS C
-                 INNER JOIN ARTICLE A ON A.OID = C.ARTICLE_OID
+        INNER JOIN ARTICLE A ON A.OID = C.ARTICLE_OID
         WHERE C.OID = #{oid,jdbcType=BIGINT}
     </select>
+
+    <update id="updateCommentPraiseCnt">
+        UPDATE COMMENTS
+        SET
+            PRAISE_COUNT = PRAISE_COUNT + 1,
+            UPDATE_TIME = NOW()
+        WHERE
+            OID = #{oid,jdbcType=BIGINT};
+
+    </update>
 
 </mapper>

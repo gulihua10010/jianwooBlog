@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 public class AdminBizException extends JwBlogException {
     public static final AdminBizException HAS_EXIST_EXCEPTION = new AdminBizException(ExceptionConstants.BIZ_HAS_EXIST,
             "The admin[%s] has been registered.");
+    public static final AdminBizException HAS_EXIST_EXCEPTION_CN = new AdminBizException(ExceptionConstants.BIZ_HAS_EXIST,
+            "管理员[%s]已经存在!");
     public static final AdminBizException NOT_EXIST_EXCEPTION = new AdminBizException(ExceptionConstants.BIZ_NOT_EXIST,
             "The admin[%s] does not exist.");
     public static final AdminBizException NOT_EXIST_EXCEPTION_CN = new AdminBizException(ExceptionConstants.BIZ_NOT_EXIST,

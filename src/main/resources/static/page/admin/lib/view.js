@@ -41,7 +41,7 @@ layui.define(['laytpl', 'layer'], function (exports) {
     };
 
     //清除 token，并跳转到登入页
-    view.exit = function () {
+    view.exit = function (redirectUrl) {
         //清空本地记录的 token
         layui.data(setter.tableName, {
             key: setter.request.tokenName
@@ -53,7 +53,11 @@ layui.define(['laytpl', 'layer'], function (exports) {
         });
 
         //跳转到登入页
-        location.href =  setter.loginPage;
+        var loginUrl = setter.loginPage;
+        if (redirectUrl) {
+            loginUrl += "?redirect=" + encodeURIComponent(redirectUrl);
+        }
+        location.href = loginUrl
     };
 
     //Ajax请求
@@ -112,7 +116,8 @@ layui.define(['laytpl', 'layer'], function (exports) {
 
                 //登录状态失效，清除本地 access_token，并强制跳转到登入页
                 else if (res[response.statusName] == statusCode.logout) {
-                    view.exit();
+                    var redirect = layui.router().href;
+                    view.exit(redirect);
                 }
 
                 //其它异常
@@ -134,7 +139,8 @@ layui.define(['laytpl', 'layer'], function (exports) {
                 var responseJSON = e.responseJSON;
                 if (responseJSON && responseJSON.status == response.statusCode.logout)
                 {
-                    view.exit();
+                    var redirect = layui.router().href;
+                    view.exit(redirect);
                 }
                 if (setter.debug)
                 {
@@ -276,7 +282,8 @@ layui.define(['laytpl', 'layer'], function (exports) {
             var tpl = laytpl(options.dataElem.html())
                 , res = $.extend({
                 params: router.params
-            }, options.res);
+            }, options.res)
+            ;
 
             options.dataElem.after(tpl.render(res).replaceAll(/undefined/g,''));
             typeof callback === 'function' && callback();
@@ -287,7 +294,21 @@ layui.define(['laytpl', 'layer'], function (exports) {
                 console.error(options.dataElem[0], '\n存在错误回调脚本\n\n', e)
             }
         }
-            , router = layui.router();
+
+        , doAddUrlVersion = function (url, version) {
+            if (!version)
+            {
+                version = 1;
+            }
+            var idx = url.indexOf('?');
+            if (idx === -1) {
+                return url + "?v=" + version;
+            }
+            return url + "&v=" + version
+
+        }
+
+        , router = layui.router();
 
         elem.find('title').remove();
         that.container[refresh ? 'after' : 'html'](elem.children());
@@ -301,7 +322,8 @@ layui.define(['laytpl', 'layer'], function (exports) {
                     , layDone = dataElem.attr('lay-done') || dataElem.attr('lay-then') //获取回调
                     , url = laytpl(dataElem.attr('lay-url') || '').render(router) //接口 url
                     , data = laytpl(dataElem.attr('lay-data') || '').render(router) //接口参数
-                    , headers = laytpl(dataElem.attr('lay-headers') || '').render(router); //接口请求的头信息
+                    , headers = laytpl(dataElem.attr('lay-headers') || '').render(router) //接口请求的头信息
+                    , version = laytpl(dataElem.attr('lay-version') || '').render(router); //URL版本,默认v1
 
                 try {
                     data = new Function('return ' + data + ';')();
@@ -322,7 +344,7 @@ layui.define(['laytpl', 'layer'], function (exports) {
                 if (url) {
                     view.req({
                         type: dataElem.attr('lay-type') || 'get'
-                        , url: url
+                        , url: doAddUrlVersion(url, version)
                         , data: data
                         , dataType: 'json'
                         , headers: headers

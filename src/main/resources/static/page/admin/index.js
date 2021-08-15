@@ -234,6 +234,10 @@ layui.extend({
         , APP_BODY = '#LAY_app_body', FILTER_TAB_TBAS = 'layadmin-layout-tabs'
         , $ = layui.$, $win = $(window);
 
+
+    adminVerifyJwt();
+
+
     //初始主体结构
     layui.link(
         setter.base + 'style/admin.css?v=' + (admin.v + '-1')

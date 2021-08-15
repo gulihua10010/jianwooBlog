@@ -4,52 +4,47 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Tags implements Serializable {
-    private static final long serialVersionUID = 1L;
     private Long oid;
-    private String content;
-    private Date createDate;
-    private Date updateDate;
 
+    private String content;
+
+    private Date createTime;
+
+    private Date updateTime;
+
+    private static final long serialVersionUID = 1L;
 
     public Long getOid() {
         return oid;
     }
 
-
     public void setOid(Long oid) {
         this.oid = oid;
     }
-
 
     public String getContent() {
         return content;
     }
 
-
     public void setContent(String content) {
         this.content = content == null ? null : content.trim();
     }
 
-
-    public Date getCreateDate() {
-        return createDate;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
-
-    public Date getUpdateDate() {
-        return updateDate;
+    public Date getUpdateTime() {
+        return updateTime;
     }
 
-
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
-
 
     @Override
     public String toString() {
@@ -59,8 +54,8 @@ public class Tags implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", oid=").append(oid);
         sb.append(", content=").append(content);
-        sb.append(", createDate=").append(createDate);
-        sb.append(", updateDate=").append(updateDate);
+        sb.append(", createTime=").append(createTime);
+        sb.append(", updateTime=").append(updateTime);
         sb.append("]");
         return sb.toString();
     }

@@ -7,106 +7,268 @@
         <a><cite>网站配置</cite></a>
     </div>
 </div>
+<style>
+    .tips-input-text {
+        line-height: 40px;
+        color: orange;
+
+    }
+
+    .tips-input-upload {
+        color: orange;
+    }
+
+    .tips-input-checkbox {
+        color: orange;
+        line-height: 40px;
+    }
+
+    .web-form:not(.email-test) {
+        width: 95%;
+        float: left;
+    }
+
+    .email-test {
+        width: 80%;
+        float: left;
+    }
+
+    .email-test-btn, .submit {
+        float: right;
+        position: relative;
+        right: 7%;
+
+    }
+
+    .layui-require {
+        color: red;
+        font-size: 20px;
+        line-height: 40px;
+    }
+
+    .layui-require-area {
+        color: red;
+        font-size: 20px;
+        line-height: 100px;
+        position: relative;
+        top: 4px;
+    }
+
+    .layui-require-upload {
+        color: red;
+        font-size: 20px;
+        position: relative;
+        top: 4px;
+    }
+    .layui-require-checkbox{
+        color: red;
+        font-size: 20px;
+        position: relative;
+        top: 4px;
+     }
+
+    .tips-input-area {
+        line-height: 100px;
+        color: orange;
+    }
+
+    .tip-area {
+        margin-left: 5px;
+    }
+
+</style>
+<script>
+    uploadIdList = [];
+</script>
 <div class="layui-fluid">
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md12">
             <div class="layui-card">
                 <div class="layui-card-header">网站配置</div>
                 <div class="layui-card-body">
-                    <div class="layui-form" id="layuiadmin-form-comment" lay-filter="layuiadmin-form-comment">
-                        <div class="layui-card-body">
-                            <script type="text/html" template lay-url="/api/admin/webconf/info" id="JW_WEBCONFIG_VIEW"
-                                    lay-done="renderWebconfig(d)">
+                    <script type="text/html" template lay-url="/api/admin/webconf/info" id="JW_WEBCONFIG_VIEW"
+                            lay-done="renderWebconfig(d)">
+                        <div class="layui-tab layui-tab-brief layadmin-latestData">
+                            <ul class="layui-tab-title">
+                                {{# layui.each(d.data.tabList, function(index, item){ }}
+                                <li class=" {{#  if(index === 0){ }}layui-this{{#  } }}">{{item}}</li>
+                                {{# }); }}
 
-                                {{# layui.each(d.data, function(index, item){ }}
-                                {{#  if(item.formType === 'INPUT_TEXT'){ }}
-                                <div class="layui-form-item">
-                                    <label class="layui-form-label">{{ item.title }}</label>
-                                    <div class="layui-input-block">
-                                        <input class="layui-input web-form" name="{{ item.key }}" data-key="{{item.formType}}" title="{{ item.title }}"
-                                               lay-verify="{{#  if(item.mandatory){ }}required{{#  } }}|{{item.validateType}}"
-                                               {{ validateValue(item.validateType,item.validateValue) }}
-                                               data-validateType="{{item.validateType}}" data-validateValue="{{formatValidateValue(item.validateValue)}}"
-                                               data-mandatory="{{item.mandatory}}" data-valueType="{{item.valueType}}" data-oldValue="{{=item.value}}"
-                                               value="{{=item.value}}" type="text">
-                                    </div>
-                                </div>
-                                {{#  } }}
-                                {{#  if(item.formType === 'TEXTAREA'){ }}
-                                <div class="layui-form-item">
-                                    <label class="layui-form-label">{{ item.title }}</label>
-                                    <div class="layui-input-block">
-                                        <textarea class="layui-textarea web-form" name="{{ item.key }}" data-key="{{item.formType}}" title="{{ item.title }}"
-                                                  data-validateType="{{item.validateType}}" data-validateValue="{{item.validateValue}}"
-                                                  lay-verify="{{#  if(item.mandatory){ }}required|{{#  } }}{{item.validateType}}"
-                                                  {{ validateValue(item.validateType,item.validateValue) }}
-                                                  data-validateType="{{item.validateType}}" data-validateValue="{{formatValidateValue(item.validateValue)}}"
-                                                  data-mandatory="{{item.mandatory}}" data-valueType="{{item.valueType}}" data-oldValue="{{=item.value}}"
-                                                  type="text">{{=item.value}}</textarea>
-                                    </div>
-                                </div>
-                                {{#  } }}
-                                {{#  if(item.formType === 'INPUT_TEXT_NUMBER'){ }}
-                                <div class="layui-form-item">
-                                    <label class="layui-form-label">{{ item.title }}</label>
-                                    <div class="layui-input-block">
-                                        <input class="layui-input web-form" name="{{item.key}}" title="{{ item.title }}"
-                                               value="{{formatNum(item.value)}}" data-key="{{item.formType}}"
-                                               lay-verify="number|{{#  if(item.mandatory){ }}required|{{#  } }}{{item.validateType}}"
-                                               {{ validateValue(item.validateType,item.validateValue) }}
-                                               data-validateType="{{item.validateType}}" data-validateValue="{{formatValidateValue(item.validateValue)}}"
-                                               data-mandatory="{{item.mandatory}}" data-valueType="{{item.valueType}}" data-oldValue="{{=item.value}}"
-                                               type="text">
-                                    </div>
-                                </div>
-                                {{#  } }}
-                                {{#  if(item.formType === 'INPUT_FILE_IMAGE'){ }}
-                                <div class="layui-form-item">
-                                    <label class="layui-form-label">{{ item.title }}</label>
-                                    <div class="layui-input-block">
-                                        <button class="layui-btn" id="{{item.key}}-BTN" type="button">上传图片</button>
-                                        <div class="layui-upload-list imgupload">
-                                            <img class="layui-upload-img" id="{{item.key}}-IMG"
-                                                 style="margin-left: 5px" src="{{item.value}}"
-                                                 {{computeWidth(item.key)}}>
-                                            <p id="{{item.key}}-TEXT"></p>
-                                            <input id="{{item.key}}-SRC"  class="web-form" data-key="{{item.formType}}" title="{{ item.title }}"
-                                                   name="{{item.key}}" style="visibility: hidden"
-                                                   lay-verify="{{#  if(item.mandatory){ }}required{{#  } }}{{item.validateType}}"
-                                                   data-validateType="{{item.validateType}}" data-validateValue="{{formatValidateValue(item.validateValue)}}"
-                                                   data-mandatory="{{item.mandatory}}" data-valueType="{{item.valueType}}" data-oldValue="{{=item.value}}"
-                                                   value="{{=item.value}}">
+                            </ul>
+                            <div class="layui-tab-content">
+                                {{# layui.each(d.data.dataList, function(index, conf){ }}
+                                <div class="layui-tab-item {{#  if(index === 0){ }}layui-show{{#  } }}">
+                                    <div class="layui-form" id="layuiadmin-form-comment"
+                                         lay-filter="layuiadmin-form-comment">
+                                        <div class="layui-card-body">
+
+                                            {{# layui.each(conf.list, function(index, item){ }}
+                                            {{# if(item.formType === 'INPUT_TEXT'){ }}
+                                            <div class="layui-form-item">
+                                                <label class="layui-form-label">{{ item.titleDsp }}</label>
+                                                <div class="layui-input-block">
+                                                    <input class="layui-input web-form  {{#  if(item.key === 'EMAIL_TEST_RECEIVER'){ }} email-test {{#  } }}"
+                                                           name="{{ item.key }}" data-key="{{item.formType}}"
+                                                           title="{{ item.titleDsp }}"
+                                                           lay-verify="{{#  if(item.required){ }}required{{#  } }}|{{item.validateType}}"
+                                                           {{ validateValue(item.validateType,item.validateValue) }}
+                                                           data-validateType="{{item.validateType}}"
+                                                           data-validateValue="{{=item.validateValue}}"
+                                                           data-required="{{item.required}}"
+                                                           data-valueType="{{item.valueType}}"
+                                                           data-oldValue="{{=item.value}}"
+                                                           value="{{=item.value}}" type="text">
+                                                    <span class="tip-area">
+                                                        {{# if(item.required){ }}
+                                                            <i class="layui-icon layui-require">*</i>
+                                                        {{# } }}
+                                                        {{# if(item.tipsDsp !== undefined){ }}
+                                                            <i class="layui-icon layui-icon-tips tips-input-text"
+                                                               data-text="{{ item.tipsDsp }}"></i>
+                                                        {{# } }}
+                                                    </span>
+                                                    {{# if(item.key === 'EMAIL_TEST_RECEIVER'){ }}
+                                                    <input class="layui-btn email-test-btn" id="email-test"
+                                                           lay-filter="email-test"
+                                                           type="button" value="邮件测试">
+                                                    {{# } }}
+                                                </div>
+                                            </div>
+                                            {{# } }}
+                                            {{# if(item.formType === 'TEXTAREA'){ }}
+                                            <div class="layui-form-item">
+                                                <label class="layui-form-label">{{ item.titleDsp }}</label>
+                                                <div class="layui-input-block">
+                                                  <textarea class="layui-textarea web-form" style="resize:none;"
+                                                            name="{{ item.key }}"
+                                                            data-key="{{item.formType}}" title="{{ item.titleDsp }}"
+                                                            data-validateType="{{item.validateType}}"
+                                                            lay-verify="{{#  if(item.required){ }}required|{{#  } }}{{item.validateType}}"
+                                                            {{ validateValue(item.validateType,item.validateValue) }}
+                                                            data-validateType="{{item.validateType}}"
+                                                            data-validateValue="{{=item.validateValue}}"
+                                                            data-required="{{item.required}}"
+                                                            data-valueType="{{item.valueType}}"
+                                                            data-oldValue="{{=item.value}}"
+                                                            type="text">{{=item.value}}</textarea>
+                                                    <span class="tip-area">
+                                                        {{# if(item.required){ }}
+                                                         <i class="layui-icon layui-require-area">*</i>
+                                                        {{# } }}
+                                                        {{# if(item.tipsDsp !== undefined){ }}
+                                                            <i class="layui-icon layui-icon-tips tips-input-area"
+                                                               data-text="{{ item.tipsDsp }}"></i>
+                                                        {{# } }}
+                                                   </span>
+                                            </div>
+                                        </div>
+                                        {{# } }}
+                                        {{# if(item.formType === 'INPUT_TEXT_NUMBER'){ }}
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">{{ item.titleDsp }}</label>
+                                            <div class="layui-input-block">
+                                                <input class="layui-input web-form" name="{{item.key}}"
+                                                       title="{{ item.titleDsp }}"
+                                                       value="{{formatNum(item.value,item.valueType )}}"
+                                                       data-key="{{item.formType}}"
+                                                       lay-verify="{{#  if(item.required){ }}required|{{#  } }}{{item.validateType}}"
+                                                       {{ validateValue(item.validateType,item.validateValue) }}
+                                                       data-validateType="{{item.validateType}}"
+                                                       data-validateValue="{{=item.validateValue}}"
+                                                       data-required="{{item.required}}"
+                                                       data-valueType="{{item.valueType}}"
+                                                       data-oldValue="{{=item.value}}"
+                                                       type="text">
+                                                <span class="tip-area">
+                                                    {{# if(item.required){ }}
+                                                      <i class="layui-icon layui-require">*</i>
+                                                    {{# } }}
+                                                    {{# if(item.tipsDsp !== undefined){ }}
+                                                        <i class="layui-icon layui-icon-tips tips-input-text"
+                                                           data-text="{{ item.tipsDsp }}"></i>
+                                                    {{# } }}
+                                                </span>
+
+                                            </div>
+                                        </div>
+                                        {{# } }}
+                                        {{# if(item.formType === 'INPUT_FILE_IMAGE'){ }}
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">{{ item.titleDsp }}</label>
+                                            <div class="layui-input-block">
+                                                <button class="layui-btn" id="{{item.key}}-BTN" type="button">上传图片
+                                                </button>
+                                                <div class="layui-upload-list imgupload">
+                                                    <img class="layui-upload-img" id="{{item.key}}-IMG"
+                                                         style="margin-left: 5px" src="{{item.value}}"
+                                                         {{computeWidth(item.key)}}>
+                                                    <span class="tip-area">
+                                                        {{# if(item.required){ }}
+                                                         <i class="layui-icon layui-require-upload">*</i>
+                                                        {{# } }}
+                                                        {{# if(item.tipsDsp !== undefined){ }}
+                                                          <i class="layui-icon layui-icon-tips tips-input-upload"
+                                                            data-text="{{ item.tipsDsp }}"></i>
+                                                        {{# } }}
+                                                    </span>
+                                                    <p id="{{item.key}}-TEXT"></p>
+                                                    <input id="{{item.key}}-SRC" class="web-form"
+                                                           data-key="{{item.formType}}" title="{{ item.titleDsp }}"
+                                                           name="{{item.key}}" style="visibility: hidden"
+                                                           lay-verify="{{#  if(item.required){ }}required{{#  } }}{{item.validateType}}"
+                                                           data-validateType="{{item.validateType}}"
+                                                           data-validateValue="{{=item.validateValue}}"
+                                                           data-required="{{item.required}}"
+                                                           data-valueType="{{item.valueType}}"
+                                                           data-oldValue="{{=item.value}}"
+                                                           value="{{=item.value}}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{# uploadIdList.push(item.key) }}
+                                        {{# } }}
+                                        {{# if(item.formType === 'INPUT_CHECKBOX'){ }}
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">{{ item.titleDsp }}</label>
+                                            <div class="layui-input-block">
+                                                <input id="{{item.key}}" class="web-form" name="{{item.key}}"
+                                                       {{check(item.value)}} data-key="{{item.formType}}"
+                                                       lay-verify="{{#  if(item.required){ }}required{{#  } }}{{item.validateType}}"
+                                                       title="{{item.titleDsp}}" data-required="{{item.required}}"
+                                                       data-valueType="{{item.valueType}}"
+                                                       data-validateType="{{item.validateType}}"
+                                                       data-validateValue="{{=item.validateValue}}"
+                                                       type="checkbox" value="1" data-oldValue="{{item.value}}">
+                                                <span class="tip-area">
+                                                    {{# if(item.required){ }}
+                                                     <i class="layui-icon layui-require-checkbox">*</i>
+                                                    {{# } }}
+                                                    {{# if(item.tipsDsp !== undefined){ }}
+                                                        <i class="layui-icon layui-icon-tips tips-input-checkbox"
+                                                           data-text="{{ item.tipsDsp }}"></i>
+                                                    {{# } }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        {{# } }}
+
+                                        {{# }); }}
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label"></label>
+                                            <div class="layui-input-block">
+                                                <input class="layui-btn submit" id="submit"
+                                                       lay-filter="submit-webconf" lay-submit
+                                                       style="float: right" type="button" value="确认">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                {{ upload(item.key)}}
-                                {{#  } }}
-                                {{#  if(item.formType === 'INPUT_CHECKBOX'){ }}
-                                <div class="layui-form-item">
-                                    <label class="layui-form-label">{{ item.title }}</label>
-                                    <div class="layui-input-block">
-                                        <input id="{{item.key}}" class="web-form" name="{{item.key}}"
-                                               {{check(item.value)}} data-key="{{item.formType}}"
-                                               lay-verify="{{#  if(item.mandatory){ }}required{{#  } }}{{item.validateType}}"
-                                               title="{{item.title}}"  data-mandatory="{{item.mandatory}}"  data-valueType="{{item.valueType}}"
-                                               data-validateType="{{item.validateType}}" data-validateValue="{{formatValidateValue(item.validateValue)}}"
-                                               type="checkbox" value="1"  data-oldValue="{{item.value}}">
-                                    </div>
-                                </div>
-                                {{#  } }}
 
-                                {{# }); }}
-                                <div class="layui-form-item">
-                                    <label class="layui-form-label"></label>
-                                    <div class="layui-input-block">
-                                        <input class="layui-btn" id="submit" lay-filter="submit-webconf" lay-submit
-                                               style="float: right" type="button" value="确认">
-                                    </div>
-                                </div>
-                            </script>
+                            </div>
+                            {{# }); }}
                         </div>
-                    </div>
-
+                        </div>
+                    </script>
 
                 </div>
             </div>
@@ -118,24 +280,47 @@
         layui.use('web', layui.factory('web')).use(['admin', 'web', 'form'], function () {
             var form = layui.form
                 , $ = layui.jquery
+                , layer = layui.layer
             ;
             form.render();
+            for (let o in uploadIdList) {
+                upload(uploadIdList[o])
+            }
 
+            var index;
+            $(".tips-input-checkbox,.tips-input-upload,.tips-input-text,.tips-input-area").hover(function () {
+                var that = $(this);
+                index = layer.tips(that.data('text'), that);
+            });
+            $(".tips-input-checkbox,.tips-input-upload,.tips-input-text,.tips-input-area").mouseleave(function () {
+                if (index) {
+                    layer.close(index)
+                }
+            });
+
+            $('#email-test').click(function () {
+                var emailTo = $('input[name=EMAIL_TEST_RECEIVER]').val();
+                ajaxPost(
+                    '/api/admin/webconf/email/test',
+                    1,
+                    JSON.stringify({
+                        emailTo: emailTo
+                    }),
+                    "邮件发送成功!"
+                );
+            })
         })
     }
-
     function upload(key) {
         var idx;
-        layui.use(['upload'], function () {
+        layui.use(['layupload'], function () {
             var form = layui.form
-                , upload = layui.upload
+                , upload = layui.layupload
                 , $ = layui.jquery
             ;
-
-
             var upFile = upload.render({
                 elem: '#' + key + '-BTN'
-                , url: '/api/file/upload'
+                , url: '/api/admin/file/upload'
                 , before: function (obj) {
                     //预读本地文件示例，不支持ie8
                     obj.preview(function (index, file, result) {
@@ -161,7 +346,7 @@
                     //上传成功
                 }
                 , error: function () {
-                    layer.close(index);
+                    layer.close(idx);
                     layer.msg('上传出错：1', {
                         title: '提示'
                         //不自动关闭
@@ -190,21 +375,25 @@
         value = JSON.parse(value)
         for (var i = 0; i < validateArr.length; i++) {
             var v = value[validateArr[i]];
-            if (v && v['lay-verify']) {
-                res = res + v['lay-verify'] + " ";
+            if (v && v['layVerifyExpress']) {
+                res = res + v['layVerifyExpress'] + " ";
             }
         }
         return res;
     }
-    function formatValidateValue(v)
-    {
-        if(!v) return ''
-        return v.replaceAll('\"',"\\");
-    }
-    function formatNum(v)
-    {
-        if(!v) return ''
-        return parseInt(v);
+
+    // function formatValidateValue(v) {
+    //     if (!v) return '';
+    //     return html2Escape(v);
+    // }
+
+    function formatNum(value, type) {
+        if (!value) return '0'
+        if ("F" === type) {
+            return parseFloat(value);
+        } else if ("I" === type) {
+            return parseInt(value);
+        }
     }
 
     function check(value) {
@@ -221,5 +410,6 @@
         return 'width="100"';
 
     }
+
 
 </script>

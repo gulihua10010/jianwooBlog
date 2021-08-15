@@ -1,35 +1,61 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.jianwoo.blog.dao.biz.mapper.WebconfBizMapper">
-    <resultMap id="BaseResultMap" type="cn.jianwoo.blog.entity.Webconf">
-        <id column="OID" jdbcType="BIGINT" property="oid" />
-        <result column="KEY" jdbcType="VARCHAR" property="key" />
-        <result column="DESC" jdbcType="VARCHAR" property="desc" />
-        <result column="TITLE" jdbcType="VARCHAR" property="title" />
-        <result column="VALUE_TYPE" jdbcType="VARCHAR" property="valueType" />
-        <result column="FORM_TYPE" jdbcType="VARCHAR" property="formType" />
-        <result column="STRING_VALUE" jdbcType="VARCHAR" property="stringValue" />
-        <result column="NUM_VALUE" jdbcType="DECIMAL" property="numValue" />
-        <result column="BOOLEAN_VALUE" jdbcType="CHAR" property="booleanValue" />
-        <result column="DATE_VALUE" jdbcType="TIMESTAMP" property="dateValue" />
-        <result column="MANDATORY" jdbcType="CHAR" property="mandatory" />
-        <result column="VALIDATE_TYPE" jdbcType="VARCHAR" property="validateType" />
-        <result column="VALIDATE_VALUE" jdbcType="VARCHAR" property="validateValue" />
-        <result column="VAILD" jdbcType="CHAR" property="vaild" />
-        <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
-        <result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate" />
-        <result column="INDEX" jdbcType="INTEGER" property="index" />
+    <resultMap id="BaseResultMap" type="cn.jianwoo.blog.entity.extension.WebconfExt">
+        <id column="OID" jdbcType="BIGINT" property="oid"/>
+        <result column="KEY" jdbcType="VARCHAR" property="key"/>
+        <result column="DESC" jdbcType="VARCHAR" property="desc"/>
+        <result column="VALUE_TYPE" jdbcType="VARCHAR" property="valueType"/>
+        <result column="STRING_VALUE" jdbcType="VARCHAR" property="stringValue"/>
+        <result column="INT_VALUE" jdbcType="INTEGER" property="intValue"/>
+        <result column="FLOAT_VALUE" jdbcType="DECIMAL" property="floatValue"/>
+        <result column="BOOLEAN_VALUE" jdbcType="CHAR" property="booleanValue"/>
+        <result column="DATE_VALUE" jdbcType="TIMESTAMP" property="dateValue"/>
+        <result column="INDEX" jdbcType="INTEGER" property="index"/>
+        <result column="VALID" jdbcType="CHAR" property="valid"/>
+        <result column="TITLE_DSP" jdbcType="VARCHAR" property="titleDsp"/>
+        <result column="TIPS_DSP" jdbcType="VARCHAR" property="tipsDsp"/>
+        <result column="FORM_TYPE" jdbcType="VARCHAR" property="formType"/>
+        <result column="TAB_TYPE" jdbcType="VARCHAR" property="tabType"/>
+        <result column="TAB_TYPE_DSP" jdbcType="VARCHAR" property="tabTypeDsp"/>
+        <result column="REQUIRED" jdbcType="CHAR" property="required"/>
+        <result column="VALIDATE_TYPE" jdbcType="VARCHAR" property="validateType"/>
+        <result column="VALIDATE_VALUE" jdbcType="VARCHAR" property="validateValue"/>
     </resultMap>
 
-    <sql id="Base_Column_List">
-        OID, `KEY`, `DESC`, TITLE, VALUE_TYPE, FORM_TYPE, STRING_VALUE, NUM_VALUE, BOOLEAN_VALUE,
-    DATE_VALUE, MANDATORY, VALIDATE_TYPE, VALIDATE_VALUE, `INDEX`, VAILD, CREATE_DATE,
-    UPDATE_DATE
+    <sql id="Ext_Column_List">
+        W.OID, `KEY`, W.`DESC`, VALUE_TYPE, STRING_VALUE, FLOAT_VALUE, INT_VALUE, BOOLEAN_VALUE, DATE_VALUE,
+    `INDEX`, `VALID`,TITLE_DSP, TIPS_DSP, FORM_TYPE, TAB_TYPE, TAB_TYPE_DSP, REQUIRED,
+    VALIDATE_TYPE, VALIDATE_VALUE
     </sql>
-
+    <sql id="Base_Column_List">
+        OID, `KEY`, `DESC`, VALUE_TYPE, STRING_VALUE, FLOAT_VALUE, INT_VALUE, BOOLEAN_VALUE, DATE_VALUE,
+    `INDEX`, `VALID`, CREATE_TIME, UPDATE_TIME
+    </sql>
     <select id="selectAllWebconf" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM webconf
     </select>
+    <select id="selectEffectiveWebconf" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Ext_Column_List"/>
+        FROM WEBCONF W LEFT JOIN WEBCONF_FACADE F
+        ON W.OID = F.CONF_OID
+        WHERE W.VALID = '1'
+    </select>
+
+    <update id="updateWebconfByKey" parameterType="map">
+        UPDATE WEBCONF
+        SET
+            STRING_VALUE  = #{webconf.stringValue,jdbcType=VARCHAR},
+            INT_VALUE     = #{webconf.intValue,jdbcType=INTEGER},
+            FLOAT_VALUE   = #{webconf.floatValue,jdbcType=DECIMAL},
+            BOOLEAN_VALUE = #{webconf.booleanValue,jdbcType=CHAR},
+            DATE_VALUE    = #{webconf.dateValue,jdbcType=TIMESTAMP},
+            UPDATE_TIME   = NOW()
+        WHERE
+            `KEY` = #{key,jdbcType=VARCHAR};
+    </update>
+
 </mapper>

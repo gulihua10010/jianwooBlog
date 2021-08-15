@@ -2,9 +2,8 @@ package cn.jianwoo.blog.dao.base.mapper;
 
 import cn.jianwoo.blog.entity.Webconf;
 import cn.jianwoo.blog.entity.example.WebconfExample;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface WebconfMapper {
     long countByExample(WebconfExample example);

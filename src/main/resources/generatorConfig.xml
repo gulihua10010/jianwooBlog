@@ -13,15 +13,30 @@
     <context id="mysqlTables" targetRuntime="MyBatis3">
         <property name="beginningDelimiter" value="`"/>
         <property name="endingDelimiter" value="`"/>
-        <plugin type="com.plbiz.commons.dev.mybatis.plugins.MySQLPaginationPlugin"></plugin>
+        <property name="autoDelimitKeywords" value="true"/>
+        <!--        <plugin type="com.plbiz.commons.dev.mybatis.plugins.MySQLPaginationPlugin"></plugin>-->
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin"></plugin>
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"></plugin>
         <plugin type="org.mybatis.generator.plugins.CaseInsensitiveLikePlugin"></plugin>
-        <!-- 覆盖原mapper.xml-->
+        <!--        &lt;!&ndash; 覆盖原mapper.xml&ndash;&gt;-->
         <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"></plugin>
-        <plugin type="com.plbiz.commons.dev.mybatis.plugins.BaseDaoPlugin">
-            <property name="targetProject" value="src/main/java"/>
-            <property name="targetPackage" value="cn.jianwoo.blog"/>
+        <!--        第一次生成mapper时打开-->
+        <!--        <plugin type="cn.jianwoo.dev.plugin.BaseDaoPlugin">-->
+        <!--            &lt;!&ndash;                    //重要！！项目第一次生成时启用，会自动生成ExceptionConstants和DaoException，-->
+        <!--                                    后续生成不需要，关闭既可&ndash;&gt;-->
+        <!--            <property name="isProjectFirstGenerate" value="false"/>-->
+        <!--            <property name="targetProject" value="src/main/java"/>-->
+        <!--            <property name="daoPackage" value="cn.jianwoo.blog.dao"/>-->
+        <!--            <property name="daoExceptionPackage" value="cn.jianwoo.blog.exception"/>-->
+        <!--            <property name="entityPackage" value="cn.jianwoo.blog.entity"/>-->
+        <!--            <property name="constantsPackage" value="cn.jianwoo.blog.constants"/>-->
+        <!--            <property name="examplePackage" value="cn.jianwoo.blog.entity.example"/>-->
+        <!--            <property name="mapperPackage" value="cn.jianwoo.blog.dao.base.mapper"/>-->
+        <!--        </plugin>-->
+        <plugin type="cn.jianwoo.dev.plugin.ExampleTargetPlugin">
+            <property name="targetPackage" value="cn.jianwoo.blog.entity.example"/>
+        </plugin>
+        <plugin type="cn.jianwoo.dev.plugin.MySQLExtendedPlugin">
         </plugin>
         <!-- optional，旨在创建class时，对注释进行控制 -->
         <commentGenerator>
@@ -78,38 +93,80 @@
         </javaClientGenerator>
 
 
-        <!--        <table tableName="ADMIN" domainObjectName="Admin">-->
-        <!--            <property name="useActualColumnNames" value="false"/>-->
-        <!--        </table>-->
-        <!--        <table tableName="ARTICLE" domainObjectName="Article">-->
-        <!--            <property name="useActualColumnNames" value="false"/>-->
-        <!--        </table>-->
-        <!--        <table tableName="ARTICLE_TAGS" domainObjectName="ArticleTags">-->
-        <!--            <property name="useActualColumnNames" value="false"/>-->
-        <!--        </table>-->
-        <!--        <table tableName="COMMENTS" domainObjectName="Comment">-->
-        <!--            <property name="useActualColumnNames" value="false"/>-->
-        <!--        </table>-->
-        <!--        <table tableName="MODULE" domainObjectName="Module">-->
-        <!--            <property name="useActualColumnNames" value="false"/>-->
-        <!--        </table>-->
-        <!--        <table tableName="TAGS" domainObjectName="Tags">-->
-        <!--            <property name="useActualColumnNames" value="false"/>-->
-        <!--        </table>-->
-        <!--        <table tableName="TYPES" domainObjectName="Types">-->
-        <!--            <property name="useActualColumnNames" value="false"/>-->
-        <!--        </table>-->
-        <!--        <table tableName="VISIT" domainObjectName="Visit">-->
-        <!--            <property name="useActualColumnNames" value="false"/>-->
-        <!--        </table>-->
+<!--        <table tableName="ADMIN" domainObjectName="Admin">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+<!--        </table>-->
+        <!--                <table tableName="ARTICLE" domainObjectName="Article">-->
+        <!--                    <property name="useActualColumnNames" value="false"/>-->
+        <!--                    <columnOverride column="IS_COMMENT" javaType="Boolean"/>-->
+        <!--                </table>-->
+<!--        <table tableName="ARTICLE_TAGS" domainObjectName="ArticleTags">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+<!--        </table>-->
+        <!--                <table tableName="COMMENTS" domainObjectName="Comment">-->
+        <!--                    <property name="useActualColumnNames" value="false"/>-->
+        <!--                </table>-->
+<!--                <table tableName="MODULE" domainObjectName="Module">-->
+<!--                    <property name="useActualColumnNames" value="false"/>-->
+<!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+<!--                </table>-->
+<!--                <table tableName="TAGS" domainObjectName="Tags">-->
+<!--                    <property name="useActualColumnNames" value="false"/>-->
+<!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+<!--                </table>-->
+<!--                <table tableName="TYPES" domainObjectName="Types">-->
+<!--                    <property name="useActualColumnNames" value="false"/>-->
+<!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+<!--                </table>-->
+<!--                <table tableName="VISIT" domainObjectName="Visit">-->
+<!--                    <property name="useActualColumnNames" value="false"/>-->
+<!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+<!--                </table>-->
         <!--        <table tableName="WEBCONF" domainObjectName="Webconf">-->
         <!--            <property name="useActualColumnNames" value="false"/>-->
         <!--        </table>-->
-        <!--        <table tableName="MENU" domainObjectName="Menu">-->
-        <!--            <property name="useActualColumnNames" value="false"/>-->
-        <!--        </table>-->
-        <table tableName="file_upload" domainObjectName="fileUpload">
-            <property name="useActualColumnNames" value="false"/>
-        </table>
+<!--                <table tableName="MENU" domainObjectName="Menu">-->
+<!--                    <property name="useActualColumnNames" value="false"/>-->
+<!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+<!--                    <columnOverride column="VALID" javaType="Boolean"/>-->
+<!--                </table>-->
+<!--        <table tableName="file_upload" domainObjectName="FileUpload">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+<!--            <columnOverride column="IS_CHUNK" javaType="Boolean"/>-->
+<!--            <columnOverride column="IS_DELETE" javaType="Boolean"/>-->
+<!--        </table>-->
+
+<!--                <table tableName="WEBCONF" domainObjectName="Webconf">-->
+<!--                    <property name="useActualColumnNames" value="false"/>-->
+<!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+<!--                    <columnOverride column="VALID" javaType="Boolean"/>-->
+<!--                    <columnOverride column="BOOLEAN_VALUE" javaType="Boolean"/>-->
+<!--                </table>-->
+                <table tableName="webconf_facade" domainObjectName="WebconfFacade">
+                    <property name="useActualColumnNames" value="false"/>
+                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>
+                    <columnOverride column="REQUIRED" javaType="Boolean"/>
+                </table>
+
+<!--        <table tableName="EMAIL" domainObjectName="Email">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+<!--            &lt;!&ndash;            <columnOverride column="PROC_STATUS" javaType="Boolean"/>&ndash;&gt;-->
+<!--        </table>-->
+
+
+<!--        <table tableName="EMAIL_TEMPLATE" domainObjectName="EmailTemplate">-->
+<!--            <property name="useActualColumnNames" value="false"/>-->
+<!--            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+<!--        </table>-->
+
+        <!--                        <table tableName="TEMP_ARTICLE" domainObjectName="TempArticle">-->
+        <!--                            <property name="useActualColumnNames" value="false"/>-->
+        <!--                            <columnOverride column="IS_COMMENT" javaType="Boolean"/>-->
+        <!--                        </table>-->
+
     </context>
 </generatorConfiguration>

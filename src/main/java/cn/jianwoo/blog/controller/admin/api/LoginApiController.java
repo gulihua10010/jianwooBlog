@@ -4,17 +4,19 @@ import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.cache.CacheStore;
 import cn.jianwoo.blog.config.GeetestConfig;
+import cn.jianwoo.blog.config.apiversion.ApiVersion;
 import cn.jianwoo.blog.config.router.admin.LoginApiUrlConfig;
+import cn.jianwoo.blog.constants.CacaheKeyConstants;
+import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.constants.WebConfDataConfig;
-import cn.jianwoo.blog.dao.base.WebconfTransDao;
 import cn.jianwoo.blog.dto.request.UserRequest;
 import cn.jianwoo.blog.dto.response.CaptchaTokenResponse;
 import cn.jianwoo.blog.dto.response.GeetestResponse;
-import cn.jianwoo.blog.entity.Webconf;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.security.token.AuthToken;
 import cn.jianwoo.blog.service.biz.AdminBizService;
+import cn.jianwoo.blog.service.biz.WebconfBizService;
 import cn.jianwoo.blog.util.GeetestLibUtil;
 import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.validation.BizValidation;
@@ -41,11 +43,24 @@ public class LoginApiController extends BaseController {
     @Autowired
     private CacheStore<String, String> cacheStore;
     @Autowired
-    private WebconfTransDao webconfTransDao;
+    private WebconfBizService webconfBizService;
 
-    public static final String LOGIN_CAPTCHA_AUTH = "JIANWOO.LOGIN.CAPTCHA.AUTH";
     public static final String LOGIN_SESSION = "JIANWOO.LOGIN.SESSION";
 
+
+    /**
+     * 初始化登录验证码<br/>
+     * url:/api/passport/login/captcha/init<br/>
+     * <p>
+     *
+     * @return 返回响应 {@link BaseResponseDto}
+     * challenge
+     * gt
+     * newCaptcha
+     * success
+     * @author gulihua
+     */
+    @ApiVersion()
     @GetMapping(LoginApiUrlConfig.URL_LOGIN_CAPTCHA_INIT)
     public String startCaptcha() {
         GeetestLibUtil gtSdk = new GeetestLibUtil(GeetestConfig.getGeetestId(), GeetestConfig.getGeetestKey(),
@@ -74,6 +89,20 @@ public class LoginApiController extends BaseController {
 
     }
 
+    /**
+     * 验证登录验证码<br/>
+     * url:/api/passport/login/captcha/verify<br/>
+     * <p>
+     * param
+     * geetest_challenge<br/>
+     * geetest_validate<br/>
+     * geetest_seccode<br/>
+     *
+     * @return 返回响应 {@link BaseResponseDto}
+     * token
+     * @author gulihua
+     */
+    @ApiVersion()
     @PostMapping(LoginApiUrlConfig.URL_LOGIN_CAPTCHA_VERIFY)
     public String VerifyLogin() {
         GeetestLibUtil gtSdk = new GeetestLibUtil(GeetestConfig.getGeetestId(), GeetestConfig.getGeetestKey(),
@@ -114,7 +143,7 @@ public class LoginApiController extends BaseController {
         if (gtResult) {
             // 验证成功
             String token = JwUtil.randomUUIDWithoutDash();
-            cacheStore.put(LOGIN_CAPTCHA_AUTH, token);
+            cacheStore.put(CacaheKeyConstants.LOGIN_CAPTCHA_AUTH, token);
 //            request.getSession().setAttribute(LOGIN_CAPTCHA_AUTH, token);
             return super.responseToJSONString(new CaptchaTokenResponse(token));
         } else {
@@ -125,6 +154,17 @@ public class LoginApiController extends BaseController {
 
     }
 
+    /**
+     * 用户授权登录<br/>
+     * url:/api/passport/login/auth<br/>
+     *
+     * @param param JSON 参数({@link UserRequest})
+     *              username<br/>
+     *              password<br/>
+     * @return 返回响应 {@link BaseResponseDto}
+     * token
+     * @author gulihua
+     */
     @Deprecated
     @PostMapping(LoginApiUrlConfig.URL_LOGIN_AUTH)
     public String loginAuth(@RequestBody String param) {
@@ -134,10 +174,10 @@ public class LoginApiController extends BaseController {
             UserRequest requestParam = this.convertParam(param, UserRequest.class);
             BizValidation.paramValidate(requestParam.getUsername(), "username", "用户名不能为空!");
             BizValidation.paramValidate(requestParam.getPassword(), "password", "密码不能为空!");
-            Webconf webconf = webconfTransDao.queryWebconfByKey(WebConfDataConfig.IS_LOGIN_NEED_CAPTCHA);
+            String isNeed = webconfBizService.queryWebconfByKey(WebConfDataConfig.IS_LOGIN_NEED_CAPTCHA);
 
-            if (webconf != null && webconf.getBooleanValue()) {
-                String tokenStore = cacheStore.get(LOGIN_CAPTCHA_AUTH).orElse(null);
+            if (Constants.TRUE.equals(isNeed)) {
+                String tokenStore = cacheStore.get(CacaheKeyConstants.LOGIN_CAPTCHA_AUTH).orElse(null);
 //                String tokenSession = (String) request.getSession().getAttribute(LOGIN_CAPTCHA_AUTH);
                 String tokenSession = requestParam.getAccess_token();
                 boolean isCaptcha = null != tokenSession && tokenSession.equals(tokenStore);
@@ -149,9 +189,9 @@ public class LoginApiController extends BaseController {
 
 
             AuthToken authToken = adminBizService.authLogin(requestParam.getUsername(), requestParam.getClientIp());
-            if (webconf != null && webconf.getBooleanValue()) {
-                cacheStore.delete(LOGIN_CAPTCHA_AUTH);
-                request.getSession().removeAttribute(LOGIN_CAPTCHA_AUTH);
+            if (Constants.TRUE.equals(isNeed)) {
+                cacheStore.delete(CacaheKeyConstants.LOGIN_CAPTCHA_AUTH);
+                request.getSession().removeAttribute(CacaheKeyConstants.LOGIN_CAPTCHA_AUTH);
             }
 
             request.getSession().setAttribute(LOGIN_SESSION, authToken.getAccessToken());
@@ -161,6 +201,7 @@ public class LoginApiController extends BaseController {
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
 
     }
+
 
 
 

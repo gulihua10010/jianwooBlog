@@ -10,7 +10,7 @@ public interface MenuBizMapper {
      * @return
      * @author gulihua
      */
-    int countMenu(Integer type);
+    int countMenu(String type);
 
 
     /**

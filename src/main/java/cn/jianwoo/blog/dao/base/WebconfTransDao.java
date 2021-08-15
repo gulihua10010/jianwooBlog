@@ -19,9 +19,9 @@ public interface WebconfTransDao extends WebconfQueryDao {
     void doDeleteByPrimaryKey(Long oid) throws DaoException;
 
     /**
-     * 通过KEY更新标
+     * 通过KEY更新VALUE
      *
-     * @param %record% %record%
+     * @param record Webconf数据
      * @return
      * @author gulihua
      */

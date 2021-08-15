@@ -1,6 +1,5 @@
 package cn.jianwoo.blog.filter;
 
-import cn.hutool.crypto.SecureUtil;
 import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
@@ -85,10 +84,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         //将userId存入session
         request.getSession().setAttribute(Constants.CURRENT_USER, user.getAuthToken().getUid());
 
-        generateAccessToken(response,user);
-        generateRefreshToken(response,user);
+        generateAccessToken(response, user);
+        generateRefreshToken(response, user);
 
-        String encryptStr=JwUtil.encrypt(String.valueOf(user.getAuthToken().getUid()));
+        String encryptStr = JwUtil.encrypt(String.valueOf(user.getAuthToken().getUid()));
         response.addHeader(Constants.LOGIN_ID_SECRET, encryptStr);
         response.getWriter().write(processSuccessMsg(Constants.SUCCESS_LOGIN));
 
@@ -96,8 +95,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     }
 
-    private void generateAccessToken(HttpServletResponse response,AuthUserTokenBO user)
-    {
+    private void generateAccessToken(HttpServletResponse response, AuthUserTokenBO user) {
         // 将用户id放入JWT token
         Map<String, Object> map = new HashMap<>();
         map.put(Constants.USER_KEY, user.getAuthToken().getUid());
@@ -108,8 +106,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.addHeader(Constants.ACCESS_TOKEN, token);
     }
 
-    private void generateRefreshToken(HttpServletResponse response,AuthUserTokenBO user)
-    {
+    private void generateRefreshToken(HttpServletResponse response, AuthUserTokenBO user) {
         // 将用户id放入JWT token
         Map<String, Object> map = new HashMap<>();
         map.put(Constants.USER_KEY, user.getAuthToken().getUid());

@@ -3,19 +3,21 @@ package cn.jianwoo.blog.controller.admin.api;
 import cn.hutool.core.date.DateUtil;
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.builder.JwBuilder;
+import cn.jianwoo.blog.config.apiversion.ApiVersion;
 import cn.jianwoo.blog.config.router.admin.ConsoleApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dto.response.ArticleSummaryResponse;
 import cn.jianwoo.blog.dto.response.CommentSummaryResponse;
 import cn.jianwoo.blog.dto.response.ConsoleCountResponse;
-import cn.jianwoo.blog.dto.response.vo.ArticleVO;
+import cn.jianwoo.blog.dto.response.vo.ArticleSummaryVO;
+import cn.jianwoo.blog.dto.response.vo.CommentSummaryVO;
 import cn.jianwoo.blog.dto.response.vo.CommentVO;
 import cn.jianwoo.blog.dto.response.vo.ConsoleCountVO;
-import cn.jianwoo.blog.entity.Article;
-import cn.jianwoo.blog.entity.extension.CommentExt;
 import cn.jianwoo.blog.service.biz.ArticleBizService;
 import cn.jianwoo.blog.service.biz.CommentBizService;
 import cn.jianwoo.blog.service.biz.TagsBizService;
+import cn.jianwoo.blog.service.bo.ArticleBO;
+import cn.jianwoo.blog.service.bo.CommentBO;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,20 +63,22 @@ public class ConsoleApiController extends BaseController {
      * --desc<br/>
      * @author gulihua
      */
+    @ApiVersion()
     @GetMapping(ConsoleApiUrlConfig.URL_RECENT_ARTICLE_PUBLISHED_QUERY)
     public String queryPublishedArticleList() {
-        List<Article> articleList = articleBizService.queryRecentPublishedArts(10);
+        List<ArticleBO> articleList = articleBizService.queryRecentPublishedArts(10);
         ArticleSummaryResponse response = ArticleSummaryResponse.getInstance();
         if (CollectionUtils.isNotEmpty(articleList)) {
-            List<ArticleVO> articleVOList = articleList.stream().map(data -> {
-                ArticleVO vo = new ArticleVO();
+            List<ArticleSummaryVO> articleSummaryVOList = articleList.stream().map(data -> {
+                ArticleSummaryVO vo = new ArticleSummaryVO();
                 vo.setAuthor(data.getAuthor());
-                vo.setPublishDate(DateUtil.formatDateTime(data.getPushDate()));
+                vo.setPublishTimeStr(DateUtil.formatDateTime(data.getPushTime()));
+                vo.setPublishTime(data.getPushTime());
                 vo.setOid(data.getOid());
                 vo.setTitle(data.getTitle());
                 return vo;
             }).collect(Collectors.toList());
-            response.setData(articleVOList);
+            response.setData(articleSummaryVOList);
         }
         return super.responseToJSONString(response);
     }
@@ -97,20 +101,22 @@ public class ConsoleApiController extends BaseController {
      * --desc<br/>
      * @author gulihua
      */
+    @ApiVersion()
     @GetMapping(ConsoleApiUrlConfig.URL_RECENT_ARTICLE_DRAFT_QUERY)
     public String queryDraftArticleList() {
-        List<Article> articleList = articleBizService.queryRecentDraft(10);
+        List<ArticleBO> articleList = articleBizService.queryRecentDraft(10);
         ArticleSummaryResponse response = ArticleSummaryResponse.getInstance();
         if (CollectionUtils.isNotEmpty(articleList)) {
-            List<ArticleVO> articleVOList = articleList.stream().map(data -> {
-                ArticleVO vo = new ArticleVO();
+            List<ArticleSummaryVO> articleSummaryVOList = articleList.stream().map(data -> {
+                ArticleSummaryVO vo = new ArticleSummaryVO();
                 vo.setAuthor(data.getAuthor());
-                vo.setPublishDate(DateUtil.formatDateTime(data.getPushDate()));
+                vo.setPublishTimeStr(DateUtil.formatDateTime(data.getPushTime()));
+                vo.setPublishTime(data.getPushTime());
                 vo.setOid(data.getOid());
                 vo.setTitle(data.getTitle());
                 return vo;
             }).collect(Collectors.toList());
-            response.setData(articleVOList);
+            response.setData(articleSummaryVOList);
         }
         return super.responseToJSONString(response);
     }
@@ -137,19 +143,21 @@ public class ConsoleApiController extends BaseController {
      * --desc<br/>
      * @author gulihua
      */
+    @ApiVersion()
     @GetMapping(ConsoleApiUrlConfig.URL_RECENT_COMMENT_QUERY)
     public String queryCommentList() {
-        List<CommentExt> commentExtList = commentBizService.queryRecentComments(10);
+        List<CommentBO> commentExtList = commentBizService.queryRecentComments(10);
         CommentSummaryResponse response = CommentSummaryResponse.getInstance();
         if (CollectionUtils.isNotEmpty(commentExtList)) {
-            List<CommentVO> list = new ArrayList<>();
+            List<CommentSummaryVO> list = new ArrayList<>();
             commentExtList.forEach(domain -> {
-                CommentVO vo = new CommentVO();
+                CommentSummaryVO vo = new CommentSummaryVO();
                 vo.setArtOid(domain.getArticleOid());
-                vo.setDate(DateUtil.formatDateTime(domain.getDate()));
+                vo.setCommentTimeStr(DateUtil.formatDateTime(domain.getCommentTime()));
+                vo.setCommentTime(domain.getCommentTime());
                 vo.setArtTitle(domain.getTitle());
-                vo.setUser(domain.getUser());
-                vo.setIp(domain.getIp());
+                vo.setUserName(domain.getUserName());
+                vo.setClientIp(domain.getClientIp());
                 vo.setTemplateName(templateName);
                 String content = StringEscapeUtils.escapeHtml4(domain.getContent());
                 if (content.length() > 50) {
@@ -174,6 +182,7 @@ public class ConsoleApiController extends BaseController {
      * --count<br/>
      * @author gulihua
      */
+    @ApiVersion()
     @GetMapping(ConsoleApiUrlConfig.URL_PUBLISHED_ARTICLES_COUNT)
     public String queryPublishedArtsCount() {
         ConsoleCountResponse response = ConsoleCountResponse.getInstance();
@@ -195,6 +204,7 @@ public class ConsoleApiController extends BaseController {
      * --count<br/>
      * @author gulihua
      */
+    @ApiVersion()
     @GetMapping(ConsoleApiUrlConfig.URL_DRAFT_ARTICLES_COUNT)
     public String queryDraftArtsCount() {
         ConsoleCountResponse response = ConsoleCountResponse.getInstance();
@@ -215,6 +225,7 @@ public class ConsoleApiController extends BaseController {
      * --count<br/>
      * @author gulihua
      */
+    @ApiVersion()
     @GetMapping(ConsoleApiUrlConfig.URL_COMMENT_COUNT)
     public String queryCommentCount() {
         ConsoleCountResponse response = ConsoleCountResponse.getInstance();
@@ -235,6 +246,7 @@ public class ConsoleApiController extends BaseController {
      * --count<br/>
      * @author gulihua
      */
+    @ApiVersion()
     @GetMapping(ConsoleApiUrlConfig.URL_TAGS_COUNT)
     public String queryTagsCount() {
         ConsoleCountResponse response = ConsoleCountResponse.getInstance();

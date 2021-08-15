@@ -4,14 +4,21 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Visit implements Serializable {
-    private static final long serialVersionUID = 1L;
     private Long oid;
-    private String ip;
+
+    private String visitIp;
+
+    private String visitArea;
+
     private Long articleOid;
-    private Date visitDate;
-    private Date createDate;
-    private Date updateDate;
-    private String area;
+
+    private Date visitTime;
+
+    private Date createTime;
+
+    private Date updateTime;
+
+    private static final long serialVersionUID = 1L;
 
     public Long getOid() {
         return oid;
@@ -21,12 +28,20 @@ public class Visit implements Serializable {
         this.oid = oid;
     }
 
-    public String getIp() {
-        return ip;
+    public String getVisitIp() {
+        return visitIp;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip == null ? null : ip.trim();
+    public void setVisitIp(String visitIp) {
+        this.visitIp = visitIp == null ? null : visitIp.trim();
+    }
+
+    public String getVisitArea() {
+        return visitArea;
+    }
+
+    public void setVisitArea(String visitArea) {
+        this.visitArea = visitArea == null ? null : visitArea.trim();
     }
 
     public Long getArticleOid() {
@@ -37,36 +52,28 @@ public class Visit implements Serializable {
         this.articleOid = articleOid;
     }
 
-    public Date getVisitDate() {
-        return visitDate;
+    public Date getVisitTime() {
+        return visitTime;
     }
 
-    public void setVisitDate(Date visitDate) {
-        this.visitDate = visitDate;
+    public void setVisitTime(Date visitTime) {
+        this.visitTime = visitTime;
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
-    public Date getUpdateDate() {
-        return updateDate;
+    public Date getUpdateTime() {
+        return updateTime;
     }
 
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
-        this.area = area == null ? null : area.trim();
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -76,12 +83,12 @@ public class Visit implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", oid=").append(oid);
-        sb.append(", ip=").append(ip);
+        sb.append(", visitIp=").append(visitIp);
+        sb.append(", visitArea=").append(visitArea);
         sb.append(", articleOid=").append(articleOid);
-        sb.append(", visitDate=").append(visitDate);
-        sb.append(", createDate=").append(createDate);
-        sb.append(", updateDate=").append(updateDate);
-        sb.append(", area=").append(area);
+        sb.append(", visitTime=").append(visitTime);
+        sb.append(", createTime=").append(createTime);
+        sb.append(", updateTime=").append(updateTime);
         sb.append("]");
         return sb.toString();
     }

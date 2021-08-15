@@ -5,9 +5,9 @@ import cn.jianwoo.blog.annotation.SubToken;
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.builder.JwBuilder;
+import cn.jianwoo.blog.config.apiversion.ApiVersion;
 import cn.jianwoo.blog.config.router.admin.MenuApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
-import cn.jianwoo.blog.dao.base.MenuTransDao;
 import cn.jianwoo.blog.dto.request.EntityOidListRequest;
 import cn.jianwoo.blog.dto.request.EntityOidRequest;
 import cn.jianwoo.blog.dto.request.MenuVoRequest;
@@ -23,11 +23,11 @@ import cn.jianwoo.blog.dto.response.vo.HomeMenuVO;
 import cn.jianwoo.blog.dto.response.vo.HomeSubMenuVO;
 import cn.jianwoo.blog.dto.response.vo.MenuVO;
 import cn.jianwoo.blog.entity.Menu;
-import cn.jianwoo.blog.entity.extension.MenuExt;
 import cn.jianwoo.blog.enums.MenuTypeEnum;
 import cn.jianwoo.blog.enums.PageIdEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.MenuBizService;
+import cn.jianwoo.blog.service.bo.MenuBO;
 import cn.jianwoo.blog.service.bo.MenuValidateBO;
 import cn.jianwoo.blog.validation.BizValidation;
 import lombok.extern.slf4j.Slf4j;
@@ -57,8 +57,6 @@ import java.util.List;
 public class MenuApiController extends BaseController {
     @Autowired
     private MenuBizService menuBizService;
-    @Autowired
-    private MenuTransDao menuTransDao;
 
     /**
      * 菜单排序(菜单页面)<br/>
@@ -71,13 +69,14 @@ public class MenuApiController extends BaseController {
      * msg
      * @author gulihua
      */
+    @ApiVersion()
     @PostMapping(MenuApiUrlConfig.URL_MENU_SORT)
     public String sort(@RequestBody String param) {
         try {
             super.printRequestParams(param);
             EntityOidListRequest request = this.convertParam(param, EntityOidListRequest.class);
             BizValidation.paramValidate(request.getEntityOidList(), "entityOidList", "菜单id不能为空!");
-            menuBizService.doSortFrontMenuList(request.getEntityOidList());
+            menuBizService.doSortMainMenuList(request.getEntityOidList());
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
 
@@ -104,8 +103,9 @@ public class MenuApiController extends BaseController {
      */
     @PageId(PageIdEnum.MENU_ADD)
     @SubToken()
+    @ApiVersion()
     @PostMapping(MenuApiUrlConfig.URL_MENU_ADD)
-    public String add(@RequestBody String param) {
+    public String createMenu(@RequestBody String param) {
         try {
             super.printRequestParams(param);
             MenuVoRequest request = this.convertParam(param, MenuVoRequest.class);
@@ -115,8 +115,14 @@ public class MenuApiController extends BaseController {
             BizValidation.paramLengthValidate(request.getName(), Constants.MENU_LENGTH, "name", "菜单名字不能大于10个字符!");
             BizValidation.paramLengthValidate(request.getText(), Constants.MENU_LENGTH, "text", "菜单文本不能大于10个字符!");
             BizValidation.paramRegexValidate(request.getName(), Constants.MENU_NAME_REGEX, "name", "菜单文本必须是字母、数字、符号\\'_#$@\\'，不能包含其他特殊字符!");
-            menuBizService.doAddMenu(request.getName(), MenuTypeEnum.FRONTEND.getValue(), request.getParentOid(),
-                    request.getText(), request.getIcon(), request.getUrl());
+            MenuBO menuBO = JwBuilder.of(MenuBO::new)
+                    .with(MenuBO::setName, request.getName())
+                    .with(MenuBO::setType, MenuTypeEnum.FRONTEND.getValue())
+                    .with(MenuBO::setParentOid, request.getParentOid())
+                    .with(MenuBO::setText, request.getText())
+                    .with(MenuBO::setIcon, request.getIcon())
+                    .with(MenuBO::setUrl, request.getUrl()).build();
+            menuBizService.doAddMenu(menuBO);
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
 
@@ -143,6 +149,7 @@ public class MenuApiController extends BaseController {
      */
     @PageId(PageIdEnum.MENU_EDIT)
     @SubToken()
+    @ApiVersion()
     @PostMapping(MenuApiUrlConfig.URL_MENU_UPDATE)
     public String update(@RequestBody String param) {
         try {
@@ -154,8 +161,14 @@ public class MenuApiController extends BaseController {
             BizValidation.paramLengthValidate(request.getName(), Constants.MENU_LENGTH, "name", "菜单名字不能大于10个字符!");
             BizValidation.paramLengthValidate(request.getText(), Constants.MENU_LENGTH, "text", "菜单文本不能大于10个字符!");
             BizValidation.paramRegexValidate(request.getName(), Constants.MENU_NAME_REGEX, "name", "菜单文本必须是字母、数字、符号\\'_#$@\\'，不能包含其他特殊字符!");
-            menuBizService.doUpdateMenu(request.getOid(), request.getText(), request.getName(), request.getIcon(),
-                    request.getUrl(),request.getValid());
+            MenuBO menuBO = JwBuilder.of(MenuBO::new)
+                    .with(MenuBO::setOid, request.getOid())
+                    .with(MenuBO::setName, request.getName())
+                    .with(MenuBO::setText, request.getText())
+                    .with(MenuBO::setIcon, request.getIcon())
+                    .with(MenuBO::setValid, request.getValid())
+                    .with(MenuBO::setUrl, request.getUrl()).build();
+            menuBizService.doUpdateMenu(menuBO);
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
 
@@ -175,6 +188,7 @@ public class MenuApiController extends BaseController {
      * msg
      * @author gulihua
      */
+    @ApiVersion()
     @PostMapping(MenuApiUrlConfig.URL_MENU_VALIDATE_SUBMENU)
     public String validateSubMenuExist(@RequestBody String param) {
         try {
@@ -204,6 +218,7 @@ public class MenuApiController extends BaseController {
      * msg
      * @author gulihua
      */
+    @ApiVersion()
     @PostMapping(MenuApiUrlConfig.URL_MENU_VALIDATE_ARTICLE_EXIST)
     public String validateArticleExistsInMenu(@RequestBody String param) {
         try {
@@ -234,6 +249,7 @@ public class MenuApiController extends BaseController {
      * msg
      * @author gulihua
      */
+    @ApiVersion()
     @PostMapping(MenuApiUrlConfig.URL_MENU_REMOVE)
     public String delete(@RequestBody String param) {
         try {
@@ -267,18 +283,19 @@ public class MenuApiController extends BaseController {
      * ----jump<br/>
      * @author gulihua
      */
+    @ApiVersion()
     @GetMapping(MenuApiUrlConfig.URL_MENU_BACKEND_INFO_LIST)
     public String getBackendInfoList() {
         BackendMenuResponse response = BackendMenuResponse.getInstance();
         List<BackendMenuVO> list = new ArrayList<>();
         try {
-            List<MenuExt> menuExtList = menuBizService.queryBackGroudMenuList();
-            for (MenuExt menuExt : menuExtList) {
+            List<MenuBO> menuExtList = menuBizService.queryAdminMenuList();
+            for (MenuBO menuBO : menuExtList) {
                 List<BackendSubMenuVO> subMenuVOList = new ArrayList<>();
                 BackendMenuVO vo = new BackendMenuVO();
-                vo.setIcon(menuExt.getIcon());
-                vo.setTitle(menuExt.getText());
-                for (MenuExt subMenu : menuExt.getSubMenus()) {
+                vo.setIcon(menuBO.getIcon());
+                vo.setTitle(menuBO.getText());
+                for (MenuBO subMenu : menuBO.getSubMenuList()) {
                     BackendSubMenuVO subMenuVO = JwBuilder.of(BackendSubMenuVO::new)
                             .with(BackendSubMenuVO::setTitle, subMenu.getText())
                             .with(BackendSubMenuVO::setName, subMenu.getName())
@@ -309,6 +326,7 @@ public class MenuApiController extends BaseController {
      * --name<br/>
      * @author gulihua
      */
+    @ApiVersion()
     @GetMapping(MenuApiUrlConfig.URL_MENU_ARTICLE_TYPE_LIST)
     public String getArticleTypeMenuList() {
         ArticleMenuResponse response = ArticleMenuResponse.getInstance();
@@ -354,21 +372,22 @@ public class MenuApiController extends BaseController {
      * ----parentOid<br/>
      * @author gulihua
      */
+    @ApiVersion()
     @GetMapping(MenuApiUrlConfig.URL_MENU_HOME_LIST)
     public String getHomeMenuList() {
         HomeMenuResponse response = HomeMenuResponse.getInstance();
         List<HomeMenuVO> list = new ArrayList<>();
-        List<MenuExt> menuExtList = null;
+        List<MenuBO> menuBOList = null;
         try {
-            menuExtList = menuBizService.queryAllFrontDeskMenuList();
-            if (CollectionUtils.isNotEmpty(menuExtList)) {
-                for (MenuExt menuExt : menuExtList) {
+            menuBOList = menuBizService.queryAllMainMenuList();
+            if (CollectionUtils.isNotEmpty(menuBOList)) {
+                for (MenuBO menuBO : menuBOList) {
                     List<HomeSubMenuVO> subMenuVOList = new ArrayList<>();
                     HomeMenuVO vo = new HomeMenuVO();
-                    BeanUtils.copyProperties(menuExt, vo);
-                    vo.setId(menuExt.getOid());
-                    if (CollectionUtils.isNotEmpty(menuExt.getSubMenus())) {
-                        for (MenuExt subMenu : menuExt.getSubMenus()) {
+                    BeanUtils.copyProperties(menuBO, vo);
+                    vo.setId(menuBO.getOid());
+                    if (CollectionUtils.isNotEmpty(menuBO.getSubMenuList())) {
+                        for (MenuBO subMenu : menuBO.getSubMenuList()) {
                             HomeSubMenuVO homeSubMenuVO = new HomeSubMenuVO();
                             BeanUtils.copyProperties(subMenu, homeSubMenuVO);
                             homeSubMenuVO.setId(subMenu.getOid());
@@ -408,14 +427,15 @@ public class MenuApiController extends BaseController {
      * --valid<br/>
      * @author gulihua
      */
+    @ApiVersion()
     @GetMapping(MenuApiUrlConfig.URL_MENU_INFO)
     public String getMenuInfo(@PathVariable("id") Long id) {
         MenuInfoResponse response = MenuInfoResponse.getInstance();
         MenuVO vo = new MenuVO();
-        Menu menu = null;
+        MenuBO menu = null;
         try {
             BizValidation.paramValidate(id, "id", "菜单Oid不能为空!");
-            menu = menuTransDao.queryMenuByPrimaryKey(id);
+            menu = menuBizService.queryMenuByOid(id);
             BeanUtils.copyProperties(menu, vo);
             vo.setId(menu.getOid());
             response.setData(vo);

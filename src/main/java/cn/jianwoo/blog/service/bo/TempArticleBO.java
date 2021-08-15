@@ -35,14 +35,14 @@ public class TempArticleBO implements Serializable {
     private String content;
 
     /**
-     * 类别id article.typeId [ARTICLE.TYPE_ID]
+     * 类别id article.typeId [ARTICLE.MENU_ID]
      */
-    private Integer typeId;
+    private Integer menuOid;
 
     /**
      * 是否评论 article.isComment [ARTICLE.IS_COMMENT]
      */
-    private Integer isComment;
+    private Boolean isComment;
 
     /**
      * 图片 article.imgSrc [ARTICLE.IMG_SRC]
@@ -52,13 +52,13 @@ public class TempArticleBO implements Serializable {
     /**
      * 访问类型 article.visitType {@link cn.jianwoo.blog.enums.ArticleVisitEnum} [ARTICLE.VISIT_TYPE]
      */
-    private Integer visitType;
+    private String visitType;
 
     /**
      * 状态article.status {@link cn.jianwoo.blog.enums.ArticleStatusEnum} [ARTICLE.STATUS]
      * 当为临时文章时, 状态tempArticle.status {@link cn.jianwoo.blog.enums.TempArticleStatusEnum} [TEMP_ARTICLE.STATUS]
      */
-    private Integer status;
+    private String status;
 
     /**
      * 文章密码 article.password [ARTICLE.PASSWORD]
@@ -68,7 +68,7 @@ public class TempArticleBO implements Serializable {
     /**
      * 文标签 tags [ARTICLE_TAGS]
      */
-    private List<TagsBO> tags;
+    private List<TagsBO> artTagsList;
 
     /**
      * 临时文章的OLD_OID
@@ -78,6 +78,11 @@ public class TempArticleBO implements Serializable {
     /**
      * temp article page
      */
-    private Integer page;
+    private String pageType;
+
+    /**
+     * 恢复的文章的oid
+     */
+    private Long restoreOid;
 
 }

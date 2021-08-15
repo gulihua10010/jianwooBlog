@@ -24,7 +24,7 @@ public class TempArticleQueryRequest extends BaseRequestDto {
 
 
     /**
-     * 页面类型 1：文章发布 2：文章编辑
+     * 页面类型 10：文章发布 20：文章编辑
      */
-    private Integer page;
+    private String pageType;
 }

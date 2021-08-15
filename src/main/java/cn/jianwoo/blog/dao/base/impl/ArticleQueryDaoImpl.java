@@ -3,10 +3,13 @@ package cn.jianwoo.blog.dao.base.impl;
 import cn.jianwoo.blog.dao.base.ArticleQueryDao;
 import cn.jianwoo.blog.dao.base.mapper.ArticleMapper;
 import cn.jianwoo.blog.entity.Article;
+import cn.jianwoo.blog.entity.ArticleWithBLOBs;
 import cn.jianwoo.blog.entity.example.ArticleExample;
+import cn.jianwoo.blog.enums.ArticleStatusEnum;
 import cn.jianwoo.blog.exception.DaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -16,8 +19,8 @@ public class ArticleQueryDaoImpl implements ArticleQueryDao {
     ArticleMapper articleMapper;
 
     @Override
-    public Article queryArticleByPrimaryKey(Long oid) throws DaoException {
-        Article record = articleMapper.selectByPrimaryKey(oid);
+    public ArticleWithBLOBs queryArticleByPrimaryKey(Long oid) throws DaoException {
+        ArticleWithBLOBs record = articleMapper.selectByPrimaryKey(oid);
         if (null == record) {
             throw DaoException.DAO_SELECTONE_IS_NULL.print();
         }
@@ -26,7 +29,7 @@ public class ArticleQueryDaoImpl implements ArticleQueryDao {
 
 
     @Override
-    public List<Article> queryArticleByStatus(Integer status) {
+    public List<Article> queryArticleByStatus(String status) {
         ArticleExample example = new ArticleExample();
         example.createCriteria().andStatusEqualTo(status);
         return articleMapper.selectByExample(example);
@@ -36,7 +39,18 @@ public class ArticleQueryDaoImpl implements ArticleQueryDao {
     @Override
     public List<Article> queryArticleByType(Integer typeId) {
         ArticleExample example = new ArticleExample();
-        example.createCriteria().andTypeIdEqualTo(typeId);
+        example.createCriteria().andMenuIdEqualTo(typeId);
         return articleMapper.selectByExample(example);
+    }
+
+    @Override
+    public Article queryArticleByOid(Long oid) throws DaoException {
+        ArticleExample example = new ArticleExample();
+        example.createCriteria().andOidEqualTo(oid).andStatusNotEqualTo(ArticleStatusEnum.DELETE.getValue());
+        List<Article> list = articleMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(list)) {
+            throw DaoException.DAO_SELECTONE_IS_NULL.print();
+        }
+        return list.get(0);
     }
 }

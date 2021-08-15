@@ -15,8 +15,8 @@
     <result column="IS_CHUNK" jdbcType="CHAR" property="isChunk" />
     <result column="IS_DELETE" jdbcType="CHAR" property="isDelete" />
     <result column="UPLOAD_TIME" jdbcType="TIMESTAMP" property="uploadTime" />
-    <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
-    <result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -78,7 +78,7 @@
   </sql>
   <sql id="Base_Column_List">
     OID, FILE_UUID, FILE_NAME, OLD_FILE_NAME, `SIZE`, `TYPE`, MEDIA_INFO, `PATH`, URL, 
-    FILE_MD5, IS_CHUNK, IS_DELETE, UPLOAD_TIME, CREATE_DATE, UPDATE_DATE
+    FILE_MD5, IS_CHUNK, IS_DELETE, UPLOAD_TIME, CREATE_TIME, UPDATE_TIME
   </sql>
   <select id="selectByExample" parameterType="cn.jianwoo.blog.entity.example.FileUploadExample" resultMap="BaseResultMap">
     select
@@ -111,26 +111,21 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="cn.jianwoo.blog.entity.FileUpload">
-    insert into file_upload (OID, FILE_UUID, FILE_NAME, 
-      OLD_FILE_NAME, `SIZE`, `TYPE`, 
-      MEDIA_INFO, `PATH`, URL, 
-      FILE_MD5, IS_CHUNK, IS_DELETE, 
-      UPLOAD_TIME, CREATE_DATE, UPDATE_DATE
-      )
-    values (#{oid,jdbcType=BIGINT}, #{fileUuid,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, 
-      #{oldFileName,jdbcType=VARCHAR}, #{size,jdbcType=BIGINT}, #{type,jdbcType=VARCHAR}, 
-      #{mediaInfo,jdbcType=VARCHAR}, #{path,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
-      #{fileMd5,jdbcType=VARCHAR}, #{isChunk,jdbcType=CHAR}, #{isDelete,jdbcType=CHAR}, 
-      #{uploadTime,jdbcType=TIMESTAMP}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}
-      )
+  <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.FileUpload" useGeneratedKeys="true">
+    insert into file_upload (FILE_UUID, FILE_NAME, OLD_FILE_NAME, 
+      `SIZE`, `TYPE`, MEDIA_INFO, 
+      `PATH`, URL, FILE_MD5, 
+      IS_CHUNK, IS_DELETE, UPLOAD_TIME, 
+      CREATE_TIME, UPDATE_TIME)
+    values (#{fileUuid,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, #{oldFileName,jdbcType=VARCHAR}, 
+      #{size,jdbcType=BIGINT}, #{type,jdbcType=VARCHAR}, #{mediaInfo,jdbcType=VARCHAR}, 
+      #{path,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{fileMd5,jdbcType=VARCHAR}, 
+      #{isChunk,jdbcType=CHAR}, #{isDelete,jdbcType=CHAR}, #{uploadTime,jdbcType=TIMESTAMP}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="cn.jianwoo.blog.entity.FileUpload">
+  <insert id="insertSelective" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.FileUpload" useGeneratedKeys="true">
     insert into file_upload
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="oid != null">
-        OID,
-      </if>
       <if test="fileUuid != null">
         FILE_UUID,
       </if>
@@ -167,17 +162,14 @@
       <if test="uploadTime != null">
         UPLOAD_TIME,
       </if>
-      <if test="createDate != null">
-        CREATE_DATE,
+      <if test="createTime != null">
+        CREATE_TIME,
       </if>
-      <if test="updateDate != null">
-        UPDATE_DATE,
+      <if test="updateTime != null">
+        UPDATE_TIME,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="oid != null">
-        #{oid,jdbcType=BIGINT},
-      </if>
       <if test="fileUuid != null">
         #{fileUuid,jdbcType=VARCHAR},
       </if>
@@ -214,11 +206,11 @@
       <if test="uploadTime != null">
         #{uploadTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="createDate != null">
-        #{createDate,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateDate != null">
-        #{updateDate,jdbcType=TIMESTAMP},
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -270,11 +262,11 @@
       <if test="record.uploadTime != null">
         UPLOAD_TIME = #{record.uploadTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.createDate != null">
-        CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      <if test="record.createTime != null">
+        CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.updateDate != null">
-        UPDATE_DATE = #{record.updateDate,jdbcType=TIMESTAMP},
+      <if test="record.updateTime != null">
+        UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null">
@@ -296,8 +288,8 @@
       IS_CHUNK = #{record.isChunk,jdbcType=CHAR},
       IS_DELETE = #{record.isDelete,jdbcType=CHAR},
       UPLOAD_TIME = #{record.uploadTime,jdbcType=TIMESTAMP},
-      CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
-      UPDATE_DATE = #{record.updateDate,jdbcType=TIMESTAMP}
+      CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
+      UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -341,11 +333,11 @@
       <if test="uploadTime != null">
         UPLOAD_TIME = #{uploadTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="createDate != null">
-        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateDate != null">
-        UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where OID = #{oid,jdbcType=BIGINT}
@@ -364,8 +356,8 @@
       IS_CHUNK = #{isChunk,jdbcType=CHAR},
       IS_DELETE = #{isDelete,jdbcType=CHAR},
       UPLOAD_TIME = #{uploadTime,jdbcType=TIMESTAMP},
-      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
-      UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP}
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
     where OID = #{oid,jdbcType=BIGINT}
   </update>
   <sql id="MySQLDialectSuffix">

@@ -26,14 +26,14 @@ public class MenuQueryDaoImpl implements MenuQueryDao {
 
 
     @Override
-    public List<Menu> queryMenuByType(Integer type) {
+    public List<Menu> queryMenuByType(String type) {
         MenuExample example = new MenuExample();
         example.createCriteria().andTypeEqualTo(type);
         return menuMapper.selectByExample(example);
     }
 
     @Override
-    public List<Menu> queryEffectiveMenuByType(Integer type) {
+    public List<Menu> queryEffectiveMenuByType(String type) {
         MenuExample example = new MenuExample();
         example.createCriteria().andTypeEqualTo(type).andValidEqualTo(true);
         return menuMapper.selectByExample(example);
@@ -41,7 +41,7 @@ public class MenuQueryDaoImpl implements MenuQueryDao {
 
 
     @Override
-    public List<Menu> queryMenuByParentIdAndType(Long parentOid, Integer type) {
+    public List<Menu> queryMenuByParentIdAndType(Long parentOid, String type) {
         MenuExample example = new MenuExample();
         example.createCriteria().andParentOidEqualTo(parentOid).andTypeEqualTo(type);
         return menuMapper.selectByExample(example);

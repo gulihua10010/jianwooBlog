@@ -136,6 +136,7 @@
 
         var cryptoKey = setter.cryptoKey;
         ajaxApiPost(url
+            ,1
             , { key: 'IS_LOGIN_NEED_CAPTCHA'}
             , function (d) {
                 var getTpl = document.getElementById('LOGIN-CAPTCHA').innerHTML;
@@ -255,6 +256,7 @@
 
             ajaxPostForm(
                 "/api/passport/login/auth",
+                1,
                 {
                     username: field.username,
                     password: field.password,

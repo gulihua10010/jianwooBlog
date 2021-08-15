@@ -11,33 +11,23 @@ public class Webconf implements Serializable {
 
     private String desc;
 
-    private String title;
-
     private String valueType;
-
-    private String formType;
 
     private String stringValue;
 
-    private BigDecimal numValue;
+    private Integer intValue;
+
+    private BigDecimal floatValue;
 
     private Boolean booleanValue;
 
     private Date dateValue;
 
-    private Boolean mandatory;
-
-    private String validateType;
-
-    private String validateValue;
-
-    private Integer index;
-
     private Boolean valid;
 
-    private Date createDate;
+    private Date createTime;
 
-    private Date updateDate;
+    private Date updateTime;
 
     private static final long serialVersionUID = 1L;
 
@@ -65,28 +55,12 @@ public class Webconf implements Serializable {
         this.desc = desc == null ? null : desc.trim();
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title == null ? null : title.trim();
-    }
-
     public String getValueType() {
         return valueType;
     }
 
     public void setValueType(String valueType) {
         this.valueType = valueType == null ? null : valueType.trim();
-    }
-
-    public String getFormType() {
-        return formType;
-    }
-
-    public void setFormType(String formType) {
-        this.formType = formType == null ? null : formType.trim();
     }
 
     public String getStringValue() {
@@ -97,12 +71,20 @@ public class Webconf implements Serializable {
         this.stringValue = stringValue == null ? null : stringValue.trim();
     }
 
-    public BigDecimal getNumValue() {
-        return numValue;
+    public Integer getIntValue() {
+        return intValue;
     }
 
-    public void setNumValue(BigDecimal numValue) {
-        this.numValue = numValue;
+    public void setIntValue(Integer intValue) {
+        this.intValue = intValue;
+    }
+
+    public BigDecimal getFloatValue() {
+        return floatValue;
+    }
+
+    public void setFloatValue(BigDecimal floatValue) {
+        this.floatValue = floatValue;
     }
 
     public Boolean getBooleanValue() {
@@ -121,38 +103,6 @@ public class Webconf implements Serializable {
         this.dateValue = dateValue;
     }
 
-    public Boolean getMandatory() {
-        return mandatory;
-    }
-
-    public void setMandatory(Boolean mandatory) {
-        this.mandatory = mandatory;
-    }
-
-    public String getValidateType() {
-        return validateType;
-    }
-
-    public void setValidateType(String validateType) {
-        this.validateType = validateType == null ? null : validateType.trim();
-    }
-
-    public String getValidateValue() {
-        return validateValue;
-    }
-
-    public void setValidateValue(String validateValue) {
-        this.validateValue = validateValue == null ? null : validateValue.trim();
-    }
-
-    public Integer getIndex() {
-        return index;
-    }
-
-    public void setIndex(Integer index) {
-        this.index = index;
-    }
-
     public Boolean getValid() {
         return valid;
     }
@@ -161,20 +111,20 @@ public class Webconf implements Serializable {
         this.valid = valid;
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
-    public Date getUpdateDate() {
-        return updateDate;
+    public Date getUpdateTime() {
+        return updateTime;
     }
 
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -186,20 +136,15 @@ public class Webconf implements Serializable {
         sb.append(", oid=").append(oid);
         sb.append(", key=").append(key);
         sb.append(", desc=").append(desc);
-        sb.append(", title=").append(title);
         sb.append(", valueType=").append(valueType);
-        sb.append(", formType=").append(formType);
         sb.append(", stringValue=").append(stringValue);
-        sb.append(", numValue=").append(numValue);
+        sb.append(", intValue=").append(intValue);
+        sb.append(", floatValue=").append(floatValue);
         sb.append(", booleanValue=").append(booleanValue);
         sb.append(", dateValue=").append(dateValue);
-        sb.append(", mandatory=").append(mandatory);
-        sb.append(", validateType=").append(validateType);
-        sb.append(", validateValue=").append(validateValue);
-        sb.append(", index=").append(index);
         sb.append(", valid=").append(valid);
-        sb.append(", createDate=").append(createDate);
-        sb.append(", updateDate=").append(updateDate);
+        sb.append(", createTime=").append(createTime);
+        sb.append(", updateTime=").append(updateTime);
         sb.append("]");
         return sb.toString();
     }

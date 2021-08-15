@@ -4,94 +4,92 @@
     <resultMap id="BaseResultMap" type="cn.jianwoo.blog.entity.Article">
         <id column="OID" jdbcType="BIGINT" property="oid"/>
         <result column="AUTHOR" jdbcType="VARCHAR" property="author"/>
-        <result column="PUSH_DATE" jdbcType="TIMESTAMP" property="pushDate"/>
-        <result column="MODIFIED_DATE" jdbcType="TIMESTAMP" property="modifiedDate"/>
-        <result column="TYPE_ID" jdbcType="INTEGER" property="typeId"/>
+        <result column="PUSH_TIME" jdbcType="TIMESTAMP" property="pushTime"/>
+        <result column="TITLE" jdbcType="VARCHAR" property="title"/>
+        <result column="MODIFIED_TIME" jdbcType="TIMESTAMP" property="modifiedTime"/>
+        <result column="MENU_ID" jdbcType="INTEGER" property="menuId"/>
         <result column="READ_COUNT" jdbcType="BIGINT" property="readCount"/>
         <result column="PRAISE_COUNT" jdbcType="BIGINT" property="praiseCount"/>
-        <result column="IS_COMMENT" jdbcType="INTEGER" property="isComment"/>
+        <result column="IS_COMMENT" jdbcType="CHAR" property="isComment"/>
         <result column="IMG_SRC" jdbcType="VARCHAR" property="imgSrc"/>
-        <result column="VISIT_TYPE" jdbcType="INTEGER" property="visitType"/>
+        <result column="VISIT_TYPE" jdbcType="VARCHAR" property="visitType"/>
         <result column="COMMENT_COUNT" jdbcType="BIGINT" property="commentCount"/>
-        <result column="STATUS" jdbcType="INTEGER" property="status"/>
+        <result column="STATUS" jdbcType="VARCHAR" property="status"/>
         <result column="PASSWORD" jdbcType="VARCHAR" property="password"/>
-        <result column="DEL_DATE" jdbcType="TIMESTAMP" property="delDate"/>
-        <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate"/>
-        <result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate"/>
+        <result column="DEL_TIME" jdbcType="TIMESTAMP" property="delTime"/>
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
-    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="cn.jianwoo.blog.entity.Article">
-        <result column="TITLE" jdbcType="LONGVARCHAR" property="title"/>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="cn.jianwoo.blog.entity.ArticleWithBLOBs">
         <result column="CONTENT" jdbcType="LONGVARCHAR" property="content"/>
         <result column="TEXT" jdbcType="LONGVARCHAR" property="text"/>
     </resultMap>
-
     <resultMap id="ResultMapWithExt" extends="BaseResultMap" type="cn.jianwoo.blog.entity.extension.ArticleExt">
         <result column="TITLE" jdbcType="LONGVARCHAR" property="title"/>
         <result column="TYPE_NAME" jdbcType="VARCHAR" property="typeName"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        OID
-        , AUTHOR, PUSH_DATE, MODIFIED_DATE, TYPE_ID, READ_COUNT, PRAISE_COUNT, IS_COMMENT, IMG_SRC,
-    VISIT_TYPE, COMMENT_COUNT, STATUS, PASSWORD, DEL_DATE, CREATE_DATE, UPDATE_DATE
+        OID, AUTHOR, PUSH_TIME, TITLE, MODIFIED_TIME, MENU_ID, READ_COUNT, PRAISE_COUNT,
+    IS_COMMENT, IMG_SRC, VISIT_TYPE, COMMENT_COUNT, `STATUS`, `PASSWORD`, DEL_TIME, CREATE_TIME,
+    UPDATE_TIME
     </sql>
     <sql id="Blob_Column_List">
-        TITLE
-        , CONTENT, TEXT
+        CONTENT, `TEXT`
     </sql>
 
-    <select id="countArtsByStatus" resultType="int" parameterType="java.lang.Integer">
+    <select id="countArtsByStatus" resultType="int" parameterType="java.lang.String">
         SELECT COUNT(1) FROM article WHERE STATUS IN
         <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
     </select>
 
-    <select id="selectArticleByStatusAndLimit" resultMap="ResultMapWithBLOBs" parameterType="java.util.Map">
+    <select id="selectArticleByStatusAndLimit" resultMap="BaseResultMap" parameterType="java.util.Map">
         select
         <include refid="Base_Column_List"/>
-        ,
-        <include refid="Blob_Column_List"/>
+        <!--        ,-->
+        <!--        <include refid="Blob_Column_List"/>-->
         from article
         WHERE
         <if test="status != null">
             STATUS= #{status,jdbcType=INTEGER}
         </if>
-        ORDER BY MODIFIED_DATE DESC
+        ORDER BY MODIFIED_TIME DESC
         <if test="n != null">
             LIMIT #{n,jdbcType=INTEGER}
         </if>
     </select>
 
-    <select id="selectPublishedArtsByKeyword" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    <select id="selectPublishedArtsByKeyword" parameterType="java.lang.String" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
-        ,
-        <include refid="Blob_Column_List"/>
-        FROM article WHERE STATUS=1 AND (TEXT LIKE CONCAT('%',#{keyword,jdbcType=VARCHAR},'%') OR TITLE LIKE
-        CONCAT('%',#{keyword,jdbcType=VARCHAR},'%')) ORDER BY MODIFIED_DATE DESC ;
+        <!--        ,-->
+        <!--        <include refid="Blob_Column_List"/>-->
+        FROM article WHERE STATUS= '90' AND (TEXT LIKE CONCAT('%',#{keyword,jdbcType=VARCHAR},'%') OR TITLE LIKE
+        CONCAT('%',#{keyword,jdbcType=VARCHAR},'%')) ORDER BY MODIFIED_TIME DESC ;
     </select>
 
-    <select id="selectPublishedNewestArts" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    <select id="selectPublishedNewestArts" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
-        ,
-        <include refid="Blob_Column_List"/>
-        FROM article WHERE STATUS=1 ORDER BY MODIFIED_DATE DESC LIMIT #{limit,jdbcType=INTEGER}
+        <!--        ,-->
+        <!--        <include refid="Blob_Column_List"/>-->
+        FROM article WHERE STATUS = '90' ORDER BY MODIFIED_TIME DESC LIMIT #{limit,jdbcType=INTEGER}
     </select>
 
-    <select id="selectPublishedHotArts" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    <select id="selectPublishedHotArts" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
-        ,
-        <include refid="Blob_Column_List"/>
-        FROM article WHERE STATUS=1 ORDER BY COMMENT_COUNT,PRAISE_COUNT DESC LIMIT #{limit,jdbcType=INTEGER}
+        <!--        ,-->
+        <!--        <include refid="Blob_Column_List"/>-->
+        FROM article WHERE STATUS = '90' ORDER BY COMMENT_COUNT,PRAISE_COUNT DESC LIMIT #{limit,jdbcType=INTEGER}
     </select>
 
     <select id="selectArticleListByStatus" parameterType="cn.jianwoo.blog.entity.query.ArticleParam"
             resultMap="ResultMapWithExt">
-        SELECT A.TITLE,A.AUTHOR,A.OID,A.PUSH_DATE,MODIFIED_DATE,M.NAME AS TYPE_NAME,A.STATUS
-        FROM ARTICLE A LEFT JOIN MENU M ON M.OID=A.TYPE_ID
+        SELECT A.TITLE,A.AUTHOR,A.OID,A.PUSH_TIME,MODIFIED_TIME,M.NAME AS TYPE_NAME,A.STATUS
+        FROM ARTICLE A LEFT JOIN MENU M ON M.OID=A.MENU_ID
         WHERE STATUS IN
         <foreach item="item" collection="statusParams" separator="," open="(" close=")" index="">
             #{item, jdbcType=INTEGER}
@@ -102,9 +100,28 @@
         <if test="text != null">
             AND A.TEXT LIKE CONCAT('%',#{text,jdbcType=VARCHAR},'%')
         </if>
-        ORDER BY MODIFIED_DATE DESC
+        ORDER BY MODIFIED_TIME DESC
 
 
     </select>
+
+    <update id="updateArticleCommentCnt">
+        UPDATE ARTICLE
+        SET
+            COMMENT_COUNT = COMMENT_COUNT + 1,
+            UPDATE_TIME = NOW()
+        WHERE
+            OID = #{artOid,jdbcType=BIGINT};
+    </update>
+
+    <update id="updateArticlePraiseCnt">
+        UPDATE ARTICLE
+        SET
+            PRAISE_COUNT = PRAISE_COUNT + 1,
+            UPDATE_TIME = NOW()
+        WHERE
+            OID = #{artOid,jdbcType=BIGINT};
+    </update>
+
 
 </mapper>

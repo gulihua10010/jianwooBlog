@@ -4,22 +4,43 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Comment implements Serializable {
-    private static final long serialVersionUID = 1L;
     private Long oid;
+
     private Long articleOid;
-    private String user;
-    private String ip;
-    private String area;
-    private Date date;
-    private Long parent;
+
+    private String userName;
+
+    private String clientIp;
+
+    private String userArea;
+
+    private Date commentTime;
+
+    private Long parentOid;
+
     private Long praiseCount;
-    private String qq;
-    private String headImg;
-    private Integer artDel;
-    private Integer isRead;
-    private Date createDate;
-    private Date updateDate;
+
+    private String contactQq;
+
+    private String contactWechat;
+
+    private String contactWeibo;
+
+    private String contactTel;
+
+    private String headImgSrc;
+
+    private String artDelStauts;
+
+    private String readStatus;
+
+    private Date createTime;
+
+    private Date updateTime;
+
     private String content;
+
+    private static final long serialVersionUID = 1L;
 
     public Long getOid() {
         return oid;
@@ -37,44 +58,44 @@ public class Comment implements Serializable {
         this.articleOid = articleOid;
     }
 
-    public String getUser() {
-        return user;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUser(String user) {
-        this.user = user == null ? null : user.trim();
+    public void setUserName(String userName) {
+        this.userName = userName == null ? null : userName.trim();
     }
 
-    public String getIp() {
-        return ip;
+    public String getClientIp() {
+        return clientIp;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip == null ? null : ip.trim();
+    public void setClientIp(String clientIp) {
+        this.clientIp = clientIp == null ? null : clientIp.trim();
     }
 
-    public String getArea() {
-        return area;
+    public String getUserArea() {
+        return userArea;
     }
 
-    public void setArea(String area) {
-        this.area = area == null ? null : area.trim();
+    public void setUserArea(String userArea) {
+        this.userArea = userArea == null ? null : userArea.trim();
     }
 
-    public Date getDate() {
-        return date;
+    public Date getCommentTime() {
+        return commentTime;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setCommentTime(Date commentTime) {
+        this.commentTime = commentTime;
     }
 
-    public Long getParent() {
-        return parent;
+    public Long getParentOid() {
+        return parentOid;
     }
 
-    public void setParent(Long parent) {
-        this.parent = parent;
+    public void setParentOid(Long parentOid) {
+        this.parentOid = parentOid;
     }
 
     public Long getPraiseCount() {
@@ -85,52 +106,76 @@ public class Comment implements Serializable {
         this.praiseCount = praiseCount;
     }
 
-    public String getQq() {
-        return qq;
+    public String getContactQq() {
+        return contactQq;
     }
 
-    public void setQq(String qq) {
-        this.qq = qq == null ? null : qq.trim();
+    public void setContactQq(String contactQq) {
+        this.contactQq = contactQq == null ? null : contactQq.trim();
     }
 
-    public String getHeadImg() {
-        return headImg;
+    public String getContactWechat() {
+        return contactWechat;
     }
 
-    public void setHeadImg(String headImg) {
-        this.headImg = headImg == null ? null : headImg.trim();
+    public void setContactWechat(String contactWechat) {
+        this.contactWechat = contactWechat == null ? null : contactWechat.trim();
     }
 
-    public Integer getArtDel() {
-        return artDel;
+    public String getContactWeibo() {
+        return contactWeibo;
     }
 
-    public void setArtDel(Integer artDel) {
-        this.artDel = artDel;
+    public void setContactWeibo(String contactWeibo) {
+        this.contactWeibo = contactWeibo == null ? null : contactWeibo.trim();
     }
 
-    public Integer getIsRead() {
-        return isRead;
+    public String getContactTel() {
+        return contactTel;
     }
 
-    public void setIsRead(Integer isRead) {
-        this.isRead = isRead;
+    public void setContactTel(String contactTel) {
+        this.contactTel = contactTel == null ? null : contactTel.trim();
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    public String getHeadImgSrc() {
+        return headImgSrc;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+    public void setHeadImgSrc(String headImgSrc) {
+        this.headImgSrc = headImgSrc == null ? null : headImgSrc.trim();
     }
 
-    public Date getUpdateDate() {
-        return updateDate;
+    public String getArtDelStauts() {
+        return artDelStauts;
     }
 
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
+    public void setArtDelStauts(String artDelStauts) {
+        this.artDelStauts = artDelStauts == null ? null : artDelStauts.trim();
+    }
+
+    public String getReadStatus() {
+        return readStatus;
+    }
+
+    public void setReadStatus(String readStatus) {
+        this.readStatus = readStatus == null ? null : readStatus.trim();
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 
     public String getContent() {
@@ -149,18 +194,21 @@ public class Comment implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", oid=").append(oid);
         sb.append(", articleOid=").append(articleOid);
-        sb.append(", user=").append(user);
-        sb.append(", ip=").append(ip);
-        sb.append(", area=").append(area);
-        sb.append(", date=").append(date);
-        sb.append(", parent=").append(parent);
+        sb.append(", userName=").append(userName);
+        sb.append(", clientIp=").append(clientIp);
+        sb.append(", userArea=").append(userArea);
+        sb.append(", commentTime=").append(commentTime);
+        sb.append(", parentOid=").append(parentOid);
         sb.append(", praiseCount=").append(praiseCount);
-        sb.append(", qq=").append(qq);
-        sb.append(", headImg=").append(headImg);
-        sb.append(", artDel=").append(artDel);
-        sb.append(", isRead=").append(isRead);
-        sb.append(", createDate=").append(createDate);
-        sb.append(", updateDate=").append(updateDate);
+        sb.append(", contactQq=").append(contactQq);
+        sb.append(", contactWechat=").append(contactWechat);
+        sb.append(", contactWeibo=").append(contactWeibo);
+        sb.append(", contactTel=").append(contactTel);
+        sb.append(", headImgSrc=").append(headImgSrc);
+        sb.append(", artDelStauts=").append(artDelStauts);
+        sb.append(", readStatus=").append(readStatus);
+        sb.append(", createTime=").append(createTime);
+        sb.append(", updateTime=").append(updateTime);
         sb.append(", content=").append(content);
         sb.append("]");
         return sb.toString();

@@ -1,7 +1,9 @@
 package cn.jianwoo.blog.task;
 
+import cn.jianwoo.blog.dao.base.AdminTransDao;
 import cn.jianwoo.blog.dao.base.CommentTransDao;
 import cn.jianwoo.blog.dao.base.VisitTransDao;
+import cn.jianwoo.blog.entity.Admin;
 import cn.jianwoo.blog.entity.Comment;
 import cn.jianwoo.blog.entity.Visit;
 import cn.jianwoo.blog.exception.DaoException;
@@ -34,20 +36,22 @@ public class AsyncTask {
     private CommentTransDao commentTransDao;
     @Autowired
     private VisitTransDao visitTransDao;
+    @Autowired
+    private AdminTransDao adminTransDao;
 
 
     public Future<String> execCommentIpAreaTask(Long oid) {
         log.info(">> Start async task execCommentIpAreaTask");
         try {
             Comment comment = commentTransDao.queryCommentByPrimaryKey(oid);
-            if (StringUtils.isNotBlank(comment.getIp())) {
+            if (StringUtils.isNotBlank(comment.getClientIp())) {
                 Pattern r = Pattern.compile(IP_REX_PATTERN);
-                Matcher m = r.matcher(comment.getIp().trim());
+                Matcher m = r.matcher(comment.getClientIp().trim());
                 if (m.matches()) {
-                    String area = netWorkService.getIpArea(comment.getIp().trim());
+                    String area = netWorkService.getIpArea(comment.getClientIp().trim());
                     Comment newComment = new Comment();
                     newComment.setOid(oid);
-                    newComment.setArea(area);
+                    newComment.setUserArea(area);
                     commentTransDao.doUpdateByPrimaryKeySelective(newComment);
 
                 }
@@ -67,14 +71,14 @@ public class AsyncTask {
         log.info(">> Start async task execVisitIpAreaTask");
         try {
             Visit visit = visitTransDao.queryVisitByPrimaryKey(oid);
-            if (StringUtils.isNotBlank(visit.getIp())) {
+            if (StringUtils.isNotBlank(visit.getVisitIp())) {
                 Pattern r = Pattern.compile(IP_REX_PATTERN);
-                Matcher m = r.matcher(visit.getIp().trim());
+                Matcher m = r.matcher(visit.getVisitIp().trim());
                 if (m.matches()) {
-                    String area = netWorkService.getIpArea(visit.getIp().trim());
+                    String area = netWorkService.getIpArea(visit.getVisitIp().trim());
                     Visit newVisit = new Visit();
                     newVisit.setOid(oid);
-                    newVisit.setArea(area);
+                    newVisit.setVisitArea(area);
                     visitTransDao.doUpdateByPrimaryKeySelective(newVisit);
 
                 }
@@ -86,5 +90,57 @@ public class AsyncTask {
         log.info(">> End async task execVisitIpAreaTask");
 
         return new AsyncResult<>("execVisitIpAreaTask");
+    }
+
+    public Future<String> execAdminUserRegIpAreaTask(Long oid) {
+
+        log.info(">> Start async task execAdminUserIpAreaTask");
+        try {
+            Admin admin = adminTransDao.queryAdminByPrimaryKey(oid);
+            if (StringUtils.isNotBlank(admin.getRegisterIp())) {
+                Pattern r = Pattern.compile(IP_REX_PATTERN);
+                Matcher m = r.matcher(admin.getRegisterIp().trim());
+                if (m.matches()) {
+                    String area = netWorkService.getIpArea(admin.getRegisterIp().trim());
+                    Admin newAdmin = new Admin();
+                    newAdmin.setOid(oid);
+                    newAdmin.setRegisterArea(area);
+                    adminTransDao.doUpdateByPrimaryKeySelective(newAdmin);
+
+                }
+            }
+
+        } catch (DaoException e) {
+            log.error("jianwooTaskExecutor.execAdminUserIpAreaTask exec failed, e:", e);
+        }
+        log.info(">> End async task execAdminUserIpAreaTask");
+
+        return new AsyncResult<>("execAdminUserIpAreaTask");
+    }
+
+    public Future<String> execAdminUserLoginIpAreaTask(Long oid) {
+
+        log.info(">> Start async task execAdminUserLoginIpAreaTask");
+        try {
+            Admin admin = adminTransDao.queryAdminByPrimaryKey(oid);
+            if (StringUtils.isNotBlank(admin.getLastLoginIp())) {
+                Pattern r = Pattern.compile(IP_REX_PATTERN);
+                Matcher m = r.matcher(admin.getLastLoginIp().trim());
+                if (m.matches()) {
+                    String area = netWorkService.getIpArea(admin.getLastLoginIp().trim());
+                    Admin newAdmin = new Admin();
+                    newAdmin.setOid(oid);
+                    newAdmin.setRegisterArea(area);
+                    adminTransDao.doUpdateByPrimaryKeySelective(newAdmin);
+
+                }
+            }
+
+        } catch (DaoException e) {
+            log.error("jianwooTaskExecutor.execAdminUserLoginIpAreaTask exec failed, e:", e);
+        }
+        log.info(">> End async task execAdminUserLoginIpAreaTask");
+
+        return new AsyncResult<>("execAdminUserLoginIpAreaTask");
     }
 }

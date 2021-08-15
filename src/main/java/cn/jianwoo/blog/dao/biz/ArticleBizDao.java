@@ -3,6 +3,7 @@ package cn.jianwoo.blog.dao.biz;
 import cn.jianwoo.blog.entity.Article;
 import cn.jianwoo.blog.entity.extension.ArticleExt;
 import cn.jianwoo.blog.entity.query.ArticleParam;
+import cn.jianwoo.blog.exception.DaoException;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,7 @@ public interface ArticleBizDao {
      * @return
      * @author gulihua
      */
-    int countArtsByStatus(int[] status);
+    int countArtsByStatus(String[] status);
 
 
     /**
@@ -77,4 +78,22 @@ public interface ArticleBizDao {
      * @author gulihua
      */
     List<ArticleExt> queryRecycleBinArticleList(ArticleParam param);
+
+    /**
+     * 更新文章的评论数量
+     *
+     * @param artOid 主键
+     * @return
+     * @author gulihua
+     */
+    void doUpdateArticleCommentCnt(Long artOid) throws DaoException;
+
+    /**
+     * 更新文章的赞数量
+     *
+     * @param artOid 主键
+     * @return
+     * @author gulihua
+     */
+    void doUpdateArticlePraiseCnt(Long artOid) throws DaoException;
 }

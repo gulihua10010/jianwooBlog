@@ -1,7 +1,6 @@
-package cn.jianwoo.blog.service.bo;
+package cn.jianwoo.blog.dto.response.vo;
 
 import cn.jianwoo.blog.config.LongToStringSerializerConfig;
-import cn.jianwoo.blog.dto.response.vo.TagsVO;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,13 +19,13 @@ import java.util.List;
 @EqualsAndHashCode()
 @NoArgsConstructor
 @AllArgsConstructor
-public class TempArticleInfoBO implements Serializable {
+public class TempArticleVO implements Serializable {
     private static final long serialVersionUID = -6622957226309536544L;
     /**
      * 主键
      */
     @JSONField(serializeUsing = LongToStringSerializerConfig.class)
-    private Long id;
+    private Long oid;
     /**
      * 标题
      */
@@ -51,11 +50,11 @@ public class TempArticleInfoBO implements Serializable {
     /**
      * 状态
      */
-    private Integer status;
+    private String status;
     /**
      * 访问类型
      */
-    private Integer visitType;
+    private String visitType;
     /**
      * 密码
      */
@@ -63,12 +62,12 @@ public class TempArticleInfoBO implements Serializable {
     /**
      * 是否可以评论
      */
-    private Integer isComment;
+    private Boolean isComment;
 
     /**
      * 文章标签列表
      */
-    private List<TagsBO> artTagsList;
+    private List<TagsVO> artTagsList;
 
 
 }

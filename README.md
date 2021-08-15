@@ -26,4 +26,26 @@ webConf 优化✔
 --编辑器更换change事件->keypress✔
 
 
+controller dao✔
+bizService  controller bo 分层优化
+status 等Integer --> String
+事务 更新操作
+article page STAUTS\VISTIT_TYPE 页面测试)✔
+页面显示时间优化✔
+admin查询优化(从缓存中查询)✔
+解决服务重启后缓存和jwt不同步的问题(没缓存时用户重新登录)
+api版本✔
+comment✔,menu✔ 分组✔ --> lambda (menu排序已完成lambda，分组维持原逻辑)
+menu 递归删除(维持原逻辑，先删除子菜单，再删除主菜单)✔
+webConf add INTEAGE
+七牛云 image
+php api 接口
+admin 进入loading...✔
+domain域名
+webconf data put N--->I;Add F(old is 'N'),I ✔
+cache value=null,put empty("");✔
+webconf require ✔
+webconf err tip focus red ✔
+文章更新时查询status判断，不用withblobs, 更新时withSelective不用旧的article对象，构造一个新的对象。✔
+webconf_facade.mandatory -- > required ✔
 

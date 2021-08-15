@@ -1,12 +1,15 @@
 package cn.jianwoo.blog.dao.base;
 
 import cn.jianwoo.blog.entity.Article;
+import cn.jianwoo.blog.entity.ArticleWithBLOBs;
 import cn.jianwoo.blog.exception.DaoException;
 
 import java.util.List;
 
 public interface ArticleQueryDao {
-    Article queryArticleByPrimaryKey(Long oid) throws DaoException;
+
+
+    ArticleWithBLOBs queryArticleByPrimaryKey(Long oid) throws DaoException;
 
 
     /**
@@ -16,7 +19,7 @@ public interface ArticleQueryDao {
      * @return
      * @author gulihua
      */
-    List<Article> queryArticleByStatus(Integer status);
+    List<Article> queryArticleByStatus(String status);
 
 
     /**
@@ -27,4 +30,15 @@ public interface ArticleQueryDao {
      * @author gulihua
      */
     List<Article> queryArticleByType(Integer typeId);
+
+
+    /**
+     * 通过oid 查询有效的文章(STATUS({@link cn.jianwoo.blog.enums.ArticleStatusEnum}) != 99) *
+     *
+     * @param oid 主键
+     * @return
+     * @author gulihua
+     */
+    Article queryArticleByOid(Long oid) throws DaoException;
 }
+

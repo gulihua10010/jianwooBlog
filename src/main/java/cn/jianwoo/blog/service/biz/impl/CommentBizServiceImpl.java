@@ -4,20 +4,23 @@ import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dao.base.ArticleTransDao;
 import cn.jianwoo.blog.dao.base.CommentTransDao;
+import cn.jianwoo.blog.dao.biz.ArticleBizDao;
 import cn.jianwoo.blog.dao.biz.CommentBizDao;
-import cn.jianwoo.blog.entity.Article;
 import cn.jianwoo.blog.entity.Comment;
 import cn.jianwoo.blog.entity.extension.CommentExt;
-import cn.jianwoo.blog.entity.extension.ReplyCommentsExt;
 import cn.jianwoo.blog.entity.query.CommentParam;
+import cn.jianwoo.blog.enums.ArticleDelStatusEnum;
 import cn.jianwoo.blog.enums.CommReadEnum;
 import cn.jianwoo.blog.exception.ArticleBizException;
 import cn.jianwoo.blog.exception.CommentBizException;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.CommentBizService;
+import cn.jianwoo.blog.service.bo.CommentBO;
 import cn.jianwoo.blog.task.AsyncTask;
 import cn.jianwoo.blog.util.DateUtil;
+import com.alibaba.fastjson.JSON;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +35,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,9 +47,12 @@ public class CommentBizServiceImpl implements CommentBizService {
     @Autowired
     private ArticleTransDao articleTransDao;
     @Autowired
+    private ArticleBizDao articleBizDao;
+    @Autowired
     private CommentTransDao commentTransDao;
     @Autowired
     private AsyncTask asyncTask;
+    private static final Long TOP_PARENT_OID = 0L;
 
 
     @Override
@@ -64,11 +71,20 @@ public class CommentBizServiceImpl implements CommentBizService {
 
 
     @Override
-    public List<CommentExt> queryRecentComments(Integer limit) {
+    public List<CommentBO> queryRecentComments(Integer limit) {
         if (limit == null) {
             limit = 10;
         }
-        return commentBizDao.queryRecentComments(limit);
+        List<CommentExt> commentExtList = commentBizDao.queryRecentComments(limit);
+        List<CommentBO> list = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(commentExtList)) {
+            CommentBO bo = new CommentBO();
+            commentExtList.forEach(o -> {
+                BeanUtils.copyProperties(o, bo);
+                list.add(bo);
+            });
+        }
+        return list;
     }
 
 
@@ -80,48 +96,43 @@ public class CommentBizServiceImpl implements CommentBizService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void doAddComment(Long artOid, String username, String ip, String content, Long parentOid, String qq,
-                             String headerImg) throws JwBlogException {
+    public void doAddComment(CommentBO bo) throws JwBlogException {
         Date now = DateUtil.getNow();
 
         Comment comment = JwBuilder.of(Comment::new)
-                .with(Comment::setArtDel, 0)
-                .with(Comment::setArticleOid, artOid)
-                .with(Comment::setContent, content)
+                .with(Comment::setArtDelStauts, ArticleDelStatusEnum.NOT_REMOVE.getValue())
+                .with(Comment::setArticleOid, bo.getArticleOid())
+                .with(Comment::setContent, bo.getContent())
                 .with(Comment::setPraiseCount, 0L)
-                .with(Comment::setHeadImg, headerImg)
-                .with(Comment::setIp, ip)
-                .with(Comment::setArea, Constants.UNKNOW)
-                .with(Comment::setIsRead, CommReadEnum.UNREAD.getValue())
-                .with(Comment::setParent, parentOid)
-                .with(Comment::setQq, qq)
-                .with(Comment::setUser, username)
-                .with(Comment::setDate, now)
-                .with(Comment::setCreateDate, now)
-                .with(Comment::setUpdateDate, now)
+                .with(Comment::setHeadImgSrc, bo.getHeadImgSrc())
+                .with(Comment::setClientIp, bo.getClientIp())
+                .with(Comment::setUserArea, Constants.UNKNOW)
+                .with(Comment::setReadStatus, CommReadEnum.UNREAD.getValue())
+                .with(Comment::setParentOid, bo.getParentOid())
+                .with(Comment::setContactQq, bo.getContactQq())
+                .with(Comment::setContactWechat, bo.getContactWechat())
+                .with(Comment::setContactWeibo, bo.getContactWeibo())
+                .with(Comment::setContactTel, bo.getContactTel())
+                .with(Comment::setUserName, bo.getUserName())
+                .with(Comment::setCommentTime, now)
+                .with(Comment::setCreateTime, now)
+                .with(Comment::setUpdateTime, now)
                 .build();
 
         try {
-            commentTransDao.doInsert(comment);
+            commentTransDao.doInsertSelective(comment);
         } catch (DaoException e) {
             log.error("CommentBizServiceImpl.doAddComment exec failed, e:\n", e);
-            throw CommentBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + artOid).print();
+            throw CommentBizException.CREATE_FAILED_EXCEPTION.format("artOid : " + bo.getArticleOid()).print();
 
         }
-        Article article = null;
-        try {
-            article = articleTransDao.queryArticleByPrimaryKey(artOid);
-        } catch (DaoException e) {
-            log.error("CommentBizServiceImpl.doAddComment exec failed, e:\n", e);
-            throw ArticleBizException.NOT_EXIST_EXCEPTION.format(artOid).print();
 
-        }
-        article.setCommentCount((article.getCommentCount() == null ? 0 : article.getCommentCount()) + 1);
+
         try {
-            articleTransDao.doUpdateByPrimaryKeySelective(article);
+            articleBizDao.doUpdateArticleCommentCnt(bo.getArticleOid());
         } catch (DaoException e) {
             log.error("CommentBizServiceImpl.doAddComment exec failed, e:\n", e);
-            throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(artOid).print();
+            throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(bo.getArticleOid()).print();
         }
 
         //执行异步任务
@@ -130,9 +141,18 @@ public class CommentBizServiceImpl implements CommentBizService {
     }
 
     @Override
-    public List<CommentExt> queryCommentsByArtOid(Long artOid) {
+    public List<CommentBO> queryCommentsByArtOid(Long artOid) {
         List<CommentExt> artComments = commentBizDao.queryCommentsExtByArticleOid(artOid);
-        return processCommentWithLevel(artComments);
+        List<CommentBO> list = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(artComments)) {
+            artComments.forEach(o -> {
+                CommentBO bo = new CommentBO();
+                BeanUtils.copyProperties(o, bo);
+                list.add(bo);
+            });
+        }
+        log.info(">>query comment Dao Data by article oid[{}]: {}", artOid, JSON.toJSONString(list));
+        return processCommentWithLevel(list);
     }
 
     /**
@@ -153,29 +173,30 @@ public class CommentBizServiceImpl implements CommentBizService {
      * @return
      * @author gulihua
      */
-    private List<CommentExt> processCommentWithLevel(List<CommentExt> artComments) {
-        List<CommentExt> comments = new ArrayList<>();
-        Map<Long, List<CommentExt>> commentGroup = new HashMap<>();
+    private List<CommentBO> processCommentWithLevel(List<CommentBO> artComments) {
+        List<CommentBO> comments = new ArrayList<>();
+        Map<Long, List<CommentBO>> commentGroup = new HashMap<>();
         if (!CollectionUtils.isEmpty(artComments)) {
-            Map<Long, Comment> commentMap = artComments.stream()
-                    .collect(Collectors.toMap(Comment::getOid, a -> a, (k1, k2) -> k1));
-            for (CommentExt c : artComments) {
-                CommentExt commentExt = new CommentExt();
+            Map<Long, CommentBO> commentMap = artComments.stream()
+                    .collect(Collectors.toMap(CommentBO::getOid, a -> a, (k1, k2) -> k1));
+            for (CommentBO c : artComments) {
+                CommentBO commentExt = new CommentBO();
                 BeanUtils.copyProperties(c, commentExt);
-                if (c.getParent() == 0L) {
+                if (Objects.equals(c.getParentOid(), TOP_PARENT_OID)) {
                     comments.add(commentExt);
                 }
-                if (!commentGroup.containsKey(c.getParent())) {
-                    List<CommentExt> c1 = new ArrayList<>();
-                    c1.add(commentExt);
-                    commentGroup.put(c.getParent(), c1);
+                if (!commentGroup.containsKey(c.getParentOid())) {
+                    List<CommentBO> commList = new ArrayList<>();
+                    commList.add(commentExt);
+                    commentGroup.put(c.getParentOid(), commList);
                 } else {
-                    commentGroup.get(c.getParent()).add(commentExt);
+                    commentGroup.get(c.getParentOid()).add(commentExt);
                 }
             }
-            List<ReplyCommentsExt> subs = new ArrayList<>();
+            List<CommentBO> subs = new ArrayList<>();
             processComment(comments, commentGroup, subs, commentMap);
         }
+
 
         return comments;
     }
@@ -190,26 +211,26 @@ public class CommentBizServiceImpl implements CommentBizService {
      * @return
      * @author gulihua
      */
-    private void processComment(List<CommentExt> comments, Map<Long, List<CommentExt>> commentGroup,
-                                List<ReplyCommentsExt> subComments, Map<Long, Comment> commentMap) {
-        for (CommentExt c : comments) {
+    private void processComment(List<CommentBO> comments, Map<Long, List<CommentBO>> commentGroup,
+                                List<CommentBO> subComments, Map<Long, CommentBO> commentMap) {
+        for (CommentBO c : comments) {
             if (commentGroup.containsKey(c.getOid())) {
-                List<CommentExt> subs = commentGroup.get(c.getOid());
+                List<CommentBO> subs = commentGroup.get(c.getOid());
                 processComment(subs, commentGroup, subComments, commentMap);
-                if (c.getParent() == 0L) {
+                if (Objects.equals(c.getParentOid(), TOP_PARENT_OID)) {
                     c.setReplyComments(subComments);
                     subComments = new ArrayList<>();
                 }
 
             }
-            if (c.getParent() != 0L) {
+            if (!Objects.equals(c.getParentOid(), TOP_PARENT_OID)) {
                 if (subComments == null) {
                     subComments = new ArrayList<>();
                 }
-                ReplyCommentsExt replyCommentsExt = new ReplyCommentsExt();
+                CommentBO replyCommentsExt = new CommentBO();
                 BeanUtils.copyProperties(c, replyCommentsExt);
-                Comment comment = commentMap.get(c.getParent());
-                replyCommentsExt.setParentUserName(comment.getUser());
+                CommentBO comment = commentMap.get(c.getParentOid());
+                replyCommentsExt.setParentUserName(comment.getUserName());
                 subComments.add(replyCommentsExt);
             }
         }
@@ -217,8 +238,8 @@ public class CommentBizServiceImpl implements CommentBizService {
     }
 //
 
-    @Override
-    public List<Comment> queryReplyCommentsByParentOid(Long parentOid) {
+
+    private List<Comment> queryReplyCommentsByParentOid(Long parentOid) {
         return commentTransDao.queryCommentByParentOid(parentOid);
     }
 
@@ -226,18 +247,8 @@ public class CommentBizServiceImpl implements CommentBizService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void doAddCommentPraise(Long oid) throws JwBlogException {
-        Comment comment = null;
         try {
-            comment = commentTransDao.queryCommentByPrimaryKey(oid);
-        } catch (DaoException e) {
-            log.error("CommentBizServiceImpl.doAddCommentPraise exec failed, e:\n", e);
-            throw CommentBizException.NOT_EXIST_EXCEPTION.format(oid).print();
-
-        }
-        comment.setPraiseCount(comment.getPraiseCount() + 1);
-
-        try {
-            commentTransDao.doUpdateByPrimaryKey(comment);
+            commentBizDao.doUpdateCommentPraiseCnt(oid);
         } catch (DaoException e) {
             log.error("CommentBizServiceImpl.doAddCommentPraise exec failed, e:\n", e);
             throw CommentBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
@@ -279,16 +290,24 @@ public class CommentBizServiceImpl implements CommentBizService {
 
     @Override
     @Deprecated
-    public List<CommentExt> queryAllEffectiveComment(CommentParam param) {
+    public List<CommentBO> queryAllEffectiveComment(CommentParam param) {
         List<CommentExt> commentList = commentBizDao.queryAllCommentsExt(param);
-        List<CommentExt> commentExtList = processCommentWithLevel(commentList);
+        List<CommentBO> list = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(commentList)) {
+            CommentBO bo = new CommentBO();
+            commentList.forEach(o -> {
+                BeanUtils.copyProperties(o, bo);
+                list.add(bo);
+            });
+        }
+        List<CommentBO> commentExtList = processCommentWithLevel(list);
         // 处理 commentExtList ，放在list里
-        List<CommentExt> newCommentList = new ArrayList<>();
-        for (CommentExt commentExt : commentExtList) {
+        List<CommentBO> newCommentList = new ArrayList<>();
+        for (CommentBO commentExt : commentExtList) {
             newCommentList.add(commentExt);
             if (!CollectionUtils.isEmpty(commentExt.getReplyComments())) {
-                for (ReplyCommentsExt replyCommentsExt : commentExt.getReplyComments()) {
-                    CommentExt tmp = new CommentExt();
+                for (CommentBO replyCommentsExt : commentExt.getReplyComments()) {
+                    CommentBO tmp = new CommentBO();
                     BeanUtils.copyProperties(replyCommentsExt, tmp);
                     tmp.setTitle(commentExt.getTitle());
                     tmp.setParentUserName(replyCommentsExt.getParentUserName());
@@ -301,15 +320,28 @@ public class CommentBizServiceImpl implements CommentBizService {
 
 
     @Override
-    public PageInfo<CommentExt> queryAllCommentPage(CommentParam param) {
-        PageHelper.startPage(param.getPageNo(), param.getPageSize());
+    public PageInfo<CommentBO> queryAllCommentPage(CommentParam param) {
+        Page page = PageHelper.startPage(param.getPageNo(), param.getPageSize());
         List<CommentExt> commentList = commentBizDao.queryAllCommentsExt(param);
-        PageInfo<CommentExt> pageInfo = new PageInfo<>(commentList);
+        List<CommentBO> list = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(commentList)) {
+            CommentBO bo = new CommentBO();
+            commentList.forEach(o -> {
+                BeanUtils.copyProperties(o, bo);
+                list.add(bo);
+            });
+        }
+        PageInfo<CommentBO> pageInfo = new PageInfo<>(list);
+        //总页数
+        pageInfo.setPages(page.getPages());
+        //总条数
+        pageInfo.setTotal(page.getTotal());
         return pageInfo;
     }
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void doDelCommentByListOid(List<Long> oidList) throws JwBlogException {
         for (Long oid : oidList) {
             doDelCommentById(oid);
@@ -319,16 +351,23 @@ public class CommentBizServiceImpl implements CommentBizService {
 
 
     @Override
-    public CommentExt queryCommentExtByOid(Long oid) {
-        return commentBizDao.queryCommentExtByOid(oid);
+    public CommentBO queryCommentExtByOid(Long oid) {
+        CommentExt commentExt = commentBizDao.queryCommentExtByOid(oid);
+        if (null != commentExt) {
+            CommentBO bo = new CommentBO();
+            BeanUtils.copyProperties(commentExt, bo);
+            return bo;
+        }
+        return null;
     }
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void doUpdateReadByOid(Long oid) throws JwBlogException {
         Comment comment = new Comment();
         comment.setOid(oid);
-        comment.setIsRead(CommReadEnum.READ.getValue());
+        comment.setReadStatus(CommReadEnum.READ.getValue());
         try {
             commentTransDao.doUpdateByPrimaryKeySelective(comment);
         } catch (DaoException e) {
@@ -339,6 +378,7 @@ public class CommentBizServiceImpl implements CommentBizService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void doUpdateReadByOidList(List<Long> oidList) throws JwBlogException {
         if (!CollectionUtils.isEmpty(oidList)) {
             for (Long oid : oidList) {
@@ -357,11 +397,11 @@ public class CommentBizServiceImpl implements CommentBizService {
      * @author gulihua
      */
     private Comment queryTopComment(Comment subComment, Map<Long, Comment> commentMap) {
-        Comment comment = commentMap.get(subComment.getParent());
+        Comment comment = commentMap.get(subComment.getParentOid());
         if (comment != null) {
             return queryTopComment(comment, commentMap);
         } else {
-            if (subComment.getParent().equals(0L)) {
+            if (subComment.getParentOid().equals(TOP_PARENT_OID)) {
                 return subComment;
             }
         }

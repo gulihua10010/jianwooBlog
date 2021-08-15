@@ -1,15 +1,15 @@
 package cn.jianwoo.blog.filter;
 
 import cn.jianwoo.blog.cache.CacheStore;
+import cn.jianwoo.blog.constants.CacaheKeyConstants;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.constants.WebConfDataConfig;
-import cn.jianwoo.blog.dao.base.WebconfTransDao;
-import cn.jianwoo.blog.entity.Webconf;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.security.token.AuthToken;
-import cn.jianwoo.blog.service.biz.AdminBizService;
 import cn.jianwoo.blog.security.token.AuthUserTokenBO;
+import cn.jianwoo.blog.service.biz.AdminBizService;
+import cn.jianwoo.blog.service.biz.WebconfBizService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -39,7 +39,7 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     private CacheStore<String, String> cacheStore;
     @Autowired
-    private WebconfTransDao webconfTransDao;
+    private WebconfBizService webconfBizService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -54,10 +54,10 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
         //验证验证码token(如果开启)
         try {
 
-            Webconf webconf = webconfTransDao.queryWebconfByKey(WebConfDataConfig.IS_LOGIN_NEED_CAPTCHA);
-            if (webconf != null && webconf.getBooleanValue()) {
+            String isNeed = webconfBizService.queryWebconfByKey(WebConfDataConfig.IS_LOGIN_NEED_CAPTCHA);
+            if (Constants.TRUE.equals(isNeed)) {
                 String accessToken = (String) param.get(Constants.CAPTCHA_TOKEN);
-                String tokenStore = cacheStore.get(Constants.LOGIN_CAPTCHA_AUTH).orElse(null);
+                String tokenStore = cacheStore.get(CacaheKeyConstants.LOGIN_CAPTCHA_AUTH).orElse(null);
                 boolean isCaptcha = null != accessToken && accessToken.equals(tokenStore);
                 if (!isCaptcha) {
                     throw new JwBlogException(ExceptionConstants.LOGIN_CAPTCHA_AUTH_INVALID,

@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class ArticleParam extends PageParam {
     private static final long serialVersionUID = 7533112279053614145L;
-    private List<Integer> statusParams;
+    private List<String> statusParams;
     private String title;
     private String text;
 
@@ -34,12 +34,12 @@ public class ArticleParam extends PageParam {
     }
 
 
-    public List<Integer> getStatusParams() {
+    public List<String> getStatusParams() {
         return statusParams;
     }
 
 
-    public void setStatusParams(List<Integer> statusParams) {
+    public void setStatusParams(List<String> statusParams) {
         this.statusParams = statusParams;
     }
 }

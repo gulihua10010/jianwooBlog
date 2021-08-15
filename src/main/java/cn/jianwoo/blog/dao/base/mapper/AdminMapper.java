@@ -2,9 +2,8 @@ package cn.jianwoo.blog.dao.base.mapper;
 
 import cn.jianwoo.blog.entity.Admin;
 import cn.jianwoo.blog.entity.example.AdminExample;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface AdminMapper {
     long countByExample(AdminExample example);

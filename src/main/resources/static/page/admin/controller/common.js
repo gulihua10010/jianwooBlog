@@ -11,6 +11,7 @@ layui.extend({
     tinymce: "{/}" + layui.setter.base + 'lib/extend/tinymce/tinymce'
     , mouseRightMenu: "{/}" + layui.setter.base + 'lib/extend/mouseRightMenu'
     , laytable: "{/}" + layui.setter.base + 'lib/extend/laytable'
+    , layupload: "{/}" + layui.setter.base + 'lib/extend/layupload'
 }).define("form", function (exports) {
     var $ = layui.$
         , layer = layui.layer
@@ -23,13 +24,13 @@ layui.extend({
 
     //公共业务的逻辑处理可以写在此处，切换任何页面都会执行
 
-    ajaxPost = function (url, data, msg, success, failed) {
+    ajaxPost = function (url, version, data, msg, success, failed) {
         var index;
         if (msg) {
             index = layer.load(0, {shade: false, offset: '400px'});
         }
         admin.req({
-            url: url
+            url: doAddUrlVersion(url)
             , type: 'post'
             , data: data
             , dataType: 'json'
@@ -41,14 +42,14 @@ layui.extend({
                         alertSuccess('提示', msg)
                     }
                     setTimeout(function () {
-                        typeof success === 'function' && success();
+                        typeof success === 'function' && success(data);
                     }, 1000)
 
                 } else {
                     layer.close(index);
                     alertFail('提示', data.msg);
                     setTimeout(function () {
-                        typeof failed === 'function' && failed();
+                        typeof failed === 'function' && failed(data);
                     }, 1000)
 
                 }
@@ -61,13 +62,14 @@ layui.extend({
 
     }
 
-    ajaxPostForm = function (url, data, msg, success, failed, complate) {
+
+    ajaxPostForm = function (url, version, data, msg, success, failed, complate) {
         var index;
         if (msg) {
             index = layer.load(0, {shade: false, offset: '400px'});
         }
         $.ajax({
-            url: url
+            url: doAddUrlVersion(url)
             , type: 'post'
             , data: data
             , dataType: 'json'
@@ -107,7 +109,7 @@ layui.extend({
         var theRequest = new Object()
         var idx = url.indexOf('?');
         if (idx !== -1) {
-            var str = url.substr(idx+1) //substr()方法返回从参数值开始到结束的字符串；
+            var str = url.substr(idx + 1) //substr()方法返回从参数值开始到结束的字符串；
             var strs = str.split('&')
             for (var i = 0; i < strs.length; i++) {
                 theRequest[strs[i].split('=')[0]] = strs[i].split('=')[1]
@@ -117,7 +119,19 @@ layui.extend({
 
     }
 
-    ajaxApiPost = function (url, data, call) {
+    doAddUrlVersion = function (url, version) {
+        if (!version) {
+            version = 1;
+        }
+        var idx = url.indexOf('?');
+        if (idx === -1) {
+            return url + "?v=" + version;
+        }
+        return url + "&v=" + version
+
+    }
+
+    ajaxApiPost = function (url, version, data, callback) {
 
         admin.req({
             type: 'post',
@@ -125,10 +139,10 @@ layui.extend({
             dataType: 'json',
             // contentType: "application/json",
             async: true,
-            url: url,
+            url: doAddUrlVersion(url),
             success: function (data) {
                 if (data.status == '000000') {
-                    typeof call === 'function' && call(data);
+                    typeof callback === 'function' && callback(data);
                 } else {
                 }
             },
@@ -165,6 +179,15 @@ layui.extend({
             , offset: '400px'
         });
     }
+    //警告提示
+    alertWarning = function (title = '警告', msg = '') {
+        layer.msg(msg, {
+            title: title
+            , time: 1000
+            , icon: 7
+            , offset: '400px'
+        });
+    }
 
 
     //失败提示
@@ -177,8 +200,10 @@ layui.extend({
             , offset: '400px'
         });
         if (input_dom !== undefined) {
-            $(input_dom).css('border', '1px solid rgb(255,87,34)')
-            scrollPosition(input_dom, 0)
+            setTimeout(function(){
+                $(input_dom).focus();
+                $(input_dom).addClass('layui-form-danger')
+            }, 7)
         }
 
     }
@@ -204,12 +229,12 @@ layui.extend({
         return false;
     }
 
-    var scrollPosition = function (id, p_top) {
+    scrollPosition = function (id, p_top) {
 
         //获取某个元素的相对偏移，此元素必须是可见的，返回值是top 和left 单位是像素 移动到固定元素上尽可能使用padding
         var offset = $(id).offset();
         $('body,html').animate({
-            scrollTop: offset.top + p_top
+            scrollTop: (offset.top + p_top)
         })
     }
 
@@ -221,6 +246,21 @@ layui.extend({
             if (len == undefined || len == null) len = 200;
             if (value.length > len) {
                 return '字段长度不能大于' + len + '位';
+            }
+        },
+        number: function (value, item) {
+            if (isEmpty(value)) {
+                return false;
+            }
+            if (!value || isNaN(value)) return '只能填写数字';
+        },
+        integer: function (value, item) {
+            if (isEmpty(value)) {
+                return false;
+            }
+            if (!value || isNaN(value)) return '只能填写数字';
+            if (value.indexOf('.') !== -1) {
+                return '只能填写整数';
             }
         },
         menuName: [/^[_#$@\d\w]*$/, '菜单文本必须是字母、数字、符号\'_#$@\'，不能包含其他特殊字符!'],
@@ -245,8 +285,8 @@ layui.extend({
 
     /**用正则表达式实现html解码（反转义）（另一种写法）*/
     escape2Html = function (str) {
-        var arrEntities = {'lt': '<', 'gt': '>', 'nbsp': ' ', 'amp': '&', 'quot': '"'};
-        return str.replace(/&(lt|gt|nbsp|amp|quot);/ig, function (all, t) {
+        var arrEntities = {'lt': '<', 'gt': '>', 'nbsp': ' ', 'amp': '&', 'quot': '"', 'apos': '\''};
+        return str.replace(/&(lt|gt|nbsp|amp|quot|apos);/ig, function (all, t) {
             return arrEntities[t];
         });
     }
@@ -254,8 +294,8 @@ layui.extend({
 
     /** 用正则表达式实现html编码（转义）（另一种写法）*/
     html2Escape = function (sHtml) {
-        return sHtml.replace(/[<>&"]/g, function (c) {
-            return {'<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;'}[c];
+        return sHtml.replace(/[<>&"']/g, function (c) {
+            return {'<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', '\'': '&apos;'}[c];
         });
     }
 
@@ -270,13 +310,29 @@ layui.extend({
     }
 
     //解密
-    aesDecrypt= function (str, key)
-    {
+    aesDecrypt = function (str, key) {
         return CryptoJS.AES.decrypt(str, CryptoJS.enc.Utf8.parse(key), {
             mode: CryptoJS.mode.ECB,
             padding: CryptoJS.pad.Pkcs7
         }).toString(CryptoJS.enc.Utf8);
 
+    }
+
+
+    adminVerifyJwt = function () {
+        view.loading($('body')); //loading
+        admin.req({
+            url: "/api/admin/jwt/verify/token"
+            , type: 'get'
+            , dataType: 'json'
+            , async: false
+            , success: function (data) {
+                view.removeLoad();
+            }
+            , error: function (e, code) {
+                console.log(code)
+            }
+        });
     }
 
     //退出

@@ -1,7 +1,7 @@
 package cn.jianwoo.blog.dto.response;
 
 import cn.jianwoo.blog.base.BaseResponseDto;
-import cn.jianwoo.blog.dto.response.vo.CommentVO;
+import cn.jianwoo.blog.dto.response.vo.CommentSummaryVO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,7 +21,7 @@ import java.util.List;
 public class CommentSummaryResponse extends BaseResponseDto {
 
     private static final long serialVersionUID = -4171515102409676030L;
-    private List<CommentVO> data;
+    private List<CommentSummaryVO> data;
     /**
      * 查询总数量
      */

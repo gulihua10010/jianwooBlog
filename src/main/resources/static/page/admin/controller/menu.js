@@ -27,6 +27,7 @@ layui.define(['form', 'mouseRightMenu'], function (exports) {
                     // console.log(index)
                     ajaxPost(
                         "/api/admin/menu/sort",
+                        1,
                         JSON.stringify({
                             entityOidList: index,
                         }),
@@ -73,6 +74,7 @@ layui.define(['form', 'mouseRightMenu'], function (exports) {
                                     var field = formData.field; //获取提交的字段
                                     ajaxPost(
                                         "/api/admin/menu/update",
+                                        1,
                                         JSON.stringify({
                                             name: field.name,
                                             text: field.text,
@@ -97,6 +99,7 @@ layui.define(['form', 'mouseRightMenu'], function (exports) {
                     var id = d.data.oid;
                     ajaxApiPost(
                         "/api/admin/menu/validate/submenu",
+                        1,
                         JSON.stringify({
                             entityOid: id
                         }),
@@ -108,6 +111,7 @@ layui.define(['form', 'mouseRightMenu'], function (exports) {
                             } else {
                                 ajaxApiPost(
                                     "/api/admin/menu/validate/article/exist",
+                                    1,
                                     JSON.stringify({
                                         entityOid: id
                                     }),
@@ -120,6 +124,7 @@ layui.define(['form', 'mouseRightMenu'], function (exports) {
                                             layer.confirm("确定要删除此菜单嘛？", function (index) {
                                                 ajaxPost(
                                                     "/api/admin/menu/remove",
+                                                    1,
                                                     JSON.stringify({
                                                         entityOid: id
                                                     }),
@@ -160,6 +165,7 @@ layui.define(['form', 'mouseRightMenu'], function (exports) {
                         var field = formData.field;
                         ajaxPost(
                             "/api/admin/menu/add",
+                            1,
                             JSON.stringify({
                                 name: field.name,
                                 text: field.text,

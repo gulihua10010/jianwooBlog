@@ -1,7 +1,7 @@
-layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (exports) {
+layui.define(['layer', 'form', 'element', 'layupload', 'tinymce'], function (exports) {
     var form = layui.form
         , $ = layui.jquery
-        , upload = layui.upload
+        , upload = layui.layupload
         , laytpl = layui.laytpl
         , admin = layui.admin
         , tinymce = layui.tinymce
@@ -30,19 +30,19 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
         $(this).parent().remove();
     })
     $('.tags').on('click', '.publish-tags-content', function () {
-        var flag = 0, choosed = $('.choosed>span');
+        var flag = 0, choosed = $('.choosed > span');
         for (var i = 0; i < choosed.length; i++) {
             var obj = $(choosed[i]).clone();
             obj.find('a').remove();
-            if (obj.text() == $(this).text()) {
+            if (obj.data('text') === $(this).data('text')) {
                 flag = 1;
+                break;
             }
         }
         if (!flag) {
-            var choosed = $('.choosed');
-            var add = $('<span></span>');
+            var $choosed = $('.choosed');
             var tagschoosed = $(this).clone();
-            tagschoosed.html($(this).html() + '<a>×</a>').appendTo(choosed);
+            tagschoosed.html($(this).html() + '<a>×</a>').appendTo($choosed);
         }
 
     })
@@ -84,7 +84,7 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
     //普通图片上传
     var uploadInst = upload.render({
         elem: '#test1'
-        , url: '/api/file/upload'
+        , url: '/api/admin/file/upload'
         , before: function (obj) {
             //预读本地文件示例，不支持ie8
             obj.preview(function (index, file, result) {
@@ -143,12 +143,12 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
         var repass = $('#passw-content-confirm').val();
         var isPublic = $('#ispublic-form .ispublic-radio:checked').val()
         var patt = /(.+){6,12}$/;
-        if ((isEmpty(pass)) && isPublic == -1) {
+        if ((isEmpty(pass)) && isPublic == '11') {
             $('#pwd-tips').text('密码不能为空').css('color', 'red').css('display', 'block')
 
-        } else if (!patt.test(pass)) {
+        } else if (!patt.test(pass) && isPublic == '11') {
             $('#pwd-tips').text('密码必须6到12位').css('color', 'red').css('display', 'block')
-        } else if ((pass != repass) && isPublic == -1) {
+        } else if ((pass != repass) && isPublic == '11') {
             $('#pwd-tips').text('两次密码不一致').css('color', 'red').css('display', 'block')
         } else if (status1 == 1) {
             $('#ispublic-form').css("display", "none");
@@ -186,7 +186,7 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
 
         // console.log(field)
         var tagsId = [];
-        var publishTemp = 1;
+        var publishTemp = '20';
         var passw = '';
 
         var data = $('.choosed>span');
@@ -194,12 +194,12 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
             tagsId[i] = data.eq(i).data('id');
         }
         publishTemp = field.isPublic
-        if (publishTemp == 1) {
+        if (publishTemp == '20') {
             if ($('#hometop').prop('checked')) {
-                publishTemp = 2;
+                publishTemp = '21';
 
             }
-        } else if (publishTemp == -1) {
+        } else if (publishTemp == '11') {
             passw = $('#passw-content').val();
         }
         var iscomment = 0;
@@ -209,7 +209,7 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
         }
 
         var tags = tagsId;
-        var published = publishTemp == undefined ? 1 : publishTemp;
+        var published = publishTemp === undefined ? '20' : publishTemp;
         var password = passw;
         var tempArtOid = $('#tempData').val();
 
@@ -218,17 +218,18 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
         if (btnType === 1) {
             ajaxPost(
                 '/api/admin/article/update',
+                1,
                 JSON.stringify({
                     artOid: artOid,
                     title: field.title,
                     author: field.author,
                     articleContent: articleContent,
-                    tags: tags,
+                    tagOidList: tags,
                     type: field.typeId,
                     imgSrc: field.imgsrc,
                     visitType: published,
                     password: password,
-                    isComment: iscomment,
+                    isComment: iscomment !== 0,
                     tempArtOid: tempArtOid,
                     subToken: field.subToken
                 }),
@@ -240,17 +241,18 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
 
         } else if (btnType === 2) {
             ajaxPost('/api/admin/article/draft/save',
+                1,
                 JSON.stringify({
                     artOid: artOid,
                     title: field.title,
                     author: field.author,
                     articleContent: articleContent,
-                    tags: tags,
+                    tagOidList: tags,
                     type: field.typeId,
                     imgSrc: field.imgsrc,
                     visitType: published,
                     password: password,
-                    isComment: iscomment,
+                    isComment: iscomment !== 0,
                     tempArtOid: tempArtOid,
                     subToken: field.subToken
                 }),
@@ -261,17 +263,18 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
             )
         } else if (btnType === 3) {
             ajaxPost('/api/admin/article/draft/publish',
+                1,
                 JSON.stringify({
                     artOid: artOid,
                     title: field.title,
                     author: field.author,
                     articleContent: articleContent,
-                    tags: tags,
+                    tagOidList: tags,
                     type: field.typeId,
                     imgSrc: field.imgsrc,
                     visitType: published,
                     password: password,
-                    isComment: iscomment,
+                    isComment: iscomment !== 0,
                     tempArtOid: tempArtOid,
                     subToken: field.subToken
 
@@ -284,17 +287,18 @@ layui.define(['layer', 'form', 'element', 'upload', 'tinymce'], function (export
         } else if (btnType === -1) {
             layer.confirm('确定把这文章移除到回收站吗？', function (index) {
                 ajaxPost('/api/admin/article/save/remove/recycle',
+                    1,
                     JSON.stringify({
                         artOid: artOid,
                         title: field.title,
                         author: field.author,
                         articleContent: articleContent,
-                        tags: tags,
+                        tagOidList: tags,
                         type: field.typeId,
                         imgSrc: field.imgsrc,
                         visitType: published,
                         password: password,
-                        isComment: iscomment,
+                        isComment: iscomment !== 0,
                         tempArtOid: tempArtOid,
                         subToken: field.subToken
 

@@ -18,7 +18,7 @@ public class MenuBizDaoImpl implements MenuBizDao {
     private MenuBizMapper menuBizMapper;
 
     @Override
-    public int countMenu(Integer type) {
+    public int countMenu(String type) {
         return menuBizMapper.countMenu(type);
     }
 

@@ -2,6 +2,7 @@ package cn.jianwoo.blog.dto.response.vo;
 
 import cn.jianwoo.blog.config.router.admin.CommAdminPageUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
+import cn.jianwoo.blog.util.DateUtil;
 import cn.jianwoo.blog.util.DomainUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author GuLihua
@@ -29,11 +31,15 @@ public class VisitVO implements Serializable {
     /**
      * IP地址
      */
-    private String ip;
+    private String visitIp;
+    /**
+     * 访问时间
+     */
+    private Date visitTime;
     /**
      * 访问时间 格式:yyyy-MM-dd HH:mm:ss
      */
-    private String visitDate;
+    private String visitDateStr;
     /**
      * 文章标题
      */
@@ -45,15 +51,15 @@ public class VisitVO implements Serializable {
     /**
      * IP所属地域
      */
-    private String area;
+    private String visitArea;
     /**
      * 显示描述
      */
     private String desc;
 
     public String getDesc() {
-        return String.format(TEMPLATE, DomainUtil.format(this.area, Constants.UNKNOW),
-                DomainUtil.format(this.ip, Constants.UNKNOW), this.visitDate,
+        return String.format(TEMPLATE, DomainUtil.format(this.visitArea, Constants.UNKNOW),
+                DomainUtil.format(this.visitIp, Constants.UNKNOW), DateUtil.optimizeTimeDesc(this.visitTime),
                 CommAdminPageUrlConfig.URL_ARTICLE_EDIT.replace("{id}", String.valueOf(this.articleOid)),
                 this.articleTitle);
     }

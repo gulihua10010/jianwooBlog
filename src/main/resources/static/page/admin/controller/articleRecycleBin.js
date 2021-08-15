@@ -8,14 +8,14 @@ layui.define(['laytable', 'form'], function (exports) {
 
     table.render({
         elem: '#article-table'
-        , url: "/api/admin/article/recycle/list"
+        , url: "/api/admin/article/recycle/list?v=1"
         , cols: [[
             {type: 'checkbox', fixed: 'right'}
             , {type: 'numbers', width: 40, title: 'SEQ',}
             , {field: 'title', title: '文章标题', align: 'center'}
             , {field: 'author', width: 120, title: '作者', sort: true, align: 'center'}
             , {field: 'type', width: 170, title: '类型', sort: true, align: 'center'}
-            , {field: 'publishDate', title: '删除时间', width: 200, align: 'center'}
+            , {field: 'publishTimeDesc', title: '删除时间', width: 200, align: 'center'}
             , {title: '操作', width: 360, align: 'left', fixed: 'right', toolbar: '#table-content-art'}
 
         ]]
@@ -54,6 +54,7 @@ layui.define(['laytable', 'form'], function (exports) {
             layer.confirm('确定要永久删除这些文章！(此操作不可恢复)?', function (index) {
                 ajaxPost(
                     "/api/admin/article/recycle/delete/list",
+                    1,
                     JSON.stringify({entityOidList: entityOidArr}),
                     "删除成功",
                     function () {
@@ -77,6 +78,7 @@ layui.define(['laytable', 'form'], function (exports) {
             layer.confirm('确定要恢复这些文章?', function (index) {
                 ajaxPost(
                     "/api/admin/article/recycle/restore/draft/list",
+                    1,
                     JSON.stringify({entityOidList: entityOidArr}),
                     "恢复成功",
                     function () {
@@ -100,6 +102,7 @@ layui.define(['laytable', 'form'], function (exports) {
             layer.confirm('确定要永久删除这篇文章！(此操作不可恢复)?', function (index) {
                 ajaxPost(
                     "/api/admin/article/recycle/delete",
+                    1,
                     JSON.stringify({entityOid: data.oid}),
                     "删除成功",
                     function () {
@@ -125,6 +128,7 @@ layui.define(['laytable', 'form'], function (exports) {
             layer.confirm('确定把这篇文章恢复至草稿吗？', function (index) {
                 ajaxPost(
                     "/api/admin/article/recycle/restore/draft",
+                    1,
                     JSON.stringify({entityOid: data.oid}),
                     "恢复成功",
                     function () {

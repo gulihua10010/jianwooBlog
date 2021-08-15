@@ -36,6 +36,11 @@ public class CommentReplyRequest extends BasePageRequestDto {
     /**
      * qq
      */
-    private String qq;
+    private String contactQq;
+
+    /**
+     * 用户名
+     */
+    private String userName;
 
 }

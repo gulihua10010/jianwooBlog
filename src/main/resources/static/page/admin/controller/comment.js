@@ -11,15 +11,15 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
 
     table.render({
         elem: '#comment-table'
-        , url: "/api/admin/comment/query"
+        , url: "/api/admin/comment/query?v=1"
         , cols: [[
             {type: 'checkbox', fixed: 'right'}
             , {type: 'numbers', width: 40, title: 'SEQ',}
             , {field: 'artTitle', width: 200, title: '文章标题', align: 'center'}
-            , {field: 'user', width: 80, title: '用户', sort: true, align: 'center'}
-            , {field: 'date', width: 200, title: '时间', sort: true, align: 'center'}
+            , {field: 'userName', width: 80, title: '用户', sort: true, align: 'center'}
+            , {field: 'commentTimeDesc', width: 200, title: '时间', sort: true, align: 'center'}
             , {field: 'replyTo', title: '回复至', width: 80, align: 'center'}
-            , {field: 'content', title: '内容', align: 'center'}
+            , {field: 'content', title: '内容', align: 'left'}
             , {title: '操作', width: 300, align: 'center', fixed: 'right', toolbar: '#table-content-com'}
 
         ]]
@@ -72,6 +72,7 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
             layer.confirm('确定删除吗，将删除全部评论和回复评论？', function (index) {
                 ajaxPost(
                     "/api/admin/comment/remove/list",
+                    1,
                     JSON.stringify({entityOidList: entityOidArr}),
                     "删除成功",
                     function () {
@@ -95,6 +96,7 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
             layer.confirm('确定将勾选评论标记为已读？', function (index) {
                 ajaxPost(
                     "/api/admin/comment/read/list",
+                    1,
                     JSON.stringify({entityOidList: entityOidArr}),
                     "标记成功",
                     function () {
@@ -118,6 +120,7 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
             layer.confirm('确定删除此条评论？', function (index) {
                 ajaxPost(
                     "/api/admin/comment/remove",
+                    1,
                     JSON.stringify({entityOid: data.oid}),
                     "删除成功",
                     function () {
@@ -128,6 +131,7 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
 
             });
         } else if (obj.event === 'reply') {
+            var username = '博主';
             admin.popup({
                 title: '回复评论'
                 , area: ['450px', '300px']
@@ -142,9 +146,11 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
                             //提交 Ajax 成功后，静态更新表格中的数据
                             ajaxPost(
                                 "/api/admin/comment/reply",
+                                1,
                                 JSON.stringify({
                                     content: field.content,
                                     parentOid: data.oid,
+                                    username: username,
                                     artOid: data.artOid,
                                     headImgUrl: headImgUrl,
                                     subToken: field.subToken
@@ -195,6 +201,7 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
 
         ajaxApiPost(
             "/api/admin/token/generate",
+            1,
             JSON.stringify({
                 pageId: 'C14',
             }),
@@ -205,6 +212,7 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
 
         ajaxApiPost(
             "/api/admin/comment/query/article/list",
+            1,
             JSON.stringify({
                 entityOid: artOid,
             }),
@@ -254,6 +262,7 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
         stopBubble(e)
         var poid = $(this).attr('data-id')
         // console.log(poid)
+        var username = '博主';
 
         admin.popup({
             title: '回复评论'
@@ -267,9 +276,11 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
                         var headImgUrl = "/static/comm/img/headimg/" + Math.ceil(Math.random() * 10) + ".jpg";
                         ajaxPost(
                             "/api/admin/comment/reply",
+                            1,
                             JSON.stringify({
                                 content: field.content,
                                 parentOid: poid,
+                                username: username,
                                 artOid: artOid,
                                 headImgUrl: headImgUrl,
                                 subToken: field.subToken
@@ -288,7 +299,7 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
     });
 
     $('.art-comment').on('click', '.comment-btn', function () {
-        var username = '博主:';
+        var username = '博主';
         var qq = '00000000';
         var headImgUrl = "/static/comm/img/headimg/" + Math.ceil(Math.random() * 10) + ".jpg";
         var commentext = $('#comm-content').val();
@@ -300,10 +311,11 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
 
         ajaxPost(
             "/api/admin/comment/reply",
+            1,
             JSON.stringify({
                 content: commentext,
                 username: username,
-                qq: qq,
+                contactQq: qq,
                 artOid: artOid,
                 parentOid: replyId,
                 headImgUrl: headImgUrl,
@@ -328,6 +340,7 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
         alertAsk('确定要删除此评论(所有回复评论也将会全部删除)?', function () {
             ajaxPost(
                 "/api/admin/comment/remove",
+                1,
                 JSON.stringify({entityOid: oid}),
                 "删除成功",
                 function () {

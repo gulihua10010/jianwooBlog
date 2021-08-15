@@ -815,62 +815,62 @@ public class FileUploadExample {
             return (Criteria) this;
         }
 
-        public Criteria andIsChunkEqualTo(String value) {
+        public Criteria andIsChunkEqualTo(Boolean value) {
             addCriterion("IS_CHUNK =", value, "isChunk");
             return (Criteria) this;
         }
 
-        public Criteria andIsChunkNotEqualTo(String value) {
+        public Criteria andIsChunkNotEqualTo(Boolean value) {
             addCriterion("IS_CHUNK <>", value, "isChunk");
             return (Criteria) this;
         }
 
-        public Criteria andIsChunkGreaterThan(String value) {
+        public Criteria andIsChunkGreaterThan(Boolean value) {
             addCriterion("IS_CHUNK >", value, "isChunk");
             return (Criteria) this;
         }
 
-        public Criteria andIsChunkGreaterThanOrEqualTo(String value) {
+        public Criteria andIsChunkGreaterThanOrEqualTo(Boolean value) {
             addCriterion("IS_CHUNK >=", value, "isChunk");
             return (Criteria) this;
         }
 
-        public Criteria andIsChunkLessThan(String value) {
+        public Criteria andIsChunkLessThan(Boolean value) {
             addCriterion("IS_CHUNK <", value, "isChunk");
             return (Criteria) this;
         }
 
-        public Criteria andIsChunkLessThanOrEqualTo(String value) {
+        public Criteria andIsChunkLessThanOrEqualTo(Boolean value) {
             addCriterion("IS_CHUNK <=", value, "isChunk");
             return (Criteria) this;
         }
 
-        public Criteria andIsChunkLike(String value) {
+        public Criteria andIsChunkLike(Boolean value) {
             addCriterion("IS_CHUNK like", value, "isChunk");
             return (Criteria) this;
         }
 
-        public Criteria andIsChunkNotLike(String value) {
+        public Criteria andIsChunkNotLike(Boolean value) {
             addCriterion("IS_CHUNK not like", value, "isChunk");
             return (Criteria) this;
         }
 
-        public Criteria andIsChunkIn(List<String> values) {
+        public Criteria andIsChunkIn(List<Boolean> values) {
             addCriterion("IS_CHUNK in", values, "isChunk");
             return (Criteria) this;
         }
 
-        public Criteria andIsChunkNotIn(List<String> values) {
+        public Criteria andIsChunkNotIn(List<Boolean> values) {
             addCriterion("IS_CHUNK not in", values, "isChunk");
             return (Criteria) this;
         }
 
-        public Criteria andIsChunkBetween(String value1, String value2) {
+        public Criteria andIsChunkBetween(Boolean value1, Boolean value2) {
             addCriterion("IS_CHUNK between", value1, value2, "isChunk");
             return (Criteria) this;
         }
 
-        public Criteria andIsChunkNotBetween(String value1, String value2) {
+        public Criteria andIsChunkNotBetween(Boolean value1, Boolean value2) {
             addCriterion("IS_CHUNK not between", value1, value2, "isChunk");
             return (Criteria) this;
         }
@@ -885,62 +885,62 @@ public class FileUploadExample {
             return (Criteria) this;
         }
 
-        public Criteria andIsDeleteEqualTo(String value) {
+        public Criteria andIsDeleteEqualTo(Boolean value) {
             addCriterion("IS_DELETE =", value, "isDelete");
             return (Criteria) this;
         }
 
-        public Criteria andIsDeleteNotEqualTo(String value) {
+        public Criteria andIsDeleteNotEqualTo(Boolean value) {
             addCriterion("IS_DELETE <>", value, "isDelete");
             return (Criteria) this;
         }
 
-        public Criteria andIsDeleteGreaterThan(String value) {
+        public Criteria andIsDeleteGreaterThan(Boolean value) {
             addCriterion("IS_DELETE >", value, "isDelete");
             return (Criteria) this;
         }
 
-        public Criteria andIsDeleteGreaterThanOrEqualTo(String value) {
+        public Criteria andIsDeleteGreaterThanOrEqualTo(Boolean value) {
             addCriterion("IS_DELETE >=", value, "isDelete");
             return (Criteria) this;
         }
 
-        public Criteria andIsDeleteLessThan(String value) {
+        public Criteria andIsDeleteLessThan(Boolean value) {
             addCriterion("IS_DELETE <", value, "isDelete");
             return (Criteria) this;
         }
 
-        public Criteria andIsDeleteLessThanOrEqualTo(String value) {
+        public Criteria andIsDeleteLessThanOrEqualTo(Boolean value) {
             addCriterion("IS_DELETE <=", value, "isDelete");
             return (Criteria) this;
         }
 
-        public Criteria andIsDeleteLike(String value) {
+        public Criteria andIsDeleteLike(Boolean value) {
             addCriterion("IS_DELETE like", value, "isDelete");
             return (Criteria) this;
         }
 
-        public Criteria andIsDeleteNotLike(String value) {
+        public Criteria andIsDeleteNotLike(Boolean value) {
             addCriterion("IS_DELETE not like", value, "isDelete");
             return (Criteria) this;
         }
 
-        public Criteria andIsDeleteIn(List<String> values) {
+        public Criteria andIsDeleteIn(List<Boolean> values) {
             addCriterion("IS_DELETE in", values, "isDelete");
             return (Criteria) this;
         }
 
-        public Criteria andIsDeleteNotIn(List<String> values) {
+        public Criteria andIsDeleteNotIn(List<Boolean> values) {
             addCriterion("IS_DELETE not in", values, "isDelete");
             return (Criteria) this;
         }
 
-        public Criteria andIsDeleteBetween(String value1, String value2) {
+        public Criteria andIsDeleteBetween(Boolean value1, Boolean value2) {
             addCriterion("IS_DELETE between", value1, value2, "isDelete");
             return (Criteria) this;
         }
 
-        public Criteria andIsDeleteNotBetween(String value1, String value2) {
+        public Criteria andIsDeleteNotBetween(Boolean value1, Boolean value2) {
             addCriterion("IS_DELETE not between", value1, value2, "isDelete");
             return (Criteria) this;
         }
@@ -1005,123 +1005,123 @@ public class FileUploadExample {
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateIsNull() {
-            addCriterion("CREATE_DATE is null");
+        public Criteria andCreateTimeIsNull() {
+            addCriterion("CREATE_TIME is null");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateIsNotNull() {
-            addCriterion("CREATE_DATE is not null");
+        public Criteria andCreateTimeIsNotNull() {
+            addCriterion("CREATE_TIME is not null");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateEqualTo(Date value) {
-            addCriterion("CREATE_DATE =", value, "createDate");
+        public Criteria andCreateTimeEqualTo(Date value) {
+            addCriterion("CREATE_TIME =", value, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateNotEqualTo(Date value) {
-            addCriterion("CREATE_DATE <>", value, "createDate");
+        public Criteria andCreateTimeNotEqualTo(Date value) {
+            addCriterion("CREATE_TIME <>", value, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateGreaterThan(Date value) {
-            addCriterion("CREATE_DATE >", value, "createDate");
+        public Criteria andCreateTimeGreaterThan(Date value) {
+            addCriterion("CREATE_TIME >", value, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateGreaterThanOrEqualTo(Date value) {
-            addCriterion("CREATE_DATE >=", value, "createDate");
+        public Criteria andCreateTimeGreaterThanOrEqualTo(Date value) {
+            addCriterion("CREATE_TIME >=", value, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateLessThan(Date value) {
-            addCriterion("CREATE_DATE <", value, "createDate");
+        public Criteria andCreateTimeLessThan(Date value) {
+            addCriterion("CREATE_TIME <", value, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateLessThanOrEqualTo(Date value) {
-            addCriterion("CREATE_DATE <=", value, "createDate");
+        public Criteria andCreateTimeLessThanOrEqualTo(Date value) {
+            addCriterion("CREATE_TIME <=", value, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateIn(List<Date> values) {
-            addCriterion("CREATE_DATE in", values, "createDate");
+        public Criteria andCreateTimeIn(List<Date> values) {
+            addCriterion("CREATE_TIME in", values, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateNotIn(List<Date> values) {
-            addCriterion("CREATE_DATE not in", values, "createDate");
+        public Criteria andCreateTimeNotIn(List<Date> values) {
+            addCriterion("CREATE_TIME not in", values, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateBetween(Date value1, Date value2) {
-            addCriterion("CREATE_DATE between", value1, value2, "createDate");
+        public Criteria andCreateTimeBetween(Date value1, Date value2) {
+            addCriterion("CREATE_TIME between", value1, value2, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateNotBetween(Date value1, Date value2) {
-            addCriterion("CREATE_DATE not between", value1, value2, "createDate");
+        public Criteria andCreateTimeNotBetween(Date value1, Date value2) {
+            addCriterion("CREATE_TIME not between", value1, value2, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateIsNull() {
-            addCriterion("UPDATE_DATE is null");
+        public Criteria andUpdateTimeIsNull() {
+            addCriterion("UPDATE_TIME is null");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateIsNotNull() {
-            addCriterion("UPDATE_DATE is not null");
+        public Criteria andUpdateTimeIsNotNull() {
+            addCriterion("UPDATE_TIME is not null");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateEqualTo(Date value) {
-            addCriterion("UPDATE_DATE =", value, "updateDate");
+        public Criteria andUpdateTimeEqualTo(Date value) {
+            addCriterion("UPDATE_TIME =", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateNotEqualTo(Date value) {
-            addCriterion("UPDATE_DATE <>", value, "updateDate");
+        public Criteria andUpdateTimeNotEqualTo(Date value) {
+            addCriterion("UPDATE_TIME <>", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateGreaterThan(Date value) {
-            addCriterion("UPDATE_DATE >", value, "updateDate");
+        public Criteria andUpdateTimeGreaterThan(Date value) {
+            addCriterion("UPDATE_TIME >", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateGreaterThanOrEqualTo(Date value) {
-            addCriterion("UPDATE_DATE >=", value, "updateDate");
+        public Criteria andUpdateTimeGreaterThanOrEqualTo(Date value) {
+            addCriterion("UPDATE_TIME >=", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateLessThan(Date value) {
-            addCriterion("UPDATE_DATE <", value, "updateDate");
+        public Criteria andUpdateTimeLessThan(Date value) {
+            addCriterion("UPDATE_TIME <", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateLessThanOrEqualTo(Date value) {
-            addCriterion("UPDATE_DATE <=", value, "updateDate");
+        public Criteria andUpdateTimeLessThanOrEqualTo(Date value) {
+            addCriterion("UPDATE_TIME <=", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateIn(List<Date> values) {
-            addCriterion("UPDATE_DATE in", values, "updateDate");
+        public Criteria andUpdateTimeIn(List<Date> values) {
+            addCriterion("UPDATE_TIME in", values, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateNotIn(List<Date> values) {
-            addCriterion("UPDATE_DATE not in", values, "updateDate");
+        public Criteria andUpdateTimeNotIn(List<Date> values) {
+            addCriterion("UPDATE_TIME not in", values, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateBetween(Date value1, Date value2) {
-            addCriterion("UPDATE_DATE between", value1, value2, "updateDate");
+        public Criteria andUpdateTimeBetween(Date value1, Date value2) {
+            addCriterion("UPDATE_TIME between", value1, value2, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateNotBetween(Date value1, Date value2) {
-            addCriterion("UPDATE_DATE not between", value1, value2, "updateDate");
+        public Criteria andUpdateTimeNotBetween(Date value1, Date value2) {
+            addCriterion("UPDATE_TIME not between", value1, value2, "updateTime");
             return (Criteria) this;
         }
 
@@ -1162,16 +1162,6 @@ public class FileUploadExample {
 
         public Criteria andFileMd5LikeInsensitive(String value) {
             addCriterion("upper(FILE_MD5) like", value.toUpperCase(), "fileMd5");
-            return (Criteria) this;
-        }
-
-        public Criteria andIsChunkLikeInsensitive(String value) {
-            addCriterion("upper(IS_CHUNK) like", value.toUpperCase(), "isChunk");
-            return (Criteria) this;
-        }
-
-        public Criteria andIsDeleteLikeInsensitive(String value) {
-            addCriterion("upper(IS_DELETE) like", value.toUpperCase(), "isDelete");
             return (Criteria) this;
         }
 

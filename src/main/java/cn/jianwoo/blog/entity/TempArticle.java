@@ -10,15 +10,13 @@ public class TempArticle implements Serializable {
 
     private String title;
 
-    private String content;
+    private Integer menuId;
 
-    private Integer typeId;
-
-    private Integer isComment;
+    private Boolean isComment;
 
     private String imgSrc;
 
-    private Integer visitType;
+    private String visitType;
 
     private String password;
 
@@ -26,15 +24,17 @@ public class TempArticle implements Serializable {
 
     private String tags;
 
-    private Integer page;
+    private String pageType;
 
-    private Integer status;
+    private String status;
 
     private Long restoreOid;
 
-    private Date createDate;
+    private Date createTime;
 
-    private Date updateDate;
+    private Date updateTime;
+
+    private String content;
 
     private static final long serialVersionUID = 1L;
 
@@ -62,27 +62,19 @@ public class TempArticle implements Serializable {
         this.title = title == null ? null : title.trim();
     }
 
-    public String getContent() {
-        return content;
+    public Integer getMenuId() {
+        return menuId;
     }
 
-    public void setContent(String content) {
-        this.content = content == null ? null : content.trim();
+    public void setMenuId(Integer menuId) {
+        this.menuId = menuId;
     }
 
-    public Integer getTypeId() {
-        return typeId;
-    }
-
-    public void setTypeId(Integer typeId) {
-        this.typeId = typeId;
-    }
-
-    public Integer getIsComment() {
+    public Boolean getIsComment() {
         return isComment;
     }
 
-    public void setIsComment(Integer isComment) {
+    public void setIsComment(Boolean isComment) {
         this.isComment = isComment;
     }
 
@@ -94,12 +86,12 @@ public class TempArticle implements Serializable {
         this.imgSrc = imgSrc == null ? null : imgSrc.trim();
     }
 
-    public Integer getVisitType() {
+    public String getVisitType() {
         return visitType;
     }
 
-    public void setVisitType(Integer visitType) {
-        this.visitType = visitType;
+    public void setVisitType(String visitType) {
+        this.visitType = visitType == null ? null : visitType.trim();
     }
 
     public String getPassword() {
@@ -126,20 +118,20 @@ public class TempArticle implements Serializable {
         this.tags = tags == null ? null : tags.trim();
     }
 
-    public Integer getPage() {
-        return page;
+    public String getPageType() {
+        return pageType;
     }
 
-    public void setPage(Integer page) {
-        this.page = page;
+    public void setPageType(String pageType) {
+        this.pageType = pageType == null ? null : pageType.trim();
     }
 
-    public Integer getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setStatus(String status) {
+        this.status = status == null ? null : status.trim();
     }
 
     public Long getRestoreOid() {
@@ -150,20 +142,28 @@ public class TempArticle implements Serializable {
         this.restoreOid = restoreOid;
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
-    public Date getUpdateDate() {
-        return updateDate;
+    public Date getUpdateTime() {
+        return updateTime;
     }
 
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content == null ? null : content.trim();
     }
 
     @Override
@@ -175,19 +175,19 @@ public class TempArticle implements Serializable {
         sb.append(", oid=").append(oid);
         sb.append(", author=").append(author);
         sb.append(", title=").append(title);
-        sb.append(", content=").append(content);
-        sb.append(", typeId=").append(typeId);
+        sb.append(", menuId=").append(menuId);
         sb.append(", isComment=").append(isComment);
         sb.append(", imgSrc=").append(imgSrc);
         sb.append(", visitType=").append(visitType);
         sb.append(", password=").append(password);
         sb.append(", oldOid=").append(oldOid);
         sb.append(", tags=").append(tags);
-        sb.append(", page=").append(page);
+        sb.append(", pageType=").append(pageType);
         sb.append(", status=").append(status);
         sb.append(", restoreOid=").append(restoreOid);
-        sb.append(", createDate=").append(createDate);
-        sb.append(", updateDate=").append(updateDate);
+        sb.append(", createTime=").append(createTime);
+        sb.append(", updateTime=").append(updateTime);
+        sb.append(", content=").append(content);
         sb.append("]");
         return sb.toString();
     }

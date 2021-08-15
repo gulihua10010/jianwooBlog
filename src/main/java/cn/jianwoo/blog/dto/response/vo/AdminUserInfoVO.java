@@ -20,6 +20,6 @@ public class AdminUserInfoVO implements Serializable {
     private static final long serialVersionUID = 8360453789834911774L;
 
     private String nickName;
-    private String email;
-    private String sex;
+    private String userEmail;
+    private String userSex;
 }

@@ -180,7 +180,7 @@ public class GeetestLibUtil {
             log.info("===>> Geetest: GET_URL:{}", getUrl + param);
             BaseResponseDto responseDto = HttpClientUtil.doGet(getUrl + param);
             if (!responseDto.isSuccess()) {
-                log.info("===>> Geetest: gtServer register challenge failed, response: {}", responseDto.getMsg());
+                log.error("===>> Geetest: gtServer register challenge failed, response: {}", responseDto.getMsg());
                 return false;
 
             }

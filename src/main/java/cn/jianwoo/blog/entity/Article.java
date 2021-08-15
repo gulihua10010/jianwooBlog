@@ -4,26 +4,41 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Article implements Serializable {
-    private static final long serialVersionUID = 1L;
     private Long oid;
+
     private String author;
-    private Date pushDate;
+
+    private Date pushTime;
+
     private String title;
-    private String content;
-    private Date modifiedDate;
-    private Integer typeId;
+
+    private Date modifiedTime;
+
+    private Integer menuId;
+
     private Long readCount;
+
     private Long praiseCount;
-    private Integer isComment;
+
+    private Boolean isComment;
+
     private String imgSrc;
-    private String text;
-    private Integer visitType;
+
+    private String visitType;
+
     private Long commentCount;
-    private Integer status;
+
+    private String status;
+
     private String password;
-    private Date delDate;
-    private Date createDate;
-    private Date updateDate;
+
+    private Date delTime;
+
+    private Date createTime;
+
+    private Date updateTime;
+
+    private static final long serialVersionUID = 1L;
 
     public Long getOid() {
         return oid;
@@ -41,12 +56,12 @@ public class Article implements Serializable {
         this.author = author == null ? null : author.trim();
     }
 
-    public Date getPushDate() {
-        return pushDate;
+    public Date getPushTime() {
+        return pushTime;
     }
 
-    public void setPushDate(Date pushDate) {
-        this.pushDate = pushDate;
+    public void setPushTime(Date pushTime) {
+        this.pushTime = pushTime;
     }
 
     public String getTitle() {
@@ -57,28 +72,20 @@ public class Article implements Serializable {
         this.title = title == null ? null : title.trim();
     }
 
-    public String getContent() {
-        return content;
+    public Date getModifiedTime() {
+        return modifiedTime;
     }
 
-    public void setContent(String content) {
-        this.content = content == null ? null : content.trim();
+    public void setModifiedTime(Date modifiedTime) {
+        this.modifiedTime = modifiedTime;
     }
 
-    public Date getModifiedDate() {
-        return modifiedDate;
+    public Integer getMenuId() {
+        return menuId;
     }
 
-    public void setModifiedDate(Date modifiedDate) {
-        this.modifiedDate = modifiedDate;
-    }
-
-    public Integer getTypeId() {
-        return typeId;
-    }
-
-    public void setTypeId(Integer typeId) {
-        this.typeId = typeId;
+    public void setMenuId(Integer menuId) {
+        this.menuId = menuId;
     }
 
     public Long getReadCount() {
@@ -97,11 +104,11 @@ public class Article implements Serializable {
         this.praiseCount = praiseCount;
     }
 
-    public Integer getIsComment() {
+    public Boolean getIsComment() {
         return isComment;
     }
 
-    public void setIsComment(Integer isComment) {
+    public void setIsComment(Boolean isComment) {
         this.isComment = isComment;
     }
 
@@ -113,20 +120,12 @@ public class Article implements Serializable {
         this.imgSrc = imgSrc == null ? null : imgSrc.trim();
     }
 
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text == null ? null : text.trim();
-    }
-
-    public Integer getVisitType() {
+    public String getVisitType() {
         return visitType;
     }
 
-    public void setVisitType(Integer visitType) {
-        this.visitType = visitType;
+    public void setVisitType(String visitType) {
+        this.visitType = visitType == null ? null : visitType.trim();
     }
 
     public Long getCommentCount() {
@@ -137,12 +136,12 @@ public class Article implements Serializable {
         this.commentCount = commentCount;
     }
 
-    public Integer getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setStatus(String status) {
+        this.status = status == null ? null : status.trim();
     }
 
     public String getPassword() {
@@ -153,28 +152,28 @@ public class Article implements Serializable {
         this.password = password == null ? null : password.trim();
     }
 
-    public Date getDelDate() {
-        return delDate;
+    public Date getDelTime() {
+        return delTime;
     }
 
-    public void setDelDate(Date delDate) {
-        this.delDate = delDate;
+    public void setDelTime(Date delTime) {
+        this.delTime = delTime;
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
-    public Date getUpdateDate() {
-        return updateDate;
+    public Date getUpdateTime() {
+        return updateTime;
     }
 
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -185,23 +184,21 @@ public class Article implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", oid=").append(oid);
         sb.append(", author=").append(author);
-        sb.append(", pushDate=").append(pushDate);
+        sb.append(", pushTime=").append(pushTime);
         sb.append(", title=").append(title);
-        sb.append(", content=").append(content);
-        sb.append(", modifiedDate=").append(modifiedDate);
-        sb.append(", typeId=").append(typeId);
+        sb.append(", modifiedTime=").append(modifiedTime);
+        sb.append(", menuId=").append(menuId);
         sb.append(", readCount=").append(readCount);
         sb.append(", praiseCount=").append(praiseCount);
         sb.append(", isComment=").append(isComment);
         sb.append(", imgSrc=").append(imgSrc);
-        sb.append(", text=").append(text);
         sb.append(", visitType=").append(visitType);
         sb.append(", commentCount=").append(commentCount);
         sb.append(", status=").append(status);
         sb.append(", password=").append(password);
-        sb.append(", delDate=").append(delDate);
-        sb.append(", createDate=").append(createDate);
-        sb.append(", updateDate=").append(updateDate);
+        sb.append(", delTime=").append(delTime);
+        sb.append(", createTime=").append(createTime);
+        sb.append(", updateTime=").append(updateTime);
         sb.append("]");
         return sb.toString();
     }

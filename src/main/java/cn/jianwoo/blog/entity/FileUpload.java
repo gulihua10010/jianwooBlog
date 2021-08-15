@@ -24,15 +24,15 @@ public class FileUpload implements Serializable {
 
     private String fileMd5;
 
-    private String isChunk;
+    private Boolean isChunk;
 
-    private String isDelete;
+    private Boolean isDelete;
 
     private Date uploadTime;
 
-    private Date createDate;
+    private Date createTime;
 
-    private Date updateDate;
+    private Date updateTime;
 
     private static final long serialVersionUID = 1L;
 
@@ -116,20 +116,20 @@ public class FileUpload implements Serializable {
         this.fileMd5 = fileMd5 == null ? null : fileMd5.trim();
     }
 
-    public String getIsChunk() {
+    public Boolean getIsChunk() {
         return isChunk;
     }
 
-    public void setIsChunk(String isChunk) {
-        this.isChunk = isChunk == null ? null : isChunk.trim();
+    public void setIsChunk(Boolean isChunk) {
+        this.isChunk = isChunk;
     }
 
-    public String getIsDelete() {
+    public Boolean getIsDelete() {
         return isDelete;
     }
 
-    public void setIsDelete(String isDelete) {
-        this.isDelete = isDelete == null ? null : isDelete.trim();
+    public void setIsDelete(Boolean isDelete) {
+        this.isDelete = isDelete;
     }
 
     public Date getUploadTime() {
@@ -140,20 +140,20 @@ public class FileUpload implements Serializable {
         this.uploadTime = uploadTime;
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
-    public Date getUpdateDate() {
-        return updateDate;
+    public Date getUpdateTime() {
+        return updateTime;
     }
 
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -175,8 +175,8 @@ public class FileUpload implements Serializable {
         sb.append(", isChunk=").append(isChunk);
         sb.append(", isDelete=").append(isDelete);
         sb.append(", uploadTime=").append(uploadTime);
-        sb.append(", createDate=").append(createDate);
-        sb.append(", updateDate=").append(updateDate);
+        sb.append(", createTime=").append(createTime);
+        sb.append(", updateTime=").append(updateTime);
         sb.append("]");
         return sb.toString();
     }

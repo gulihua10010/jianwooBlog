@@ -71,15 +71,15 @@
         <div class="comment-list">
             <div class="media-body">
                 <a href="javascript:" class="media-left" style="float: left;">
-                    <img src="{{ comm.headImg }}" height="46px"
+                    <img src="{{ comm.headImgSrc }}" height="46px"
                          width="46px">
                 </a>
                 <div class="pad-btm">
                     <p class="fontColor">
-                        <a href="javascript:">{{ comm.user }}</a>
+                        <a href="javascript:">{{ comm.userName }}</a>
                     </p>
                     <p class="min-font">
-                        <a href="javascript:">{{ comm.date }}</a>
+                        <a href="javascript:" style="font-size: 12px">{{ comm.commentTimeDesc }}</a>
                     </p>
                 </div>
                 <p class="message-text">{{=comm.content}}</p>
@@ -89,16 +89,16 @@
                 <div>
                     <div class="media-body">
                         <a href="javascript:" class="media-left" style="float: left;">
-                            <img src="{{rep.headImg}}" height="46px"
+                            <img src="{{rep.headImgSrc}}" height="46px"
                                  width="46px">
                         </a>
                         <div class="pad-btm">
                             <p class="fontColor">
-                                <a href="javascript:">{{rep.user}}</a>
+                                <a href="javascript:">{{rep.userName}}</a>
+                                <a href="javascript:">回复 @{{rep.parentUserName}}</a>
                             </p>
                             <p class="min-font">
-                                <a href="javascript:">回复给{{rep.parentUserName}}</a>
-                                <a href="javascript:">{{rep.date}}</a>
+                                <a href="javascript:" style="font-size: 12px">{{rep.commentTimeDesc}}</a>
                             </p>
                         </div>
                         <p class="message-text">{{=rep.content}}</p>
@@ -115,7 +115,7 @@
 
 <script>
     doView = function (d) {
-        layui.use(['admin', 'form', 'table', 'element', 'laytpl'], function () {
+        layui.use(['admin', 'form', 'table', 'element', 'laytpl', "comment"], function () {
             var $ = layui.jquery
                 , form = layui.form
                 , laytpl = layui.laytpl
@@ -123,27 +123,6 @@
             element.render()
             form.render()
             renderComm(d.data.id);
-
-            function renderComm(artOid) {
-                ajaxApiPost(
-                    "/api/admin/comment/query/article/list",
-                    JSON.stringify({
-                        entityOid: artOid,
-                    }),
-                    function (res) {
-                        data = res.commentList;
-                        var getTpl = document.getElementById('commentTemplate').innerHTML
-                            , view = document.getElementById('commentView');
-                        laytpl(getTpl).render(data, function (html) {
-                            view.innerHTML = html;
-                        });
-                        if (data.length === 0) {
-                            $('.commentView-card').hide()
-                        }
-                    }
-                );
-
-            }
         })
     }
 

@@ -5,28 +5,28 @@ public enum CommReadEnum {
     /**
      * 已读
      */
-    READ(1),
+    READ("10"),
     /**
      * 未读的
      */
-    UNREAD(0),
+    UNREAD("00"),
 
     ;
 
     /**
      * value
      */
-    private Integer value;
+    private String value;
 
-    CommReadEnum(Integer value) {
+    CommReadEnum(String value) {
         this.value = value;
     }
 
 
-    public static CommReadEnum getEnum(Integer name) {
+    public static CommReadEnum getEnum(String name) {
         CommReadEnum[] arry = CommReadEnum.values();
         for (int i = 0; i < arry.length; i++) {
-            if (arry[i].name().equals(name)) {
+            if (arry[i].getValue().equals(name)) {
                 return arry[i];
             }
         }
@@ -34,12 +34,12 @@ public enum CommReadEnum {
     }
 
 
-    public Integer getValue() {
+    public String getValue() {
         return value;
     }
 
 
-    public void setValue(Integer value) {
+    public void setValue(String value) {
         this.value = value;
     }
 

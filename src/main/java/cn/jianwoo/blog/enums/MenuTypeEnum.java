@@ -5,29 +5,29 @@ public enum MenuTypeEnum {
     /**
      * 前台
      */
-    FRONTEND(1),
+    FRONTEND("10"),
 
     /**
      * 后台
      */
-    BACKEND(2),
+    BACKEND("20"),
 
     ;
 
     /**
      * value
      */
-    private Integer value;
+    private String value;
 
-    MenuTypeEnum(Integer value) {
+    MenuTypeEnum(String value) {
         this.value = value;
     }
 
 
-    public static MenuTypeEnum getEnum(Integer name) {
+    public static MenuTypeEnum getEnum(String name) {
         MenuTypeEnum[] arry = MenuTypeEnum.values();
         for (int i = 0; i < arry.length; i++) {
-            if (arry[i].name().equals(name)) {
+            if (arry[i].value.equals(name)) {
                 return arry[i];
             }
         }
@@ -35,12 +35,12 @@ public enum MenuTypeEnum {
     }
 
 
-    public Integer getValue() {
+    public String getValue() {
         return value;
     }
 
 
-    public void setValue(Integer value) {
+    public void setValue(String value) {
         this.value = value;
     }
 

@@ -36,7 +36,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         Admin admin = adminTransDao.queryAdminByName(name);
         // 判断用户是否存在
         if (admin == null) {
-            log.error("user {} does not exist", name);
+            log.error("user {} does not exist.", name);
             throw new UsernameNotFoundException("用户名不存在");
         }
         authorities.add(new SimpleGrantedAuthority(Constants.ROLE_PREFIX + Constants.ADMIN.toUpperCase(Locale.ROOT)));

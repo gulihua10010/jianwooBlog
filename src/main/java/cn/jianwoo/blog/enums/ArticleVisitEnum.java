@@ -2,42 +2,43 @@ package cn.jianwoo.blog.enums;
 
 public enum ArticleVisitEnum {
 
-    /**
-     * 密码
-     */
-    PASSWORD(-1),
-
-    /**
-     * 公开的
-     */
-    PUBLIC(1),
 
     /**
      * 私密的
      */
-    PRIVATE(0),
+    PRIVATE("10"),
+
+    /**
+     * 密码
+     */
+    PASSWORD("11"),
+
+    /**
+     * 公开的
+     */
+    PUBLIC("20"),
 
     /**
      * 文章置顶
      */
-    TOP(2),
+    TOP("21"),
 
     ;
 
     /**
      * value
      */
-    private Integer value;
+    private String value;
 
-    ArticleVisitEnum(Integer value) {
+    ArticleVisitEnum(String value) {
         this.value = value;
     }
 
 
-    public static ArticleVisitEnum getEnum(Integer name) {
+    public static ArticleVisitEnum getEnum(String name) {
         ArticleVisitEnum[] arry = ArticleVisitEnum.values();
         for (int i = 0; i < arry.length; i++) {
-            if (arry[i].name().equals(name)) {
+            if (arry[i].getValue().equals(name)) {
                 return arry[i];
             }
         }
@@ -45,12 +46,12 @@ public enum ArticleVisitEnum {
     }
 
 
-    public Integer getValue() {
+    public String getValue() {
         return value;
     }
 
 
-    public void setValue(Integer value) {
+    public void setValue(String value) {
         this.value = value;
     }
 

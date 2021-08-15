@@ -5,19 +5,19 @@ import cn.jianwoo.blog.annotation.SubToken;
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.builder.JwBuilder;
+import cn.jianwoo.blog.config.apiversion.ApiVersion;
 import cn.jianwoo.blog.config.router.admin.TagsApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
-import cn.jianwoo.blog.dao.base.TagsTransDao;
 import cn.jianwoo.blog.dto.request.EntityOidRequest;
 import cn.jianwoo.blog.dto.request.TagListRequest;
 import cn.jianwoo.blog.dto.request.TagRequest;
 import cn.jianwoo.blog.dto.response.TagListResponse;
 import cn.jianwoo.blog.dto.response.TagResponse;
 import cn.jianwoo.blog.dto.response.vo.TagsVO;
-import cn.jianwoo.blog.entity.Tags;
 import cn.jianwoo.blog.enums.PageIdEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.TagsBizService;
+import cn.jianwoo.blog.service.bo.TagsBO;
 import cn.jianwoo.blog.validation.BizValidation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -44,8 +44,6 @@ import java.util.List;
 public class TagsApiController extends BaseController {
     @Autowired
     private TagsBizService tagsBizService;
-    @Autowired
-    private TagsTransDao tagsTransDao;
 
     /**
      * 标签添加(标签页面)<br/>
@@ -59,6 +57,7 @@ public class TagsApiController extends BaseController {
      * msg
      * @author gulihua
      */
+    @ApiVersion()
     @PostMapping(TagsApiUrlConfig.URL_TAG_ADD)
     public String addTag(@RequestBody String param) {
         try {
@@ -88,6 +87,7 @@ public class TagsApiController extends BaseController {
      */
     @PageId(PageIdEnum.TAGS_EDIT)
     @SubToken()
+    @ApiVersion()
     @PostMapping(TagsApiUrlConfig.URL_TAG_UPDATE)
     public String updateTag(@RequestBody String param) {
         try {
@@ -116,6 +116,7 @@ public class TagsApiController extends BaseController {
      * msg
      * @author gulihua
      */
+    @ApiVersion()
     @PostMapping(TagsApiUrlConfig.URL_TAG_REMOVE)
     public String removeTag(@RequestBody String param) {
         try {
@@ -143,6 +144,7 @@ public class TagsApiController extends BaseController {
      */
     @PageId(PageIdEnum.TAGS_ADD_LIST)
     @SubToken()
+    @ApiVersion()
     @PostMapping(TagsApiUrlConfig.URL_TAG_ADD_LIST)
     public String addTagList(@RequestBody String param) {
         try {
@@ -174,16 +176,17 @@ public class TagsApiController extends BaseController {
      * --name<br/>
      * @author gulihua
      */
+    @ApiVersion()
     @GetMapping(TagsApiUrlConfig.URL_TAG_LIST)
     public String getTagsList() {
         TagListResponse response = TagListResponse.getInstance();
         List<TagsVO> list = new ArrayList<TagsVO>();
-        List<Tags> tags = tagsTransDao.queryAllTags();
+        List<TagsBO> tags = tagsBizService.queryAllTags();
         if (CollectionUtils.isNotEmpty(tags)) {
-            for (Tags tag : tags) {
+            for (TagsBO tag : tags) {
                 TagsVO vo = JwBuilder.of(TagsVO::new)
-                        .with(TagsVO::setId, tag.getOid())
-                        .with(TagsVO::setName, StringEscapeUtils.escapeHtml4(tag.getContent())).build();
+                        .with(TagsVO::setId, tag.getId())
+                        .with(TagsVO::setName, StringEscapeUtils.escapeHtml4(tag.getName())).build();
                 list.add(vo);
             }
         }
@@ -204,6 +207,7 @@ public class TagsApiController extends BaseController {
      * --name<br/>
      * @author gulihua
      */
+    @ApiVersion()
     @GetMapping(TagsApiUrlConfig.URL_TAG_ARTICLE_LIST)
     public String getTagsListByArtOid(@PathVariable("artId") Long artId) {
         TagListResponse response = null;
@@ -211,11 +215,11 @@ public class TagsApiController extends BaseController {
             BizValidation.paramValidate(artId, "artId", "文章id不能为空!");
             response = TagListResponse.getInstance();
             List<TagsVO> list = new ArrayList<TagsVO>();
-            List<Tags> artTags = tagsBizService.queryTagsByArtOid(artId);
-            for (Tags tag : artTags) {
+            List<TagsBO> artTags = tagsBizService.queryTagsByArtOid(artId);
+            for (TagsBO tag : artTags) {
                 TagsVO vo = JwBuilder.of(TagsVO::new)
-                        .with(TagsVO::setId, tag.getOid())
-                        .with(TagsVO::setName, StringEscapeUtils.escapeHtml4(tag.getContent())).build();
+                        .with(TagsVO::setId, tag.getId())
+                        .with(TagsVO::setName, StringEscapeUtils.escapeHtml4(tag.getName())).build();
                 list.add(vo);
             }
             response.setData(list);
@@ -236,15 +240,16 @@ public class TagsApiController extends BaseController {
      * msg
      * @author gulihua
      */
+    @ApiVersion()
     @GetMapping(TagsApiUrlConfig.URL_TAG_INFO)
     public String getTagInfo(@PathVariable("id") Long id) {
         TagResponse response = TagResponse.getInstance();
         try {
             BizValidation.paramValidate(id, "id", "标签oid不能为空!");
-            Tags tags = tagsTransDao.queryTagsByPrimaryKey(id);
+            TagsBO tags = tagsBizService.queryTagsByOid(id);
             TagsVO tagsVO = JwBuilder.of(TagsVO::new)
-                    .with(TagsVO::setId, tags.getOid())
-                    .with(TagsVO::setName, tags.getContent())
+                    .with(TagsVO::setId, tags.getId())
+                    .with(TagsVO::setName, tags.getName())
                     .build();
             response.setData(tagsVO);
 

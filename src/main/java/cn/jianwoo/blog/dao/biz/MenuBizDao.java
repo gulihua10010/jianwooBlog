@@ -11,7 +11,7 @@ public interface MenuBizDao {
      * @return
      * @author gulihua
      */
-    int countMenu(Integer type);
+    int countMenu(String type);
 
 
     /**

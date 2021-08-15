@@ -4,7 +4,7 @@ layui.define(['laytable', 'form'], function (exports) {
 
     table.render({
         elem: '#published-table'
-        , url: "/api/admin/console/recent/article/published/query"
+        , url: "/api/admin/console/recent/article/published/query?v=1"
         , cols: [[
             {field: 'desc', title: '文章概览', align: 'center'}
 
@@ -19,7 +19,7 @@ layui.define(['laytable', 'form'], function (exports) {
     });
     table.render({
         elem: '#draft-table'
-        , url: "/api/admin/console/recent/article/draft/query"
+        , url: "/api/admin/console/recent/article/draft/query?v=1"
         , cols: [[
             {field: 'desc', title: '文章概览', align: 'center'}
 
@@ -34,7 +34,7 @@ layui.define(['laytable', 'form'], function (exports) {
     });
     table.render({
         elem: '#comment-table'
-        , url: "/api/admin/console/recent/comment/query"
+        , url: "/api/admin/console/recent/comment/query?v=1"
         , cols: [[
             {field: 'desc', title: '评论概览', align: 'center'}
 
@@ -56,6 +56,7 @@ layui.define(['laytable', 'form'], function (exports) {
         var articleContent = field.content;
         ajaxPost(
             '/api/admin/article/save/draft',
+            1,
             {
                 title: title,
                 author: author,

@@ -1,7 +1,6 @@
 package cn.jianwoo.blog.service.biz.impl;
 
 import cn.jianwoo.blog.builder.JwBuilder;
-import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.dao.base.ArticleTagsTransDao;
 import cn.jianwoo.blog.dao.base.ArticleTransDao;
 import cn.jianwoo.blog.dao.base.TagsTransDao;
@@ -9,12 +8,12 @@ import cn.jianwoo.blog.dao.base.TempArticleTransDao;
 import cn.jianwoo.blog.dao.biz.ArticleBizDao;
 import cn.jianwoo.blog.entity.Article;
 import cn.jianwoo.blog.entity.ArticleTags;
+import cn.jianwoo.blog.entity.ArticleWithBLOBs;
 import cn.jianwoo.blog.entity.Menu;
 import cn.jianwoo.blog.entity.Tags;
 import cn.jianwoo.blog.entity.TempArticle;
 import cn.jianwoo.blog.entity.extension.ArticleExt;
 import cn.jianwoo.blog.entity.query.ArticleParam;
-import cn.jianwoo.blog.enums.ArtCommStatusEnum;
 import cn.jianwoo.blog.enums.ArticleStatusEnum;
 import cn.jianwoo.blog.enums.ArticleVisitEnum;
 import cn.jianwoo.blog.enums.MenuTypeEnum;
@@ -32,19 +31,21 @@ import cn.jianwoo.blog.service.biz.UidGenService;
 import cn.jianwoo.blog.service.bo.ArticleBO;
 import cn.jianwoo.blog.service.bo.ArticleMenuBO;
 import cn.jianwoo.blog.service.bo.TagsBO;
-import cn.jianwoo.blog.service.bo.TempArticleInfoBO;
+import cn.jianwoo.blog.service.bo.TempArticleBO;
 import cn.jianwoo.blog.util.DateUtil;
 import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.util.TestUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,115 +80,54 @@ public class ArticleBizServiceImpl implements ArticleBizService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void doSaveArticle(String title, String content, String author, Integer typeId, Integer isComment,
-                              Integer visitType, String imsSrc, String password, Integer[] tags, Integer status) throws JwBlogException {
-        log.info("==========>Start insert article,title = {}", title);
-
-        Long oid = uidGenService.getUid();
-        Date now = DateUtil.getNow();
-
-        isComment = isComment == null ? ArtCommStatusEnum.NO_COMMENT.getValue() : isComment;
-        if (visitType == null) {
-            visitType = ArticleVisitEnum.PUBLIC.getValue();
-        }
-        Article article = JwBuilder.of(Article::new)
-                .with(Article::setOid, oid)
-                .with(Article::setAuthor, author)
-                .with(Article::setCommentCount, 0L)
-                .with(Article::setTitle, title)
-                .with(Article::setTypeId, typeId)
-                .with(Article::setStatus, status)
-                .with(Article::setIsComment, isComment)
-                .with(Article::setImgSrc, imsSrc)
-                .with(Article::setVisitType, visitType)
-                .with(Article::setContent, content)
-                .with(Article::setPraiseCount, 0L)
-                .with(Article::setReadCount, 0L)
-                .with(Article::setText, JwUtil.clearHtml(content))
-                .with(Article::setCreateDate, now)
-                .with(Article::setUpdateDate, now)
-                .with(Article::setPushDate, now)
-                .with(Article::setModifiedDate, now)
-                .build();
-
-        if (ArticleVisitEnum.PASSWORD.getValue().equals(visitType)) {
-            article.setPassword(password);
-        }
-        try {
-            articleTransDao.doInsert(article);
-        } catch (DaoException e) {
-            throw ArticleBizException.CREATE_FAILED_EXCEPTION.format(title).print();
-        }
-        if (tags != null) {
-            for (Integer t : tags) {
-                ArticleTags articleTags = JwBuilder.of(ArticleTags::new)
-                        .with(ArticleTags::setArticleOid, oid)
-                        .with(ArticleTags::setTagsOid, t)
-                        .with(ArticleTags::setCreateDate, now)
-                        .with(ArticleTags::setUpdateDate, now).build();
-                try {
-                    articleTagsTransDao.doInsert(articleTags);
-                } catch (DaoException e) {
-                    throw ArticleTagsBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + oid + ",tagsOid:" + t).print();
-
-                }
-            }
-        }
-
-        log.info("==========>Insert article successfully,title = {}", title);
-
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
     public void doSaveArticle(ArticleBO articleBO) throws JwBlogException {
-        log.info("==========>Start insert article,title = {}", articleBO.getTitle());
+        log.info("==========>Start insert article, title = {}", articleBO.getTitle());
 
         Long oid = uidGenService.getUid();
         Date now = DateUtil.getNow();
 
-        articleBO.setIsComment(articleBO.getIsComment() == null ? ArtCommStatusEnum.NO_COMMENT.getValue() : articleBO.getIsComment());
+        articleBO.setIsComment(articleBO.getIsComment() != null && articleBO.getIsComment());
         if (articleBO.getVisitType() == null) {
             articleBO.setVisitType(ArticleVisitEnum.PUBLIC.getValue());
         }
-        Article article = JwBuilder.of(Article::new)
-                .with(Article::setOid, oid)
-                .with(Article::setAuthor, articleBO.getAuthor())
-                .with(Article::setCommentCount, 0L)
-                .with(Article::setTitle, articleBO.getTitle())
-                .with(Article::setTypeId, articleBO.getTypeId())
-                .with(Article::setStatus, articleBO.getStatus())
-                .with(Article::setIsComment, articleBO.getIsComment())
-                .with(Article::setImgSrc, articleBO.getImgSrc())
-                .with(Article::setVisitType, articleBO.getVisitType())
-                .with(Article::setContent, articleBO.getContent())
-                .with(Article::setPraiseCount, 0L)
-                .with(Article::setReadCount, 0L)
-                .with(Article::setText, JwUtil.clearHtml(articleBO.getContent()))
-                .with(Article::setCreateDate, now)
-                .with(Article::setUpdateDate, now)
-                .with(Article::setPushDate, now)
-                .with(Article::setModifiedDate, now)
+        ArticleWithBLOBs article = JwBuilder.of(ArticleWithBLOBs::new)
+                .with(ArticleWithBLOBs::setOid, oid)
+                .with(ArticleWithBLOBs::setAuthor, articleBO.getAuthor())
+                .with(ArticleWithBLOBs::setCommentCount, 0L)
+                .with(ArticleWithBLOBs::setTitle, articleBO.getTitle())
+                .with(ArticleWithBLOBs::setMenuId, articleBO.getMenuId())
+                .with(ArticleWithBLOBs::setStatus, articleBO.getStatus())
+                .with(ArticleWithBLOBs::setIsComment, articleBO.getIsComment())
+                .with(ArticleWithBLOBs::setImgSrc, articleBO.getImgSrc())
+                .with(ArticleWithBLOBs::setVisitType, articleBO.getVisitType())
+                .with(ArticleWithBLOBs::setContent, articleBO.getContent())
+                .with(ArticleWithBLOBs::setPraiseCount, 0L)
+                .with(ArticleWithBLOBs::setReadCount, 0L)
+                .with(ArticleWithBLOBs::setText, JwUtil.clearHtml(articleBO.getContent()))
+                .with(ArticleWithBLOBs::setCreateTime, now)
+                .with(ArticleWithBLOBs::setUpdateTime, now)
+                .with(ArticleWithBLOBs::setPushTime, now)
+                .with(ArticleWithBLOBs::setModifiedTime, now)
                 .build();
 
         if (ArticleVisitEnum.PASSWORD.getValue().equals(articleBO.getVisitType())) {
             article.setPassword(articleBO.getPassword());
         }
         try {
-            articleTransDao.doInsert(article);
+            articleTransDao.doInsertSelective(article);
         } catch (DaoException e) {
             log.error("ArticleBizServiceImpl.doSaveArticle exec failed, e:\n", e);
             throw ArticleBizException.CREATE_FAILED_EXCEPTION.format(articleBO.getTitle()).print();
         }
-        if (articleBO.getTags() != null) {
-            for (Integer t : articleBO.getTags()) {
+        if (CollectionUtils.isNotEmpty(articleBO.getTagOidList())) {
+            for (Integer t : articleBO.getTagOidList()) {
                 ArticleTags articleTags = JwBuilder.of(ArticleTags::new)
                         .with(ArticleTags::setArticleOid, oid)
                         .with(ArticleTags::setTagsOid, t)
-                        .with(ArticleTags::setCreateDate, now)
-                        .with(ArticleTags::setUpdateDate, now).build();
+                        .with(ArticleTags::setCreateTime, now)
+                        .with(ArticleTags::setUpdateTime, now).build();
                 try {
-                    articleTagsTransDao.doInsert(articleTags);
+                    articleTagsTransDao.doInsertSelective(articleTags);
                 } catch (DaoException e) {
                     log.error("ArticleBizServiceImpl.doSaveArticle exec failed, e:\n", e);
                     throw ArticleTagsBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + oid + ",tagsOid:" + t).print();
@@ -200,236 +140,159 @@ public class ArticleBizServiceImpl implements ArticleBizService {
                     TempArticleStatusEnum.RESTORE, article.getOid());
         }
 
-        log.info("==========>Insert article successfully,title = {}", articleBO.getTitle());
+        log.info("==========>Insert article successfully, title = {}", articleBO.getTitle());
     }
 
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void doUpdateArticleInfo(Long oid, String title, String author, Integer typeId, Integer isComment,
-                                    Integer visitType, String imsSrc, String password, Integer[] tags) throws JwBlogException {
-        log.info("==========>Start update article,title = {}", title);
-
-        Article article = null;
-        Date now = DateUtil.getNow();
-        try {
-            article = articleTransDao.queryArticleByPrimaryKey(oid);
-        } catch (DaoException e) {
-            throw ArticleBizException.NOT_EXIST_EXCEPTION.format(oid).print();
-
-        }
-        article.setAuthor(author);
-        article.setTitle(title);
-        article.setModifiedDate(new Date());
-        article.setTypeId(typeId);
-        article.setIsComment(isComment == null ? ArtCommStatusEnum.NO_COMMENT.getValue() : isComment);
-        if (imsSrc != null) {
-            article.setImgSrc(imsSrc);
-        }
-        if (ArticleVisitEnum.PASSWORD.getValue().equals(visitType)) {
-            article.setPassword(password);
-        }
-        article.setUpdateDate(new Date());
-        article.setVisitType(visitType == null ? ArticleVisitEnum.PUBLIC.getValue() : visitType);
-        try {
-            articleTransDao.doUpdateByPrimaryKeySelective(article);
-        } catch (DaoException e) {
-            throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
-        }
-        articleTagsTransDao.doDeleteByArticleOid(oid);
-
-        for (Integer t : tags) {
-            ArticleTags articleTags = JwBuilder.of(ArticleTags::new)
-                    .with(ArticleTags::setArticleOid, oid)
-                    .with(ArticleTags::setTagsOid, t)
-                    .with(ArticleTags::setCreateDate, now)
-                    .with(ArticleTags::setUpdateDate, now).build();
-            try {
-                articleTagsTransDao.doInsert(articleTags);
-            } catch (DaoException e) {
-                throw ArticleTagsBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + oid + ",tagsOid:" + t).print();
-            }
-        }
-        log.info("==========>Update article successfully,title = {}", title);
-    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void doUpdateArticleInfo(ArticleBO articleBO) throws JwBlogException {
-        log.info("==========>Start update article info,title = {}", articleBO.getTitle());
+        log.info("==========>Start update article info, title = {}", articleBO.getTitle());
 
         Article article = null;
         Date now = DateUtil.getNow();
         try {
-            article = articleTransDao.queryArticleByPrimaryKey(articleBO.getOid());
+            article = articleTransDao.queryArticleByOid(articleBO.getOid());
         } catch (DaoException e) {
-            throw ArticleBizException.NOT_EXIST_EXCEPTION.format(articleBO.getOid()).print();
+            throw ArticleBizException.NOT_EXIST_EXCEPTION_CN.format(article.getOid()).print();
 
         }
-        article.setAuthor(articleBO.getAuthor());
-        article.setTitle(articleBO.getTitle());
-        article.setModifiedDate(new Date());
-        article.setTypeId(articleBO.getTypeId());
-        article.setIsComment(articleBO.getIsComment() == null ?
-                ArtCommStatusEnum.NO_COMMENT.getValue() : articleBO.getIsComment());
+        if (ArticleStatusEnum.RECYCLE.getValue().equals(article.getStatus()) ||
+                ArticleStatusEnum.DELETE.getValue().equals(article.getStatus())) {
+            throw ArticleBizException.STATUS_NOT_SUPPORT_CN.format(article.getTitle()).print();
+
+        }
+        ArticleWithBLOBs newArticle = new ArticleWithBLOBs();
+        newArticle.setOid(article.getOid());
+        newArticle.setAuthor(articleBO.getAuthor());
+        newArticle.setTitle(articleBO.getTitle());
+        newArticle.setModifiedTime(now);
+        newArticle.setMenuId(articleBO.getMenuId());
+        newArticle.setIsComment(articleBO.getIsComment() != null && articleBO.getIsComment());
         if (articleBO.getImgSrc() != null) {
-            article.setImgSrc(articleBO.getImgSrc());
+            newArticle.setImgSrc(articleBO.getImgSrc());
         }
         if (ArticleVisitEnum.PASSWORD.getValue().equals(articleBO.getVisitType())) {
-            article.setPassword(articleBO.getPassword());
+            newArticle.setPassword(articleBO.getPassword());
         }
-        article.setUpdateDate(new Date());
-        article.setVisitType(articleBO.getVisitType() == null ? ArticleVisitEnum.PUBLIC.getValue() : articleBO.getVisitType());
+        newArticle.setUpdateTime(now);
+        newArticle.setVisitType(articleBO.getVisitType() == null ? ArticleVisitEnum.PUBLIC.getValue() : articleBO.getVisitType());
         try {
-            articleTransDao.doUpdateByPrimaryKeySelective(article);
+            articleTransDao.doUpdateByPrimaryKeySelective(newArticle);
         } catch (DaoException e) {
             log.error("ArticleBizServiceImpl.doUpdateArticleInfo exec failed, e:\n", e);
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(articleBO.getOid()).print();
         }
         articleTagsTransDao.doDeleteByArticleOid(articleBO.getOid());
-
-        for (Integer t : articleBO.getTags()) {
-            ArticleTags articleTags = JwBuilder.of(ArticleTags::new)
-                    .with(ArticleTags::setArticleOid, articleBO.getOid())
-                    .with(ArticleTags::setTagsOid, t)
-                    .with(ArticleTags::setCreateDate, now)
-                    .with(ArticleTags::setUpdateDate, now).build();
-            try {
-                articleTagsTransDao.doInsert(articleTags);
-            } catch (DaoException e) {
-                log.error("ArticleBizServiceImpl.doUpdateArticleInfo exec failed, e:\n", e);
-                throw ArticleTagsBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + articleBO.getOid() + ",tagsOid:" + t).print();
+        if (CollectionUtils.isNotEmpty(articleBO.getTagOidList())) {
+            for (Integer t : articleBO.getTagOidList()) {
+                ArticleTags articleTags = JwBuilder.of(ArticleTags::new)
+                        .with(ArticleTags::setArticleOid, articleBO.getOid())
+                        .with(ArticleTags::setTagsOid, t)
+                        .with(ArticleTags::setCreateTime, now)
+                        .with(ArticleTags::setUpdateTime, now).build();
+                try {
+                    articleTagsTransDao.doInsertSelective(articleTags);
+                } catch (DaoException e) {
+                    log.error("ArticleBizServiceImpl.doUpdateArticleInfo exec failed, e:\n", e);
+                    throw ArticleTagsBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + articleBO.getOid() + ",tagsOid:" + t).print();
+                }
             }
         }
-        log.info("==========>Update article info successfully,title = {}", articleBO.getTitle());
+
+        log.info("==========>Update article info successfully, title = {}", articleBO.getTitle());
     }
 
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void doUpdateArticle(Long oid, String title, String content, String author, Integer typeId,
-                                Integer isComment, Integer visitType, String imsSrc, String password, Integer[] tags, Integer status)
-            throws JwBlogException {
-        log.info("==========>Start update article,title = {}", title);
-
-        Date now = DateUtil.getNow();
-        Article article = null;
-        try {
-            article = articleTransDao.queryArticleByPrimaryKey(oid);
-        } catch (DaoException e) {
-            throw ArticleBizException.NOT_EXIST_EXCEPTION.format(oid).print();
-
-        }
-        article.setAuthor(author);
-        article.setTitle(title);
-        article.setTypeId(typeId);
-        article.setIsComment(isComment == null ? ArtCommStatusEnum.NO_COMMENT.getValue() : isComment);
-        article.setImgSrc(imsSrc);
-        if (ArticleVisitEnum.PASSWORD.getValue().equals(visitType)) {
-
-            article.setPassword(password);
-        }
-        article.setUpdateDate(new Date());
-        article.setModifiedDate(new Date());
-        article.setVisitType(visitType == null ? ArticleVisitEnum.PUBLIC.getValue() : visitType);
-        article.setContent(content);
-        article.setText(JwUtil.clearHtml(content));
-        if (status != null) {
-            article.setStatus(status);
-        }
-        try {
-            articleTransDao.doUpdateByPrimaryKeySelective(article);
-        } catch (DaoException e) {
-            throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
-        }
-        articleTagsTransDao.doDeleteByArticleOid(oid);
-
-        for (Integer t : tags) {
-            ArticleTags articleTags = JwBuilder.of(ArticleTags::new)
-                    .with(ArticleTags::setArticleOid, oid)
-                    .with(ArticleTags::setTagsOid, t)
-                    .with(ArticleTags::setCreateDate, now)
-                    .with(ArticleTags::setUpdateDate, now).build();
-            try {
-                articleTagsTransDao.doInsert(articleTags);
-            } catch (DaoException e) {
-                throw ArticleTagsBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + oid + ",tagsOid:" + t).print();
-            }
-        }
-        log.info("==========>Update article successfully,title = {}", title);
-    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void doUpdateArticle(ArticleBO articleBO) throws JwBlogException {
-        log.info("==========>Start update article,title = {}", articleBO.getTitle());
+        log.info("==========>Start update article, title = {}", articleBO.getTitle());
 
         Date now = DateUtil.getNow();
         Article article = null;
         try {
-            article = articleTransDao.queryArticleByPrimaryKey(articleBO.getOid());
+            article = articleTransDao.queryArticleByOid(articleBO.getOid());
         } catch (DaoException e) {
-            throw ArticleBizException.NOT_EXIST_EXCEPTION.format(articleBO.getOid()).print();
+            throw ArticleBizException.NOT_EXIST_EXCEPTION_CN.format(articleBO.getOid()).print();
 
         }
-        article.setAuthor(articleBO.getAuthor());
-        article.setTitle(articleBO.getTitle());
-        article.setTypeId(articleBO.getTypeId());
-        article.setIsComment(articleBO.getIsComment() == null ? ArtCommStatusEnum.NO_COMMENT.getValue() : articleBO.getIsComment());
-        article.setImgSrc(articleBO.getImgSrc());
-        if (ArticleVisitEnum.PASSWORD.getValue().equals(articleBO.getVisitType())) {
-            article.setPassword(articleBO.getPassword());
+        if (ArticleStatusEnum.RECYCLE.getValue().equals(article.getStatus()) ||
+                ArticleStatusEnum.DELETE.getValue().equals(article.getStatus())) {
+            throw ArticleBizException.STATUS_NOT_SUPPORT_CN.format(article.getTitle()).print();
         }
-        article.setUpdateDate(new Date());
-        article.setModifiedDate(new Date());
-        article.setVisitType(articleBO.getVisitType() == null ? ArticleVisitEnum.PUBLIC.getValue() : articleBO.getVisitType());
-        article.setContent(articleBO.getContent());
-        article.setText(JwUtil.clearHtml(articleBO.getContent()));
+
+        ArticleWithBLOBs newArticle = new ArticleWithBLOBs();
+        newArticle.setOid(article.getOid());
+        newArticle.setAuthor(articleBO.getAuthor());
+        newArticle.setTitle(articleBO.getTitle());
+        newArticle.setMenuId(articleBO.getMenuId());
+        newArticle.setIsComment(articleBO.getIsComment() != null && articleBO.getIsComment());
+        newArticle.setImgSrc(articleBO.getImgSrc());
+        if (ArticleVisitEnum.PASSWORD.getValue().equals(articleBO.getVisitType())) {
+            newArticle.setPassword(articleBO.getPassword());
+        }
+        newArticle.setUpdateTime(now);
+        newArticle.setModifiedTime(now);
+        newArticle.setVisitType(articleBO.getVisitType() == null ? ArticleVisitEnum.PUBLIC.getValue() : articleBO.getVisitType());
+        newArticle.setContent(articleBO.getContent());
+        newArticle.setText(JwUtil.clearHtml(articleBO.getContent()));
         if (articleBO.getStatus() != null) {
-            article.setStatus(articleBO.getStatus());
+            newArticle.setStatus(articleBO.getStatus());
         }
         try {
-            articleTransDao.doUpdateByPrimaryKeySelective(article);
+            articleTransDao.doUpdateByPrimaryKeySelective(newArticle);
         } catch (DaoException e) {
             log.error("ArticleBizServiceImpl.doUpdateArticle exec failed, e:\n", e);
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(articleBO.getOid()).print();
         }
         articleTagsTransDao.doDeleteByArticleOid(articleBO.getOid());
-
-        for (Integer t : articleBO.getTags()) {
-            ArticleTags articleTags = JwBuilder.of(ArticleTags::new)
-                    .with(ArticleTags::setArticleOid, articleBO.getOid())
-                    .with(ArticleTags::setTagsOid, t)
-                    .with(ArticleTags::setCreateDate, now)
-                    .with(ArticleTags::setUpdateDate, now).build();
-            try {
-                articleTagsTransDao.doInsert(articleTags);
-            } catch (DaoException e) {
-                log.error("ArticleBizServiceImpl.doUpdateArticle exec failed, e:\n", e);
-                throw ArticleTagsBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + articleBO.getOid() + ",tagsOid:" + t).print();
+        if (CollectionUtils.isNotEmpty(articleBO.getTagOidList())) {
+            for (Integer t : articleBO.getTagOidList()) {
+                ArticleTags articleTags = JwBuilder.of(ArticleTags::new)
+                        .with(ArticleTags::setArticleOid, articleBO.getOid())
+                        .with(ArticleTags::setTagsOid, t)
+                        .with(ArticleTags::setCreateTime, now)
+                        .with(ArticleTags::setUpdateTime, now).build();
+                try {
+                    articleTagsTransDao.doInsertSelective(articleTags);
+                } catch (DaoException e) {
+                    log.error("ArticleBizServiceImpl.doUpdateArticle exec failed, e:\n", e);
+                    throw ArticleTagsBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + articleBO.getOid() + ",tagsOid:" + t).print();
+                }
             }
         }
+
         if (articleBO.getTempArtOid() != null) {
             tempArticleBizService.doUpdateTempArticleStatus(articleBO.getTempArtOid(),
                     TempArticleStatusEnum.RESTORE, article.getOid());
         }
-        log.info("==========>Update article successfully,title = {}", articleBO.getTitle());
+        log.info("==========>Update article successfully, title = {}", articleBO.getTitle());
     }
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void doRemoveToRecycle(Long oid) throws JwBlogException {
 
         Article article = null;
         try {
-            article = articleTransDao.queryArticleByPrimaryKey(oid);
+            article = articleTransDao.queryArticleByOid(oid);
         } catch (DaoException e) {
-            throw ArticleBizException.NOT_EXIST_EXCEPTION.format(oid).print();
+            throw ArticleBizException.NOT_EXIST_EXCEPTION_CN.format(oid).print();
 
         }
-        article.setStatus(ArticleStatusEnum.RECYCLE.getValue());
+
+        if (ArticleStatusEnum.RECYCLE.getValue().equals(article.getStatus()) ||
+                ArticleStatusEnum.DELETE.getValue().equals(article.getStatus())) {
+            throw ArticleBizException.STATUS_NOT_SUPPORT_CN.format(article.getTitle()).print();
+        }
+        ArticleWithBLOBs newArticle = new ArticleWithBLOBs();
+        newArticle.setOid(article.getOid());
+        newArticle.setStatus(ArticleStatusEnum.RECYCLE.getValue());
+        newArticle.setUpdateTime(DateUtil.getNow());
         try {
-            articleTransDao.doUpdateByPrimaryKeySelective(article);
+            articleTransDao.doUpdateByPrimaryKeySelective(newArticle);
         } catch (DaoException e) {
             log.error("ArticleBizServiceImpl.doRemoveToRecycle exec failed, e:\n", e);
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
@@ -438,20 +301,23 @@ public class ArticleBizServiceImpl implements ArticleBizService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void doDeleteArticle(Long oid) throws JwBlogException {
         Article article = null;
         try {
-            article = articleTransDao.queryArticleByPrimaryKey(oid);
+            article = articleTransDao.queryArticleByOid(oid);
         } catch (DaoException e) {
             log.error("ArticleBizServiceImpl.doDeleteArticle exec failed, e:\n", e);
-            throw ArticleBizException.NOT_EXIST_EXCEPTION.format(oid).print();
-
+            throw ArticleBizException.NOT_EXIST_EXCEPTION_CN.format(oid).print();
+        }
+        if (ArticleStatusEnum.DELETE.getValue().equals(article.getStatus())) {
+            throw ArticleBizException.HAS_DELETE_CN.format(article.getTitle()).print();
         }
         try {
-            Article newArticle = new Article();
+            ArticleWithBLOBs newArticle = new ArticleWithBLOBs();
             newArticle.setOid(article.getOid());
             newArticle.setStatus(ArticleStatusEnum.DELETE.getValue());
-            newArticle.setUpdateDate(new Date());
+            newArticle.setUpdateTime(DateUtil.getNow());
             articleTransDao.doUpdateByPrimaryKeySelective(newArticle);
         } catch (DaoException e) {
             log.error("ArticleBizServiceImpl.doDeleteArticle exec failed, e:\n", e);
@@ -462,18 +328,25 @@ public class ArticleBizServiceImpl implements ArticleBizService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void doRemoveToDraft(Long oid) throws JwBlogException {
         Article article = null;
         try {
-            article = articleTransDao.queryArticleByPrimaryKey(oid);
+            article = articleTransDao.queryArticleByOid(oid);
         } catch (DaoException e) {
             log.error(" ArticleBizServiceImpl.doRemoveToDraft exec failed, e:\n", e);
-            throw ArticleBizException.NOT_EXIST_EXCEPTION.format(oid).print();
+            throw ArticleBizException.NOT_EXIST_EXCEPTION_CN.format(oid).print();
 
         }
-        article.setStatus(ArticleStatusEnum.DRAFT.getValue());
+        if (!ArticleStatusEnum.PUBLISHED.getValue().equals(article.getStatus())) {
+            throw ArticleBizException.STATUS_NOT_PUBLISHED_CN.format(article.getTitle()).print();
+        }
         try {
-            articleTransDao.doUpdateByPrimaryKeySelective(article);
+            ArticleWithBLOBs newArticle = new ArticleWithBLOBs();
+            newArticle.setOid(article.getOid());
+            newArticle.setUpdateTime(DateUtil.getNow());
+            newArticle.setStatus(ArticleStatusEnum.DRAFT.getValue());
+            articleTransDao.doUpdateByPrimaryKeySelective(newArticle);
         } catch (DaoException e) {
             log.error("  ArticleBizServiceImpl.doRemoveToDraft exec failed, e:\n", e);
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
@@ -486,15 +359,21 @@ public class ArticleBizServiceImpl implements ArticleBizService {
     public void doPublishedArticle(Long oid) throws JwBlogException {
         Article article = null;
         try {
-            article = articleTransDao.queryArticleByPrimaryKey(oid);
+            article = articleTransDao.queryArticleByOid(oid);
         } catch (DaoException e) {
             log.error("  ArticleBizServiceImpl.doPublishedArticle exec failed, e:\n", e);
-            throw ArticleBizException.NOT_EXIST_EXCEPTION.format(oid).print();
+            throw ArticleBizException.NOT_EXIST_EXCEPTION_CN.format(oid).print();
 
         }
-        article.setStatus(ArticleStatusEnum.PUBLISHED.getValue());
+        if (!ArticleStatusEnum.DRAFT.getValue().equals(article.getStatus())) {
+            throw ArticleBizException.STATUS_NOT_DRAFT.format(article.getTitle()).print();
+        }
         try {
-            articleTransDao.doUpdateByPrimaryKeySelective(article);
+            ArticleWithBLOBs newArticle = new ArticleWithBLOBs();
+            newArticle.setOid(article.getOid());
+            newArticle.setUpdateTime(DateUtil.getNow());
+            newArticle.setStatus(ArticleStatusEnum.PUBLISHED.getValue());
+            articleTransDao.doUpdateByPrimaryKeySelective(newArticle);
         } catch (DaoException e) {
             log.error("ArticleBizServiceImpl.doPublishedArticle exec failed, e:\n", e);
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
@@ -504,53 +383,89 @@ public class ArticleBizServiceImpl implements ArticleBizService {
 
     @Override
     public Integer countWithEffectiveArts() {
-        int[] status = new int[]{ArticleStatusEnum.DRAFT.getValue(), ArticleStatusEnum.PUBLISHED.getValue()};
+        String[] status = new String[]{ArticleStatusEnum.DRAFT.getValue(), ArticleStatusEnum.PUBLISHED.getValue()};
         return articleBizDao.countArtsByStatus(status);
     }
 
 
     @Override
     public Integer countWithPublishArts() {
-        int[] status = new int[]{ArticleStatusEnum.PUBLISHED.getValue()};
+        String[] status = new String[]{ArticleStatusEnum.PUBLISHED.getValue()};
         return articleBizDao.countArtsByStatus(status);
     }
 
 
     @Override
     public Integer countWithDraftArts() {
-        int[] status = new int[]{ArticleStatusEnum.DRAFT.getValue(),};
+        String[] status = new String[]{ArticleStatusEnum.DRAFT.getValue(),};
         return articleBizDao.countArtsByStatus(status);
 
     }
 
 
     @Override
-    public List<Article> queryRecentPublishedArts(int n) {
+    public List<ArticleBO> queryRecentPublishedArts(int n) {
         Map<String, Object> params = new HashMap<>();
         params.put("status", ArticleStatusEnum.PUBLISHED.getValue());
         params.put("n", n);
-        return articleBizDao.queryArticleByStatusAndLimit(params);
+        List<Article> articleList = articleBizDao.queryArticleByStatusAndLimit(params);
+        List<ArticleBO> list = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(articleList)) {
+            articleList.forEach(o -> {
+                ArticleBO bo = new ArticleBO();
+                BeanUtils.copyProperties(o, bo);
+                list.add(bo);
+            });
+        }
+        return list;
     }
 
 
     @Override
-    public List<Article> queryRecentDraft(int n) {
+    public List<ArticleBO> queryRecentDraft(int n) {
         Map<String, Object> params = new HashMap<>();
         params.put("status", ArticleStatusEnum.DRAFT.getValue());
         params.put("n", n);
-        return articleBizDao.queryArticleByStatusAndLimit(params);
+        List<Article> articleList = articleBizDao.queryArticleByStatusAndLimit(params);
+        List<ArticleBO> list = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(articleList)) {
+            articleList.forEach(o -> {
+                ArticleBO bo = new ArticleBO();
+                BeanUtils.copyProperties(o, bo);
+                list.add(bo);
+            });
+        }
+        return list;
     }
 
 
     @Override
-    public List<Article> queryRecycleBinArts() {
-        return articleTransDao.queryArticleByStatus(ArticleStatusEnum.RECYCLE.getValue());
+    public List<ArticleBO> queryRecycleBinArts() {
+        List<Article> articleList = articleTransDao.queryArticleByStatus(ArticleStatusEnum.RECYCLE.getValue());
+        List<ArticleBO> list = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(articleList)) {
+            articleList.forEach(o -> {
+                ArticleBO bo = new ArticleBO();
+                BeanUtils.copyProperties(o, bo);
+                list.add(bo);
+            });
+        }
+        return list;
     }
 
 
     @Override
-    public List<Article> queryDraftArts() {
-        return articleTransDao.queryArticleByStatus(ArticleStatusEnum.DRAFT.getValue());
+    public List<ArticleBO> queryDraftArts() {
+        List<Article> articleList = articleTransDao.queryArticleByStatus(ArticleStatusEnum.DRAFT.getValue());
+        List<ArticleBO> list = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(articleList)) {
+            articleList.forEach(o -> {
+                ArticleBO bo = new ArticleBO();
+                BeanUtils.copyProperties(o, bo);
+                list.add(bo);
+            });
+        }
+        return list;
     }
 
 
@@ -559,21 +474,22 @@ public class ArticleBizServiceImpl implements ArticleBizService {
     public void doRestoreRecycleBinArts(Long oid) throws JwBlogException {
         Article article = null;
         try {
-            article = articleTransDao.queryArticleByPrimaryKey(oid);
+            article = articleTransDao.queryArticleByOid(oid);
         } catch (DaoException e) {
             log.error("ArticleBizServiceImpl.doRestoreRecycleBinArts exec failed, e:\n", e);
-            throw ArticleBizException.NOT_EXIST_EXCEPTION.format(oid).print();
+            throw ArticleBizException.NOT_EXIST_EXCEPTION_CN.format(oid).print();
 
         }
         if (!ArticleStatusEnum.RECYCLE.getValue().equals(article.getStatus())) {
-            String desc = String.format(ExceptionConstants.ARTICLE_STATUS_NOT_MATCH_DESC, article.getStatus(),
-                    article.getTitle());
-            throw new ArticleBizException().getNewInstance(ExceptionConstants.ARTICLE_STATUS_NOT_MATCH, desc).print();
-
+            throw ArticleBizException.STATUS_NOT_DRAFT.format(article.getTitle()).print();
         }
-        article.setStatus(ArticleStatusEnum.DRAFT.getValue());
+
         try {
-            articleTransDao.doUpdateByPrimaryKeySelective(article);
+            ArticleWithBLOBs newArticle = new ArticleWithBLOBs();
+            newArticle.setOid(article.getOid());
+            newArticle.setUpdateTime(DateUtil.getNow());
+            newArticle.setStatus(ArticleStatusEnum.DRAFT.getValue());
+            articleTransDao.doUpdateByPrimaryKeySelective(newArticle);
         } catch (DaoException e) {
             log.error("ArticleBizServiceImpl.doRestoreRecycleBinArts exec failed, e:\n", e);
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
@@ -582,67 +498,112 @@ public class ArticleBizServiceImpl implements ArticleBizService {
 
 
     @Override
-    public List<Article> queryPublishedArticles() {
-        return articleTransDao.queryArticleByStatus(ArticleStatusEnum.PUBLISHED.getValue());
+    public List<ArticleBO> queryPublishedArticles() {
+        List<Article> articleList = articleTransDao.queryArticleByStatus(ArticleStatusEnum.PUBLISHED.getValue());
+        List<ArticleBO> list = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(articleList)) {
+            articleList.forEach(o -> {
+                ArticleBO bo = new ArticleBO();
+                BeanUtils.copyProperties(o, bo);
+                list.add(bo);
+            });
+        }
+        return list;
     }
 
 
     @Override
-    public List<Article> querySearchArtsByKeyword(String keyword) {
+    public List<ArticleBO> querySearchArtsByKeyword(String keyword) {
+        List<Article> articleList;
         if (StringUtils.isBlank(keyword)) {
-            return articleTransDao.queryArticleByStatus(ArticleStatusEnum.PUBLISHED.getValue());
-
+            articleList = articleTransDao.queryArticleByStatus(ArticleStatusEnum.PUBLISHED.getValue());
+        } else {
+            articleList = articleBizDao.queryPublishedArtsByKeyword(keyword);
         }
-        return articleBizDao.queryPublishedArtsByKeyword(keyword);
+
+        List<ArticleBO> list = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(articleList)) {
+            articleList.forEach(o -> {
+                ArticleBO bo = new ArticleBO();
+                BeanUtils.copyProperties(o, bo);
+                list.add(bo);
+            });
+        }
+        return list;
     }
 
 
     @Override
-    public List<Article> queryNewestArts(Integer limit) {
+    public List<ArticleBO> queryNewestArts(Integer limit) {
         if (limit == null) {
             limit = 10;
         }
-        return articleBizDao.queryPublishedNewestArts(limit);
+        List<Article> articleList = articleBizDao.queryPublishedNewestArts(limit);
+        List<ArticleBO> list = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(articleList)) {
+            articleList.forEach(o -> {
+                ArticleBO bo = new ArticleBO();
+                BeanUtils.copyProperties(o, bo);
+                list.add(bo);
+            });
+        }
+        return list;
     }
 
 
     @Override
-    public List<Article> queryHotArts(Integer limit) {
+    public List<ArticleBO> queryHotArts(Integer limit) {
         if (limit == null) {
             limit = 10;
         }
 
-        return articleBizDao.queryPublishedHotArts(limit);
-
+        List<Article> articleList = articleBizDao.queryPublishedHotArts(limit);
+        List<ArticleBO> list = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(articleList)) {
+            articleList.forEach(o -> {
+                ArticleBO bo = new ArticleBO();
+                BeanUtils.copyProperties(o, bo);
+                list.add(bo);
+            });
+        }
+        return list;
     }
 
 
     @Override
-    public List<Article> queryRandomArts(Integer limit) {
+    public List<ArticleBO> queryRandomArts(Integer limit) {
         if (limit == null) {
             limit = 10;
         }
-
         List<Article> arts = articleTransDao.queryArticleByStatus(ArticleStatusEnum.PUBLISHED.getValue());
-        if (arts.size() < limit) {
-            return arts;
-        }
-        int[] oids = new int[limit];
-        Map<Integer, Object> map = new HashMap<>();
-        for (int i = 0; i < limit; i++) {
-            int oid = TestUtil.getInstance().getRandomInt(0, arts.size());
-            if (map.containsKey(oid)) {
-                i--;
-                continue;
-            }
-            oids[i] = oid;
-            map.put(oid, oid);
-        }
         List<Article> randomArts = new ArrayList<>();
-        for (int i : oids) {
-            randomArts.add(arts.get(i));
+        if (randomArts.size() >= limit) {
+            List<Integer> oids = new ArrayList<>();
+            for (int i = 0; i < limit; i++) {
+                int oid = TestUtil.getInstance().getRandomInt(0, arts.size());
+                if (oids.contains(oid)) {
+                    i--;
+                    continue;
+                }
+                oids.add(oid);
+            }
+            for (int i : oids) {
+                randomArts.add(arts.get(i));
+            }
+
+        } else {
+            randomArts = arts;
         }
-        return randomArts;
+
+        List<ArticleBO> list = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(randomArts)) {
+            randomArts.forEach(o -> {
+                ArticleBO bo = new ArticleBO();
+                BeanUtils.copyProperties(o, bo);
+                list.add(bo);
+            });
+        }
+        return list;
     }
 
 
@@ -651,17 +612,19 @@ public class ArticleBizServiceImpl implements ArticleBizService {
     public void doAddPraise(Long artOid) throws JwBlogException {
         Article article = null;
         try {
-            article = articleTransDao.queryArticleByPrimaryKey(artOid);
+            article = articleTransDao.queryArticleByOid(artOid);
         } catch (DaoException e) {
             log.error("ArticleBizServiceImpl.doAddPraise exec failed, e:\n", e);
-            throw ArticleBizException.NOT_EXIST_EXCEPTION.format(artOid).print();
+            throw ArticleBizException.NOT_EXIST_EXCEPTION_CN.format(artOid).print();
 
         }
+        if (!ArticleStatusEnum.PUBLISHED.getValue().equals(article.getStatus())) {
+            throw ArticleBizException.STATUS_NOT_PUBLISHED_CN.format(article.getTitle()).print();
+        }
 
-        article.setPraiseCount((article.getPraiseCount() == null ? 0 : article.getPraiseCount()) + 1);
-        article.setUpdateDate(new Date());
         try {
-            articleTransDao.doUpdateByPrimaryKeySelective(article);
+
+            articleBizDao.doUpdateArticlePraiseCnt(artOid);
         } catch (DaoException e) {
             log.error("ArticleBizServiceImpl.doAddPraise exec failed, e:\n", e);
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(artOid).print();
@@ -670,25 +633,51 @@ public class ArticleBizServiceImpl implements ArticleBizService {
 
 
     @Override
-    public PageInfo<ArticleExt> queryEffectiveArticleList(ArticleParam param) {
-        PageHelper.startPage(param.getPageNo(), param.getPageSize());
-        List<ArticleExt> list = articleBizDao.queryEffectiveArticleList(param);
-        PageInfo<ArticleExt> pageInfo = new PageInfo<>(list);
+    public PageInfo<ArticleBO> queryEffectiveArticleList(ArticleParam param) {
+        Page page = PageHelper.startPage(param.getPageNo(), param.getPageSize());
+        List<ArticleExt> articleExtList = articleBizDao.queryEffectiveArticleList(param);
+
+        List<ArticleBO> list = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(articleExtList)) {
+            articleExtList.forEach(o -> {
+                ArticleBO bo = new ArticleBO();
+                BeanUtils.copyProperties(o, bo);
+                list.add(bo);
+            });
+        }
+        PageInfo<ArticleBO> pageInfo = new PageInfo<>(list);
+        //总页数
+        pageInfo.setPages(page.getPages());
+        //总条数
+        pageInfo.setTotal(page.getTotal());
         return pageInfo;
 
     }
 
 
     @Override
-    public PageInfo<ArticleExt> queryRecycleBinArticleList(ArticleParam param) {
-        PageHelper.startPage(param.getPageNo(), param.getPageSize());
-        List<ArticleExt> list = articleBizDao.queryRecycleBinArticleList(param);
-        PageInfo<ArticleExt> pageInfo = new PageInfo<>(list);
+    public PageInfo<ArticleBO> queryRecycleBinArticleList(ArticleParam param) {
+        Page page = PageHelper.startPage(param.getPageNo(), param.getPageSize());
+        List<ArticleExt> articleExtList = articleBizDao.queryRecycleBinArticleList(param);
+        List<ArticleBO> list = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(articleExtList)) {
+            articleExtList.forEach(o -> {
+                ArticleBO bo = new ArticleBO();
+                BeanUtils.copyProperties(o, bo);
+                list.add(bo);
+            });
+        }
+        PageInfo<ArticleBO> pageInfo = new PageInfo<>(list);
+        //总页数
+        pageInfo.setPages(page.getPages());
+        //总条数
+        pageInfo.setTotal(page.getTotal());
         return pageInfo;
     }
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void doRemoveToRecycleBinList(List<Long> oidList) throws JwBlogException {
         if (CollectionUtils.isNotEmpty(oidList)) {
             for (Long oid : oidList) {
@@ -699,6 +688,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void doRestoreRecycleToDraftList(List<Long> oidList) throws JwBlogException {
         if (CollectionUtils.isNotEmpty(oidList)) {
             for (Long oid : oidList) {
@@ -714,6 +704,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void doDeleteRecycleBinList(List<Long> oidList) throws JwBlogException {
         if (CollectionUtils.isNotEmpty(oidList)) {
             for (Long oid : oidList) {
@@ -729,7 +720,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
 
     @Override
     public ArticleBO queryArticleEditInfo(Long artOid) throws JwBlogException {
-        Article article;
+        ArticleWithBLOBs article;
         ArticleBO bo = null;
         try {
             article = articleTransDao.queryArticleByPrimaryKey(artOid);
@@ -738,7 +729,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
                     .with(ArticleBO::setTitle, StringEscapeUtils.escapeHtml4(article.getTitle()))
                     .with(ArticleBO::setAuthor, StringEscapeUtils.escapeHtml4(article.getAuthor()))
                     .with(ArticleBO::setContent, article.getContent())
-                    .with(ArticleBO::setTypeId, article.getTypeId())
+                    .with(ArticleBO::setMenuId, article.getMenuId())
                     .with(ArticleBO::setImgSrc, article.getImgSrc())
                     .with(ArticleBO::setIsComment, article.getIsComment())
                     .with(ArticleBO::setPassword, article.getPassword())
@@ -746,13 +737,13 @@ public class ArticleBizServiceImpl implements ArticleBizService {
                     .with(ArticleBO::setStatus, article.getStatus())
                     .build();
 
-            List<Tags> artTags = tagsBizService.queryTagsByArtOid(artOid);
+            List<TagsBO> artTags = tagsBizService.queryTagsByArtOid(artOid);
             List<TagsBO> tagsList = new ArrayList<TagsBO>();
             if (CollectionUtils.isNotEmpty(artTags)) {
-                for (Tags tag : artTags) {
+                for (TagsBO tag : artTags) {
                     TagsBO tagsListVO = JwBuilder.of(TagsBO::new)
-                            .with(TagsBO::setId, tag.getOid())
-                            .with(TagsBO::setName, StringEscapeUtils.escapeHtml4(tag.getContent())).build();
+                            .with(TagsBO::setId, tag.getId())
+                            .with(TagsBO::setName, StringEscapeUtils.escapeHtml4(tag.getName())).build();
                     tagsList.add(tagsListVO);
                 }
                 bo.setArtTagsList(tagsList);
@@ -766,7 +757,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
                             .with(TagsBO::setName, StringEscapeUtils.escapeHtml4(tag.getContent())).build();
                     allTagsList.add(tagsListVO);
                 }
-                bo.setTagsList(allTagsList);
+                bo.setAllTagsList(allTagsList);
             }
 
             List<Menu> menuList = menuBizService.querySubMenuOrderedList(MenuTypeEnum.FRONTEND.getValue());
@@ -783,17 +774,17 @@ public class ArticleBizServiceImpl implements ArticleBizService {
             TempArticle tempArticle = tempArticleTransDao.queryLastestTempArticle(artOid, TempArticlePageEnum.EDIT.getValue());
 
             if (null != tempArticle) {
-                TempArticleInfoBO tempArticleInfoBO = JwBuilder.of(TempArticleInfoBO::new)
-                        .with(TempArticleInfoBO::setId, tempArticle.getOid())
-                        .with(TempArticleInfoBO::setTitle, StringEscapeUtils.escapeHtml4(tempArticle.getTitle()))
-                        .with(TempArticleInfoBO::setAuthor, StringEscapeUtils.escapeHtml4(tempArticle.getAuthor()))
-                        .with(TempArticleInfoBO::setContent, tempArticle.getContent())
-                        .with(TempArticleInfoBO::setMenuOid, tempArticle.getTypeId())
-                        .with(TempArticleInfoBO::setImgSrc, tempArticle.getImgSrc())
-                        .with(TempArticleInfoBO::setIsComment, tempArticle.getIsComment())
-                        .with(TempArticleInfoBO::setPassword, tempArticle.getPassword())
-                        .with(TempArticleInfoBO::setVisitType, tempArticle.getVisitType())
-                        .with(TempArticleInfoBO::setStatus, tempArticle.getStatus())
+                TempArticleBO tempArticleInfoBO = JwBuilder.of(TempArticleBO::new)
+                        .with(TempArticleBO::setOid, tempArticle.getOid())
+                        .with(TempArticleBO::setTitle, StringEscapeUtils.escapeHtml4(tempArticle.getTitle()))
+                        .with(TempArticleBO::setAuthor, StringEscapeUtils.escapeHtml4(tempArticle.getAuthor()))
+                        .with(TempArticleBO::setContent, tempArticle.getContent())
+                        .with(TempArticleBO::setMenuOid, tempArticle.getMenuId())
+                        .with(TempArticleBO::setImgSrc, tempArticle.getImgSrc())
+                        .with(TempArticleBO::setIsComment, tempArticle.getIsComment())
+                        .with(TempArticleBO::setPassword, tempArticle.getPassword())
+                        .with(TempArticleBO::setVisitType, tempArticle.getVisitType())
+                        .with(TempArticleBO::setStatus, tempArticle.getStatus())
                         .build();
 
 
@@ -814,7 +805,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
                 }
 
 
-                bo.setTempArticleInfo(tempArticleInfoBO);
+                bo.setTempArticle(tempArticleInfoBO);
             }
 
         } catch (DaoException e) {
@@ -826,12 +817,4 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         return bo;
     }
 
-    // public static void main(String[] args)
-//    {
-//        String html="<!DOCTYPE html>\n" + "<html lang=\"en\">\n" + "<head>\n" + "    <meta charset=\"UTF-8\">\n"
-//                + "    <title>Title</title>\n" + "</head>\n" + "<body>\n" + "adfadfadfadfadsfadf\n" + "</body>\n"
-//                + "</html>";
-//        html=html.replaceAll("\\<.*?>","").replaceAll("\n","");
-//        System.out.println(html);
-//    }
 }

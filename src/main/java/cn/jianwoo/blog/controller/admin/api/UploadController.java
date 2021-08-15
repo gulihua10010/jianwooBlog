@@ -1,6 +1,7 @@
 package cn.jianwoo.blog.controller.admin.api;
 
 import cn.jianwoo.blog.base.BaseController;
+import cn.jianwoo.blog.config.apiversion.ApiVersion;
 import cn.jianwoo.blog.config.router.admin.CommApiUrlConfig;
 import cn.jianwoo.blog.dto.response.FileUploadResponse;
 import cn.jianwoo.blog.dto.response.vo.FileUploadResVO;
@@ -45,6 +46,7 @@ public class UploadController extends BaseController {
      * --url<br/>
      * @author gulihua
      */
+    @ApiVersion()
     @PostMapping(CommApiUrlConfig.URL_FILE_UPLOAD)
     public String upload(@RequestParam("file") MultipartFile file) throws JwBlogException {
         FileUploadResponse response = null;

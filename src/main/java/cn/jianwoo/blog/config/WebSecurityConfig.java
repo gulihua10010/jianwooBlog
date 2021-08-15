@@ -42,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     };
     private static final String[] AUTHENTICATION_PATH = {
             Constants.ALL_ADMIN_API,
-            Constants.ALL_FILE_API,
+//            Constants.ALL_FILE_API,
 //            Constants.ALL_ADMIN_PAGE
     };
 

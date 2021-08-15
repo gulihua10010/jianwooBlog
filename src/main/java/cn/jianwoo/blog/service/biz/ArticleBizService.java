@@ -11,25 +11,6 @@ import org.springframework.lang.NonNull;
 import java.util.List;
 
 public interface ArticleBizService {
-    /**
-     * * 保存文章
-     *
-     * @param title     标题 article.title [ARTICLE.TITLE]
-     * @param content   文章内容 article.content [ARTICLE.CONTENT]
-     * @param author    作者 article.author [ARTICLE.AUTHOR]
-     * @param typeId    类别id article.typeId [ARTICLE.TYPE_ID]
-     * @param isComment 是否评论 article.isComment [ARTICLE.IS_COMMENT]
-     * @param visitType 访问类型 article.visitType {@link cn.jianwoo.blog.enums.ArticleVisitEnum} [ARTICLE.VISIT_TYPE]
-     * @param imsSrc    图片 article.imgSrc [ARTICLE.IMG_SRC]
-     * @param password  文章密码 article.password [ARTICLE.PASSWORD]
-     * @param tags      标签 tags [ARTICLE_TAGS]
-     * @param status    状态article.status {@link cn.jianwoo.blog.enums.ArticleStatusEnum} [ARTICLE.STATUS]
-     * @return
-     * @author gulihua
-     */
-    @Deprecated
-    void doSaveArticle(@NonNull String title, String content, String author, Integer typeId, Integer isComment,
-                       Integer visitType, String imsSrc, String password, Integer[] tags, Integer status) throws JwBlogException;
 
 
     /**
@@ -43,26 +24,6 @@ public interface ArticleBizService {
 
 
     /**
-     * *
-     *
-     * @param oid       主键 article.oid [ARTICLE.OID]
-     * @param title     标题 article.title [ARTICLE.TITLE]
-     * @param author    作者 article.author [ARTICLE.AUTHOR]
-     * @param typeId    类别id article.typeId [ARTICLE.TYPE_ID]
-     * @param isComment 是否评论 article.isComment [ARTICLE.IS_COMMENT]
-     * @param visitType 访问类型 article.visitType {@link cn.jianwoo.blog.enums.ArticleVisitEnum} [ARTICLE.VISIT_TYPE]
-     * @param imsSrc    图片 article.imgSrc [ARTICLE.IMG_SRC]
-     * @param password  文章密码 article.password [ARTICLE.PASSWORD]
-     * @param tags      标签 tags [ARTICLE_TAGS]
-     * @return
-     * @author gulihua
-     */
-    @Deprecated
-    void doUpdateArticleInfo(Long oid, String title, String author, Integer typeId, Integer isComment,
-                             Integer visitType, String imsSrc, String password, Integer[] tags) throws JwBlogException;
-
-
-    /**
      * * 更新文章信息
      *
      * @param article 文章
@@ -71,27 +32,6 @@ public interface ArticleBizService {
      */
     void doUpdateArticleInfo(ArticleBO article) throws JwBlogException;
 
-
-    /**
-     * *
-     *
-     * @param oid       标题 article.oid [ARTICLE.OID]
-     * @param title     标题 article.title [ARTICLE.TITLE]
-     * @param content   文章内容 article.content [ARTICLE.CONTENT]
-     * @param author    作者 article.author [ARTICLE.AUTHOR]
-     * @param typeId    类别id article.typeId [ARTICLE.TYPE_ID]
-     * @param isComment 是否评论 article.isComment [ARTICLE.IS_COMMENT]
-     * @param visitType 访问类型 article.visitType {@link cn.jianwoo.blog.enums.ArticleVisitEnum} [ARTICLE.VISIT_TYPE]
-     * @param imsSrc    图片 article.imgSrc [ARTICLE.IMG_SRC]
-     * @param password  文章密码 article.password [ARTICLE.PASSWORD]
-     * @param tags      标签 tags [ARTICLE_TAGS]
-     * @param status    状态article.status {@link cn.jianwoo.blog.enums.ArticleStatusEnum} [ARTICLE.STATUS]
-     * @return
-     * @author gulihua
-     */
-    @Deprecated
-    void doUpdateArticle(Long oid, String title, String content, String author, Integer typeId, Integer isComment,
-                         Integer visitType, String imsSrc, String password, Integer[] tags, Integer status) throws JwBlogException;
 
 
     /**
@@ -174,7 +114,7 @@ public interface ArticleBizService {
      * @return
      * @author gulihua
      */
-    List<Article> queryRecentPublishedArts(int n);
+    List<ArticleBO> queryRecentPublishedArts(int n);
 
 
     /**
@@ -183,7 +123,7 @@ public interface ArticleBizService {
      * @return
      * @author gulihua
      */
-    List<Article> queryRecentDraft(int n);
+    List<ArticleBO> queryRecentDraft(int n);
 
 
     /**
@@ -192,7 +132,7 @@ public interface ArticleBizService {
      * @return
      * @author gulihua
      */
-    List<Article> queryRecycleBinArts();
+    List<ArticleBO> queryRecycleBinArts();
 
 
     /**
@@ -201,7 +141,7 @@ public interface ArticleBizService {
      * @return
      * @author gulihua
      */
-    List<Article> queryDraftArts() throws JwBlogException;
+    List<ArticleBO> queryDraftArts() throws JwBlogException;
 
 
     /**
@@ -219,7 +159,7 @@ public interface ArticleBizService {
      * @return
      * @throws JwBlogException
      */
-    List<Article> queryPublishedArticles() throws JwBlogException;
+    List<ArticleBO> queryPublishedArticles() throws JwBlogException;
 
 
     /**
@@ -229,7 +169,7 @@ public interface ArticleBizService {
      * @return
      * @author gulihua
      */
-    List<Article> querySearchArtsByKeyword(String keyword) throws JwBlogException;
+    List<ArticleBO> querySearchArtsByKeyword(String keyword) throws JwBlogException;
 
 
     /**
@@ -239,7 +179,7 @@ public interface ArticleBizService {
      * @return
      * @author gulihua
      */
-    List<Article> queryNewestArts(Integer limit) throws JwBlogException;
+    List<ArticleBO> queryNewestArts(Integer limit) throws JwBlogException;
 
 
     /**
@@ -249,7 +189,7 @@ public interface ArticleBizService {
      * @return
      * @author gulihua
      */
-    List<Article> queryHotArts(Integer limit) throws JwBlogException;
+    List<ArticleBO> queryHotArts(Integer limit) throws JwBlogException;
 
 
     /**
@@ -259,7 +199,7 @@ public interface ArticleBizService {
      * @return
      * @author gulihua
      */
-    List<Article> queryRandomArts(Integer limit) throws JwBlogException;
+    List<ArticleBO> queryRandomArts(Integer limit) throws JwBlogException;
 
 
     /**
@@ -279,7 +219,7 @@ public interface ArticleBizService {
      * @return
      * @author gulihua
      */
-    PageInfo<ArticleExt> queryEffectiveArticleList(ArticleParam param);
+    PageInfo<ArticleBO> queryEffectiveArticleList(ArticleParam param);
 
 
     /**
@@ -289,7 +229,7 @@ public interface ArticleBizService {
      * @return
      * @author gulihua
      */
-    PageInfo<ArticleExt> queryRecycleBinArticleList(ArticleParam param);
+    PageInfo<ArticleBO> queryRecycleBinArticleList(ArticleParam param);
 
 
     /**

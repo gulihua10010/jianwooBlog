@@ -12,7 +12,12 @@ public final class Constants {
     public static final String FALSE = "FALSE";
     public static final String TRUE_1 = "1";
     public static final String FALSE_0 = "0";
+
+    public static final String ONE = "1";
+    public static final String ZERO = "0";
     public static final String SYSTEM = "SYSTEM";
+    public static final String SUCCESS = "SUCCESS";
+    public static final String FAILED = "FAILED";
 
     public static final String URL_SEPARATOR = "/";
     public static final String BLANK = "";
@@ -21,6 +26,9 @@ public final class Constants {
     public static final String SEMICOLON = ";";
     public static final String FILE_END_LINE = "\r\n";
     public static final String ELLIPSIS = "...";
+    public static final String URL_PARAM_PREFIX = "?";
+    public static final String SYMBOL_AMD = "&";
+    public static final String SYMBOL_EQUALS = "=";
 
     public static final String SYMBOL_PERCENT = "%";
     public static final String SYMBOL_AIT = "@";
@@ -79,7 +87,6 @@ public final class Constants {
     public static final String LOGIN_USER_STATUS = "LOGIN_USER_STATUS";
     public static final String LOGIN_ID_SECRET = "login_id_secret";
 
-    public static final String LOGIN_CAPTCHA_AUTH = "JIANWOO.LOGIN.CAPTCHA.AUTH";
     public static final String LOGIN_SESSION = "JIANWOO.LOGIN.SESSION";
 
 

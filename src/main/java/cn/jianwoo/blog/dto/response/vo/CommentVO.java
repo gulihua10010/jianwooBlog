@@ -1,14 +1,12 @@
 package cn.jianwoo.blog.dto.response.vo;
 
-import cn.jianwoo.blog.config.router.admin.CommAdminPageUrlConfig;
-import cn.jianwoo.blog.constants.Constants;
-import cn.jianwoo.blog.util.DomainUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author GuLihua
@@ -23,10 +21,6 @@ import java.io.Serializable;
 public class CommentVO implements Serializable {
 
     private static final long serialVersionUID = 2152295702147130154L;
-    private static final String DYNAMIC_TEMPLATE = "来自<span class=\"dynamic-ip\">%s (ip:%s)</span> 的网友 <span class=\"dynamic-user\">[%s]</span> 在 <span class=\"dynamic-date\">%s</span> 评论了文章 \n"
-            + "                <span class=\"dynamic-title\"><a href=\"%s\">%s</a></span>: <span class=\"dynamic-comm\">%s</span>";
-    private static final String CONSOLE_TEMPLATE = "网友 <span class=\"console-user\">[%s]</span> 在 <span class=\"console-time\">%s</span> 评论了文章 \n"
-            + "                <span class=\"console-title\"><a href=\"%s\">%s</a></span>: <span class=\"console-comm\">%s</span>";
 
     /**
      * seq
@@ -39,11 +33,16 @@ public class CommentVO implements Serializable {
     /**
      * 用户名
      */
-    private String user;
+    private String userName;
+
     /**
      * 评论日期
      */
-    private String date;
+    private Date commentTime;
+    /**
+     * 评论日期 格式:yyyy-MM-dd HH:mm:ss
+     */
+    private String commentTimeStr;
     /**
      * 回复给的用户
      */
@@ -67,47 +66,39 @@ public class CommentVO implements Serializable {
     /**
      * IP地址
      */
-    private String ip;
+    private String clientIp;
+
     /**
-     * QQ
+     * 评论用户的qq号码
      */
-    private String qq;
+    private String contactQq;
+
+    /**
+     * 评论用户的微信
+     */
+    private String contactWechat;
+
+    /**
+     * 评论用户的微博
+     */
+    private String contactWeibo;
+
+    /**
+     * 评论用户的联系手机号
+     */
+    private String contactTel;
     /**
      * 头像
      */
-    private String headImg;
+    private String headImgSrc;
     /**
      * ip所属地域
      */
-    private String area;
+    private String userArea;
     /**
      * 是否以读
      */
-    private Integer read;
-    /**
-     * 显示描述
-     */
-    private String desc = Constants.BLANK;
-    private String templateName = "DYNAMIC_TEMPLATE";
+    private String readStatus;
 
-    public String getDesc() {
-        if ("DYNAMIC_TEMPLATE".equals(templateName)) {
-            desc = String.format(DYNAMIC_TEMPLATE, DomainUtil.format(this.area, Constants.UNKNOW),
-                    DomainUtil.format(this.ip, Constants.UNKNOW), DomainUtil.format(this.user, Constants.ANAONYMOUS),
-                    this.date, CommAdminPageUrlConfig.URL_PREFIX + CommAdminPageUrlConfig.URL_ARTICLE_EDIT.replace("{id}", String.valueOf(this.artOid)),
-                    this.artTitle, this.content);
-        } else if ("CONSOLE_TEMPLATE".equals(templateName)) {
-            desc = String.format(CONSOLE_TEMPLATE, DomainUtil.format(this.user, Constants.ANAONYMOUS),
-                    this.date, CommAdminPageUrlConfig.URL_PREFIX + CommAdminPageUrlConfig.URL_ARTICLE_EDIT.replace("{id}", String.valueOf(this.artOid)),
-                    this.artTitle, this.content);
-        }
-
-        return desc;
-    }
-
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
 
 }

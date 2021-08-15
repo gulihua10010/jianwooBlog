@@ -25,9 +25,9 @@
                     <label class="layui-form-label">文章类型</label>
                     <div class="layui-input-inline">
                         <select name="status" id="status" lay-verify="" class="search-art-type">
-                            <option value="2">所有</option>
-                            <option value="1">已发布</option>
-                            <option value="0">草稿</option>
+                            <option value="100">所有</option>
+                            <option value="90">已发布</option>
+                            <option value="00">草稿</option>
                         </select>
                     </div>
 
@@ -53,7 +53,7 @@
                         class="layui-icon layui-icon-form"></i>编辑</a>
                 <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
                         class="layui-icon layui-icon-delete"></i>移入回收站</a>
-                {{#  if(d.status == 0){ }}
+                {{#  if(d.status === '00'){ }}
                 <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="publish"><i
                         class="layui-icon layui-icon-release"></i>发布</a>
                 {{#  } }}
@@ -70,13 +70,13 @@
         var select = document.getElementById("status");
         var mode = layui.router().search.mode;
         var keywords = layui.router().search.keywords;
-        var status = 2;
+        var status = "100";
         if ('PUBLISHED' === mode) {
-            status = 1
+            status = "90"
         } else if ('DRAFT' === mode) {
-            status = 0
+            status = "00"
         }
-        if (select) {
+        if (select && mode) {
             select.value = status;
             $(".search-btn").trigger("click");
         }

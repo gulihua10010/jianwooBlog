@@ -325,133 +325,63 @@ public class TempArticleExample {
             return (Criteria) this;
         }
 
-        public Criteria andContentIsNull() {
-            addCriterion("CONTENT is null");
+        public Criteria andMenuIdIsNull() {
+            addCriterion("MENU_ID is null");
             return (Criteria) this;
         }
 
-        public Criteria andContentIsNotNull() {
-            addCriterion("CONTENT is not null");
+        public Criteria andMenuIdIsNotNull() {
+            addCriterion("MENU_ID is not null");
             return (Criteria) this;
         }
 
-        public Criteria andContentEqualTo(String value) {
-            addCriterion("CONTENT =", value, "content");
+        public Criteria andMenuIdEqualTo(Integer value) {
+            addCriterion("MENU_ID =", value, "menuId");
             return (Criteria) this;
         }
 
-        public Criteria andContentNotEqualTo(String value) {
-            addCriterion("CONTENT <>", value, "content");
+        public Criteria andMenuIdNotEqualTo(Integer value) {
+            addCriterion("MENU_ID <>", value, "menuId");
             return (Criteria) this;
         }
 
-        public Criteria andContentGreaterThan(String value) {
-            addCriterion("CONTENT >", value, "content");
+        public Criteria andMenuIdGreaterThan(Integer value) {
+            addCriterion("MENU_ID >", value, "menuId");
             return (Criteria) this;
         }
 
-        public Criteria andContentGreaterThanOrEqualTo(String value) {
-            addCriterion("CONTENT >=", value, "content");
+        public Criteria andMenuIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("MENU_ID >=", value, "menuId");
             return (Criteria) this;
         }
 
-        public Criteria andContentLessThan(String value) {
-            addCriterion("CONTENT <", value, "content");
+        public Criteria andMenuIdLessThan(Integer value) {
+            addCriterion("MENU_ID <", value, "menuId");
             return (Criteria) this;
         }
 
-        public Criteria andContentLessThanOrEqualTo(String value) {
-            addCriterion("CONTENT <=", value, "content");
+        public Criteria andMenuIdLessThanOrEqualTo(Integer value) {
+            addCriterion("MENU_ID <=", value, "menuId");
             return (Criteria) this;
         }
 
-        public Criteria andContentLike(String value) {
-            addCriterion("CONTENT like", value, "content");
+        public Criteria andMenuIdIn(List<Integer> values) {
+            addCriterion("MENU_ID in", values, "menuId");
             return (Criteria) this;
         }
 
-        public Criteria andContentNotLike(String value) {
-            addCriterion("CONTENT not like", value, "content");
+        public Criteria andMenuIdNotIn(List<Integer> values) {
+            addCriterion("MENU_ID not in", values, "menuId");
             return (Criteria) this;
         }
 
-        public Criteria andContentIn(List<String> values) {
-            addCriterion("CONTENT in", values, "content");
+        public Criteria andMenuIdBetween(Integer value1, Integer value2) {
+            addCriterion("MENU_ID between", value1, value2, "menuId");
             return (Criteria) this;
         }
 
-        public Criteria andContentNotIn(List<String> values) {
-            addCriterion("CONTENT not in", values, "content");
-            return (Criteria) this;
-        }
-
-        public Criteria andContentBetween(String value1, String value2) {
-            addCriterion("CONTENT between", value1, value2, "content");
-            return (Criteria) this;
-        }
-
-        public Criteria andContentNotBetween(String value1, String value2) {
-            addCriterion("CONTENT not between", value1, value2, "content");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdIsNull() {
-            addCriterion("TYPE_ID is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdIsNotNull() {
-            addCriterion("TYPE_ID is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdEqualTo(Integer value) {
-            addCriterion("TYPE_ID =", value, "typeId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdNotEqualTo(Integer value) {
-            addCriterion("TYPE_ID <>", value, "typeId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdGreaterThan(Integer value) {
-            addCriterion("TYPE_ID >", value, "typeId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdGreaterThanOrEqualTo(Integer value) {
-            addCriterion("TYPE_ID >=", value, "typeId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdLessThan(Integer value) {
-            addCriterion("TYPE_ID <", value, "typeId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdLessThanOrEqualTo(Integer value) {
-            addCriterion("TYPE_ID <=", value, "typeId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdIn(List<Integer> values) {
-            addCriterion("TYPE_ID in", values, "typeId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdNotIn(List<Integer> values) {
-            addCriterion("TYPE_ID not in", values, "typeId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdBetween(Integer value1, Integer value2) {
-            addCriterion("TYPE_ID between", value1, value2, "typeId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdNotBetween(Integer value1, Integer value2) {
-            addCriterion("TYPE_ID not between", value1, value2, "typeId");
+        public Criteria andMenuIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("MENU_ID not between", value1, value2, "menuId");
             return (Criteria) this;
         }
 
@@ -465,52 +395,62 @@ public class TempArticleExample {
             return (Criteria) this;
         }
 
-        public Criteria andIsCommentEqualTo(Integer value) {
+        public Criteria andIsCommentEqualTo(Boolean value) {
             addCriterion("IS_COMMENT =", value, "isComment");
             return (Criteria) this;
         }
 
-        public Criteria andIsCommentNotEqualTo(Integer value) {
+        public Criteria andIsCommentNotEqualTo(Boolean value) {
             addCriterion("IS_COMMENT <>", value, "isComment");
             return (Criteria) this;
         }
 
-        public Criteria andIsCommentGreaterThan(Integer value) {
+        public Criteria andIsCommentGreaterThan(Boolean value) {
             addCriterion("IS_COMMENT >", value, "isComment");
             return (Criteria) this;
         }
 
-        public Criteria andIsCommentGreaterThanOrEqualTo(Integer value) {
+        public Criteria andIsCommentGreaterThanOrEqualTo(Boolean value) {
             addCriterion("IS_COMMENT >=", value, "isComment");
             return (Criteria) this;
         }
 
-        public Criteria andIsCommentLessThan(Integer value) {
+        public Criteria andIsCommentLessThan(Boolean value) {
             addCriterion("IS_COMMENT <", value, "isComment");
             return (Criteria) this;
         }
 
-        public Criteria andIsCommentLessThanOrEqualTo(Integer value) {
+        public Criteria andIsCommentLessThanOrEqualTo(Boolean value) {
             addCriterion("IS_COMMENT <=", value, "isComment");
             return (Criteria) this;
         }
 
-        public Criteria andIsCommentIn(List<Integer> values) {
+        public Criteria andIsCommentLike(Boolean value) {
+            addCriterion("IS_COMMENT like", value, "isComment");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCommentNotLike(Boolean value) {
+            addCriterion("IS_COMMENT not like", value, "isComment");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsCommentIn(List<Boolean> values) {
             addCriterion("IS_COMMENT in", values, "isComment");
             return (Criteria) this;
         }
 
-        public Criteria andIsCommentNotIn(List<Integer> values) {
+        public Criteria andIsCommentNotIn(List<Boolean> values) {
             addCriterion("IS_COMMENT not in", values, "isComment");
             return (Criteria) this;
         }
 
-        public Criteria andIsCommentBetween(Integer value1, Integer value2) {
+        public Criteria andIsCommentBetween(Boolean value1, Boolean value2) {
             addCriterion("IS_COMMENT between", value1, value2, "isComment");
             return (Criteria) this;
         }
 
-        public Criteria andIsCommentNotBetween(Integer value1, Integer value2) {
+        public Criteria andIsCommentNotBetween(Boolean value1, Boolean value2) {
             addCriterion("IS_COMMENT not between", value1, value2, "isComment");
             return (Criteria) this;
         }
@@ -595,52 +535,62 @@ public class TempArticleExample {
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeEqualTo(Integer value) {
+        public Criteria andVisitTypeEqualTo(String value) {
             addCriterion("VISIT_TYPE =", value, "visitType");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeNotEqualTo(Integer value) {
+        public Criteria andVisitTypeNotEqualTo(String value) {
             addCriterion("VISIT_TYPE <>", value, "visitType");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeGreaterThan(Integer value) {
+        public Criteria andVisitTypeGreaterThan(String value) {
             addCriterion("VISIT_TYPE >", value, "visitType");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeGreaterThanOrEqualTo(Integer value) {
+        public Criteria andVisitTypeGreaterThanOrEqualTo(String value) {
             addCriterion("VISIT_TYPE >=", value, "visitType");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeLessThan(Integer value) {
+        public Criteria andVisitTypeLessThan(String value) {
             addCriterion("VISIT_TYPE <", value, "visitType");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeLessThanOrEqualTo(Integer value) {
+        public Criteria andVisitTypeLessThanOrEqualTo(String value) {
             addCriterion("VISIT_TYPE <=", value, "visitType");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeIn(List<Integer> values) {
+        public Criteria andVisitTypeLike(String value) {
+            addCriterion("VISIT_TYPE like", value, "visitType");
+            return (Criteria) this;
+        }
+
+        public Criteria andVisitTypeNotLike(String value) {
+            addCriterion("VISIT_TYPE not like", value, "visitType");
+            return (Criteria) this;
+        }
+
+        public Criteria andVisitTypeIn(List<String> values) {
             addCriterion("VISIT_TYPE in", values, "visitType");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeNotIn(List<Integer> values) {
+        public Criteria andVisitTypeNotIn(List<String> values) {
             addCriterion("VISIT_TYPE not in", values, "visitType");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeBetween(Integer value1, Integer value2) {
+        public Criteria andVisitTypeBetween(String value1, String value2) {
             addCriterion("VISIT_TYPE between", value1, value2, "visitType");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeNotBetween(Integer value1, Integer value2) {
+        public Criteria andVisitTypeNotBetween(String value1, String value2) {
             addCriterion("VISIT_TYPE not between", value1, value2, "visitType");
             return (Criteria) this;
         }
@@ -845,63 +795,73 @@ public class TempArticleExample {
             return (Criteria) this;
         }
 
-        public Criteria andPageIsNull() {
-            addCriterion("PAGE is null");
+        public Criteria andPageTypeIsNull() {
+            addCriterion("PAGE_TYPE is null");
             return (Criteria) this;
         }
 
-        public Criteria andPageIsNotNull() {
-            addCriterion("PAGE is not null");
+        public Criteria andPageTypeIsNotNull() {
+            addCriterion("PAGE_TYPE is not null");
             return (Criteria) this;
         }
 
-        public Criteria andPageEqualTo(Integer value) {
-            addCriterion("PAGE =", value, "page");
+        public Criteria andPageTypeEqualTo(String value) {
+            addCriterion("PAGE_TYPE =", value, "pageType");
             return (Criteria) this;
         }
 
-        public Criteria andPageNotEqualTo(Integer value) {
-            addCriterion("PAGE <>", value, "page");
+        public Criteria andPageTypeNotEqualTo(String value) {
+            addCriterion("PAGE_TYPE <>", value, "pageType");
             return (Criteria) this;
         }
 
-        public Criteria andPageGreaterThan(Integer value) {
-            addCriterion("PAGE >", value, "page");
+        public Criteria andPageTypeGreaterThan(String value) {
+            addCriterion("PAGE_TYPE >", value, "pageType");
             return (Criteria) this;
         }
 
-        public Criteria andPageGreaterThanOrEqualTo(Integer value) {
-            addCriterion("PAGE >=", value, "page");
+        public Criteria andPageTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("PAGE_TYPE >=", value, "pageType");
             return (Criteria) this;
         }
 
-        public Criteria andPageLessThan(Integer value) {
-            addCriterion("PAGE <", value, "page");
+        public Criteria andPageTypeLessThan(String value) {
+            addCriterion("PAGE_TYPE <", value, "pageType");
             return (Criteria) this;
         }
 
-        public Criteria andPageLessThanOrEqualTo(Integer value) {
-            addCriterion("PAGE <=", value, "page");
+        public Criteria andPageTypeLessThanOrEqualTo(String value) {
+            addCriterion("PAGE_TYPE <=", value, "pageType");
             return (Criteria) this;
         }
 
-        public Criteria andPageIn(List<Integer> values) {
-            addCriterion("PAGE in", values, "page");
+        public Criteria andPageTypeLike(String value) {
+            addCriterion("PAGE_TYPE like", value, "pageType");
             return (Criteria) this;
         }
 
-        public Criteria andPageNotIn(List<Integer> values) {
-            addCriterion("PAGE not in", values, "page");
+        public Criteria andPageTypeNotLike(String value) {
+            addCriterion("PAGE_TYPE not like", value, "pageType");
             return (Criteria) this;
         }
 
-        public Criteria andPageBetween(Integer value1, Integer value2) {
-            addCriterion("PAGE between", value1, value2, "page");
+        public Criteria andPageTypeIn(List<String> values) {
+            addCriterion("PAGE_TYPE in", values, "pageType");
             return (Criteria) this;
         }
 
-        public Criteria andPageNotBetween(Integer value1, Integer value2) {
-            addCriterion("PAGE not between", value1, value2, "page");
+        public Criteria andPageTypeNotIn(List<String> values) {
+            addCriterion("PAGE_TYPE not in", values, "pageType");
+            return (Criteria) this;
+        }
+
+        public Criteria andPageTypeBetween(String value1, String value2) {
+            addCriterion("PAGE_TYPE between", value1, value2, "pageType");
+            return (Criteria) this;
+        }
+
+        public Criteria andPageTypeNotBetween(String value1, String value2) {
+            addCriterion("PAGE_TYPE not between", value1, value2, "pageType");
             return (Criteria) this;
         }
 
@@ -915,52 +875,62 @@ public class TempArticleExample {
             return (Criteria) this;
         }
 
-        public Criteria andStatusEqualTo(Integer value) {
+        public Criteria andStatusEqualTo(String value) {
             addCriterion("`STATUS` =", value, "status");
             return (Criteria) this;
         }
 
-        public Criteria andStatusNotEqualTo(Integer value) {
+        public Criteria andStatusNotEqualTo(String value) {
             addCriterion("`STATUS` <>", value, "status");
             return (Criteria) this;
         }
 
-        public Criteria andStatusGreaterThan(Integer value) {
+        public Criteria andStatusGreaterThan(String value) {
             addCriterion("`STATUS` >", value, "status");
             return (Criteria) this;
         }
 
-        public Criteria andStatusGreaterThanOrEqualTo(Integer value) {
+        public Criteria andStatusGreaterThanOrEqualTo(String value) {
             addCriterion("`STATUS` >=", value, "status");
             return (Criteria) this;
         }
 
-        public Criteria andStatusLessThan(Integer value) {
+        public Criteria andStatusLessThan(String value) {
             addCriterion("`STATUS` <", value, "status");
             return (Criteria) this;
         }
 
-        public Criteria andStatusLessThanOrEqualTo(Integer value) {
+        public Criteria andStatusLessThanOrEqualTo(String value) {
             addCriterion("`STATUS` <=", value, "status");
             return (Criteria) this;
         }
 
-        public Criteria andStatusIn(List<Integer> values) {
+        public Criteria andStatusLike(String value) {
+            addCriterion("`STATUS` like", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusNotLike(String value) {
+            addCriterion("`STATUS` not like", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusIn(List<String> values) {
             addCriterion("`STATUS` in", values, "status");
             return (Criteria) this;
         }
 
-        public Criteria andStatusNotIn(List<Integer> values) {
+        public Criteria andStatusNotIn(List<String> values) {
             addCriterion("`STATUS` not in", values, "status");
             return (Criteria) this;
         }
 
-        public Criteria andStatusBetween(Integer value1, Integer value2) {
+        public Criteria andStatusBetween(String value1, String value2) {
             addCriterion("`STATUS` between", value1, value2, "status");
             return (Criteria) this;
         }
 
-        public Criteria andStatusNotBetween(Integer value1, Integer value2) {
+        public Criteria andStatusNotBetween(String value1, String value2) {
             addCriterion("`STATUS` not between", value1, value2, "status");
             return (Criteria) this;
         }
@@ -1025,123 +995,123 @@ public class TempArticleExample {
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateIsNull() {
-            addCriterion("CREATE_DATE is null");
+        public Criteria andCreateTimeIsNull() {
+            addCriterion("CREATE_TIME is null");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateIsNotNull() {
-            addCriterion("CREATE_DATE is not null");
+        public Criteria andCreateTimeIsNotNull() {
+            addCriterion("CREATE_TIME is not null");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateEqualTo(Date value) {
-            addCriterion("CREATE_DATE =", value, "createDate");
+        public Criteria andCreateTimeEqualTo(Date value) {
+            addCriterion("CREATE_TIME =", value, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateNotEqualTo(Date value) {
-            addCriterion("CREATE_DATE <>", value, "createDate");
+        public Criteria andCreateTimeNotEqualTo(Date value) {
+            addCriterion("CREATE_TIME <>", value, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateGreaterThan(Date value) {
-            addCriterion("CREATE_DATE >", value, "createDate");
+        public Criteria andCreateTimeGreaterThan(Date value) {
+            addCriterion("CREATE_TIME >", value, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateGreaterThanOrEqualTo(Date value) {
-            addCriterion("CREATE_DATE >=", value, "createDate");
+        public Criteria andCreateTimeGreaterThanOrEqualTo(Date value) {
+            addCriterion("CREATE_TIME >=", value, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateLessThan(Date value) {
-            addCriterion("CREATE_DATE <", value, "createDate");
+        public Criteria andCreateTimeLessThan(Date value) {
+            addCriterion("CREATE_TIME <", value, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateLessThanOrEqualTo(Date value) {
-            addCriterion("CREATE_DATE <=", value, "createDate");
+        public Criteria andCreateTimeLessThanOrEqualTo(Date value) {
+            addCriterion("CREATE_TIME <=", value, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateIn(List<Date> values) {
-            addCriterion("CREATE_DATE in", values, "createDate");
+        public Criteria andCreateTimeIn(List<Date> values) {
+            addCriterion("CREATE_TIME in", values, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateNotIn(List<Date> values) {
-            addCriterion("CREATE_DATE not in", values, "createDate");
+        public Criteria andCreateTimeNotIn(List<Date> values) {
+            addCriterion("CREATE_TIME not in", values, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateBetween(Date value1, Date value2) {
-            addCriterion("CREATE_DATE between", value1, value2, "createDate");
+        public Criteria andCreateTimeBetween(Date value1, Date value2) {
+            addCriterion("CREATE_TIME between", value1, value2, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andCreateDateNotBetween(Date value1, Date value2) {
-            addCriterion("CREATE_DATE not between", value1, value2, "createDate");
+        public Criteria andCreateTimeNotBetween(Date value1, Date value2) {
+            addCriterion("CREATE_TIME not between", value1, value2, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateIsNull() {
-            addCriterion("UPDATE_DATE is null");
+        public Criteria andUpdateTimeIsNull() {
+            addCriterion("UPDATE_TIME is null");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateIsNotNull() {
-            addCriterion("UPDATE_DATE is not null");
+        public Criteria andUpdateTimeIsNotNull() {
+            addCriterion("UPDATE_TIME is not null");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateEqualTo(Date value) {
-            addCriterion("UPDATE_DATE =", value, "updateDate");
+        public Criteria andUpdateTimeEqualTo(Date value) {
+            addCriterion("UPDATE_TIME =", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateNotEqualTo(Date value) {
-            addCriterion("UPDATE_DATE <>", value, "updateDate");
+        public Criteria andUpdateTimeNotEqualTo(Date value) {
+            addCriterion("UPDATE_TIME <>", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateGreaterThan(Date value) {
-            addCriterion("UPDATE_DATE >", value, "updateDate");
+        public Criteria andUpdateTimeGreaterThan(Date value) {
+            addCriterion("UPDATE_TIME >", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateGreaterThanOrEqualTo(Date value) {
-            addCriterion("UPDATE_DATE >=", value, "updateDate");
+        public Criteria andUpdateTimeGreaterThanOrEqualTo(Date value) {
+            addCriterion("UPDATE_TIME >=", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateLessThan(Date value) {
-            addCriterion("UPDATE_DATE <", value, "updateDate");
+        public Criteria andUpdateTimeLessThan(Date value) {
+            addCriterion("UPDATE_TIME <", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateLessThanOrEqualTo(Date value) {
-            addCriterion("UPDATE_DATE <=", value, "updateDate");
+        public Criteria andUpdateTimeLessThanOrEqualTo(Date value) {
+            addCriterion("UPDATE_TIME <=", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateIn(List<Date> values) {
-            addCriterion("UPDATE_DATE in", values, "updateDate");
+        public Criteria andUpdateTimeIn(List<Date> values) {
+            addCriterion("UPDATE_TIME in", values, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateNotIn(List<Date> values) {
-            addCriterion("UPDATE_DATE not in", values, "updateDate");
+        public Criteria andUpdateTimeNotIn(List<Date> values) {
+            addCriterion("UPDATE_TIME not in", values, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateBetween(Date value1, Date value2) {
-            addCriterion("UPDATE_DATE between", value1, value2, "updateDate");
+        public Criteria andUpdateTimeBetween(Date value1, Date value2) {
+            addCriterion("UPDATE_TIME between", value1, value2, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateDateNotBetween(Date value1, Date value2) {
-            addCriterion("UPDATE_DATE not between", value1, value2, "updateDate");
+        public Criteria andUpdateTimeNotBetween(Date value1, Date value2) {
+            addCriterion("UPDATE_TIME not between", value1, value2, "updateTime");
             return (Criteria) this;
         }
 
@@ -1155,13 +1125,13 @@ public class TempArticleExample {
             return (Criteria) this;
         }
 
-        public Criteria andContentLikeInsensitive(String value) {
-            addCriterion("upper(CONTENT) like", value.toUpperCase(), "content");
+        public Criteria andImgSrcLikeInsensitive(String value) {
+            addCriterion("upper(IMG_SRC) like", value.toUpperCase(), "imgSrc");
             return (Criteria) this;
         }
 
-        public Criteria andImgSrcLikeInsensitive(String value) {
-            addCriterion("upper(IMG_SRC) like", value.toUpperCase(), "imgSrc");
+        public Criteria andVisitTypeLikeInsensitive(String value) {
+            addCriterion("upper(VISIT_TYPE) like", value.toUpperCase(), "visitType");
             return (Criteria) this;
         }
 
@@ -1172,6 +1142,16 @@ public class TempArticleExample {
 
         public Criteria andTagsLikeInsensitive(String value) {
             addCriterion("upper(TAGS) like", value.toUpperCase(), "tags");
+            return (Criteria) this;
+        }
+
+        public Criteria andPageTypeLikeInsensitive(String value) {
+            addCriterion("upper(PAGE_TYPE) like", value.toUpperCase(), "pageType");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusLikeInsensitive(String value) {
+            addCriterion("upper(`STATUS`) like", value.toUpperCase(), "status");
             return (Criteria) this;
         }
 

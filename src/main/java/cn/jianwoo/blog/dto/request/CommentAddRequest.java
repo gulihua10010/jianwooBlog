@@ -27,10 +27,27 @@ public class CommentAddRequest extends BaseRequestDto {
      * 用户名
      */
     private String username;
+
     /**
-     * qq
+     * 评论用户的qq号码
      */
-    private String qq;
+    private String contactQq;
+
+    /**
+     * 评论用户的微信
+     */
+    private String contactWechat;
+
+    /**
+     * 评论用户的微博
+     */
+    private String contactWeibo;
+
+    /**
+     * 评论用户的联系手机号
+     */
+    private String contactTel;
+
     /**
      * 文章oid
      */

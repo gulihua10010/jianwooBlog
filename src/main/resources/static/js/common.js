@@ -78,19 +78,19 @@ function alert_fail(title = '', msg = '', input_dom) {
 
 }
 
-function scrollPosition(id, p_top) {
-
-    /*获取某个元素的相对偏移，此元素必须是可见的，返回值是top 和left 单位是像素 移动到固定元素上尽可能使用padding
-     *
-     *
-     *
-     * */
-    var offset = $jq(id).offset();
-    console.log(offset);
-    $jq('body,html').animate({
-        scrollTop: offset.top + p_top
-    })
-};
+// function scrollPosition(id, p_top) {
+//
+//     /*获取某个元素的相对偏移，此元素必须是可见的，返回值是top 和left 单位是像素 移动到固定元素上尽可能使用padding
+//      *
+//      *
+//      *
+//      * */
+//     var offset = $jq(id).offset();
+//     console.log(offset);
+//     $jq('body,html').animate({
+//         scrollTop: offset.top + p_top
+//     })
+// };
 
 function alert_success_url(title = '', msg = '', url) {
 
@@ -410,63 +410,63 @@ function clearHtmlexpImg(str) {
 }
 
 
-function ajaxPost(url, data, msg, success = function () {
-}, failed = function () {
-}) {
-    var index = layer.load(0, {shade: false, offset: '400px'});
-    //
-    $jq.ajax({
-        type: 'post',
-        data: data,
-        dataType: 'json',
-        contentType: "application/json",
-        async: true,
-        url: url,
-        success: function (data) {
-            if (data.status == '000000') {
-                layer.close(index);
-                alert_success('提示', msg)
-                setTimeout(function () {
-                    success();
-                }, 1000)
-
-            } else {
-                layer.close(index);
-                alert_fail('提示', data.msg);
-                setTimeout(function () {
-                    failed();
-                }, 1000)
-
-            }
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            layer.close(index);
-            alert_fail('提示', '未知错误')
-        }
-
-    })
-}
-
-function ajaxApiPost(url, data, call) {
-
-    $jq.ajax({
-        type: 'post',
-        data: data,
-        dataType: 'json',
-        contentType: "application/json",
-        async: true,
-        url: url,
-        success: function (data) {
-            if (data.status == '000000') {
-                call(data)
-            } else {
-            }
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-        }
-
-    })
-}
+// function ajaxPost(url, data, msg, success = function () {
+// }, failed = function () {
+// }) {
+//     var index = layer.load(0, {shade: false, offset: '400px'});
+//     //
+//     $jq.ajax({
+//         type: 'post',
+//         data: data,
+//         dataType: 'json',
+//         contentType: "application/json",
+//         async: true,
+//         url: url,
+//         success: function (data) {
+//             if (data.status == '000000') {
+//                 layer.close(index);
+//                 alert_success('提示', msg)
+//                 setTimeout(function () {
+//                     success();
+//                 }, 1000)
+//
+//             } else {
+//                 layer.close(index);
+//                 alert_fail('提示', data.msg);
+//                 setTimeout(function () {
+//                     failed();
+//                 }, 1000)
+//
+//             }
+//         },
+//         error: function (XMLHttpRequest, textStatus, errorThrown) {
+//             layer.close(index);
+//             alert_fail('提示', '未知错误')
+//         }
+//
+//     })
+// }
+//
+// function ajaxApiPost(url, data, call) {
+//
+//     $jq.ajax({
+//         type: 'post',
+//         data: data,
+//         dataType: 'json',
+//         contentType: "application/json",
+//         async: true,
+//         url: url,
+//         success: function (data) {
+//             if (data.status == '000000') {
+//                 call(data)
+//             } else {
+//             }
+//         },
+//         error: function (XMLHttpRequest, textStatus, errorThrown) {
+//         }
+//
+//     })
+// }
 
 function isEmpty(field) {
     if (field == undefined || field == null || field.trim() == '') {

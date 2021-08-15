@@ -1,7 +1,7 @@
 package cn.jianwoo.blog.dto.response;
 
 import cn.jianwoo.blog.base.BaseResponseDto;
-import cn.jianwoo.blog.dto.response.vo.ArticleVO;
+import cn.jianwoo.blog.dto.response.vo.ArticleSummaryVO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,7 +21,7 @@ import java.util.List;
 public class ArticleSummaryResponse extends BaseResponseDto {
 
     private static final long serialVersionUID = -4171515102409676030L;
-    private List<ArticleVO> data;
+    private List<ArticleSummaryVO> data;
     /**
      * 总计数量
      */

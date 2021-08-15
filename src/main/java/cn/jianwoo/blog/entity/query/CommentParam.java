@@ -8,17 +8,15 @@ package cn.jianwoo.blog.entity.query;
 public class CommentParam extends PageParam {
     private static final long serialVersionUID = 7533112279053614145L;
     private String title;
-    private Integer isRead;
+    private String readStatus;
 
-    public Integer getIsRead() {
-        return this.isRead;
+    public String getReadStatus() {
+        return this.readStatus;
     }
 
-
-    public void setIsRead(Integer isRead) {
-        this.isRead = isRead;
+    public void setReadStatus(String readStatus) {
+        this.readStatus = readStatus;
     }
-
 
     public String getTitle() {
         return title;

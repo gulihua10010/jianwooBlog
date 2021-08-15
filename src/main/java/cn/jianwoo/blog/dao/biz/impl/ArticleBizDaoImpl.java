@@ -6,6 +6,7 @@ import cn.jianwoo.blog.entity.Article;
 import cn.jianwoo.blog.entity.extension.ArticleExt;
 import cn.jianwoo.blog.entity.query.ArticleParam;
 import cn.jianwoo.blog.enums.ArticleStatusEnum;
+import cn.jianwoo.blog.exception.DaoException;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class ArticleBizDaoImpl implements ArticleBizDao {
     private ArticleBizMapper articleBizMapper;
 
     @Override
-    public int countArtsByStatus(int[] status) {
+    public int countArtsByStatus(String[] status) {
         return articleBizMapper.countArtsByStatus(status);
     }
 
@@ -59,7 +60,7 @@ public class ArticleBizDaoImpl implements ArticleBizDao {
     @Override
     public List<ArticleExt> queryEffectiveArticleList(ArticleParam param) {
         if (CollectionUtils.isEmpty(param.getStatusParams())) {
-            List<Integer> status = new ArrayList<>();
+            List<String> status = new ArrayList<>();
             status.add(ArticleStatusEnum.PUBLISHED.getValue());
             status.add(ArticleStatusEnum.DRAFT.getValue());
             param.setStatusParams(status);
@@ -72,9 +73,25 @@ public class ArticleBizDaoImpl implements ArticleBizDao {
 
     @Override
     public List<ArticleExt> queryRecycleBinArticleList(ArticleParam param) {
-        List<Integer> status = new ArrayList<>();
+        List<String> status = new ArrayList<>();
         status.add(ArticleStatusEnum.RECYCLE.getValue());
         param.setStatusParams(status);
         return articleBizMapper.selectArticleListByStatus(param);
+    }
+
+    @Override
+    public void doUpdateArticleCommentCnt(Long artOid) throws DaoException {
+        int updRlt = articleBizMapper.updateArticleCommentCnt(artOid);
+        if (1 != updRlt) {
+            throw DaoException.DAO_UPDATE_RESULT_0.print();
+        }
+    }
+
+    @Override
+    public void doUpdateArticlePraiseCnt(Long artOid) throws DaoException {
+        int updRlt = articleBizMapper.updateArticlePraiseCnt(artOid);
+        if (1 != updRlt) {
+            throw DaoException.DAO_UPDATE_RESULT_0.print();
+        }
     }
 }

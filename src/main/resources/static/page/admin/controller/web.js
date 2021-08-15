@@ -1,29 +1,32 @@
-layui.define(['form', 'upload'], function (exports) {
+layui.define(['form'], function (exports) {
     var $ = layui.jquery
         , view = layui.view
         , admin = layui.admin
-        , form = layui.form
-        , upload = layui.upload;
+        , form = layui.form;
 
     layui.form.on('submit(submit-webconf)', function (formData) {
         var field = formData.field; //获取提交的字段
         var data = [];
         $('.web-form').each(function (i) {
+            var key = $(this).attr('name');
+            if (field[key] === undefined) {
+                return;
+            }
+
             var type = $(this).data('key');
             var validateType = $(this).attr('data-validateType');
             var validateValue = $(this).attr('data-validateValue');
             var valueType = $(this).attr('data-valueType');
-            var mandatory = $(this).attr('data-mandatory');
+            var required = $(this).attr('data-required');
             var oldValue = $(this).attr('data-oldValue');
-            var key = $(this).attr('name');
             var title = $(this).attr('title');
             var o = {
                 key: key,
-                title: title,
+                titleDsp: title,
                 formType: type,
                 validateType: validateType,
                 validateValue: validateValue,
-                mandatory: mandatory,
+                required: required,
                 valueType: valueType,
                 value: field[key]
             };
@@ -32,15 +35,38 @@ layui.define(['form', 'upload'], function (exports) {
                 oldValue = oldValue === 'true' ? 'true' : 'false';
             }
 
-
+            if (valueType === 'F') {
+                oldValue = formatFloat(oldValue);
+                o.value = formatFloat(o.value);
+            }
+            if (valueType === 'I') {
+                oldValue = formatInt(oldValue);
+                o.value = formatInt(o.value);
+            }
             if (oldValue !== o.value) {
                 data.push(o)
             }
-        })
 
+
+        })
+        if (data.length === 0) {
+            return alertWarning('提示', '页面未作任何修改')
+        }
+
+
+        function formatFloat(v) {
+            if (!v) return ''
+            return parseFloat(v);
+        }
+
+        function formatInt(v) {
+            if (!v) return ''
+            return parseInt(v);
+        }
 
         ajaxPost(
             '/api/admin/webconf/update',
+            1,
             JSON.stringify({
                 list: data
             }),
@@ -48,6 +74,19 @@ layui.define(['form', 'upload'], function (exports) {
             function () {
                 admin.events.refresh();
                 form.render();
+            }, function (data) {
+                if (data && data.key) {
+                    //针对webconf的验证,验证失败,会返回key
+                    var input_dom = 'input[name=' + data.key + ']';
+                    if ($(input_dom).length === 0) {
+                        input_dom = 'textarea[name=' + data.key + ']'
+                    }
+                    setTimeout(function () {
+                        $(input_dom).focus();
+                        $(input_dom).addClass('layui-form-danger')
+                    }, 7)
+
+                }
             }
         );
 
@@ -67,6 +106,7 @@ layui.define(['form', 'upload'], function (exports) {
         }
         ajaxPost(
             '/api/admin/cache/clear',
+            1,
             JSON.stringify({
                 temp: temp,
                 cache: cache,

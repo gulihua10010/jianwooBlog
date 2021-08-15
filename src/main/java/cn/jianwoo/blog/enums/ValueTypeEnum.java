@@ -8,9 +8,15 @@ public enum ValueTypeEnum {
     STRING("S"),
 
     /**
-     * 数值
+     * 浮点型
      */
-    NUMBER("N"),
+    FLOAT("F"),
+
+
+    /**
+     * 整型
+     */
+    INTEGER("I"),
 
     /**
      * 日期

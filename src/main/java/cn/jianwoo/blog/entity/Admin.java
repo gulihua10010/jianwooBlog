@@ -10,23 +10,27 @@ public class Admin implements Serializable {
 
     private String password;
 
-    private String nick;
+    private String userNick;
 
-    private String phone;
+    private String userPhone;
 
-    private String email;
+    private String userEmail;
 
-    private String sex;
+    private String userSex;
 
-    private String ip;
+    private String registerIp;
+
+    private String registerArea;
 
     private String lastLoginIp;
 
+    private String lastLoginArea;
+
     private Date lastLoginTime;
 
-    private Date createDate;
+    private Date createTime;
 
-    private Date updateDate;
+    private Date updateTime;
 
     private static final long serialVersionUID = 1L;
 
@@ -54,44 +58,52 @@ public class Admin implements Serializable {
         this.password = password == null ? null : password.trim();
     }
 
-    public String getNick() {
-        return nick;
+    public String getUserNick() {
+        return userNick;
     }
 
-    public void setNick(String nick) {
-        this.nick = nick == null ? null : nick.trim();
+    public void setUserNick(String userNick) {
+        this.userNick = userNick == null ? null : userNick.trim();
     }
 
-    public String getPhone() {
-        return phone;
+    public String getUserPhone() {
+        return userPhone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone == null ? null : phone.trim();
+    public void setUserPhone(String userPhone) {
+        this.userPhone = userPhone == null ? null : userPhone.trim();
     }
 
-    public String getEmail() {
-        return email;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setEmail(String email) {
-        this.email = email == null ? null : email.trim();
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail == null ? null : userEmail.trim();
     }
 
-    public String getSex() {
-        return sex;
+    public String getUserSex() {
+        return userSex;
     }
 
-    public void setSex(String sex) {
-        this.sex = sex == null ? null : sex.trim();
+    public void setUserSex(String userSex) {
+        this.userSex = userSex == null ? null : userSex.trim();
     }
 
-    public String getIp() {
-        return ip;
+    public String getRegisterIp() {
+        return registerIp;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip == null ? null : ip.trim();
+    public void setRegisterIp(String registerIp) {
+        this.registerIp = registerIp == null ? null : registerIp.trim();
+    }
+
+    public String getRegisterArea() {
+        return registerArea;
+    }
+
+    public void setRegisterArea(String registerArea) {
+        this.registerArea = registerArea == null ? null : registerArea.trim();
     }
 
     public String getLastLoginIp() {
@@ -102,6 +114,14 @@ public class Admin implements Serializable {
         this.lastLoginIp = lastLoginIp == null ? null : lastLoginIp.trim();
     }
 
+    public String getLastLoginArea() {
+        return lastLoginArea;
+    }
+
+    public void setLastLoginArea(String lastLoginArea) {
+        this.lastLoginArea = lastLoginArea == null ? null : lastLoginArea.trim();
+    }
+
     public Date getLastLoginTime() {
         return lastLoginTime;
     }
@@ -110,20 +130,20 @@ public class Admin implements Serializable {
         this.lastLoginTime = lastLoginTime;
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
-    public Date getUpdateDate() {
-        return updateDate;
+    public Date getUpdateTime() {
+        return updateTime;
     }
 
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -135,15 +155,17 @@ public class Admin implements Serializable {
         sb.append(", oid=").append(oid);
         sb.append(", username=").append(username);
         sb.append(", password=").append(password);
-        sb.append(", nick=").append(nick);
-        sb.append(", phone=").append(phone);
-        sb.append(", email=").append(email);
-        sb.append(", sex=").append(sex);
-        sb.append(", ip=").append(ip);
+        sb.append(", userNick=").append(userNick);
+        sb.append(", userPhone=").append(userPhone);
+        sb.append(", userEmail=").append(userEmail);
+        sb.append(", userSex=").append(userSex);
+        sb.append(", registerIp=").append(registerIp);
+        sb.append(", registerArea=").append(registerArea);
         sb.append(", lastLoginIp=").append(lastLoginIp);
+        sb.append(", lastLoginArea=").append(lastLoginArea);
         sb.append(", lastLoginTime=").append(lastLoginTime);
-        sb.append(", createDate=").append(createDate);
-        sb.append(", updateDate=").append(updateDate);
+        sb.append(", createTime=").append(createTime);
+        sb.append(", updateTime=").append(updateTime);
         sb.append("]");
         return sb.toString();
     }

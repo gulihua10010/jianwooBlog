@@ -3,7 +3,7 @@ layui.define(['laytable', 'form'], function (exports) {
 
     table.render({
         elem: '#visit-table'
-        , url: "/api/admin/dynamic/visit/query"
+        , url: "/api/admin/dynamic/visit/query?v=1"
         , cols: [[
             {field: 'desc', title: '访问记录', align: 'center'}
 
@@ -18,9 +18,9 @@ layui.define(['laytable', 'form'], function (exports) {
     });
     table.render({
         elem: '#comm-table'
-        , url: "/api/admin/dynamic/comment/query"
+        , url: "/api/admin/dynamic/comment/query?v=1"
         , cols: [[
-            {field: 'desc', title: '访问记录', align: 'center'}
+            {field: 'desc', title: '评论记录', align: 'center'}
 
         ]]
         , response: {

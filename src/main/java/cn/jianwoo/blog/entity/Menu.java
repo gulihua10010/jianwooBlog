@@ -10,11 +10,7 @@ public class Menu implements Serializable {
 
     private Integer index;
 
-    private Date createDate;
-
-    private Date updateDate;
-
-    private Integer type;
+    private String type;
 
     private String icon;
 
@@ -25,6 +21,10 @@ public class Menu implements Serializable {
     private Boolean valid;
 
     private Long parentOid;
+
+    private Date createTime;
+
+    private Date updateTime;
 
     private static final long serialVersionUID = 1L;
 
@@ -52,28 +52,12 @@ public class Menu implements Serializable {
         this.index = index;
     }
 
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public Date getUpdateDate() {
-        return updateDate;
-    }
-
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
-    }
-
-    public Integer getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
+    public void setType(String type) {
+        this.type = type == null ? null : type.trim();
     }
 
     public String getIcon() {
@@ -116,6 +100,22 @@ public class Menu implements Serializable {
         this.parentOid = parentOid;
     }
 
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -125,14 +125,14 @@ public class Menu implements Serializable {
         sb.append(", oid=").append(oid);
         sb.append(", name=").append(name);
         sb.append(", index=").append(index);
-        sb.append(", createDate=").append(createDate);
-        sb.append(", updateDate=").append(updateDate);
         sb.append(", type=").append(type);
         sb.append(", icon=").append(icon);
         sb.append(", text=").append(text);
         sb.append(", url=").append(url);
         sb.append(", valid=").append(valid);
         sb.append(", parentOid=").append(parentOid);
+        sb.append(", createTime=").append(createTime);
+        sb.append(", updateTime=").append(updateTime);
         sb.append("]");
         return sb.toString();
     }

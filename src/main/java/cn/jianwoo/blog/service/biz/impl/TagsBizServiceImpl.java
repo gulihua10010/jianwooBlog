@@ -11,6 +11,7 @@ import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.exception.TagsBizException;
 import cn.jianwoo.blog.service.biz.TagsBizService;
+import cn.jianwoo.blog.service.bo.TagsBO;
 import cn.jianwoo.blog.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -44,8 +45,8 @@ public class TagsBizServiceImpl implements TagsBizService {
 
         Tags tags = JwBuilder.of(Tags::new)
                 .with(Tags::setContent, name)
-                .with(Tags::setCreateDate, now)
-                .with(Tags::setUpdateDate, now).build();
+                .with(Tags::setCreateTime, now)
+                .with(Tags::setUpdateTime, now).build();
 
         try {
             tagsTransDao.doInsert(tags);
@@ -58,13 +59,14 @@ public class TagsBizServiceImpl implements TagsBizService {
 
 
     @Override
-    public List<Tags> queryTagsByArtOid(Long artOid) {
+    public List<TagsBO> queryTagsByArtOid(Long artOid) {
         List<ArticleTagsExt> articleTagss = tagsBizDao.queryTagsByArtOid(artOid);
 
-        List<Tags> tags = new ArrayList<>();
+        List<TagsBO> tags = new ArrayList<>();
         for (ArticleTagsExt articleTagsExt : articleTagss) {
-            Tags tag = new Tags();
-            BeanUtils.copyProperties(articleTagsExt, tag);
+            TagsBO tag = new TagsBO();
+            tag.setId(articleTagsExt.getOid());
+            tag.setName(articleTagsExt.getContent());
             tags.add(tag);
         }
         return tags;
@@ -86,6 +88,7 @@ public class TagsBizServiceImpl implements TagsBizService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void doRemoveTags(Long oid) throws JwBlogException {
         articleTagsTransDao.doDeleteByTagsOid(oid);
         try {
@@ -103,11 +106,12 @@ public class TagsBizServiceImpl implements TagsBizService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void doUpdateTags(String name, Long oid) throws JwBlogException {
         Tags tags = new Tags();
         tags.setOid(oid);
         tags.setContent(name);
-        tags.setUpdateDate(new Date());
+        tags.setUpdateTime(DateUtil.getNow());
         try {
             tagsTransDao.doUpdateByPrimaryKeySelective(tags);
         } catch (DaoException e) {
@@ -120,6 +124,7 @@ public class TagsBizServiceImpl implements TagsBizService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void doAddTagList(List<String> tagList) throws JwBlogException {
+        Date now = DateUtil.getNow();
         tagList = tagList.stream().distinct().collect(Collectors.toList());
         List<String> existTags = new ArrayList<>();
         for (String tagName : tagList) {
@@ -135,10 +140,10 @@ public class TagsBizServiceImpl implements TagsBizService {
         for (String tagName : tagList) {
             Tags tags = new Tags();
             tags.setContent(tagName.trim());
-            tags.setCreateDate(new Date());
-            tags.setUpdateDate(new Date());
+            tags.setCreateTime(now);
+            tags.setUpdateTime(now);
             try {
-                tagsTransDao.doInsert(tags);
+                tagsTransDao.doInsertSelective(tags);
             } catch (DaoException e) {
                 log.error("TagsBizServiceImpl.doAddTagList exec failed, e:\n", e);
                 throw TagsBizException.CREATE_FAILED_EXCEPTION.format(tagName).print();
@@ -146,5 +151,36 @@ public class TagsBizServiceImpl implements TagsBizService {
         }
 
 
+    }
+
+    @Override
+    public List<TagsBO> queryAllTags() {
+        List<Tags> tagsList = tagsTransDao.queryAllTags();
+        List<TagsBO> list = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(tagsList)) {
+            tagsList.forEach(o -> {
+                TagsBO tagsBO = new TagsBO();
+                tagsBO.setId(o.getOid());
+                tagsBO.setName(o.getContent());
+                list.add(tagsBO);
+            });
+
+        }
+        return list;
+    }
+
+    @Override
+    public TagsBO queryTagsByOid(Long oid) throws JwBlogException {
+        Tags tags;
+        try {
+            tags = tagsTransDao.queryTagsByPrimaryKey(oid);
+        } catch (DaoException e) {
+            log.error(">>Query Tags by oid {} failed, e\r\n{}", oid, e);
+            throw TagsBizException.NOT_EXIST_EXCEPTION.format(oid).print();
+        }
+        TagsBO tagsBO = new TagsBO();
+        tagsBO.setId(tags.getOid());
+        tagsBO.setName(tags.getContent());
+        return tagsBO;
     }
 }

@@ -14,6 +14,7 @@ layui.define(['form', 'mouseRightMenu'], function (exports) {
     var token;
     ajaxApiPost(
         "/api/admin/token/generate",
+        1,
         JSON.stringify({
             pageId: 'T14',
         }),
@@ -43,6 +44,7 @@ layui.define(['form', 'mouseRightMenu'], function (exports) {
                                 var field = formData.field; //获取提交的字段
                                 ajaxPost(
                                     '/api/admin/tag/update',
+                                    1,
                                     JSON.stringify({tagText: field.text, oid: d.data.oid, subToken: field.subToken}),
                                     "更新成功",
                                     function () {
@@ -59,6 +61,7 @@ layui.define(['form', 'mouseRightMenu'], function (exports) {
                 alertAsk('确定要删除吗?', function () {
                     ajaxPost(
                         '/api/admin/tag/remove',
+                        1,
                         JSON.stringify({entityOid: d.data.oid}),
                         "删除成功",
                         function () {
@@ -209,6 +212,7 @@ layui.define(['form', 'mouseRightMenu'], function (exports) {
     $('#add-tags').click(function () {
         ajaxPost(
             '/api/admin/tag/add/list',
+            1,
             JSON.stringify({tagList: tagsArr, subToken: token}),
             "添加成功",
             function () {

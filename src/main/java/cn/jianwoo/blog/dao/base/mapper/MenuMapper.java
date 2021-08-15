@@ -2,9 +2,8 @@ package cn.jianwoo.blog.dao.base.mapper;
 
 import cn.jianwoo.blog.entity.Menu;
 import cn.jianwoo.blog.entity.example.MenuExample;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface MenuMapper {
     long countByExample(MenuExample example);

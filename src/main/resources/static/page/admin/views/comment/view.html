@@ -77,21 +77,28 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">评论用户</label>
                         <div class="layui-input-block">
-                            <input class="layui-input" disabled name="user" value="{{d.data.user}}" type="text">
+                            <input class="layui-input" disabled name="userName" value="{{d.data.userName}}" type="text">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">评论者头像</label>
                         <div class="layui-input-block">
-                            <img class="layui-upload-img" id="headImg" style="margin-left: 5px" src="{{d.data.headImg}}"
+                            <img class="layui-upload-img" id="headImgSrc" style="margin-left: 5px" src="{{d.data.headImgSrc}}"
                                  width="50">
 
                         </div>
                     </div>
                     <div class="layui-form-item">
+                        <label class="layui-form-label">评论者地区</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" disabled name="userArea" value="{{ d.data.userArea }}"
+                                   type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
                         <label class="layui-form-label">评论者IP</label>
                         <div class="layui-input-block">
-                            <input class="layui-input" disabled name="ip" value="{{ d.data.ip }}"
+                            <input class="layui-input" disabled name="clientIp" value="{{ d.data.clientIp }}"
                                    type="text">
                         </div>
                     </div>
@@ -99,20 +106,38 @@
                         <label class="layui-form-label">评论日期</label>
                         <div class="layui-input-block">
                             <input class="layui-input" disabled name="date"
-                                   value="{{d.data.date}}"
+                                   value="{{d.data.commentTime}}"
                                    type="text">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">评论QQ</label>
                         <div class="layui-input-block">
-                            <input class="layui-input" disabled name="qq" value="{{ d.data.qq}}" type="text">
+                            <input class="layui-input" disabled name="contactQq" value="{{ d.data.contactQq}}" type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">评论微信</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" disabled name="contactWechat" value="{{ d.data.contactWechat}}" type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">评论微博</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" disabled name="contactWeibo" value="{{ d.data.contactWeibo}}" type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">评论联系手机号</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" disabled name="contactTel" value="{{ d.data.contactTel}}" type="text">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">评论内容</label>
                         <div class="layui-input-block">
-                        <textarea class="layui-textarea" disabled name="other" placeholder="">
+                        <textarea class="layui-textarea" disabled name="content" placeholder="">
                             {{d.data.content}}</textarea>
                         </div>
                     </div>
@@ -144,12 +169,12 @@
         <div class="comment-list">
             <div class="media-body" data-id="{{ comm.oid}}">
                 <a href="javascript:" class="media-left" style="float: left;">
-                    <img src="{{ comm.headImg }}" height="46px"
+                    <img src="{{ comm.headImgSrc }}" height="46px"
                          width="46px">
                 </a>
                 <div class="pad-btm">
                     <p class="fontColor">
-                        <a href="javascript:">{{ comm.user }}</a>
+                        <a href="javascript:">{{ comm.userName }}</a>
                         <span style="float: right">
                                             <button class="layui-btn layui-btn-sm reply"
                                                     data-id="{{ comm.oid}}">回复</button>
@@ -158,7 +183,7 @@
                                         </span>
                     </p>
                     <p class="min-font">
-                        <a href="javascript:">{{ comm.date }}</a>
+                        <a href="javascript:" style="font-size: 12px">{{ comm.commentTimeDesc }}</a>
                     </p>
                 </div>
                 <p class="message-text">{{=comm.content}}</p>
@@ -168,22 +193,22 @@
                 <div>
                     <div class="media-body" data-id="{{ rep.oid}}">
                         <a href="javascript:" class="media-left" style="float: left;">
-                            <img src="{{rep.headImg}}" height="46px"
+                            <img src="{{rep.headImgSrc}}" height="46px"
                                  width="46px">
                         </a>
                         <div class="pad-btm">
                             <p class="fontColor">
-                                <a href="javascript:">{{rep.user}}</a>
+                                <a href="javascript:">{{rep.userName}}</a>
+                                <a href="javascript:">回复 @{{rep.parentUserName}}</a>
                                 <span style="float: right">
                                                         <button class="layui-btn layui-btn-sm reply"
                                                                 data-id="{{ rep.oid}}">回复</button>
                                                         <button class="layui-btn layui-btn-sm layui-btn-danger del"
                                                                 data-id="{{ rep.oid}}">删除</button>
-                                                 </span>
+                                </span>
                             </p>
                             <p class="min-font">
-                                <a href="javascript:">回复给{{rep.parentUserName}}</a>
-                                <a href="javascript:">{{rep.date}}</a>
+                                <a href="javascript:" style="font-size: 12px">{{rep.commentTimeDesc}}</a>
                             </p>
                         </div>
                         <p class="message-text">{{=rep.content}}</p>
@@ -296,6 +321,7 @@
             if (d.data.read === 0) {
                 ajaxApiPost(
                     "/api/admin/comment/read",
+                    1,
                     JSON.stringify({
                         entityOid: d.data.oid,
                     }),

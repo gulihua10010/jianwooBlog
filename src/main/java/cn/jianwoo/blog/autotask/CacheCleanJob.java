@@ -1,11 +1,11 @@
-package cn.jianwoo.blog.quartz;
+package cn.jianwoo.blog.autotask;
 
+import cn.hutool.extra.spring.SpringUtil;
 import cn.jianwoo.blog.cache.CacheStore;
 import cn.jianwoo.blog.constants.CacaheKeyConstants;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.util.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.quartz.DisallowConcurrentExecution;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
@@ -16,17 +16,15 @@ import java.util.Optional;
  * @date 2021-06-24 20:10
  */
 @Slf4j
-@DisallowConcurrentExecution
-public class CacheCleanJob extends AbstractBizJob {
-    @Autowired
-    private CacheStore<String, Object> cacheStore;
+public class CacheCleanJob implements Job {
 
     @Override
-    protected void process() throws JwBlogException {
-        log.info("====>>CacheCleanJob start...");
+    public void doProcess() throws JwBlogException {
+        CacheStore<String, Object> cacheStore = SpringUtil.getBean(CacheStore.class);
+        log.info("====>>AutoTask::CacheCleanJob start...");
         try {
             cacheStore.keySet().forEach(key -> {
-                if (key.startsWith(CacaheKeyConstants.INVALID_TOKEN)) {
+                if (key.startsWith(CacaheKeyConstants.INVALID_TOKEN.replace("{0}",""))) {
                     Optional<Object> value = cacheStore.get(key);
                     if (value.isPresent()) {
                         String accessToken = (String) value.get();
@@ -42,10 +40,10 @@ public class CacheCleanJob extends AbstractBizJob {
                 }
             });
         } catch (Exception e) {
-            log.error(">>CacheCleanJob exec failed, e:\r\n", e);
+            log.error(">>AutoTask::CacheCleanJob exec failed, e:\r\n", e);
         }
 
 
-        log.info("====>>CacheCleanJob end...");
+        log.info("====>>AutoTask::CacheCleanJob end...");
     }
 }

@@ -7,5 +7,12 @@ public interface AdminQueryDao {
     Admin queryAdminByPrimaryKey(Long oid) throws DaoException;
 
 
+    /**
+     * 通过名字查询
+     *
+     * @param name 名字
+     * @return
+     * @author gulihua
+     */
     Admin queryAdminByName(String name);
 }

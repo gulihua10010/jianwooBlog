@@ -1,9 +1,9 @@
 package cn.jianwoo.blog.service.biz;
 
-import cn.jianwoo.blog.entity.Comment;
 import cn.jianwoo.blog.entity.extension.CommentExt;
 import cn.jianwoo.blog.entity.query.CommentParam;
 import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.service.bo.CommentBO;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public interface CommentBizService {
      * @return List<CommentExt>
      * @author gulihua
      */
-    List<CommentExt> queryRecentComments(Integer limit);
+    List<CommentBO> queryRecentComments(Integer limit);
 
 
     /**
@@ -48,18 +48,11 @@ public interface CommentBizService {
     /**
      * 添加评论
      *
-     * @param artOid    文章oid [ARTICLE.ARTICLE_OID]
-     * @param username  用户名
-     * @param ip        ip
-     * @param content   评论内容
-     * @param parentOid parentOid父评论id [COMMENTS.PARENT]
-     * @param qq        qq
-     * @param headerImg 头像路径
+     * @param bo 评论
      * @return
      * @author gulihua
      */
-    void doAddComment(Long artOid, String username, String ip, String content, Long parentOid, String qq,
-                      String headerImg) throws JwBlogException;
+    void doAddComment(CommentBO bo) throws JwBlogException;
 
 
     /**
@@ -69,17 +62,9 @@ public interface CommentBizService {
      * @return
      * @author gulihua
      */
-    List<CommentExt> queryCommentsByArtOid(Long artOid);
+    List<CommentBO> queryCommentsByArtOid(Long artOid);
 
 
-    /**
-     * 通过父评论获取子评论
-     *
-     * @param parentOid 父评论id [COMMENTS.PARENT]
-     * @return
-     * @author gulihua
-     */
-    List<Comment> queryReplyCommentsByParentOid(Long parentOid);
 
 
     /**
@@ -118,7 +103,7 @@ public interface CommentBizService {
      * @author gulihua
      */
     @Deprecated
-    List<CommentExt> queryAllEffectiveComment(CommentParam param);
+    List<CommentBO> queryAllEffectiveComment(CommentParam param);
 
 
     /**
@@ -128,7 +113,7 @@ public interface CommentBizService {
      * @return PageInfo<CommentExt>
      * @author gulihua
      */
-    PageInfo<CommentExt> queryAllCommentPage(CommentParam param);
+    PageInfo<CommentBO> queryAllCommentPage(CommentParam param);
 
 
     /**
@@ -145,10 +130,10 @@ public interface CommentBizService {
      * 根据评论oid获取评论
      *
      * @param oid 评论oid
-     * @return CommentExt
+     * @return CommentBO
      * @author gulihua
      */
-    CommentExt queryCommentExtByOid(Long oid);
+    CommentBO queryCommentExtByOid(Long oid);
 
 
     /**

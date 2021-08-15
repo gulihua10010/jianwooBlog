@@ -13,5 +13,5 @@ public interface TempArticleQueryDao {
      * @return
      * @author gulihua
      */
-    TempArticle queryLastestTempArticle(Long oldOid, Integer type) throws DaoException;
+    TempArticle queryLastestTempArticle(Long oldOid, String pageType) throws DaoException;
 }

@@ -39,7 +39,7 @@ public class TempArticleSaveRequest extends BaseRequestDto {
     /**
      * 文章类别
      */
-    private Integer type;
+    private Integer menuId;
 
     /**
      * 文章缩略图
@@ -47,9 +47,9 @@ public class TempArticleSaveRequest extends BaseRequestDto {
     private String imgSrc;
 
     /**
-     * 访问类型, -1:密码, 0:私密, 1:公共, 2:置顶
+     * 访问类型, 11:密码, 10:私密, 20:公共, 21:置顶
      */
-    private Integer visitType;
+    private String visitType;
 
     /**
      * 密码 访问类型为-1时有效
@@ -59,7 +59,7 @@ public class TempArticleSaveRequest extends BaseRequestDto {
     /**
      * 文章是否可以评论,1:可以, 0:不可以
      */
-    private Integer isComment;
+    private Boolean isComment;
 
     /**
      * 文章oid主键
@@ -74,7 +74,7 @@ public class TempArticleSaveRequest extends BaseRequestDto {
     /**
      * temp article page
      */
-    private Integer page;
+    private String pageType;
 
     /**
      * temp article tags信息

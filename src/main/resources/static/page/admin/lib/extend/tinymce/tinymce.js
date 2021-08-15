@@ -19,7 +19,7 @@ layui.define(['jquery'], function (exports) {
 
     var settings = {
         base_url: modPath
-        , images_upload_url: '/api/file/upload'//图片上传接口，可在option传入，也可在这里修改，option的值优先
+        , images_upload_url: '/api/admin/file/upload'//图片上传接口，可在option传入，也可在这里修改，option的值优先
         , language: 'zh_CN'//语言，可在option传入，也可在这里修改，option的值优先
         , height: 800
         , max_height: 1000

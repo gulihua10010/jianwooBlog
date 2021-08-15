@@ -14,4 +14,7 @@ public interface TempArticleTransDao extends TempArticleQueryDao {
     void doUpdateByPrimaryKeySelective(TempArticle record) throws DaoException;
 
     void doDeleteByPrimaryKey(Long oid) throws DaoException;
+
+    void doUpdateByPrimaryKeyWithBLOBs(TempArticle record) throws DaoException;
+
 }

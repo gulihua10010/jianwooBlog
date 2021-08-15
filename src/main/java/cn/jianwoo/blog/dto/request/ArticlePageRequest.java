@@ -26,9 +26,9 @@ public class ArticlePageRequest extends BasePageRequestDto {
      */
     private String text;
     /**
-     * 文章状态(0:草稿, 1:已发布, -1:回收站 )
+     * 文章状态(00:草稿, 90:已发布, 91:回收站 )
      */
-    private Integer status;
+    private String status;
 
 
 }

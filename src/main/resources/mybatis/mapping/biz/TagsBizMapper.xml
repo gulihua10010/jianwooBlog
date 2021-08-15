@@ -2,25 +2,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.jianwoo.blog.dao.biz.mapper.TagsBizMapper">
     <resultMap id="BaseResultMap" type="cn.jianwoo.blog.entity.Tags">
-        <constructor>
-            <idArg column="OID" jdbcType="BIGINT" javaType="java.lang.Long"/>
-            <arg column="CONTENT" jdbcType="VARCHAR" javaType="java.lang.String"/>
-            <arg column="CREATE_DATE" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
-            <arg column="UPDATE_DATE" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
-        </constructor>
+        <id column="OID" jdbcType="BIGINT" property="oid" />
+        <result column="CONTENT" jdbcType="VARCHAR" property="content" />
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
     </resultMap>
     <resultMap id="ResultResultMapWithExt" type="cn.jianwoo.blog.entity.extension.ArticleTagsExt">
         <result column="OID" property="oid" jdbcType="BIGINT" javaType="java.lang.Long"/>
         <result column="CONTENT" property="content" jdbcType="VARCHAR" javaType="java.lang.String"/>
         <result column="ARTICLE_OID" property="artOid" jdbcType="BIGINT" javaType="java.lang.Long"/>
-        <result column="CREATE_DATE" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
-        <result column="UPDATE_DATE" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
     </resultMap>
     <sql id="Base_Column_List">
-        OID , CONTENT, CREATE_DATE, UPDATE_DATE
+        OID , CONTENT, CREATE_TIME, UPDATE_TIME
+    </sql>
+    <sql id="Ext_Column_List">
+        T.OID , T.CONTENT, T.CREATE_DATE, T.UPDATE_DATE
     </sql>
     <select id="selectTagsByArtOid" parameterType="java.lang.Long" resultMap="ResultResultMapWithExt">
-        SELECT T.*, A.ARTICLE_OID
+        SELECT
+        <include refid="Ext_Column_List"/>
+            ,
+            A.ARTICLE_OID
         FROM
             TAGS T
                 LEFT JOIN ARTICLE_TAGS A ON A.TAGS_OID = T.OID

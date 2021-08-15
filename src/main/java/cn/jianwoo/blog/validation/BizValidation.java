@@ -1,7 +1,6 @@
 package cn.jianwoo.blog.validation;
 
 import cn.jianwoo.blog.constants.ExceptionConstants;
-import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.exception.ValidationException;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.collections.CollectionUtils;
@@ -22,37 +21,37 @@ import java.util.regex.Pattern;
 public class BizValidation {
     private static final Logger logger = LoggerFactory.getLogger(BizValidation.class);
 
-    public static void paramValidate(String paramValue, String paramName) throws JwBlogException {
+    public static void paramValidate(String paramValue, String paramName) throws ValidationException {
         if (StringUtils.isBlank(paramValue)) {
             throw ValidationException.VALIDATOR_PARAM_IS_NULL
-                    .getNewInstance("Parameter verified failed, the value is empty in the parameter: %s", paramName)
+                    .formatMsg("Parameter verified failed, the value is empty in the parameter: %s", paramName)
                     .print();
         }
 
     }
 
 
-    public static void paramValidate(List paramValue, String paramName) throws JwBlogException {
+    public static void paramValidate(List paramValue, String paramName) throws ValidationException {
         if (CollectionUtils.isEmpty(paramValue)) {
             throw ValidationException.VALIDATOR_PARAM_IS_NULL
-                    .getNewInstance("Parameter verified failed, the list is empty in the parameter: %s", paramName)
+                    .formatMsg("Parameter verified failed, the list is empty in the parameter: %s", paramName)
                     .print();
         }
 
     }
 
 
-    public static void paramValidate(Object[] paramValue, String paramName) throws JwBlogException {
+    public static void paramValidate(Object[] paramValue, String paramName) throws ValidationException {
         if (null == paramValue || paramName.length() == 0) {
             throw ValidationException.VALIDATOR_ARRAY_PARAM_IS_EMPTY
-                    .getNewInstance(ValidationException.DEFAULT_VALIDATION_MSG + " in the parameter: %s", paramName)
+                    .formatMsg(ValidationException.DEFAULT_VALIDATION_MSG + " in the parameter: %s", paramName)
                     .print();
         }
 
     }
 
 
-    public static void paramValidate(Object paramValue, String paramName) throws JwBlogException {
+    public static void paramValidate(Object paramValue, String paramName) throws ValidationException {
         if (null == paramValue) {
             throw ValidationException.VALIDATOR_PARAM_IS_NULL
                     .getNewInstance(ValidationException.DEFAULT_VALIDATION_MSG + " in the parameter: %s", paramName)
@@ -62,51 +61,51 @@ public class BizValidation {
     }
 
 
-    public static void paramValidate(String paramValue, String paramName, String msg) throws JwBlogException {
+    public static void paramValidate(String paramValue, String paramName, String msg) throws ValidationException {
         if (StringUtils.isBlank(paramValue)) {
             logger.error("Parameter verified failed, the value is empty in the parameter: {}", paramName);
-            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_NULL, msg);
+            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_NULL, msg, paramName);
 
         }
 
     }
 
 
-    public static void paramValidate(List paramValue, String paramName, String msg) throws JwBlogException {
+    public static void paramValidate(List paramValue, String paramName, String msg) throws ValidationException {
         if (CollectionUtils.isEmpty(paramValue)) {
             logger.error("Page parameter verified failed, the list is empty in the parameter: {}", paramName);
-            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_LIST_EMPTY, msg);
+            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_LIST_EMPTY, msg, paramName);
         }
 
     }
 
 
-    public static void paramValidate(Object[] paramValue, String paramName, String msg) throws JwBlogException {
+    public static void paramValidate(Object[] paramValue, String paramName, String msg) throws ValidationException {
         if (null == paramValue || paramValue.length == 0) {
             logger.error("Parameter verified failed, the array is empty in the parameter: {}", paramName);
-            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_ARRAY_EMPTY, msg);
+            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_ARRAY_EMPTY, msg, paramName);
 
         }
 
     }
 
-    public static void paramLengthValidate(String paramValue, Integer length, String paramName, String msg) throws JwBlogException {
+    public static void paramLengthValidate(String paramValue, Integer length, String paramName, String msg) throws ValidationException {
         if (null != paramValue && paramValue.length() > length) {
-            logger.error("Parameter verified failed, the length of parameter '{}' is greater than {}. ", paramName, length);
-            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_STRING_LENGTH, msg);
+            logger.error("Parameter verified failed, the length({}) of parameter '{}' is greater than {}. ", paramValue.length(), paramName, length);
+            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_STRING_LENGTH, msg, paramName);
 
         }
 
     }
 
-    public static void paramNumberMinValidate(String paramValue, String min, String paramName, String msg) throws JwBlogException {
+    public static void paramNumberMinValidate(String paramValue, String min, String paramName, String msg) throws ValidationException {
         BigDecimal v;
         try {
             v = new BigDecimal(paramValue);
         } catch (Exception e) {
-            String errMsg = String.format("Parameter verified failed, the value of parameter '%s' is not a number. ", paramName);
+            String errMsg = String.format("Parameter verified failed, the value[%s] of parameter '%s' is not a number. ", paramValue, paramName);
             logger.error(errMsg);
-            throw new ValidationException(ExceptionConstants.VALIDATOR_NUMBER, errMsg);
+            throw new ValidationException(ExceptionConstants.VALIDATOR_NUMBER, String.format(ExceptionConstants.VALIDATOR_NUMBER_DESC, paramName), paramName);
         }
         BigDecimal minV;
         try {
@@ -117,21 +116,21 @@ public class BizValidation {
             minV = new BigDecimal("0");
         }
         if (v.compareTo(minV) < 0) {
-            logger.error("Parameter verified failed, the value of parameter '{}' is letter than {}. ", paramName, min);
-            throw new ValidationException(ExceptionConstants.VALIDATOR_NUMBER_MIN, msg);
+            logger.error("Parameter verified failed, the value[{}] of parameter '{}' is letter than {}. ", paramValue, paramName, min);
+            throw new ValidationException(ExceptionConstants.VALIDATOR_NUMBER_MIN, msg, paramName);
 
         }
 
     }
 
-    public static void paramNumberMaxValidate(String paramValue, String max, String paramName, String msg) throws JwBlogException {
+    public static void paramNumberMaxValidate(String paramValue, String max, String paramName, String msg) throws ValidationException {
         BigDecimal v;
         try {
             v = new BigDecimal(paramValue);
         } catch (Exception e) {
-            String errMsg = String.format("Parameter verified failed, the value of parameter '%s' is not a number. ", paramName);
+            String errMsg = String.format("Parameter verified failed, the value[%s] of parameter '%s' is not a number. ", paramValue, paramName);
             logger.error(errMsg);
-            throw new ValidationException(ExceptionConstants.VALIDATOR_NUMBER, errMsg);
+            throw new ValidationException(ExceptionConstants.VALIDATOR_NUMBER, String.format(ExceptionConstants.VALIDATOR_NUMBER_DESC, paramName), paramName);
         }
         BigDecimal maxV;
         try {
@@ -142,36 +141,39 @@ public class BizValidation {
             maxV = new BigDecimal("0");
         }
         if (v.compareTo(maxV) > 0) {
-            logger.error("Parameter verified failed, the value of parameter '{}' is greater than {}. ", paramName, max);
-            throw new ValidationException(ExceptionConstants.VALIDATOR_NUMBER_MAX, msg);
+            logger.error("Parameter verified failed, the value[{}] of parameter '{}' is greater than {}. ", paramValue, paramName, max);
+            throw new ValidationException(ExceptionConstants.VALIDATOR_NUMBER_MAX, msg, paramName);
 
         }
 
     }
 
-    public static void paramRegexValidate(String paramValue, String regex, String paramName, String msg) throws JwBlogException {
+    public static void paramRegexValidate(String paramValue, String regex, String paramName, String msg) throws ValidationException {
         if (StringUtils.isNotBlank(paramValue) && !Pattern.matches(regex, paramValue)) {
             logger.error("Parameter verified failed, the regular expression is {}, but field[{}] value is {}. ", regex, paramName, paramValue);
-            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_STRING_REGEX, msg);
+            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_STRING_REGEX, msg, paramName);
 
         }
 
     }
 
-    public static void paramNumberValidate(String paramValue, String paramName, String msg) throws JwBlogException {
+    public static void paramNumberValidate(String paramValue, String paramName, String msg) throws ValidationException {
         if (StringUtils.isNotBlank(paramValue)) {
-            logger.error("Parameter verified failed, the value of parameter '{}' is not a number", paramName);
-            throw new ValidationException(ExceptionConstants.VALIDATOR_NUMBER, msg);
-
+            try {
+                new BigDecimal(paramValue);
+            } catch (Exception e) {
+                logger.error("Parameter verified failed, the value[{}] of parameter '{}' is not a number", paramValue, paramName);
+                throw new ValidationException(ExceptionConstants.VALIDATOR_NUMBER, msg, paramName);
+            }
         }
 
     }
 
 
-    public static void paramValidate(Object paramValue, String paramName, String msg) throws JwBlogException {
+    public static void paramValidate(Object paramValue, String paramName, String msg) throws ValidationException {
         if (null == paramValue) {
             logger.error("Parameter verified failed, the value is empty in the parameter: {}", paramName);
-            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_NULL, msg);
+            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_NULL, msg, paramName);
 
         }
 
@@ -179,7 +181,7 @@ public class BizValidation {
 
 
     public static void paramRangeValidate(Object paramValue, String paramName, String msg, Object... values)
-            throws JwBlogException {
+            throws ValidationException {
         boolean valid = false;
         if (null != paramValue) {
             for (Object o : values) {
@@ -191,7 +193,7 @@ public class BizValidation {
             if (!valid) {
                 logger.error("Parameter {} verified failed, the value {} is not in range: {}", paramName, paramValue,
                         JSON.toJSONString(values));
-                throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_NOT_IN_RANGE, msg);
+                throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_NOT_IN_RANGE, msg, paramName);
 
             }
         }
@@ -199,12 +201,12 @@ public class BizValidation {
     }
 
 
-    public static void paramValidateListContent(List<String> paramValue, String paramName, String msg) throws JwBlogException {
+    public static void paramValidateListContent(List<String> paramValue, String paramName, String msg) throws ValidationException {
         if (!CollectionUtils.isEmpty(paramValue)) {
             for (String s : paramValue) {
                 if (StringUtils.isBlank(s)) {
                     logger.error("Page parameter verified failed, some list content is empty in the parameter: {}", paramName);
-                    throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_LIST_CONTENT_EMPTY, msg);
+                    throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_LIST_CONTENT_EMPTY, msg, paramName);
                 }
             }
 
@@ -212,12 +214,12 @@ public class BizValidation {
 
     }
 
-    public static void paramFileSizeValidate(MultipartFile fileObj, Long maxSize, String msg) throws JwBlogException {
+    public static void paramFileSizeValidate(MultipartFile fileObj, Long maxSize, String msg) throws ValidationException {
         if (null != fileObj) {
             if (fileObj.getSize() > maxSize) {
                 logger.error("Parameter verified failed,the file size exceeds the maximum limit: {}, current size: {}", maxSize, fileObj.getSize());
                 throw ValidationException.VALIDATOR_FILE_SIZE_MAX
-                        .getNewInstance(msg, maxSize)
+                        .formatMsg(msg, maxSize)
                         .print();
             }
         }

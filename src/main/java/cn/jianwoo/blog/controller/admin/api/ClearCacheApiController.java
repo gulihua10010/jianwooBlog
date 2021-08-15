@@ -2,6 +2,7 @@ package cn.jianwoo.blog.controller.admin.api;
 
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
+import cn.jianwoo.blog.config.apiversion.ApiVersion;
 import cn.jianwoo.blog.config.router.admin.ClearCacheApiUrlConfig;
 import cn.jianwoo.blog.dto.request.ClearCacheRequest;
 import cn.jianwoo.blog.dto.response.CacheResponse;
@@ -45,6 +46,7 @@ public class ClearCacheApiController extends BaseController {
      * msg
      * @author gulihua
      */
+    @ApiVersion()
     @PostMapping(ClearCacheApiUrlConfig.URL_COMMENT_ADD)
     public String clear(@RequestBody String param) {
         try {
@@ -70,6 +72,7 @@ public class ClearCacheApiController extends BaseController {
      * --logSize<br/>
      * @author gulihua
      */
+    @ApiVersion()
     @GetMapping(ClearCacheApiUrlConfig.URL_COMMENT_INFO)
     public String getWebConfig() {
         CacheResponse response = CacheResponse.getInstance();

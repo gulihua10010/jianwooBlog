@@ -1,7 +1,9 @@
 package cn.jianwoo.blog.service.biz;
 
 import cn.jianwoo.blog.entity.Tags;
+import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.service.bo.TagsBO;
 
 import java.util.List;
 
@@ -23,7 +25,7 @@ public interface TagsBizService {
      * @return
      * @author gulihua
      */
-    List<Tags> queryTagsByArtOid(Long artOid);
+    List<TagsBO> queryTagsByArtOid(Long artOid);
 
 
     /**
@@ -70,5 +72,22 @@ public interface TagsBizService {
      * @author gulihua
      */
     void doAddTagList(List<String> tagList) throws JwBlogException;
+
+    /**
+     * 查询所有标签
+     *
+     * @return
+     * @author gulihua
+     */
+    List<TagsBO> queryAllTags();
+
+    /**
+     * 根据oid查询标签
+     *
+     * @return
+     * @author gulihua
+     */
+    TagsBO queryTagsByOid(Long oid) throws JwBlogException;
+
 
 }

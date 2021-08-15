@@ -81,4 +81,14 @@ public interface CommentBizMapper {
      */
     CommentExt selectCommentExtByOid(Long oid);
 
+
+    /**
+     * 更新评论的赞数量
+     *
+     * @param oid 主键
+     * @return
+     * @author gulihua
+     */
+    int updateCommentPraiseCnt(Long oid);
+
 }

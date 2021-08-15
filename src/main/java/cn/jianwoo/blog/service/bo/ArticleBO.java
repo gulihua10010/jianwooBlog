@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -35,14 +36,19 @@ public class ArticleBO implements Serializable {
     private String content;
 
     /**
-     * 类别id article.typeId [ARTICLE.TYPE_ID]
+     * 类别id article.typeId [ARTICLE.MENU_ID]
      */
-    private Integer typeId;
+    private Integer menuId;
+
+    /**
+     * 类别名称
+     */
+    private String typeName;
 
     /**
      * 是否评论 article.isComment [ARTICLE.IS_COMMENT]
      */
-    private Integer isComment;
+    private Boolean isComment;
 
     /**
      * 图片 article.imgSrc [ARTICLE.IMG_SRC]
@@ -52,13 +58,13 @@ public class ArticleBO implements Serializable {
     /**
      * 访问类型 article.visitType {@link cn.jianwoo.blog.enums.ArticleVisitEnum} [ARTICLE.VISIT_TYPE]
      */
-    private Integer visitType;
+    private String visitType;
 
     /**
      * 状态article.status {@link cn.jianwoo.blog.enums.ArticleStatusEnum} [ARTICLE.STATUS]
      * 当为临时文章时, 状态tempArticle.status {@link cn.jianwoo.blog.enums.TempArticleStatusEnum} [TEMP_ARTICLE.STATUS]
      */
-    private Integer status;
+    private String status;
 
     /**
      * 文章密码 article.password [ARTICLE.PASSWORD]
@@ -68,12 +74,41 @@ public class ArticleBO implements Serializable {
     /**
      * 文标签 tags [ARTICLE_TAGS]
      */
-    private Integer[] tags;
+    private List<Integer> tagOidList;
 
     /**
      * 临时文章oid主键
      */
     private Long tempArtOid;
+
+    /**
+     * 发布时间
+     */
+    private Date pushTime;
+    /**
+     * 修改时间
+     */
+    private Date modifiedTime;
+    /**
+     * 阅读次数
+     */
+    private Long readCount;
+    /**
+     * 赞的数量
+     */
+    private Long praiseCount;
+    /**
+     * 文章内容纯文本
+     */
+    private String text;
+    /**
+     * 评论数量
+     */
+    private Long commentCount;
+    /**
+     * 删除时间
+     */
+    private Date delTime;
 
     /**
      * 文章标签列表
@@ -82,7 +117,7 @@ public class ArticleBO implements Serializable {
     /**
      * 标签列表
      */
-    private List<TagsBO> tagsList;
+    private List<TagsBO> allTagsList;
 
     /**
      * 菜单列表
@@ -96,7 +131,7 @@ public class ArticleBO implements Serializable {
     /**
      * 临时文章数据
      */
-    private TempArticleInfoBO tempArticleInfo;
+    private TempArticleBO tempArticle;
 
 
 }

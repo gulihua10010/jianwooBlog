@@ -2,14 +2,21 @@ package cn.jianwoo.blog.controller.admin.api;
 
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
+import cn.jianwoo.blog.config.apiversion.ApiVersion;
 import cn.jianwoo.blog.config.router.admin.WebconfApiUrlConfig;
+import cn.jianwoo.blog.dto.request.EmailTestRequest;
 import cn.jianwoo.blog.dto.request.WebconfRequest;
+import cn.jianwoo.blog.dto.response.WebconfDataVO;
 import cn.jianwoo.blog.dto.response.WebconfResponse;
+import cn.jianwoo.blog.dto.response.vo.WebconfGroupVO;
 import cn.jianwoo.blog.dto.response.vo.WebconfVO;
 import cn.jianwoo.blog.enums.ValidateTypeEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.WebconfBizService;
 import cn.jianwoo.blog.service.bo.WebconfBO;
+import cn.jianwoo.blog.service.bo.WebconfResBO;
+import cn.jianwoo.blog.util.CopyBeanUtil;
+import cn.jianwoo.blog.util.NotifiyUtil;
 import cn.jianwoo.blog.validation.BizValidation;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +44,8 @@ import java.util.List;
 public class WebconfApiController extends BaseController {
     @Autowired
     private WebconfBizService webconfBizService;
+    @Autowired
+    private NotifiyUtil notifiyUtil;
 
 
     /**
@@ -51,7 +60,7 @@ public class WebconfApiController extends BaseController {
      *              --valueType<br/>
      *              --formType<br/>
      *              --value<br/>
-     *              --mandatory<br/>
+     *              --required<br/>
      *              --validateType<br/>
      *              --validateValue<br/>
      * @return 返回响应 {@link BaseResponseDto}
@@ -59,6 +68,7 @@ public class WebconfApiController extends BaseController {
      * msg
      * @author gulihua
      */
+    @ApiVersion()
     @PostMapping(WebconfApiUrlConfig.URL_WEBCONF_UPDATE)
     public String doUpdateWebconf(@RequestBody String param) {
         try {
@@ -74,7 +84,6 @@ public class WebconfApiController extends BaseController {
                     list.add(bo);
                 }
                 webconfBizService.doUpdateConfig(list);
-
             }
 
 
@@ -86,8 +95,8 @@ public class WebconfApiController extends BaseController {
     }
 
     private void validateReqWebconf(WebconfVO o) throws JwBlogException {
-        if (null != o.getMandatory() && o.getMandatory()) {
-            BizValidation.paramValidate(o.getValue(), o.getKey(), String.valueOf(o.getTitle()).concat("不能为空!"));
+        if (null != o.getRequired() && o.getRequired()) {
+            BizValidation.paramValidate(o.getValue(), o.getKey(), String.valueOf(o.getTitleDsp()).concat("不能为空!"));
 
         }
         if (StringUtils.isNotBlank(o.getValidateType())) {
@@ -103,26 +112,26 @@ public class WebconfApiController extends BaseController {
                 if (ValidateTypeEnum.MAX_LENGTH.getValue().equals(valid.trim())) {
                     JSONObject v = (JSONObject) validateValue.get(ValidateTypeEnum.MAX_LENGTH.getValue());
                     BizValidation.paramLengthValidate(o.getValue(), Integer.parseInt(v.getString("value")), o.getKey(),
-                            String.format("字段 [%s] 的长度不能大于 %s !", o.getTitle(), o.getValidateValue()));
+                            String.format("字段 [%s] 的长度不能大于 %s !", o.getTitleDsp(), v.getString("value")));
                 }
                 if (ValidateTypeEnum.MIN_NUM.getValue().equals(valid.trim())) {
                     JSONObject v = (JSONObject) validateValue.get(ValidateTypeEnum.MIN_NUM.getValue());
                     BizValidation.paramNumberMinValidate(o.getValue(), v.getString("value"), o.getKey(),
-                            String.format("字段 [%s] 的值不能小于 %s !", o.getTitle(), v.getString("value")));
+                            String.format("字段 [%s] 的值不能小于 %s !", o.getTitleDsp(), v.getString("value")));
                 }
                 if (ValidateTypeEnum.MAX_NUM.getValue().equals(valid.trim())) {
                     JSONObject v = (JSONObject) validateValue.get(ValidateTypeEnum.MAX_NUM.getValue());
                     BizValidation.paramNumberMaxValidate(o.getValue(), v.getString("value"), o.getKey(),
-                            String.format("字段 [%s] 的值不能大于 %s !", o.getTitle(), v.getString("value")));
+                            String.format("字段 [%s] 的值不能大于 %s !", o.getTitleDsp(), v.getString("value")));
                 }
                 if (ValidateTypeEnum.REGEX.getValue().equals(valid.trim())) {
                     JSONObject v = (JSONObject) validateValue.get(ValidateTypeEnum.REGEX.getValue());
                     BizValidation.paramRegexValidate(o.getValue(), v.getString("value"), o.getKey(),
-                            String.format("正则 (%s) 不能匹配字段 [%s] 的值 %s!", v.getString("value"), o.getTitle(), o.getValue()));
+                            String.format("正则 (%s) 不能匹配字段 [%s] 的值 %s!", v.getString("value"), o.getTitleDsp(), o.getValue()));
                 }
-                if (ValidateTypeEnum.REGEX.getValue().equals(valid.trim())) {
+                if (ValidateTypeEnum.NUMBER.getValue().equals(valid.trim())) {
                     BizValidation.paramNumberValidate(o.getValue(), o.getKey(),
-                            String.format("字段 [%s] 的值不是数字类型!", o.getTitle()));
+                            String.format("字段 [%s] 的值不是数字类型!", o.getTitleDsp()));
                 }
             }
 
@@ -144,27 +153,29 @@ public class WebconfApiController extends BaseController {
      * --valueType<br/>
      * --formType<br/>
      * --value<br/>
-     * --mandatory<br/>
+     * --required<br/>
      * --validateType<br/>
      * --validateValue<br/>
      * @author gulihua
      */
+    @ApiVersion()
     @GetMapping(WebconfApiUrlConfig.URL_WEBCONF_INFO)
-    public String getWebConfig() {
+    public String queryWebConfig() {
         WebconfResponse response = WebconfResponse.getInstance();
         try {
-            List<WebconfBO> webConflist = webconfBizService.queryConfig();
-            List<WebconfVO> list = new ArrayList<>();
-            if (CollectionUtils.isNotEmpty(webConflist)) {
-                webConflist.forEach(o -> {
-                    WebconfVO vo = new WebconfVO();
-                    BeanUtils.copyProperties(o, vo);
+            WebconfResBO resBO = webconfBizService.queryConfig();
+            List<WebconfGroupVO> list = new ArrayList<>();
+            if (CollectionUtils.isNotEmpty(resBO.getData())) {
+                resBO.getData().forEach(o -> {
+                    WebconfGroupVO vo = new WebconfGroupVO();
+                    CopyBeanUtil.copyProperties(o, vo);
                     list.add(vo);
-
                 });
             }
-
-            response.setData(list);
+            WebconfDataVO data = new WebconfDataVO();
+            data.setDataList(list);
+            data.setTabList(resBO.getTabList());
+            response.setData(data);
 
         } catch (Exception e) {
             return super.exceptionToString(e);
@@ -172,6 +183,32 @@ public class WebconfApiController extends BaseController {
         }
 
         return super.responseToJSONString(response);
+
+    }
+
+
+    /**
+     * 邮件测试<br/>
+     * url:/api/admin/webconf/email/test<br/>
+     *
+     * @return 返回响应 {@link BaseResponseDto}
+     * @author gulihua
+     */
+    @ApiVersion()
+    @PostMapping(WebconfApiUrlConfig.URL_WEBCONF_EMAIL_TEST)
+    public String doTestEmail(@RequestBody String param) {
+        try {
+
+            super.printRequestParams(param);
+            EmailTestRequest request = this.convertParam(param, EmailTestRequest.class);
+            BizValidation.paramValidate(request.getEmailTo(), "emailTo", "收件人不能为空!");
+
+            notifiyUtil.sendEmail(request.getEmailTo(), "邮件测试", "<hr>邮件测试</hr><br>这是测试的内容。");
+
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+        }
+        return super.responseToJSONString(new BaseResponseDto());
 
     }
 

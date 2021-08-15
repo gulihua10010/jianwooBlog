@@ -9,6 +9,8 @@ public final class ExceptionConstants {
     public static final String DAO_DELETE_RESULT_0 = "100003";
     public static final String DAO_SELECTONE_IS_NULL = "100004";
     public static final String DAO_LIST_IS_NULL = "100005";
+    public static final String DAO_PARAM_IS_NULL = "100006";
+    public static final String DAO_PARAM_IS_EMPTY = "100007";
     public static final String BIZ_NOT_EXIST = "200001";
     public static final String BIZ_HAS_EXIST = "200002";
     public static final String BIZ_CREATE_FAIL = "200003";
@@ -28,6 +30,7 @@ public final class ExceptionConstants {
     public static final String VALIDATOR_NUMBER_MIN = "300010";
     public static final String VALIDATOR_NUMBER_MAX = "300011";
     public static final String VALIDATOR_NUMBER = "300012";
+    public static final String VALIDATOR_NUMBER_DESC = "字段[%s]的值不是数字类型!";
     public static final String VALIDATION_FAILED = "300000";
 
     public static final String ADMIN_PASSWORD_NOT_CORRECT = "400001";
@@ -62,6 +65,9 @@ public final class ExceptionConstants {
     public static final String UNAUTHORIZED_DESC = "接口鉴权失败，未经授权的操作!";
     public static final String LOGOUT_FAILED_MSG_1 = "退出登录失败, 用户ID secret为空!";
     public static final String LOGOUT_FAILED_MSG_2 = "退出登录失败, 用户未登录!";
+
+    public static final String EMAIL_SEND_FAILED = "400011";
+    public static final String EMAIL_SEND_FAILED_DESC = "邮件发送失败，请检查邮件配置!";
 
     private ExceptionConstants() {
     }

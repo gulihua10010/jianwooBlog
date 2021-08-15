@@ -25,8 +25,24 @@ public class ValidationException extends JwBlogException {
     private static final Logger logger = LoggerFactory.getLogger(ValidationException.class);
     private static final long serialVersionUID = -2634310359657973291L;
 
+    private String paramName;
+
+    public String getParamName() {
+        return this.paramName;
+    }
+
+    public void setParamName(String paramName) {
+        this.paramName = paramName;
+    }
+
 
     public ValidationException() {
+    }
+
+    public ValidationException(String code, String msg, String paramName) {
+        super(code, msg);
+        this.paramName = paramName;
+
     }
 
 
@@ -55,10 +71,14 @@ public class ValidationException extends JwBlogException {
     }
 
 
-    public ValidationException getNewInstance(String msg, Object... args) {
+    public ValidationException formatMsg(String msg, Object... args) {
         return new ValidationException(code, msg, args);
     }
 
+
+    public ValidationException getNewInstance(String code, String msg, Object... args) {
+        return new ValidationException(code, msg, args);
+    }
 
     @Override
     public ValidationException print() {

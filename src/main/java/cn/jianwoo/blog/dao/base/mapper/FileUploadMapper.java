@@ -2,9 +2,8 @@ package cn.jianwoo.blog.dao.base.mapper;
 
 import cn.jianwoo.blog.entity.FileUpload;
 import cn.jianwoo.blog.entity.example.FileUploadExample;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface FileUploadMapper {
     long countByExample(FileUploadExample example);

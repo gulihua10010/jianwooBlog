@@ -5,7 +5,6 @@ import cn.jianwoo.blog.cache.CacheStore;
 import cn.jianwoo.blog.constants.CacaheKeyConstants;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
-import cn.jianwoo.blog.security.util.SecurityUtils;
 import cn.jianwoo.blog.util.JwUtil;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
@@ -75,7 +74,8 @@ public class SecurityLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler 
         jwCacheStore.put(invalidTokenKey, accessToken);
 
         log.info("logout successfully: [id = {}]", uid);
-        jwCacheStore.delete(SecurityUtils.buildAccessTokenKey(uid));
+        String accessCacheKey = MessageFormat.format(CacaheKeyConstants.TOKEN_ACCESS_CACHE, uid);
+        jwCacheStore.delete(accessCacheKey);
 
     }
 

@@ -9,8 +9,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * @author GuLihua
@@ -22,6 +20,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WebconfBO implements Serializable {
+    private static final long serialVersionUID = 1325358067879236044L;
     /**
      * 键名
      */
@@ -33,7 +32,11 @@ public class WebconfBO implements Serializable {
     /**
      * 配置标题/标签
      */
-    private String title;
+    private String titleDsp;
+    /**
+     * 配置提示
+     */
+    private String tipsDsp;
     /**
      * 值类型  {@link ValueTypeEnum}
      */
@@ -49,7 +52,7 @@ public class WebconfBO implements Serializable {
     /**
      * 是否必填
      */
-    private Boolean mandatory;
+    private Boolean required;
     /**
      * 验证类型  {@link ValidateTypeEnum}
      */
@@ -58,7 +61,18 @@ public class WebconfBO implements Serializable {
      * 验证值
      */
     private String validateValue;
-
+    /**
+     * TAG标签名
+     */
+    private String tabType;
+    /**
+     * TAG标签描述
+     */
+    private String tabTypeDsp;
+    /**
+     * 索引
+     */
+    private Integer index ;
 
 
 }

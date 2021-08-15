@@ -1,9 +1,9 @@
 package cn.jianwoo.blog.service.biz;
 
 import cn.jianwoo.blog.entity.Menu;
-import cn.jianwoo.blog.entity.extension.MenuExt;
 import cn.jianwoo.blog.enums.MenuTypeEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.service.bo.MenuBO;
 import cn.jianwoo.blog.service.bo.MenuValidateBO;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public interface MenuBizService {
      * @return
      * @author gulihua
      */
-    List<MenuExt> queryBackGroudMenuList() throws JwBlogException;
+    List<MenuBO> queryAdminMenuList() throws JwBlogException;
 
 
     /**
@@ -24,7 +24,7 @@ public interface MenuBizService {
      * @return
      * @author gulihua
      */
-    List<MenuExt> queryAllFrontDeskMenuList() throws JwBlogException;
+    List<MenuBO> queryAllMainMenuList() throws JwBlogException;
 
     /**
      * 获取有效的前台的菜单
@@ -32,7 +32,7 @@ public interface MenuBizService {
      * @return
      * @author gulihua
      */
-    List<MenuExt> queryEffectiveFrontDeskMenuList() throws JwBlogException;
+    List<MenuBO> queryEffectiveMainMenuList() throws JwBlogException;
 
 
     /**
@@ -42,23 +42,17 @@ public interface MenuBizService {
      * @return
      * @author gulihua
      */
-    int countMenu(int type);
+    int countMenu(String type);
 
 
     /**
      * 添加菜单
      *
-     * @param name      菜单名
-     * @param type      类型 [MENU.TYPE] {@link MenuTypeEnum}
-     * @param parentOid 菜单父oid
-     * @param text      菜单文本
-     * @param icon      菜单图标
-     * @param url       菜单url
+     * @param menuBO 菜单名
      * @return
      * @author gulihua
      */
-    void doAddMenu(String name, Integer type, Long parentOid, String text, String icon, String url)
-            throws JwBlogException;
+    void doAddMenu(MenuBO menuBO) throws JwBlogException;
 
 
     /**
@@ -69,7 +63,7 @@ public interface MenuBizService {
      * @return
      * @author gulihua
      */
-    int countMenuWithSameLevel(Integer type, Long parentOid);
+    int countMenuWithSameLevel(String type, Long parentOid);
 
 
     /**
@@ -104,13 +98,13 @@ public interface MenuBizService {
 
 
     /**
-     * 根据子oid获取父菜单名
+     * 根据子oid获取父菜单文本名(TEXT)
      *
      * @param oid 子菜单主键
      * @return
      * @author gulihua
      */
-    String queryParentMenuNameBySubId(Long oid) throws JwBlogException;
+    String queryParentMenuTextBySubId(Long oid) throws JwBlogException;
 
 
     /**
@@ -140,7 +134,7 @@ public interface MenuBizService {
      * @return
      * @author gulihua
      */
-    List<Menu> querySubMenuOrderedList(Integer type);
+    List<Menu> querySubMenuOrderedList(String type);
 
 
     /**
@@ -150,22 +144,17 @@ public interface MenuBizService {
      * @return
      * @author gulihua
      */
-    void doSortFrontMenuList(List<Long> oidList) throws JwBlogException;
+    void doSortMainMenuList(List<Long> oidList) throws JwBlogException;
 
 
     /**
      * 更新菜单名字
      *
-     * @param text  菜单文本
-     * @param oid   菜单主键
-     * @param name  菜单名字
-     * @param icon  菜单图标
-     * @param url   菜单url
-     * @param valid 是否有效
+     * @param menuBO 菜单
      * @return
      * @author gulihua
      */
-    void doUpdateMenu(Long oid, String text, String name, String icon, String url, Boolean valid) throws JwBlogException;
+    void doUpdateMenu(MenuBO menuBO) throws JwBlogException;
 
 
     /**
@@ -194,5 +183,15 @@ public interface MenuBizService {
      * @author gulihua
      */
     MenuValidateBO doValidateArticleExistsInMenu(Long oid) throws JwBlogException;
+
+
+    /**
+     * 通过oid查询菜单
+     *
+     * @param oid 菜单主键
+     * @return MenuBO
+     * @author gulihua
+     */
+    MenuBO queryMenuByOid(Long oid) throws JwBlogException;
 
 }

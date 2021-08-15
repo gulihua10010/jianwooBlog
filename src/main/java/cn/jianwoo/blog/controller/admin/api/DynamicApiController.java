@@ -2,20 +2,21 @@ package cn.jianwoo.blog.controller.admin.api;
 
 import cn.hutool.core.date.DateUtil;
 import cn.jianwoo.blog.base.BaseController;
+import cn.jianwoo.blog.config.apiversion.ApiVersion;
 import cn.jianwoo.blog.config.router.admin.DynamicApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dto.request.CommentPageRequest;
 import cn.jianwoo.blog.dto.request.VisitPageRequest;
 import cn.jianwoo.blog.dto.response.CommentSummaryResponse;
 import cn.jianwoo.blog.dto.response.VisitResponse;
-import cn.jianwoo.blog.dto.response.vo.CommentVO;
+import cn.jianwoo.blog.dto.response.vo.CommentSummaryVO;
 import cn.jianwoo.blog.dto.response.vo.VisitVO;
-import cn.jianwoo.blog.entity.extension.CommentExt;
-import cn.jianwoo.blog.entity.extension.VisitExt;
 import cn.jianwoo.blog.entity.query.CommentParam;
 import cn.jianwoo.blog.entity.query.VisitParam;
 import cn.jianwoo.blog.service.biz.CommentBizService;
 import cn.jianwoo.blog.service.biz.VisitBizService;
+import cn.jianwoo.blog.service.bo.CommentBO;
+import cn.jianwoo.blog.service.bo.VisitBO;
 import cn.jianwoo.blog.util.DomainUtil;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +61,7 @@ public class DynamicApiController extends BaseController {
      * --desc<br/>
      * @author gulihua
      */
+    @ApiVersion()
     @GetMapping(DynamicApiUrlConfig.URL_VISIT_QUERY)
     public String queryVisitList(VisitPageRequest param) {
         super.printRequestParams(DomainUtil.toString(param));
@@ -67,17 +69,18 @@ public class DynamicApiController extends BaseController {
         VisitParam pageParam = new VisitParam();
         pageParam.setPageNo(param.getPage());
         pageParam.setPageSize(param.getLimit());
-        PageInfo<VisitExt> pageInfo = visitBizService.queryRecentVisitPageList(pageParam);
+        PageInfo<VisitBO> pageInfo = visitBizService.queryRecentVisitPageList(pageParam);
         VisitResponse response = VisitResponse.getInstance();
         if (CollectionUtils.isNotEmpty(pageInfo.getList())) {
             List<VisitVO> list = new ArrayList<>();
             pageInfo.getList().forEach(domain -> {
                 VisitVO vo = new VisitVO();
                 vo.setArticleOid(domain.getArticleOid());
-                vo.setArticleTitle(domain.getTitle());
-                vo.setIp(domain.getIp());
-                vo.setArea(domain.getArea());
-                vo.setVisitDate(DateUtil.formatDateTime(domain.getVisitDate()));
+                vo.setArticleTitle(domain.getArticleTitle());
+                vo.setVisitIp(domain.getVisitIp());
+                vo.setVisitArea(domain.getVisitArea());
+                vo.setVisitDateStr(DateUtil.formatDateTime(domain.getVisitTime()));
+                vo.setVisitTime(domain.getVisitTime());
                 list.add(vo);
             });
             response.setData(list);
@@ -90,7 +93,7 @@ public class DynamicApiController extends BaseController {
 
     /**
      * 查詢最近的文章评论列表(动态首页)<br/>
-     * url:/api/admin/dynamic/visit/query<br/>
+     * url:/api/admin/comment/visit/query<br/>
      *
      * @param param JSON 参数({@link VisitPageRequest})
      * @return 返回响应 {@link CommentSummaryResponse}
@@ -111,6 +114,7 @@ public class DynamicApiController extends BaseController {
      * --desc<br/>
      * @author gulihua
      */
+    @ApiVersion()
     @GetMapping(DynamicApiUrlConfig.URL_COMMENT_QUERY)
     public String queryCommPageList(CommentPageRequest param) {
         super.printRequestParams(DomainUtil.toString(param));
@@ -118,17 +122,18 @@ public class DynamicApiController extends BaseController {
         CommentParam pageParam = new CommentParam();
         pageParam.setPageNo(param.getPage());
         pageParam.setPageSize(param.getLimit());
-        PageInfo<CommentExt> pageInfo = commentBizService.queryAllCommentPage(pageParam);
+        PageInfo<CommentBO> pageInfo = commentBizService.queryAllCommentPage(pageParam);
         CommentSummaryResponse response = CommentSummaryResponse.getInstance();
         if (CollectionUtils.isNotEmpty(pageInfo.getList())) {
-            List<CommentVO> list = new ArrayList<>();
+            List<CommentSummaryVO> list = new ArrayList<>();
             pageInfo.getList().forEach(domain -> {
-                CommentVO vo = new CommentVO();
+                CommentSummaryVO vo = new CommentSummaryVO();
                 vo.setArtOid(domain.getArticleOid());
-                vo.setDate(DateUtil.formatDateTime(domain.getDate()));
+                vo.setCommentTimeStr(DateUtil.formatDateTime(domain.getCommentTime()));
+                vo.setCommentTime(domain.getCommentTime());
                 vo.setArtTitle(domain.getTitle());
-                vo.setUser(domain.getUser());
-                vo.setIp(domain.getIp());
+                vo.setUserName(domain.getUserName());
+                vo.setClientIp(domain.getClientIp());
 //                vo.setArea(domain.getArea());
                 String content = StringEscapeUtils.escapeHtml4(domain.getContent());
                 if (content.length() > 50) {

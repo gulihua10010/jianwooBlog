@@ -1,6 +1,7 @@
 package cn.jianwoo.blog.controller.admin.api;
 
 import cn.jianwoo.blog.base.BaseController;
+import cn.jianwoo.blog.config.apiversion.ApiVersion;
 import cn.jianwoo.blog.config.router.admin.SubTokenApiUrlConfig;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.dto.request.TokenGenRequest;
@@ -35,6 +36,7 @@ public class SubTokenGenerateApiController extends BaseController {
      * token
      * @author gulihua
      */
+    @ApiVersion()
     @PostMapping(SubTokenApiUrlConfig.URL_TOKEN_GENERATE)
     public String generateToken(@RequestBody String param) {
         try {

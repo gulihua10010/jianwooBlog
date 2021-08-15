@@ -9,8 +9,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * @author GuLihua
@@ -33,7 +31,12 @@ public class WebconfVO implements Serializable {
     /**
      * 配置标题/标签
      */
-    private String title;
+    private String titleDsp;
+    /**
+     * 配置提示
+     */
+    private String tipsDsp;
+
     /**
      * 值类型  {@link ValueTypeEnum}
      */
@@ -49,7 +52,7 @@ public class WebconfVO implements Serializable {
     /**
      * 是否必填
      */
-    private Boolean mandatory;
+    private Boolean required;
     /**
      * 验证类型  {@link ValidateTypeEnum}
      */

@@ -2,6 +2,7 @@ package cn.jianwoo.blog.service.biz;
 
 import cn.jianwoo.blog.entity.extension.VisitExt;
 import cn.jianwoo.blog.entity.query.VisitParam;
+import cn.jianwoo.blog.service.bo.VisitBO;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface VisitBizService {
      * @return
      * @author gulihua
      */
-    List<VisitExt> queryRecentVisit(Integer limit);
+    List<VisitBO> queryRecentVisit(Integer limit);
 
 
     /**
@@ -23,5 +24,5 @@ public interface VisitBizService {
      * @return
      * @author gulihua
      */
-    PageInfo<VisitExt> queryRecentVisitPageList(VisitParam param);
+    PageInfo<VisitBO> queryRecentVisitPageList(VisitParam param);
 }
