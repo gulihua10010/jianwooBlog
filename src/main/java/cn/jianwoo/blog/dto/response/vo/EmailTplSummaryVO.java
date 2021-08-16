@@ -1,5 +1,6 @@
 package cn.jianwoo.blog.dto.response.vo;
 
+import cn.jianwoo.blog.util.DateUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,16 +12,17 @@ import java.util.Date;
 /**
  * @author GuLihua
  * @Description
- * @date 2021-08-15 16:21
+ * @date 2020-10-12 11:59
  */
 
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmailTplVO implements Serializable {
+public class EmailTplSummaryVO implements Serializable {
 
-    private static final long serialVersionUID = 1152316162401556760L;
+    private static final long serialVersionUID = 2152295702147130157L;
+
     /**
      * 主键
      */
@@ -37,19 +39,17 @@ public class EmailTplVO implements Serializable {
      * 邮件模板主题
      */
     private String subject;
-
-    /**
-     * 邮件模板内容,HTML格式
-     */
-    private String content;
-
-    /**
-     * 测试的JSON数据
-     */
-    private String testJsonData;
-
     /**
      * 创建时间
      */
-    private String createTime;
+    private Date createTime;
+    /**
+     * 创建时间
+     */
+    private String createTimeStr;
+
+    public String getCreateTimeDesc() {
+        return DateUtil.optimizeTimeDesc(this.getCreateTime());
+    }
+
 }

@@ -2,7 +2,7 @@ package cn.jianwoo.blog.dao.biz.mapper;
 
 import cn.jianwoo.blog.entity.Comment;
 import cn.jianwoo.blog.entity.extension.CommentExt;
-import cn.jianwoo.blog.entity.query.CommentParam;
+import cn.jianwoo.blog.entity.query.CommentQuery;
 
 import java.util.List;
 
@@ -69,7 +69,7 @@ public interface CommentBizMapper {
      * @return List<CommentExt>
      * @author gulihua
      */
-    List<CommentExt> selectAllCommentsExt(CommentParam param);
+    List<CommentExt> selectAllCommentsExt(CommentQuery param);
 
 
     /**

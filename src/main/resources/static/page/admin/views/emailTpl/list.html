@@ -1,0 +1,55 @@
+<title>邮件模板</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>系统管理</cite></a>
+        <a><cite>邮件模板</cite></a>
+    </div>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">模板编号</label>
+                    <div class="layui-input-inline">
+                        <input autocomplete="off" class="layui-input" name="code" placeholder="请输入"
+                               type="text">
+                    </div>
+                    <label class="layui-form-label">模板描述</label>
+                    <div class="layui-input-inline">
+                        <input autocomplete="off" class="layui-input" name="desc" placeholder="请输入"
+                               type="text">
+                    </div>
+
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn search-btn" data-type="reload" lay-filter="emailtpl-search"
+                            lay-submit>
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <div style="padding-bottom: 10px;">
+                <button class="layui-btn layuiadmin-btn-add"  lay-href="/emailTpl/create" data-type="createEmailTpl">创建邮件模板</button>
+            </div>
+            <table id="emailTpl-table" lay-filter="emailTpl"></table>
+            <script id="table-content-email" type="text/html">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"
+                   lay-href="/emailTpl/edit/id={{d.oid}}"><i
+                        class="layui-icon layui-icon-form"></i>编辑</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
+                        class="layui-icon layui-icon-delete"></i>删除</a>
+            </script>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use('emailTpl', layui.factory('emailTpl')).use(['admin', 'emailTpl'], function () {
+
+    })
+</script>

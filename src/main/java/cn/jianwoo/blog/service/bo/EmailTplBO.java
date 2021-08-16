@@ -19,11 +19,36 @@ import java.util.Date;
 @AllArgsConstructor
 public class EmailTplBO implements Serializable {
     private static final long serialVersionUID = -7982293393643864915L;
+
+    /**
+     * 主键OID
+     */
     private Long oid;
-    private String code;
+    /**
+     * 邮件模板编号
+     */
+    private String emailTplCode;
+
+    /**
+     * 邮件模板内容,HTML格式
+     */
     private String content;
+    /**
+     * 邮件模板主题
+     */
     private String subject;
+    /**
+     * 描述
+     */
     private String desc;
-    private String jsonData;
-    private Date createDate;
+    /**
+     * 测试的JSON数据
+     */
+    private String testJsonData;
+    /**
+     * 创建时间
+     */
+    private Date createTime;
+
+
 }

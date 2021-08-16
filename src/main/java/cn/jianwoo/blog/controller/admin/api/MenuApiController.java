@@ -285,7 +285,7 @@ public class MenuApiController extends BaseController {
      */
     @ApiVersion()
     @GetMapping(MenuApiUrlConfig.URL_MENU_BACKEND_INFO_LIST)
-    public String getBackendInfoList() {
+    public String queryBackendInfoList() {
         BackendMenuResponse response = BackendMenuResponse.getInstance();
         List<BackendMenuVO> list = new ArrayList<>();
         try {
@@ -328,7 +328,7 @@ public class MenuApiController extends BaseController {
      */
     @ApiVersion()
     @GetMapping(MenuApiUrlConfig.URL_MENU_ARTICLE_TYPE_LIST)
-    public String getArticleTypeMenuList() {
+    public String queryArticleTypeMenuList() {
         ArticleMenuResponse response = ArticleMenuResponse.getInstance();
         List<ArticleMenuVO> list = new ArrayList<>();
         List<Menu> menuList = menuBizService.querySubMenuOrderedList(MenuTypeEnum.FRONTEND.getValue());
@@ -374,7 +374,7 @@ public class MenuApiController extends BaseController {
      */
     @ApiVersion()
     @GetMapping(MenuApiUrlConfig.URL_MENU_HOME_LIST)
-    public String getHomeMenuList() {
+    public String queryHomeMenuList() {
         HomeMenuResponse response = HomeMenuResponse.getInstance();
         List<HomeMenuVO> list = new ArrayList<>();
         List<MenuBO> menuBOList = null;
@@ -429,7 +429,7 @@ public class MenuApiController extends BaseController {
      */
     @ApiVersion()
     @GetMapping(MenuApiUrlConfig.URL_MENU_INFO)
-    public String getMenuInfo(@PathVariable("id") Long id) {
+    public String queryMenuInfo(@PathVariable("id") String id) {
         MenuInfoResponse response = MenuInfoResponse.getInstance();
         MenuVO vo = new MenuVO();
         MenuBO menu = null;

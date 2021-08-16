@@ -176,7 +176,7 @@ layui.extend({
             title: title
             , time: 1000
             , icon: 6
-            , offset: '400px'
+            , offset: '250px'
         });
     }
     //警告提示
@@ -185,19 +185,19 @@ layui.extend({
             title: title
             , time: 1000
             , icon: 7
-            , offset: '400px'
+            , offset: '250px'
         });
     }
 
 
     //失败提示
-    alertFail = function (title = '提示', msg = '', input_dom) {
+    alertFail = function (title = '错误提示', msg = '', input_dom) {
         layer.msg(msg, {
             title: title
             , time: 1000
             , icon: 5
             , shift: 6
-            , offset: '400px'
+            , offset: '250px'
         });
         if (input_dom !== undefined) {
             setTimeout(function(){

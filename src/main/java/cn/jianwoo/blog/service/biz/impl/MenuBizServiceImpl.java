@@ -398,17 +398,18 @@ public class MenuBizServiceImpl implements MenuBizService {
     }
 
     @Override
-    public MenuBO queryMenuByOid(Long oid) throws JwBlogException {
+    public MenuBO queryMenuByOid(String oid) throws JwBlogException {
         Menu menu;
         try {
-            menu = menuTransDao.queryMenuByPrimaryKey(oid);
-        } catch (DaoException e) {
+            menu = menuTransDao.queryMenuByPrimaryKey(Long.parseLong(oid));
+            MenuBO menuBO = new MenuBO();
+            BeanUtils.copyProperties(menu, menuBO);
+            return menuBO;
+        } catch (Exception e) {
             log.error(">>Query menu by oid {} failed, e\r\n{}", oid, e);
-            throw MenuBizException.NOT_EXIST_EXCEPTION.format(oid).print();
+            throw MenuBizException.NOT_EXIST_EXCEPTION_CN.format(oid).print();
         }
-        MenuBO menuBO = new MenuBO();
-        BeanUtils.copyProperties(menu, menuBO);
-        return menuBO;
+
     }
 
 }

@@ -9,12 +9,12 @@ import cn.jianwoo.blog.config.router.UrlConfig;
  */
 public class EmailTemplateApiUrlConfig extends UrlConfig {
     public static final String URL_PREFIX = "/api/admin/email/tpl";
-    public static final String URL_EMAIL_TPL_ADD = "/add";
+    public static final String URL_EMAIL_TPL_CREATE = "/create";
     public static final String URL_EMAIL_TPL_REMOVE = "/remove";
     public static final String URL_EMAIL_TPL_UPDATE = "/update";
     public static final String URL_EMAIL_TPL_QUERY_LIST = "/query/list";
     public static final String URL_EMAIL_TPL_EDIT = "/edit/{id}";
-    public static final String URL_EMAIL_TPL_RENDER = "/render/{id}";
+    public static final String URL_EMAIL_TPL_RENDER = "/render";
 
 
     /**

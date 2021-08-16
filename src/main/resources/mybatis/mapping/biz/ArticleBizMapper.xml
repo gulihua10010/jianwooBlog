@@ -86,7 +86,7 @@
         FROM article WHERE STATUS = '90' ORDER BY COMMENT_COUNT,PRAISE_COUNT DESC LIMIT #{limit,jdbcType=INTEGER}
     </select>
 
-    <select id="selectArticleListByStatus" parameterType="cn.jianwoo.blog.entity.query.ArticleParam"
+    <select id="selectArticleListByStatus" parameterType="cn.jianwoo.blog.entity.query.ArticleQuery"
             resultMap="ResultMapWithExt">
         SELECT A.TITLE,A.AUTHOR,A.OID,A.PUSH_TIME,MODIFIED_TIME,M.NAME AS TYPE_NAME,A.STATUS
         FROM ARTICLE A LEFT JOIN MENU M ON M.OID=A.MENU_ID

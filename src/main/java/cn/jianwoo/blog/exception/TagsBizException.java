@@ -18,6 +18,8 @@ public class TagsBizException extends JwBlogException {
             "标签列表中%s已经存在.");
     public static final TagsBizException NOT_EXIST_EXCEPTION = new TagsBizException(ExceptionConstants.BIZ_NOT_EXIST,
             "The tags[%s] does not exist.");
+    public static final TagsBizException NOT_EXIST_EXCEPTION_CN = new TagsBizException(ExceptionConstants.BIZ_NOT_EXIST,
+            "标签[%s]不存在!");
     public static final TagsBizException CREATE_FAILED_EXCEPTION = new TagsBizException(
             ExceptionConstants.BIZ_CREATE_FAIL, "The tags[%s] creation is failed.");
     public static final TagsBizException MODIFY_FAILED_EXCEPTION = new TagsBizException(

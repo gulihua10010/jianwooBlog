@@ -98,7 +98,7 @@
     </select>
 
     <select id="selectAllCommentsExt" resultMap="ResultMapWithExt"
-            parameterType="cn.jianwoo.blog.entity.query.CommentParam">
+            parameterType="cn.jianwoo.blog.entity.query.CommentQuery">
         SELECT
         C.OID,
         C.USER_NAME,

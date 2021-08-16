@@ -66,6 +66,13 @@ public enum PageIdEnum {
      */
     ADMIN_LOGIN("AL10"),
 
+    /**
+     * 邮件模板
+     */
+    EMAIL_TPL_CREATE("ET10"),
+    EMAIL_TPL_UPDATE("ET11"),
+
+
 
     ;
     private String value;

@@ -16,7 +16,8 @@ public final class ExceptionConstants {
     public static final String BIZ_CREATE_FAIL = "200003";
     public static final String BIZ_MODIFY_FAIL = "200004";
     public static final String BIZ_DELETE_FAIL = "200005";
-    public static final String BIZ_PASSWORD_INCORRECT = "200005";
+    public static final String BIZ_STATUS_INCORRECT = "200006";
+    public static final String BIZ_PASSWORD_INCORRECT = "200007";
 
     public static final String VALIDATION_FAILED_NULL = "300001";
     public static final String VALIDATION_FAILED_EMPTY = "300002";

@@ -48,4 +48,6 @@ webconf require ✔
 webconf err tip focus red ✔
 文章更新时查询status判断，不用withblobs, 更新时withSelective不用旧的article对象，构造一个新的对象。✔
 webconf_facade.mandatory -- > required ✔
-
+layui前端对于500，404的控制 ✔
+浏览器preview乱码 !
+layer.msg 位置上方、居中 ✔

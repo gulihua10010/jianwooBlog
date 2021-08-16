@@ -8,7 +8,7 @@ import cn.jianwoo.blog.dao.biz.ArticleBizDao;
 import cn.jianwoo.blog.dao.biz.CommentBizDao;
 import cn.jianwoo.blog.entity.Comment;
 import cn.jianwoo.blog.entity.extension.CommentExt;
-import cn.jianwoo.blog.entity.query.CommentParam;
+import cn.jianwoo.blog.entity.query.CommentQuery;
 import cn.jianwoo.blog.enums.ArticleDelStatusEnum;
 import cn.jianwoo.blog.enums.CommReadEnum;
 import cn.jianwoo.blog.exception.ArticleBizException;
@@ -17,6 +17,7 @@ import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.CommentBizService;
 import cn.jianwoo.blog.service.bo.CommentBO;
+import cn.jianwoo.blog.service.param.CommentParam;
 import cn.jianwoo.blog.task.AsyncTask;
 import cn.jianwoo.blog.util.DateUtil;
 import com.alibaba.fastjson.JSON;
@@ -291,7 +292,9 @@ public class CommentBizServiceImpl implements CommentBizService {
     @Override
     @Deprecated
     public List<CommentBO> queryAllEffectiveComment(CommentParam param) {
-        List<CommentExt> commentList = commentBizDao.queryAllCommentsExt(param);
+        CommentQuery query = new CommentQuery();
+        BeanUtils.copyProperties(param, query);
+        List<CommentExt> commentList = commentBizDao.queryAllCommentsExt(query);
         List<CommentBO> list = new ArrayList<>();
         if (!CollectionUtils.isEmpty(commentList)) {
             CommentBO bo = new CommentBO();
@@ -322,7 +325,9 @@ public class CommentBizServiceImpl implements CommentBizService {
     @Override
     public PageInfo<CommentBO> queryAllCommentPage(CommentParam param) {
         Page page = PageHelper.startPage(param.getPageNo(), param.getPageSize());
-        List<CommentExt> commentList = commentBizDao.queryAllCommentsExt(param);
+        CommentQuery query = new CommentQuery();
+        BeanUtils.copyProperties(param, query);
+        List<CommentExt> commentList = commentBizDao.queryAllCommentsExt(query);
         List<CommentBO> list = new ArrayList<>();
         if (!CollectionUtils.isEmpty(commentList)) {
             CommentBO bo = new CommentBO();
@@ -351,14 +356,16 @@ public class CommentBizServiceImpl implements CommentBizService {
 
 
     @Override
-    public CommentBO queryCommentExtByOid(Long oid) {
-        CommentExt commentExt = commentBizDao.queryCommentExtByOid(oid);
-        if (null != commentExt) {
+    public CommentBO queryCommentExtByOid(String oid) throws JwBlogException {
+        try {
+            CommentExt commentExt = commentBizDao.queryCommentExtByOid(Long.parseLong(oid));
             CommentBO bo = new CommentBO();
             BeanUtils.copyProperties(commentExt, bo);
             return bo;
+        } catch (Exception e) {
+            throw CommentBizException.NOT_EXIST_EXCEPTION_CN.format(oid).print();
+
         }
-        return null;
     }
 
 

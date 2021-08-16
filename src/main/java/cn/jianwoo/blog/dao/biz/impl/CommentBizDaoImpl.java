@@ -4,7 +4,7 @@ import cn.jianwoo.blog.dao.biz.CommentBizDao;
 import cn.jianwoo.blog.dao.biz.mapper.CommentBizMapper;
 import cn.jianwoo.blog.entity.Comment;
 import cn.jianwoo.blog.entity.extension.CommentExt;
-import cn.jianwoo.blog.entity.query.CommentParam;
+import cn.jianwoo.blog.entity.query.CommentQuery;
 import cn.jianwoo.blog.exception.DaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,15 +60,19 @@ public class CommentBizDaoImpl implements CommentBizDao {
 
 
     @Override
-    public List<CommentExt> queryAllCommentsExt(CommentParam param) {
+    public List<CommentExt> queryAllCommentsExt(CommentQuery param) {
         return commentBizMapper.selectAllCommentsExt(param);
 
     }
 
 
     @Override
-    public CommentExt queryCommentExtByOid(Long oid) {
-        return commentBizMapper.selectCommentExtByOid(oid);
+    public CommentExt queryCommentExtByOid(Long oid) throws DaoException {
+        CommentExt commentExt = commentBizMapper.selectCommentExtByOid(oid);
+        if (null == commentExt) {
+            throw DaoException.DAO_UPDATE_RESULT_0.print();
+        }
+        return commentExt;
     }
 
     @Override

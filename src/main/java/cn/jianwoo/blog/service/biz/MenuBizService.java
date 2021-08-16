@@ -192,6 +192,6 @@ public interface MenuBizService {
      * @return MenuBO
      * @author gulihua
      */
-    MenuBO queryMenuByOid(Long oid) throws JwBlogException;
+    MenuBO queryMenuByOid(String oid) throws JwBlogException;
 
 }

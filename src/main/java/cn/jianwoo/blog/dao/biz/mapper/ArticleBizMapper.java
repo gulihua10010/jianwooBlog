@@ -2,7 +2,7 @@ package cn.jianwoo.blog.dao.biz.mapper;
 
 import cn.jianwoo.blog.entity.Article;
 import cn.jianwoo.blog.entity.extension.ArticleExt;
-import cn.jianwoo.blog.entity.query.ArticleParam;
+import cn.jianwoo.blog.entity.query.ArticleQuery;
 
 import java.util.List;
 import java.util.Map;
@@ -67,7 +67,7 @@ public interface ArticleBizMapper {
      * @return
      * @author gulihua
      */
-    List<ArticleExt> selectArticleListByStatus(ArticleParam param);
+    List<ArticleExt> selectArticleListByStatus(ArticleQuery param);
 
 
     /**

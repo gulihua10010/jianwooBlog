@@ -122,7 +122,7 @@ layui.define(['laytpl', 'layer'], function (exports) {
 
                 //其它异常
                 else {
-                    if (res[response.statusName] == statusCode.error) {
+                    if (setter.debug) {
                         var error = [
                             '<cite>Error：</cite> ' + (res[response.msgName] || '返回状态码异常')
                             , debug()
@@ -137,13 +137,11 @@ layui.define(['laytpl', 'layer'], function (exports) {
             }
             , error: function (e, code) {
                 var responseJSON = e.responseJSON;
-                if (responseJSON && responseJSON.status == response.statusCode.logout)
-                {
+                if (responseJSON && responseJSON[response.statusName] == response.statusCode.logout) {
                     var redirect = layui.router().href;
                     view.exit(redirect);
                 }
-                if (setter.debug)
-                {
+                if (setter.debug) {
                     var errorTip = [
                         '请求异常，请重试<br><cite>错误信息：</cite>' + code
                         , debug()
@@ -221,6 +219,8 @@ layui.define(['laytpl', 'layer'], function (exports) {
         $.ajax({
             url: views
             , type: 'get'
+            , contentType: "application/json"
+            ,  headers:{'Content-Type':'application/json;charset=utf8'}
             , dataType: 'html'
             , data: {
                 v: layui.cache.version
@@ -308,7 +308,8 @@ layui.define(['laytpl', 'layer'], function (exports) {
 
         }
 
-        , router = layui.router();
+            , response = setter.response
+            , router = layui.router();
 
         elem.find('title').remove();
         that.container[refresh ? 'after' : 'html'](elem.children());
@@ -349,11 +350,28 @@ layui.define(['laytpl', 'layer'], function (exports) {
                         , dataType: 'json'
                         , headers: headers
                         , success: function (res) {
-                            fn({
-                                dataElem: dataElem
-                                , res: res
-                                , done: layDone
-                            });
+                            if (res[response.statusName] == response.statusCode.ok) {
+                                fn({
+                                    dataElem: dataElem
+                                    , res: res
+                                    , done: layDone
+                                });
+                            } else {
+                                if (res[response.statusName] === response.statusCode.notExist) {
+                                    that.render('template/tips/404');
+                                    layer.msg(res[response.msgName] , {
+                                        title: '错误提示'
+                                        , time: 1000
+                                        , icon: 5
+                                        , shift: 6
+                                        , offset: '250px'
+                                    });
+                                } else {
+                                    that.render('template/tips/error');
+                                }
+                            }
+
+
                         }
                     });
                 } else {

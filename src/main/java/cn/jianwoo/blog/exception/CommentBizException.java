@@ -14,6 +14,8 @@ public class CommentBizException extends JwBlogException {
             ExceptionConstants.BIZ_HAS_EXIST, "The comment[%s] already exists.");
     public static final CommentBizException NOT_EXIST_EXCEPTION = new CommentBizException(
             ExceptionConstants.BIZ_NOT_EXIST, "The comment[%s] does not exist.");
+    public static final CommentBizException NOT_EXIST_EXCEPTION_CN = new CommentBizException(
+            ExceptionConstants.BIZ_NOT_EXIST, "评论[%s]不存在!");
     public static final CommentBizException CREATE_FAILED_EXCEPTION = new CommentBizException(
             ExceptionConstants.BIZ_CREATE_FAIL, "The comment[%s] creation is failed.");
     public static final CommentBizException MODIFY_FAILED_EXCEPTION = new CommentBizException(

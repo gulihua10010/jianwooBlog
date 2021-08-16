@@ -14,7 +14,6 @@ import cn.jianwoo.blog.service.biz.TagsBizService;
 import cn.jianwoo.blog.service.bo.TagsBO;
 import cn.jianwoo.blog.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -170,17 +169,18 @@ public class TagsBizServiceImpl implements TagsBizService {
     }
 
     @Override
-    public TagsBO queryTagsByOid(Long oid) throws JwBlogException {
+    public TagsBO queryTagsByOid(String oid) throws JwBlogException {
         Tags tags;
         try {
-            tags = tagsTransDao.queryTagsByPrimaryKey(oid);
-        } catch (DaoException e) {
+            tags = tagsTransDao.queryTagsByPrimaryKey(Long.parseLong(oid));
+            TagsBO tagsBO = new TagsBO();
+            tagsBO.setId(tags.getOid());
+            tagsBO.setName(tags.getContent());
+            return tagsBO;
+        } catch (Exception e) {
             log.error(">>Query Tags by oid {} failed, e\r\n{}", oid, e);
-            throw TagsBizException.NOT_EXIST_EXCEPTION.format(oid).print();
+            throw TagsBizException.NOT_EXIST_EXCEPTION_CN.format(oid).print();
         }
-        TagsBO tagsBO = new TagsBO();
-        tagsBO.setId(tags.getOid());
-        tagsBO.setName(tags.getContent());
-        return tagsBO;
+
     }
 }

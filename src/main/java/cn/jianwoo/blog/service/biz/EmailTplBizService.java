@@ -1,9 +1,8 @@
 package cn.jianwoo.blog.service.biz;
 
-import cn.jianwoo.blog.entity.EmailTemplate;
-import cn.jianwoo.blog.entity.query.EmailTplParam;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.bo.EmailTplBO;
+import cn.jianwoo.blog.service.param.EmailTplParam;
 import com.github.pagehelper.PageInfo;
 
 /**
@@ -20,7 +19,7 @@ public interface EmailTplBizService {
      * @return PageInfo<EmailTemplate>
      * @author gulihua
      */
-    PageInfo<EmailTemplate> queryAllEmailTplPage(EmailTplParam param);
+    PageInfo<EmailTplBO> queryAllEmailTplPage(EmailTplParam param);
 
     /**
      * 添加邮件模板
@@ -29,7 +28,7 @@ public interface EmailTplBizService {
      * @return PageInfo<EmailTemplate>
      * @author gulihua
      */
-    void doAddEmailTpl(EmailTplBO param) throws JwBlogException;
+    void doCreateEmailTpl(EmailTplBO param) throws JwBlogException;
 
     /**
      * 更新邮件模板
@@ -54,5 +53,14 @@ public interface EmailTplBizService {
      * @return EmailTplBO
      * @author gulihua
      */
-    EmailTplBO queryEmailTplByOid(Long oid) throws JwBlogException;
+    EmailTplBO queryEmailTplByOid(String oid) throws JwBlogException;
+
+
+    /**
+     * 渲染邮件模板
+     *
+     * @param param 参数
+     * @author gulihua
+     */
+    String doRenderEmailTpl(EmailTplBO param) throws JwBlogException;
 }

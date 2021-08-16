@@ -178,7 +178,7 @@ public class TagsApiController extends BaseController {
      */
     @ApiVersion()
     @GetMapping(TagsApiUrlConfig.URL_TAG_LIST)
-    public String getTagsList() {
+    public String queryTagsList() {
         TagListResponse response = TagListResponse.getInstance();
         List<TagsVO> list = new ArrayList<TagsVO>();
         List<TagsBO> tags = tagsBizService.queryAllTags();
@@ -209,7 +209,7 @@ public class TagsApiController extends BaseController {
      */
     @ApiVersion()
     @GetMapping(TagsApiUrlConfig.URL_TAG_ARTICLE_LIST)
-    public String getTagsListByArtOid(@PathVariable("artId") Long artId) {
+    public String queryTagsListByArtOid(@PathVariable("artId") Long artId) {
         TagListResponse response = null;
         try {
             BizValidation.paramValidate(artId, "artId", "文章id不能为空!");
@@ -242,7 +242,7 @@ public class TagsApiController extends BaseController {
      */
     @ApiVersion()
     @GetMapping(TagsApiUrlConfig.URL_TAG_INFO)
-    public String getTagInfo(@PathVariable("id") Long id) {
+    public String queryTagInfo(@PathVariable("id") String id) {
         TagResponse response = TagResponse.getInstance();
         try {
             BizValidation.paramValidate(id, "id", "标签oid不能为空!");

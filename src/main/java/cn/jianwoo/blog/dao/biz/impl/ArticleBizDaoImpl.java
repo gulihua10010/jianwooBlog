@@ -4,7 +4,7 @@ import cn.jianwoo.blog.dao.biz.ArticleBizDao;
 import cn.jianwoo.blog.dao.biz.mapper.ArticleBizMapper;
 import cn.jianwoo.blog.entity.Article;
 import cn.jianwoo.blog.entity.extension.ArticleExt;
-import cn.jianwoo.blog.entity.query.ArticleParam;
+import cn.jianwoo.blog.entity.query.ArticleQuery;
 import cn.jianwoo.blog.enums.ArticleStatusEnum;
 import cn.jianwoo.blog.exception.DaoException;
 import org.apache.commons.collections.CollectionUtils;
@@ -58,7 +58,7 @@ public class ArticleBizDaoImpl implements ArticleBizDao {
 
 
     @Override
-    public List<ArticleExt> queryEffectiveArticleList(ArticleParam param) {
+    public List<ArticleExt> queryEffectiveArticleList(ArticleQuery param) {
         if (CollectionUtils.isEmpty(param.getStatusParams())) {
             List<String> status = new ArrayList<>();
             status.add(ArticleStatusEnum.PUBLISHED.getValue());
@@ -72,7 +72,7 @@ public class ArticleBizDaoImpl implements ArticleBizDao {
 
 
     @Override
-    public List<ArticleExt> queryRecycleBinArticleList(ArticleParam param) {
+    public List<ArticleExt> queryRecycleBinArticleList(ArticleQuery param) {
         List<String> status = new ArrayList<>();
         status.add(ArticleStatusEnum.RECYCLE.getValue());
         param.setStatusParams(status);

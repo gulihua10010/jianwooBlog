@@ -45,6 +45,7 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function (exports) {
             , statusCode: {
                 ok: "000000" //数据状态一切正常的状态码
                 , error: "999999" //错误状态码：需要顶部弹出的消息;设置false则不弹出
+                , notExist: "200001" //业务查询不到状态码
                 , logout: "900001" //登录状态失效的状态码
             }
             , msgName: 'msg' //状态信息的字段名称

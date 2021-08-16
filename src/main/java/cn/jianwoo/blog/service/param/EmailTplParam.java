@@ -1,4 +1,4 @@
-package cn.jianwoo.blog.entity.query;
+package cn.jianwoo.blog.service.param;
 
 /**
  * @author GuLihua
@@ -8,6 +8,11 @@ package cn.jianwoo.blog.entity.query;
 public class EmailTplParam extends PageParam {
     private static final long serialVersionUID = 2478443514263410456L;
     private String code;
+    private String desc;
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
 
     public String getCode() {
         return this.code;
@@ -15,5 +20,13 @@ public class EmailTplParam extends PageParam {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getDesc() {
+        return this.desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 }

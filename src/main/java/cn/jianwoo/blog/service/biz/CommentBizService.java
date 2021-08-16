@@ -1,9 +1,8 @@
 package cn.jianwoo.blog.service.biz;
 
-import cn.jianwoo.blog.entity.extension.CommentExt;
-import cn.jianwoo.blog.entity.query.CommentParam;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.bo.CommentBO;
+import cn.jianwoo.blog.service.param.CommentParam;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
@@ -133,7 +132,7 @@ public interface CommentBizService {
      * @return CommentBO
      * @author gulihua
      */
-    CommentBO queryCommentExtByOid(Long oid);
+    CommentBO queryCommentExtByOid(String oid) throws JwBlogException;
 
 
     /**

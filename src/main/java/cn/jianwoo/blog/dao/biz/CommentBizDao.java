@@ -2,7 +2,7 @@ package cn.jianwoo.blog.dao.biz;
 
 import cn.jianwoo.blog.entity.Comment;
 import cn.jianwoo.blog.entity.extension.CommentExt;
-import cn.jianwoo.blog.entity.query.CommentParam;
+import cn.jianwoo.blog.entity.query.CommentQuery;
 import cn.jianwoo.blog.exception.DaoException;
 
 import java.util.List;
@@ -70,7 +70,7 @@ public interface CommentBizDao {
      * @return List<CommentExt>
      * @author gulihua
      */
-    List<CommentExt> queryAllCommentsExt(CommentParam param);
+    List<CommentExt> queryAllCommentsExt(CommentQuery param);
 
 
     /**
@@ -80,7 +80,7 @@ public interface CommentBizDao {
      * @return CommentExt
      * @author gulihua
      */
-    CommentExt queryCommentExtByOid(Long oid);
+    CommentExt queryCommentExtByOid(Long oid) throws DaoException;
 
 
     /**

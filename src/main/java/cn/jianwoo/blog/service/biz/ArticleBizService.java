@@ -1,12 +1,9 @@
 package cn.jianwoo.blog.service.biz;
 
-import cn.jianwoo.blog.entity.Article;
-import cn.jianwoo.blog.entity.extension.ArticleExt;
-import cn.jianwoo.blog.entity.query.ArticleParam;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.bo.ArticleBO;
+import cn.jianwoo.blog.service.param.ArticleParam;
 import com.github.pagehelper.PageInfo;
-import org.springframework.lang.NonNull;
 
 import java.util.List;
 
@@ -265,9 +262,9 @@ public interface ArticleBizService {
     /**
      * 查询文章编辑信息
      *
-     * @param artOid 文章oid
+     * @param oid 文章oid
      * @return ArticleBO
      * @author gulihua
      */
-    ArticleBO queryArticleEditInfo(Long artOid) throws JwBlogException;
+    ArticleBO queryArticleEditInfo(String oid) throws JwBlogException;
 }

@@ -1,7 +1,5 @@
 package cn.jianwoo.blog.service.biz;
 
-import cn.jianwoo.blog.entity.Tags;
-import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.bo.TagsBO;
 
@@ -87,7 +85,7 @@ public interface TagsBizService {
      * @return
      * @author gulihua
      */
-    TagsBO queryTagsByOid(Long oid) throws JwBlogException;
+    TagsBO queryTagsByOid(String oid) throws JwBlogException;
 
 
 }

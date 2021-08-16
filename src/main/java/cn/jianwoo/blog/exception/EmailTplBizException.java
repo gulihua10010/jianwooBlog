@@ -15,13 +15,17 @@ public class EmailTplBizException extends JwBlogException {
     public static final EmailTplBizException HAS_EXIST_EXCEPTION_CN = new EmailTplBizException(ExceptionConstants.BIZ_HAS_EXIST,
             "邮件模板[%s]已经存在.");
     public static final EmailTplBizException NOT_EXIST_EXCEPTION = new EmailTplBizException(ExceptionConstants.BIZ_NOT_EXIST,
-            "The tags[%s] does not exist.");
+            "The email template[%s] does not exist.");
+    public static final EmailTplBizException NOT_EXIST_EXCEPTION_CN = new EmailTplBizException(ExceptionConstants.BIZ_NOT_EXIST,
+            "邮件模板[%s]不存在!");
     public static final EmailTplBizException CREATE_FAILED_EXCEPTION = new EmailTplBizException(
             ExceptionConstants.BIZ_CREATE_FAIL, "The email template[%s] creation is failed.");
     public static final EmailTplBizException MODIFY_FAILED_EXCEPTION = new EmailTplBizException(
             ExceptionConstants.BIZ_MODIFY_FAIL, "The email template[%s] modification is failed.");
     public static final EmailTplBizException DELETE_FAILED_EXCEPTION = new EmailTplBizException(
             ExceptionConstants.BIZ_DELETE_FAIL, "The email template[%s] deletion is failed.");
+    public static final EmailTplBizException TPL_RENDER_FAILED_CN = new EmailTplBizException(ExceptionConstants.BIZ_HAS_EXIST,
+            "邮件模板渲染失败,请检查模板参数");
     private static final long serialVersionUID = -4477787493913372810L;
     private final Logger logger = LoggerFactory.getLogger(EmailTplBizException.class);
 

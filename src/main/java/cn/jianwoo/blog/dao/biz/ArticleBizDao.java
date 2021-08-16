@@ -2,7 +2,7 @@ package cn.jianwoo.blog.dao.biz;
 
 import cn.jianwoo.blog.entity.Article;
 import cn.jianwoo.blog.entity.extension.ArticleExt;
-import cn.jianwoo.blog.entity.query.ArticleParam;
+import cn.jianwoo.blog.entity.query.ArticleQuery;
 import cn.jianwoo.blog.exception.DaoException;
 
 import java.util.List;
@@ -67,7 +67,7 @@ public interface ArticleBizDao {
      * @return
      * @author gulihua
      */
-    List<ArticleExt> queryEffectiveArticleList(ArticleParam param);
+    List<ArticleExt> queryEffectiveArticleList(ArticleQuery param);
 
 
     /**
@@ -77,7 +77,7 @@ public interface ArticleBizDao {
      * @return
      * @author gulihua
      */
-    List<ArticleExt> queryRecycleBinArticleList(ArticleParam param);
+    List<ArticleExt> queryRecycleBinArticleList(ArticleQuery param);
 
     /**
      * 更新文章的评论数量

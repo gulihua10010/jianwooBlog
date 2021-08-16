@@ -128,6 +128,6 @@ class BlogApplicationTests {
     @Test
     void Test1()
     {
-        System.out.println(JSON.toJSONString(emailTemplateTransDao.queryAllEmailTplList()));
+//        System.out.println(JSON.toJSONString(emailTemplateTransDao.queryAllEmailTplList()));
     }
 }

@@ -24,7 +24,6 @@ import cn.jianwoo.blog.dto.response.vo.ArticleSummaryVO;
 import cn.jianwoo.blog.dto.response.vo.ArticleVO;
 import cn.jianwoo.blog.dto.response.vo.TagsVO;
 import cn.jianwoo.blog.dto.response.vo.TempArticleVO;
-import cn.jianwoo.blog.entity.query.ArticleParam;
 import cn.jianwoo.blog.enums.ArticleStatusEnum;
 import cn.jianwoo.blog.enums.ArticleVisitEnum;
 import cn.jianwoo.blog.enums.PageIdEnum;
@@ -35,6 +34,7 @@ import cn.jianwoo.blog.service.biz.TempArticleBizService;
 import cn.jianwoo.blog.service.bo.ArticleBO;
 import cn.jianwoo.blog.service.bo.TagsBO;
 import cn.jianwoo.blog.service.bo.TempArticleBO;
+import cn.jianwoo.blog.service.param.ArticleParam;
 import cn.jianwoo.blog.util.DomainUtil;
 import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.validation.BizValidation;
@@ -887,7 +887,7 @@ public class ArticleApiController extends BaseController {
      */
     @ApiVersion()
     @GetMapping(ArticleApiUrlConfig.URL_ARTICLE_INFO)
-    public String queryArticleInfo(@PathVariable("id") Long id) {
+    public String queryArticleInfo(@PathVariable("id") String  id) {
         ArticleInfoResponse response = ArticleInfoResponse.getInstance();
         try {
             BizValidation.paramValidate(id, "id", "文章id不能为空!");

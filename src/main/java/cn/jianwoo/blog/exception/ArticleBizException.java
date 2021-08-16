@@ -24,16 +24,18 @@ public class ArticleBizException extends JwBlogException {
             ExceptionConstants.BIZ_DELETE_FAIL, "The article[%s] deletion is failed.");
     public static final ArticleBizException QUERY_FAILED_EXCEPTION = new ArticleBizException(
             ExceptionConstants.BIZ_NOT_EXIST, "The article[%s] query failed.");
+    public static final ArticleBizException QUERY_FAILED_EXCEPTION_CN = new ArticleBizException(
+            ExceptionConstants.BIZ_NOT_EXIST, "文章[%s]查询失败.");
     public static final ArticleBizException STATUS_NOT_SUPPORT = new ArticleBizException(
-            ExceptionConstants.BIZ_NOT_EXIST, "The status of article[%s] must be PUBLISHED or DRAFT.");
+            ExceptionConstants.BIZ_STATUS_INCORRECT, "The status of article[%s] must be PUBLISHED or DRAFT.");
     public static final ArticleBizException STATUS_NOT_SUPPORT_CN = new ArticleBizException(
-            ExceptionConstants.BIZ_NOT_EXIST, "文章[%s]状态必须是已发布或者草稿!");
+            ExceptionConstants.BIZ_STATUS_INCORRECT, "文章[%s]状态必须是已发布或者草稿!");
     public static final ArticleBizException HAS_DELETE_CN = new ArticleBizException(
-            ExceptionConstants.BIZ_NOT_EXIST, "文章[%s]已经删除!");
+            ExceptionConstants.BIZ_STATUS_INCORRECT, "文章[%s]已经删除!");
     public static final ArticleBizException STATUS_NOT_PUBLISHED_CN = new ArticleBizException(
-            ExceptionConstants.BIZ_NOT_EXIST, "文章[%s]还未发布!");
+            ExceptionConstants.BIZ_STATUS_INCORRECT, "文章[%s]还未发布!");
     public static final ArticleBizException STATUS_NOT_DRAFT = new ArticleBizException(
-            ExceptionConstants.BIZ_NOT_EXIST, "文章[%s]还不是草稿!");
+            ExceptionConstants.BIZ_STATUS_INCORRECT, "文章[%s]还不是草稿!");
     private static final long serialVersionUID = -4477787493913372810L;
     private final Logger logger = LoggerFactory.getLogger(ArticleBizException.class);
 

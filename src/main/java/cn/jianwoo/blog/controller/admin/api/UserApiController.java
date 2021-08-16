@@ -51,7 +51,7 @@ public class UserApiController extends BaseController {
      */
     @ApiVersion()
     @GetMapping(UserApiUrlConfig.URL_USER_INFO)
-    public String getInfo() {
+    public String queryUserInfo() {
         try {
             AdminBO admin = adminBizService.queryAdminByName(adminName);
             AdminUserInfoVO vo = JwBuilder.of(AdminUserInfoVO::new)

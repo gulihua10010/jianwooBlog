@@ -4,8 +4,10 @@ import cn.jianwoo.blog.dao.base.EmailTemplateQueryDao;
 import cn.jianwoo.blog.dao.base.mapper.EmailTemplateMapper;
 import cn.jianwoo.blog.entity.EmailTemplate;
 import cn.jianwoo.blog.entity.example.EmailTemplateExample;
+import cn.jianwoo.blog.entity.query.EmailTplQuery;
 import cn.jianwoo.blog.exception.DaoException;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +28,17 @@ public class EmailTemplateQueryDaoImpl implements EmailTemplateQueryDao {
     }
 
     @Override
-    public List<EmailTemplate> queryAllEmailTplList() {
-        return emailTemplateMapper.selectByExample(new EmailTemplateExample());
+    public List<EmailTemplate> queryAllEmailTplList(EmailTplQuery query) {
+        EmailTemplateExample example = new EmailTemplateExample();
+        EmailTemplateExample.Criteria criteria = example.createCriteria();
+        if (StringUtils.isNotBlank(query.getCode())) {
+            criteria.andEmailTplCodeLike(query.getCode());
+        }
+        if (StringUtils.isNotBlank(query.getDesc())) {
+            criteria.andDescLike(query.getDesc());
+        }
+
+        return emailTemplateMapper.selectByExample(example);
     }
 
     @Override

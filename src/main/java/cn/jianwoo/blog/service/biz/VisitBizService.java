@@ -1,8 +1,8 @@
 package cn.jianwoo.blog.service.biz;
 
-import cn.jianwoo.blog.entity.extension.VisitExt;
-import cn.jianwoo.blog.entity.query.VisitParam;
+import cn.jianwoo.blog.entity.query.VisitQuery;
 import cn.jianwoo.blog.service.bo.VisitBO;
+import cn.jianwoo.blog.service.param.VisitParam;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;

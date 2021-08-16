@@ -20,12 +20,12 @@ import cn.jianwoo.blog.dto.response.CommentSummaryResponse;
 import cn.jianwoo.blog.dto.response.vo.ArticleCommentListVO;
 import cn.jianwoo.blog.dto.response.vo.CommentSummaryVO;
 import cn.jianwoo.blog.dto.response.vo.CommentVO;
-import cn.jianwoo.blog.entity.query.CommentParam;
 import cn.jianwoo.blog.enums.CommReadEnum;
 import cn.jianwoo.blog.enums.PageIdEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.CommentBizService;
 import cn.jianwoo.blog.service.bo.CommentBO;
+import cn.jianwoo.blog.service.param.CommentParam;
 import cn.jianwoo.blog.util.DomainUtil;
 import cn.jianwoo.blog.validation.BizValidation;
 import com.alibaba.fastjson.JSON;
@@ -252,7 +252,7 @@ public class CommentApiController extends BaseController {
         }
         PageInfo<CommentBO> commentExtPageInfo = commentBizService.queryAllCommentPage(commParam);
         List<CommentSummaryVO> commentVOList = new ArrayList<>();
-        CommentSummaryResponse response = new CommentSummaryResponse();
+        CommentSummaryResponse response = CommentSummaryResponse.getInstance();
         for (CommentBO commentBO : commentExtPageInfo.getList()) {
             CommentSummaryVO vo = new CommentSummaryVO();
             vo.setArtTitle(commentBO.getTitle());
@@ -421,8 +421,8 @@ public class CommentApiController extends BaseController {
      * 文章已读(評論列表列表)<br/>
      * url:/api/admin/comment/read<br/>
      *
-     * @param param JSON 参数({@link EntityOidListRequest})
-     *              entityOidList<br/>
+     * @param param JSON 参数({@link EntityOidRequest})
+     *              entityOid<br/>
      * @return 返回响应 {@link BaseResponseDto}
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
@@ -466,26 +466,32 @@ public class CommentApiController extends BaseController {
      */
     @ApiVersion()
     @GetMapping(CommentApiUrlConfig.URL_COMMENT_INFO)
-    public String queryCommentInfo(@PathVariable("id") Long id) {
-        CommentInfoResponse response = CommentInfoResponse.getInstance();
-        CommentBO commentBO = commentBizService.queryCommentExtByOid(id);
-        CommentVO vo = JwBuilder.of(CommentVO::new)
-                .with(CommentVO::setOid, commentBO.getOid())
-                .with(CommentVO::setUserName, commentBO.getUserName())
-                .with(CommentVO::setArtOid, commentBO.getArticleOid())
-                .with(CommentVO::setArtTitle, commentBO.getTitle())
-                .with(CommentVO::setHeadImgSrc, commentBO.getHeadImgSrc())
-                .with(CommentVO::setClientIp, commentBO.getClientIp())
-                .with(CommentVO::setUserArea, DomainUtil.format(commentBO.getUserArea(), Constants.UNKNOW))
-                .with(CommentVO::setContactQq, commentBO.getContactQq())
-                .with(CommentVO::setContactWeibo, commentBO.getContactWeibo())
-                .with(CommentVO::setContactWechat, commentBO.getContactWechat())
-                .with(CommentVO::setContactTel, commentBO.getContactTel())
-                .with(CommentVO::setContent, commentBO.getContent())
-                .with(CommentVO::setReadStatus, commentBO.getReadStatus())
-                .with(CommentVO::setCommentTime, commentBO.getCommentTime())
-                .with(CommentVO::setCommentTimeStr, DateUtil.formatDateTime(commentBO.getCommentTime())).build();
-        response.setData(vo);
+    public String queryCommentInfo(@PathVariable("id") String id) {
+        CommentInfoResponse response = null;
+        try {
+            BizValidation.paramValidate(id, "id", "评论id不能为空!");
+            response = CommentInfoResponse.getInstance();
+            CommentBO commentBO = commentBizService.queryCommentExtByOid(id);
+            CommentVO vo = JwBuilder.of(CommentVO::new)
+                    .with(CommentVO::setOid, commentBO.getOid())
+                    .with(CommentVO::setUserName, commentBO.getUserName())
+                    .with(CommentVO::setArtOid, commentBO.getArticleOid())
+                    .with(CommentVO::setArtTitle, commentBO.getTitle())
+                    .with(CommentVO::setHeadImgSrc, commentBO.getHeadImgSrc())
+                    .with(CommentVO::setClientIp, commentBO.getClientIp())
+                    .with(CommentVO::setUserArea, DomainUtil.format(commentBO.getUserArea(), Constants.UNKNOW))
+                    .with(CommentVO::setContactQq, commentBO.getContactQq())
+                    .with(CommentVO::setContactWeibo, commentBO.getContactWeibo())
+                    .with(CommentVO::setContactWechat, commentBO.getContactWechat())
+                    .with(CommentVO::setContactTel, commentBO.getContactTel())
+                    .with(CommentVO::setContent, commentBO.getContent())
+                    .with(CommentVO::setReadStatus, commentBO.getReadStatus())
+                    .with(CommentVO::setCommentTime, commentBO.getCommentTime())
+                    .with(CommentVO::setCommentTimeStr, DateUtil.formatDateTime(commentBO.getCommentTime())).build();
+            response.setData(vo);
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+        }
 
         return super.responseToJSONString(response);
     }

@@ -13,7 +13,7 @@ import cn.jianwoo.blog.entity.Menu;
 import cn.jianwoo.blog.entity.Tags;
 import cn.jianwoo.blog.entity.TempArticle;
 import cn.jianwoo.blog.entity.extension.ArticleExt;
-import cn.jianwoo.blog.entity.query.ArticleParam;
+import cn.jianwoo.blog.entity.query.ArticleQuery;
 import cn.jianwoo.blog.enums.ArticleStatusEnum;
 import cn.jianwoo.blog.enums.ArticleVisitEnum;
 import cn.jianwoo.blog.enums.MenuTypeEnum;
@@ -32,6 +32,7 @@ import cn.jianwoo.blog.service.bo.ArticleBO;
 import cn.jianwoo.blog.service.bo.ArticleMenuBO;
 import cn.jianwoo.blog.service.bo.TagsBO;
 import cn.jianwoo.blog.service.bo.TempArticleBO;
+import cn.jianwoo.blog.service.param.ArticleParam;
 import cn.jianwoo.blog.util.DateUtil;
 import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.util.TestUtil;
@@ -635,7 +636,9 @@ public class ArticleBizServiceImpl implements ArticleBizService {
     @Override
     public PageInfo<ArticleBO> queryEffectiveArticleList(ArticleParam param) {
         Page page = PageHelper.startPage(param.getPageNo(), param.getPageSize());
-        List<ArticleExt> articleExtList = articleBizDao.queryEffectiveArticleList(param);
+        ArticleQuery query = new ArticleQuery();
+        BeanUtils.copyProperties(param, query);
+        List<ArticleExt> articleExtList = articleBizDao.queryEffectiveArticleList(query);
 
         List<ArticleBO> list = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(articleExtList)) {
@@ -658,7 +661,9 @@ public class ArticleBizServiceImpl implements ArticleBizService {
     @Override
     public PageInfo<ArticleBO> queryRecycleBinArticleList(ArticleParam param) {
         Page page = PageHelper.startPage(param.getPageNo(), param.getPageSize());
-        List<ArticleExt> articleExtList = articleBizDao.queryRecycleBinArticleList(param);
+        ArticleQuery query = new ArticleQuery();
+        BeanUtils.copyProperties(param, query);
+        List<ArticleExt> articleExtList = articleBizDao.queryRecycleBinArticleList(query);
         List<ArticleBO> list = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(articleExtList)) {
             articleExtList.forEach(o -> {
@@ -719,11 +724,12 @@ public class ArticleBizServiceImpl implements ArticleBizService {
     }
 
     @Override
-    public ArticleBO queryArticleEditInfo(Long artOid) throws JwBlogException {
+    public ArticleBO queryArticleEditInfo(String artOid) throws JwBlogException {
         ArticleWithBLOBs article;
         ArticleBO bo = null;
         try {
-            article = articleTransDao.queryArticleByPrimaryKey(artOid);
+            Long oid = Long.parseLong(artOid);
+            article = articleTransDao.queryArticleByPrimaryKey(oid);
             bo = JwBuilder.of(ArticleBO::new)
                     .with(ArticleBO::setOid, article.getOid())
                     .with(ArticleBO::setTitle, StringEscapeUtils.escapeHtml4(article.getTitle()))
@@ -737,7 +743,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
                     .with(ArticleBO::setStatus, article.getStatus())
                     .build();
 
-            List<TagsBO> artTags = tagsBizService.queryTagsByArtOid(artOid);
+            List<TagsBO> artTags = tagsBizService.queryTagsByArtOid(oid);
             List<TagsBO> tagsList = new ArrayList<TagsBO>();
             if (CollectionUtils.isNotEmpty(artTags)) {
                 for (TagsBO tag : artTags) {
@@ -771,7 +777,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
                 }
                 bo.setMenuList(menuVoList);
             }
-            TempArticle tempArticle = tempArticleTransDao.queryLastestTempArticle(artOid, TempArticlePageEnum.EDIT.getValue());
+            TempArticle tempArticle = tempArticleTransDao.queryLastestTempArticle(oid, TempArticlePageEnum.EDIT.getValue());
 
             if (null != tempArticle) {
                 TempArticleBO tempArticleInfoBO = JwBuilder.of(TempArticleBO::new)
@@ -808,9 +814,9 @@ public class ArticleBizServiceImpl implements ArticleBizService {
                 bo.setTempArticle(tempArticleInfoBO);
             }
 
-        } catch (DaoException e) {
+        } catch (Exception e) {
             log.error("==>>ArticleBizServiceImpl.queryArticleEditInfo exec failed, e\n", e);
-            throw ArticleBizException.QUERY_FAILED_EXCEPTION.format(artOid).print();
+            throw ArticleBizException.QUERY_FAILED_EXCEPTION_CN.format(artOid).print();
 
         }
 

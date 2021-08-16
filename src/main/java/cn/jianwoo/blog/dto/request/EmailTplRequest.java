@@ -1,26 +1,24 @@
-package cn.jianwoo.blog.dto.response.vo;
+package cn.jianwoo.blog.dto.request;
 
+import cn.jianwoo.blog.base.BaseRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-import java.util.Date;
-
 /**
  * @author GuLihua
  * @Description
- * @date 2021-08-15 16:21
+ * @date 2020-09-15 16:00
  */
 
 @Data
-@EqualsAndHashCode()
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmailTplVO implements Serializable {
+public class EmailTplRequest extends BaseRequestDto {
+    private static final long serialVersionUID = 1691429969857619376L;
 
-    private static final long serialVersionUID = 1152316162401556760L;
     /**
      * 主键
      */
@@ -48,8 +46,4 @@ public class EmailTplVO implements Serializable {
      */
     private String testJsonData;
 
-    /**
-     * 创建时间
-     */
-    private String createTime;
 }

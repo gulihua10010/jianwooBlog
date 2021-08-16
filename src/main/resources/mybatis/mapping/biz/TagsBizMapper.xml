@@ -18,7 +18,7 @@
         OID , CONTENT, CREATE_TIME, UPDATE_TIME
     </sql>
     <sql id="Ext_Column_List">
-        T.OID , T.CONTENT, T.CREATE_DATE, T.UPDATE_DATE
+        T.OID , T.CONTENT, T.CREATE_TIME, T.UPDATE_TIME
     </sql>
     <select id="selectTagsByArtOid" parameterType="java.lang.Long" resultMap="ResultResultMapWithExt">
         SELECT
