@@ -771,4 +771,30 @@ UPDATE `webconf_facade` SET `OID`='27', `CONF_OID`='27', `DESC`='Socket连接超
 UPDATE `webconf_facade` SET `OID`='28', `CONF_OID`='28', `DESC`='测试收件人', `TITLE_DSP`='收件人', `TIPS_DSP`=NULL, `FORM_TYPE`='INPUT_TEXT', `TAB_TYPE`='EMAIL', `TAB_TYPE_DSP`='邮件配置', `REQUIRED`=NULL, `VALIDATE_TYPE`='maxLength', `VALIDATE_VALUE`='{\"maxLength\":{\"value\":200,\"layVerifyExpress\":\"lay-max=\'200\'\"}}', `INDEX`='27', `CREATE_TIME`='2020-11-20 10:39:54', `UPDATE_TIME`='2020-11-20 10:39:54' WHERE (`OID`='28');
 
 
-
+INSERT INTO `menu` (
+    `OID`,
+    `NAME`,
+    `INDEX`,
+    `TYPE`,
+    `ICON`,
+    `TEXT`,
+    `URL`,
+    `VALID`,
+    `PARENT_OID`,
+    `CREATE_TIME`,
+    `UPDATE_TIME`
+)
+VALUES
+    (
+        '25',
+        'emailTpl',
+        '3',
+        '20',
+        NULL,
+        '邮件模板',
+        '/emailTpl/list',
+        '1',
+        '21',
+        '2020-08-15 22:37:17',
+        '2020-08-15 22:37:17'
+    );
