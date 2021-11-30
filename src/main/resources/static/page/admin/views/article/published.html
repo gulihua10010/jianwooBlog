@@ -1,5 +1,43 @@
 <title>文章发布</title>
+<style>
 
+    .choosed, .tags {
+        margin: 10px
+    }
+
+    .choosed + div {
+        margin: auto;
+        width: 250px;
+        border-bottom: 1px solid rgba(2, 2, 2, .1)
+    }
+
+
+    .choose-tags span {
+        display: inline-block;
+        margin: 5px;
+        padding: 3px;
+        height: 30px;
+        border-radius: 5px;
+        cursor: pointer
+    }
+
+    .choose-tags span a {
+        display: inline-block;
+        margin: 3px
+    }
+
+    .choose-tags span:hover {
+        opacity: .8
+    }
+
+    .choose-tag a {
+        text-decoration: none
+    }
+
+    .tags-id, .choosetags > .choosed > span > span {
+        display: none
+    }
+</style>
 <div class="layui-card layadmin-header">
     <div class="layui-breadcrumb" lay-filter="breadcrumb">
         <a lay-href="">主页</a>
@@ -156,7 +194,7 @@
                         </form>
                         <div class="separation-line"></div>
                         <script type="text/html" template lay-url="/api/admin/token/generate"
-                                lay-data="{pageId: 'A11'}" lay-type="post">
+                                lay-data="{pageId: 'A11'}" lay-type="post" lay-done="doUpdateToken(d);">
                             <input type="hidden" name="subToken" id="subToken" value="{{d.token}}">
                         </script>
 
@@ -182,6 +220,7 @@
     </div>
 </div>
 <script>
+    var timer;
 
     function renderTags() {
         layui.define(['element', 'form'], function (exports) {
@@ -239,18 +278,20 @@
                 saveTempArticle();
             });
 
-            admin.on('hash(article)', function(router){
+            admin.on('hash(article)', function (router) {
 
-                if (admin.prevRouter && admin.prevRouter.href.startsWith('/article/published'))
-                {
+                if (admin.prevRouter && admin.prevRouter.href.startsWith('/article/published')) {
                     saveTempArticle();
                 }
 
             });
+            if (timer) {
+                clearInterval(timer)
+            }
 
-
+            // console.log(d.data && d.data.oid)
             //每30秒保存一次
-            setInterval(function (){
+            timer = setInterval(function () {
                 saveTempArticle();
             }, setter.saveArticleTime);
 
@@ -362,7 +403,7 @@
                         author: author,
                         articleContent: articleContent,
                         tags: tagsId,
-                        menuId: typeId,
+                        menuOid: typeId,
                         imgSrc: imgsrc,
                         visitType: publishTemp,
                         password: passw,
@@ -374,5 +415,8 @@
         });
 
 
+    }
+
+    doUpdateToken = function (d) {
     }
 </script>

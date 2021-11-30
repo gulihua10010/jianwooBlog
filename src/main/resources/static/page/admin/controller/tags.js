@@ -211,7 +211,7 @@ layui.define(['form', 'mouseRightMenu'], function (exports) {
 
     $('#add-tags').click(function () {
         ajaxPost(
-            '/api/admin/tag/add/list',
+            '/api/admin/tag/create/list',
             1,
             JSON.stringify({tagList: tagsArr, subToken: token}),
             "添加成功",

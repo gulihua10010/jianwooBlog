@@ -134,4 +134,11 @@ public class ArticleBO implements Serializable {
     private TempArticleBO tempArticle;
 
 
+    /**
+     * 回收站删除时间
+     */
+    private Date removeRecycleTime;
+
+
+
 }

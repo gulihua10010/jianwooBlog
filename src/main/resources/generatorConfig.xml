@@ -95,29 +95,30 @@
 
 <!--        <table tableName="ADMIN" domainObjectName="Admin">-->
 <!--            <property name="useActualColumnNames" value="false"/>-->
-<!--            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
-<!--        </table>-->
-        <!--                <table tableName="ARTICLE" domainObjectName="Article">-->
-        <!--                    <property name="useActualColumnNames" value="false"/>-->
-        <!--                    <columnOverride column="IS_COMMENT" javaType="Boolean"/>-->
-        <!--                </table>-->
-<!--        <table tableName="ARTICLE_TAGS" domainObjectName="ArticleTags">-->
+        <!--            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+        <!--        </table>-->
+<!--                        <table tableName="ARTICLE" domainObjectName="Article">-->
+<!--                            <property name="useActualColumnNames" value="false"/>-->
+<!--                            <columnOverride column="IS_COMMENT" javaType="Boolean"/>-->
+<!--                        </table>-->
+        <!--        <table tableName="ARTICLE_TAGS" domainObjectName="ArticleTags">-->
+        <!--            <property name="useActualColumnNames" value="false"/>-->
+        <!--            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+        <!--        </table>-->
+<!--        <table tableName="COMMENTS" domainObjectName="Comment">-->
 <!--            <property name="useActualColumnNames" value="false"/>-->
 <!--            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
 <!--        </table>-->
-        <!--                <table tableName="COMMENTS" domainObjectName="Comment">-->
+        <!--                <table tableName="MODULE" domainObjectName="Module">-->
         <!--                    <property name="useActualColumnNames" value="false"/>-->
+        <!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
         <!--                </table>-->
-<!--                <table tableName="MODULE" domainObjectName="Module">-->
-<!--                    <property name="useActualColumnNames" value="false"/>-->
-<!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
-<!--                </table>-->
-<!--                <table tableName="TAGS" domainObjectName="Tags">-->
-<!--                    <property name="useActualColumnNames" value="false"/>-->
-<!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
-<!--                </table>-->
-<!--                <table tableName="TYPES" domainObjectName="Types">-->
-<!--                    <property name="useActualColumnNames" value="false"/>-->
+        <!--                <table tableName="TAGS" domainObjectName="Tags">-->
+        <!--                    <property name="useActualColumnNames" value="false"/>-->
+        <!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+        <!--                </table>-->
+        <!--                <table tableName="TYPES" domainObjectName="Types">-->
+        <!--                    <property name="useActualColumnNames" value="false"/>-->
 <!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
 <!--                </table>-->
 <!--                <table tableName="VISIT" domainObjectName="Visit">-->
@@ -127,46 +128,54 @@
         <!--        <table tableName="WEBCONF" domainObjectName="Webconf">-->
         <!--            <property name="useActualColumnNames" value="false"/>-->
         <!--        </table>-->
-<!--                <table tableName="MENU" domainObjectName="Menu">-->
+        <!--                <table tableName="MENU" domainObjectName="Menu">-->
+        <!--                    <property name="useActualColumnNames" value="false"/>-->
+        <!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+        <!--                    <columnOverride column="VALID" javaType="Boolean"/>-->
+        <!--                </table>-->
+        <!--        <table tableName="file_upload" domainObjectName="FileUpload">-->
+        <!--            <property name="useActualColumnNames" value="false"/>-->
+        <!--            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+        <!--            <columnOverride column="IS_CHUNK" javaType="Boolean"/>-->
+        <!--            <columnOverride column="IS_DELETE" javaType="Boolean"/>-->
+        <!--        </table>-->
+
+        <!--                <table tableName="WEBCONF" domainObjectName="Webconf">-->
+        <!--                    <property name="useActualColumnNames" value="false"/>-->
+        <!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+        <!--                    <columnOverride column="VALID" javaType="Boolean"/>-->
+        <!--                    <columnOverride column="BOOLEAN_VALUE" javaType="Boolean"/>-->
+        <!--                </table>-->
+        <!--                <table tableName="webconf_facade" domainObjectName="WebconfFacade">-->
+        <!--                    <property name="useActualColumnNames" value="false"/>-->
+        <!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+        <!--                    <columnOverride column="REQUIRED" javaType="Boolean"/>-->
+        <!--                </table>-->
+
+        <!--        <table tableName="EMAIL" domainObjectName="Email">-->
+        <!--            <property name="useActualColumnNames" value="false"/>-->
+        <!--            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+        <!--            &lt;!&ndash;            <columnOverride column="PROC_STATUS" javaType="Boolean"/>&ndash;&gt;-->
+        <!--        </table>-->
+
+
+        <!--        <table tableName="EMAIL_TEMPLATE" domainObjectName="EmailTemplate">-->
+        <!--            <property name="useActualColumnNames" value="false"/>-->
+        <!--            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+        <!--        </table>-->
+
+        <!--                                <table tableName="TEMP_ARTICLE" domainObjectName="TempArticle">-->
+        <!--                                    <property name="useActualColumnNames" value="false"/>-->
+        <!--                                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+        <!--                                    <columnOverride column="IS_COMMENT" javaType="Boolean"/>-->
+        <!--                                </table>-->
+        <!--                                <table tableName="LOGIN_LOG" domainObjectName="LoginLog">-->
+        <!--                                    <property name="useActualColumnNames" value="false"/>-->
+        <!--                                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+        <!--                                </table>-->
+<!--                <table tableName="BIZ_EVENT_LOG" domainObjectName="BizEventLog">-->
 <!--                    <property name="useActualColumnNames" value="false"/>-->
 <!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
-<!--                    <columnOverride column="VALID" javaType="Boolean"/>-->
 <!--                </table>-->
-<!--        <table tableName="file_upload" domainObjectName="FileUpload">-->
-<!--            <property name="useActualColumnNames" value="false"/>-->
-<!--            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
-<!--            <columnOverride column="IS_CHUNK" javaType="Boolean"/>-->
-<!--            <columnOverride column="IS_DELETE" javaType="Boolean"/>-->
-<!--        </table>-->
-
-<!--                <table tableName="WEBCONF" domainObjectName="Webconf">-->
-<!--                    <property name="useActualColumnNames" value="false"/>-->
-<!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
-<!--                    <columnOverride column="VALID" javaType="Boolean"/>-->
-<!--                    <columnOverride column="BOOLEAN_VALUE" javaType="Boolean"/>-->
-<!--                </table>-->
-                <table tableName="webconf_facade" domainObjectName="WebconfFacade">
-                    <property name="useActualColumnNames" value="false"/>
-                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>
-                    <columnOverride column="REQUIRED" javaType="Boolean"/>
-                </table>
-
-<!--        <table tableName="EMAIL" domainObjectName="Email">-->
-<!--            <property name="useActualColumnNames" value="false"/>-->
-<!--            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
-<!--            &lt;!&ndash;            <columnOverride column="PROC_STATUS" javaType="Boolean"/>&ndash;&gt;-->
-<!--        </table>-->
-
-
-<!--        <table tableName="EMAIL_TEMPLATE" domainObjectName="EmailTemplate">-->
-<!--            <property name="useActualColumnNames" value="false"/>-->
-<!--            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
-<!--        </table>-->
-
-        <!--                        <table tableName="TEMP_ARTICLE" domainObjectName="TempArticle">-->
-        <!--                            <property name="useActualColumnNames" value="false"/>-->
-        <!--                            <columnOverride column="IS_COMMENT" javaType="Boolean"/>-->
-        <!--                        </table>-->
-
     </context>
 </generatorConfiguration>

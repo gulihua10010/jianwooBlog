@@ -50,7 +50,7 @@ public class AdminBO implements Serializable {
     private String userEmail;
 
     /**
-     * 性别
+     * 性别[10:男, 20:女]'
      */
     private String userSex;
 

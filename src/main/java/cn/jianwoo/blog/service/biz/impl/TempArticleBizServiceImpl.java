@@ -5,9 +5,9 @@ import cn.jianwoo.blog.dao.base.TempArticleTransDao;
 import cn.jianwoo.blog.entity.TempArticle;
 import cn.jianwoo.blog.enums.ArticleVisitEnum;
 import cn.jianwoo.blog.enums.TempArticleStatusEnum;
-import cn.jianwoo.blog.exception.ArticleBizException;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.exception.TempArticleBizException;
 import cn.jianwoo.blog.service.biz.TempArticleBizService;
 import cn.jianwoo.blog.service.bo.TagsBO;
 import cn.jianwoo.blog.service.bo.TempArticleBO;
@@ -40,7 +40,19 @@ public class TempArticleBizServiceImpl implements TempArticleBizService {
 
         log.info("==========>Start insert Temp article,title = {}", articleBO.getTitle());
         Date now = DateUtil.getNow();
-
+        if (articleBO.getOid() != null) {
+            TempArticle tempArticle = null;
+            try {
+                tempArticle = tempArticleTransDao.queryTempArticleByPrimaryKey(articleBO.getOid());
+            } catch (DaoException e) {
+                throw TempArticleBizException.NOT_EXIST_EXCEPTION.format(articleBO.getOid()).print();
+            }
+            if (TempArticleStatusEnum.VOID.getValue().equals(tempArticle.getStatus())) {
+                throw TempArticleBizException.STATUS_VOID_CN.format(articleBO.getOid()).print();
+            } else if (TempArticleStatusEnum.RESTORE.getValue().equals(tempArticle.getStatus())) {
+                throw TempArticleBizException.STATUS_RESTORE_CN.format(articleBO.getOid()).print();
+            }
+        }
         articleBO.setIsComment(articleBO.getIsComment() != null && articleBO.getIsComment());
         if (articleBO.getVisitType() == null) {
             articleBO.setVisitType(ArticleVisitEnum.PUBLIC.getValue());
@@ -48,15 +60,14 @@ public class TempArticleBizServiceImpl implements TempArticleBizService {
         TempArticle article = JwBuilder.of(TempArticle::new)
                 .with(TempArticle::setAuthor, articleBO.getAuthor())
                 .with(TempArticle::setTitle, articleBO.getTitle())
-                .with(TempArticle::setMenuId, articleBO.getMenuOid())
+                .with(TempArticle::setMenuOid, articleBO.getMenuOid())
                 .with(TempArticle::setStatus, TempArticleStatusEnum.TEMP.getValue())
                 .with(TempArticle::setIsComment, articleBO.getIsComment())
                 .with(TempArticle::setImgSrc, articleBO.getImgSrc())
                 .with(TempArticle::setVisitType, articleBO.getVisitType())
                 .with(TempArticle::setContent, articleBO.getContent())
-                .with(TempArticle::setOldOid, articleBO.getOldOid())
+                .with(TempArticle::setOldArticleOid, articleBO.getOldArticleOid())
                 .with(TempArticle::setPageType, articleBO.getPageType())
-                .with(TempArticle::setCreateTime, now)
                 .with(TempArticle::setUpdateTime, now)
                 .build();
 
@@ -80,14 +91,15 @@ public class TempArticleBizServiceImpl implements TempArticleBizService {
                 tempArticleTransDao.doUpdateByPrimaryKeySelective(article);
             } catch (DaoException e) {
                 log.error("TempArticleBizServiceImpl.doSaveTempArticle exec failed, e:\n", e);
-                throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(articleBO.getTitle()).print();
+                throw TempArticleBizException.MODIFY_FAILED_EXCEPTION.format(articleBO.getTitle()).print();
             }
         } else {
             try {
+                article.setCreateTime(now);
                 tempArticleTransDao.doInsertSelective(article);
             } catch (DaoException e) {
                 log.error("TempArticleBizServiceImpl.doSaveTempArticle exec failed, e:\n", e);
-                throw ArticleBizException.CREATE_FAILED_EXCEPTION.format(articleBO.getTitle()).print();
+                throw TempArticleBizException.CREATE_FAILED_EXCEPTION.format(articleBO.getTitle()).print();
             }
         }
 
@@ -99,13 +111,24 @@ public class TempArticleBizServiceImpl implements TempArticleBizService {
     @Transactional(rollbackFor = Exception.class)
     public void doUpdateTempArticle(TempArticleBO articleBO) throws JwBlogException {
         log.info("==========>Start update Temp article,title = {}", articleBO.getTitle());
+        TempArticle tempArticle = null;
+        try {
+            tempArticle = tempArticleTransDao.queryTempArticleByPrimaryKey(articleBO.getOid());
+        } catch (DaoException e) {
+            throw TempArticleBizException.NOT_EXIST_EXCEPTION.format(articleBO.getOid()).print();
+        }
+        if (TempArticleStatusEnum.VOID.getValue().equals(tempArticle.getStatus())) {
+            throw TempArticleBizException.STATUS_VOID_CN.format(articleBO.getOid()).print();
+        } else if (TempArticleStatusEnum.RESTORE.getValue().equals(tempArticle.getStatus())) {
+            throw TempArticleBizException.STATUS_RESTORE_CN.format(articleBO.getOid()).print();
+        }
 
         Date now = DateUtil.getNow();
         TempArticle article = new TempArticle();
         article.setOid(articleBO.getOid());
         article.setAuthor(articleBO.getAuthor());
         article.setTitle(articleBO.getTitle());
-        article.setMenuId(articleBO.getMenuOid());
+        article.setMenuOid(articleBO.getMenuOid());
         article.setIsComment(articleBO.getIsComment() != null && articleBO.getIsComment());
         article.setImgSrc(articleBO.getImgSrc());
         if (ArticleVisitEnum.PASSWORD.getValue().equals(articleBO.getVisitType())) {
@@ -124,7 +147,7 @@ public class TempArticleBizServiceImpl implements TempArticleBizService {
             tempArticleTransDao.doUpdateByPrimaryKeySelective(article);
         } catch (DaoException e) {
             log.error("TempArticleBizServiceImpl.doUpdateTempArticle exec failed, e:\n", e);
-            throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(articleBO.getOid()).print();
+            throw TempArticleBizException.MODIFY_FAILED_EXCEPTION.format(articleBO.getOid()).print();
         }
 
         log.info("==========>Update Temp article successfully,title = {}", articleBO.getTitle());
@@ -133,25 +156,38 @@ public class TempArticleBizServiceImpl implements TempArticleBizService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void doUpdateTempArticleStatus(Long oid, TempArticleStatusEnum status, Long restoreOid) throws JwBlogException {
+        TempArticle tempArticle = null;
+        try {
+            tempArticle = tempArticleTransDao.queryTempArticleByPrimaryKey(oid);
+        } catch (DaoException e) {
+            throw TempArticleBizException.NOT_EXIST_EXCEPTION.format(oid).print();
+        }
+        if (TempArticleStatusEnum.RESTORE.equals(status) || TempArticleStatusEnum.VOID.equals(status)) {
+            if (TempArticleStatusEnum.VOID.getValue().equals(tempArticle.getStatus())) {
+                throw TempArticleBizException.STATUS_VOID_CN.format(oid).print();
+            } else if (TempArticleStatusEnum.RESTORE.getValue().equals(tempArticle.getStatus())) {
+                throw TempArticleBizException.STATUS_RESTORE_CN.format(oid).print();
+            }
+        }
         TempArticle article = new TempArticle();
         article.setOid(oid);
         article.setStatus(status.getValue());
         article.setUpdateTime(DateUtil.getNow());
         if (TempArticleStatusEnum.RESTORE.equals(status)) {
-            article.setRestoreOid(restoreOid);
+            article.setRestoreArticleOid(restoreOid);
         }
         try {
             tempArticleTransDao.doUpdateByPrimaryKeySelective(article);
         } catch (DaoException e) {
             log.error("TempArticleBizServiceImpl.doUpdateTempArticleStatus exec failed, e:\n", e);
-            throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
+            throw TempArticleBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public TempArticleBO queryLastestTempArticle(Long oldOid, String pageType) throws DaoException {
-        TempArticle article = tempArticleTransDao.queryLastestTempArticle(oldOid, pageType);
+    public TempArticleBO queryLastestTempArticle(Long oldArticleOid, String pageType) {
+        TempArticle article = tempArticleTransDao.queryLastestTempArticle(oldArticleOid, pageType);
         if (null == article) {
             return null;
         }

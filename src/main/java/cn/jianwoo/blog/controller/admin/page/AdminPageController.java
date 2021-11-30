@@ -1,8 +1,8 @@
 package cn.jianwoo.blog.controller.admin.page;
 
 import cn.jianwoo.blog.annotation.PageId;
-import cn.jianwoo.blog.config.router.admin.CommAdminPageUrlConfig;
 import cn.jianwoo.blog.config.router.admin.CommAdminPageTemplateConfig;
+import cn.jianwoo.blog.config.router.admin.CommAdminPageUrlConfig;
 import cn.jianwoo.blog.enums.PageIdEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -45,16 +45,17 @@ public class AdminPageController {
     }
 
     /**
-     * 登录<br/>
-     * url:/admin/passport/login<br/>
+     * passport<br/>
+     * url:/admin/passport<br/>
      *
-     * @return page /admin/login
+     * @return page /admin/passport
      * @author gulihua
      */
-    @PageId(PageIdEnum.ADMIN_INDEX)
-    @RequestMapping(CommAdminPageUrlConfig.URL_LOGIN)
+    @PageId(PageIdEnum.PASSPORT)
+    @RequestMapping(CommAdminPageUrlConfig.URL_PASSPORT)
     public String login() {
-        return CommAdminPageTemplateConfig.PAGE_PREFIX + CommAdminPageTemplateConfig.PAGE_LOGIN;
+        return CommAdminPageTemplateConfig.PAGE_PREFIX + CommAdminPageTemplateConfig.PAGE_PASSPORT;
     }
+
 
 }

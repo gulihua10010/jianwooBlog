@@ -7,7 +7,7 @@ import java.io.Serializable;
  * @Description
  * @date 2021-07-18 0:41
  */
-public class EmailTplQuery implements Serializable {
+public class EmailTplQuery extends BaseQuery implements Serializable {
     private static final long serialVersionUID = 2478443514263410456L;
     private String code;
     private String desc;

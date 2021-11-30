@@ -9,10 +9,20 @@ import java.util.List;
  */
 public class ArticleParam extends PageParam {
     private static final long serialVersionUID = 7533112279053614145L;
-    private List<String> statusParams;
-    private String title;
-    private String text;
 
+    /**
+     * 状态参数
+     */
+    private List<String> statusParams;
+    /**
+     * 文章标题
+     */
+    private String title;
+
+    /**
+     * 文章内容
+     */
+    private String text;
 
     public String getTitle() {
         return title;
@@ -41,5 +51,15 @@ public class ArticleParam extends PageParam {
 
     public void setStatusParams(List<String> statusParams) {
         this.statusParams = statusParams;
+    }
+
+
+    public void processSortField(String field, String order) {
+        this.setSortOrder(order);
+        if ("title".equals(field)) {
+            this.setSortField("A.TITLE");
+        } else if ("publishTimeDesc".equals(field)) {
+            this.setSortField("A.PUSH_TIME");
+        }
     }
 }

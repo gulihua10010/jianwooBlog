@@ -14,10 +14,10 @@ layui.define(['laytable'],function (exports) {
         , cols: [[
             {type: 'checkbox', fixed: 'right'}
             , {type: 'numbers', width: 40, title: 'SEQ',}
-            , {field: 'title', title: '文章标题', align: 'center'}
-            , {field: 'author', width: 120, title: '作者', sort: true, align: 'center'}
-            , {field: 'type', width: 170, title: '类型', sort: true, align: 'center'}
-            , {field: 'publishTimeDesc', title: '发布时间', width: 200, align: 'center'}
+            , {field: 'title', title: '文章标题',  sort: true, align: 'center'}
+            , {field: 'author', width: 120, title: '作者', align: 'center'}
+            , {field: 'type', width: 170, title: '类型',  align: 'center'}
+            , {field: 'publishTimeDesc', title: '发布时间', sort: true, width: 200, align: 'center'}
             // , {field: 'modifiedDate', title: '最后修改时间', width: 200, align: 'center'}
             , {title: '操作', width: 360, align: 'left', fixed: 'right', toolbar: '#table-content-art'}
 
@@ -27,11 +27,24 @@ layui.define(['laytable'],function (exports) {
             , statusCode: '000000'
         }
         , page: true
+        , autoSort: false //禁用前端自动排序。
         , text: {none: '无数据'}
         , done: function(res, curr, count){
             // typeof setter.ajaxDone === 'function' && setter.ajaxDone(res);
         }
 
+    });
+
+    //触发排序事件
+    table.on('sort(content-art)', function(obj){
+
+        table.reload('article-table', {
+            initSort: obj
+            ,where: {
+                sortField: obj.field
+                ,sortOrder: obj.type
+            }
+        });
     });
 
     //监听搜索

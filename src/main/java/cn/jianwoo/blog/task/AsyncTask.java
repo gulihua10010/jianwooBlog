@@ -1,10 +1,13 @@
 package cn.jianwoo.blog.task;
 
 import cn.jianwoo.blog.dao.base.AdminTransDao;
+import cn.jianwoo.blog.dao.base.BizEventLogTransDao;
 import cn.jianwoo.blog.dao.base.CommentTransDao;
+import cn.jianwoo.blog.dao.base.LoginLogTransDao;
 import cn.jianwoo.blog.dao.base.VisitTransDao;
 import cn.jianwoo.blog.entity.Admin;
 import cn.jianwoo.blog.entity.Comment;
+import cn.jianwoo.blog.entity.LoginLog;
 import cn.jianwoo.blog.entity.Visit;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.service.biz.NetWorkService;
@@ -38,7 +41,10 @@ public class AsyncTask {
     private VisitTransDao visitTransDao;
     @Autowired
     private AdminTransDao adminTransDao;
-
+    @Autowired
+    private LoginLogTransDao loginLogTransDao;
+    @Autowired
+    private BizEventLogTransDao bizEventLogTransDao;
 
     public Future<String> execCommentIpAreaTask(Long oid) {
         log.info(">> Start async task execCommentIpAreaTask");
@@ -143,4 +149,31 @@ public class AsyncTask {
 
         return new AsyncResult<>("execAdminUserLoginIpAreaTask");
     }
+
+    public Future<String> execLoginIpAreaTask(Long oid) {
+
+        log.info(">> Start async task execLoginIpAreaTask");
+        try {
+            LoginLog loginLog = loginLogTransDao.queryLoginLogByPrimaryKey(oid);
+            if (StringUtils.isNotBlank(loginLog.getTriggerIp())) {
+                Pattern r = Pattern.compile(IP_REX_PATTERN);
+                Matcher m = r.matcher(loginLog.getTriggerIp().trim());
+                if (m.matches()) {
+                    String area = netWorkService.getIpArea(loginLog.getTriggerIp().trim());
+                    LoginLog newLoginLog = new LoginLog();
+                    newLoginLog.setOid(oid);
+                    newLoginLog.setTriggerArea(area);
+                    loginLogTransDao.doUpdateByPrimaryKeySelective(newLoginLog);
+
+                }
+            }
+
+        } catch (DaoException e) {
+            log.error("jianwooTaskExecutor.execLoginIpAreaTask exec failed, e:", e);
+        }
+        log.info(">> End async task execLoginIpAreaTask");
+
+        return new AsyncResult<>("execLoginIpAreaTask");
+    }
+
 }

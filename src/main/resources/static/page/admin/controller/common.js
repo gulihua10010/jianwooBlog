@@ -1,9 +1,7 @@
 /**
 
- @Name：layuiAdmin 公共业务
- @Author：贤心
- @Site：http://www.layui.com/admin/
- @License：LPPL
+ @Name: 公共业务
+ @Author:gulh
 
  */
 
@@ -131,7 +129,7 @@ layui.extend({
 
     }
 
-    ajaxApiPost = function (url, version, data, callback) {
+    ajaxApiPost = function (url, version, data, succCallback, failedCallback) {
 
         admin.req({
             type: 'post',
@@ -141,9 +139,10 @@ layui.extend({
             async: true,
             url: doAddUrlVersion(url),
             success: function (data) {
-                if (data.status == '000000') {
-                    typeof callback === 'function' && callback(data);
+                if (data.status === '000000') {
+                    typeof succCallback === 'function' && succCallback(data);
                 } else {
+                    typeof failedCallback === 'function' && failedCallback(data);
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -276,6 +275,18 @@ layui.extend({
         repass: function (value, item) {
             if ($('#passw').is(":checked") &&
                 $('#passw-content').val() != value) {
+                return '两次密码不一致';
+            }
+        },
+        loginPass: function (value, item) {
+            var patt = /^(?![0-9]+$)(?![a-z]+$)(?![A-Z]+$)(?!([^(0-9a-zA-Z)])+$).{6,20}$/;
+            if (!patt.test(value)) {
+                return '密码必须包含数字,英文,字符中的两种以上,长度6-20!';
+            }
+
+        },
+        loginRepass: function (value, item) {
+            if ($('#newPassword').val() !== value) {
                 return '两次密码不一致';
             }
         },

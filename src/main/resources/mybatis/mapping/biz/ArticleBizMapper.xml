@@ -17,6 +17,7 @@
         <result column="STATUS" jdbcType="VARCHAR" property="status"/>
         <result column="PASSWORD" jdbcType="VARCHAR" property="password"/>
         <result column="DEL_TIME" jdbcType="TIMESTAMP" property="delTime"/>
+        <result column="REMOVE_RECYCLE_TIME" jdbcType="TIMESTAMP" property="removeRecycleTime"/>
         <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
@@ -31,8 +32,8 @@
 
     <sql id="Base_Column_List">
         OID, AUTHOR, PUSH_TIME, TITLE, MODIFIED_TIME, MENU_ID, READ_COUNT, PRAISE_COUNT,
-    IS_COMMENT, IMG_SRC, VISIT_TYPE, COMMENT_COUNT, `STATUS`, `PASSWORD`, DEL_TIME, CREATE_TIME,
-    UPDATE_TIME
+    IS_COMMENT, IMG_SRC, VISIT_TYPE, COMMENT_COUNT, `STATUS`, `PASSWORD`, DEL_TIME, REMOVE_RECYCLE_TIME,
+    CREATE_TIME, UPDATE_TIME
     </sql>
     <sql id="Blob_Column_List">
         CONTENT, `TEXT`
@@ -100,8 +101,13 @@
         <if test="text != null">
             AND A.TEXT LIKE CONCAT('%',#{text,jdbcType=VARCHAR},'%')
         </if>
-        ORDER BY MODIFIED_TIME DESC
 
+        <if test="orderByClause == null">
+            ORDER BY MODIFIED_TIME DESC
+        </if>
+        <if test="orderByClause != null">
+            ORDER BY #{orderByClause}
+        </if>
 
     </select>
 
@@ -118,10 +124,23 @@
         UPDATE ARTICLE
         SET
             PRAISE_COUNT = PRAISE_COUNT + 1,
-            UPDATE_TIME = NOW()
+            UPDATE_TIME  = NOW()
         WHERE
             OID = #{artOid,jdbcType=BIGINT};
     </update>
 
 
+    <update id="restoreFromRecycle" parameterType="cn.jianwoo.blog.entity.Article">
+        update article
+        <set>
+            <if test="status != null">
+                `STATUS` = #{status,jdbcType=VARCHAR},
+            </if>
+            REMOVE_RECYCLE_TIME = #{removeRecycleTime,jdbcType=TIMESTAMP},
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where OID = #{oid,jdbcType=BIGINT}
+    </update>
 </mapper>

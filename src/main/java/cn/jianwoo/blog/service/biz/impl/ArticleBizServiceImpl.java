@@ -16,9 +16,12 @@ import cn.jianwoo.blog.entity.extension.ArticleExt;
 import cn.jianwoo.blog.entity.query.ArticleQuery;
 import cn.jianwoo.blog.enums.ArticleStatusEnum;
 import cn.jianwoo.blog.enums.ArticleVisitEnum;
+import cn.jianwoo.blog.enums.BizEventOptTypeEnum;
+import cn.jianwoo.blog.enums.BizEventTypeEnum;
 import cn.jianwoo.blog.enums.MenuTypeEnum;
 import cn.jianwoo.blog.enums.TempArticlePageEnum;
 import cn.jianwoo.blog.enums.TempArticleStatusEnum;
+import cn.jianwoo.blog.event.BizEventLogEvent;
 import cn.jianwoo.blog.exception.ArticleBizException;
 import cn.jianwoo.blog.exception.ArticleTagsBizException;
 import cn.jianwoo.blog.exception.DaoException;
@@ -48,6 +51,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,10 +83,12 @@ public class ArticleBizServiceImpl implements ArticleBizService {
     private TagsBizService tagsBizService;
     @Autowired
     private TempArticleTransDao tempArticleTransDao;
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void doSaveArticle(ArticleBO articleBO) throws JwBlogException {
+    public void doCreateArticle(ArticleBO articleBO) throws JwBlogException {
         log.info("==========>Start insert article, title = {}", articleBO.getTitle());
 
         Long oid = uidGenService.getUid();
@@ -114,6 +121,11 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         if (ArticleVisitEnum.PASSWORD.getValue().equals(articleBO.getVisitType())) {
             article.setPassword(articleBO.getPassword());
         }
+        if (ArticleStatusEnum.RECYCLE.getValue().equals(article.getStatus()))
+        {
+            article.setRemoveRecycleTime(now);
+        }
+
         try {
             articleTransDao.doInsertSelective(article);
         } catch (DaoException e) {
@@ -137,9 +149,12 @@ public class ArticleBizServiceImpl implements ArticleBizService {
             }
         }
         if (articleBO.getTempArtOid() != null) {
+            log.info(">>articleBO.getTempArtOid() {}", articleBO.getTempArtOid());
             tempArticleBizService.doUpdateTempArticleStatus(articleBO.getTempArtOid(),
                     TempArticleStatusEnum.RESTORE, article.getOid());
         }
+        registerBizEvent(oid, article.getTitle(), article.getStatus(), null, false);
+
 
         log.info("==========>Insert article successfully, title = {}", articleBO.getTitle());
     }
@@ -158,11 +173,11 @@ public class ArticleBizServiceImpl implements ArticleBizService {
             throw ArticleBizException.NOT_EXIST_EXCEPTION_CN.format(article.getOid()).print();
 
         }
-        if (ArticleStatusEnum.RECYCLE.getValue().equals(article.getStatus()) ||
-                ArticleStatusEnum.DELETE.getValue().equals(article.getStatus())) {
-            throw ArticleBizException.STATUS_NOT_SUPPORT_CN.format(article.getTitle()).print();
 
+        if (ArticleStatusEnum.RECYCLE.getValue().equals(article.getStatus())) {
+            throw ArticleBizException.STATUS_HAS_RECYCLE.format(article.getTitle()).print();
         }
+
         ArticleWithBLOBs newArticle = new ArticleWithBLOBs();
         newArticle.setOid(article.getOid());
         newArticle.setAuthor(articleBO.getAuthor());
@@ -178,6 +193,10 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         }
         newArticle.setUpdateTime(now);
         newArticle.setVisitType(articleBO.getVisitType() == null ? ArticleVisitEnum.PUBLIC.getValue() : articleBO.getVisitType());
+        if (ArticleStatusEnum.RECYCLE.getValue().equals(newArticle.getStatus()))
+        {
+            article.setRemoveRecycleTime(now);
+        }
         try {
             articleTransDao.doUpdateByPrimaryKeySelective(newArticle);
         } catch (DaoException e) {
@@ -200,6 +219,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
                 }
             }
         }
+        registerBizEvent(article.getOid(), newArticle.getTitle(), null, article.getStatus(), false);
 
         log.info("==========>Update article info successfully, title = {}", articleBO.getTitle());
     }
@@ -218,10 +238,11 @@ public class ArticleBizServiceImpl implements ArticleBizService {
             throw ArticleBizException.NOT_EXIST_EXCEPTION_CN.format(articleBO.getOid()).print();
 
         }
-        if (ArticleStatusEnum.RECYCLE.getValue().equals(article.getStatus()) ||
-                ArticleStatusEnum.DELETE.getValue().equals(article.getStatus())) {
-            throw ArticleBizException.STATUS_NOT_SUPPORT_CN.format(article.getTitle()).print();
+
+        if (ArticleStatusEnum.RECYCLE.getValue().equals(article.getStatus())) {
+            throw ArticleBizException.STATUS_HAS_RECYCLE.format(article.getTitle()).print();
         }
+
 
         ArticleWithBLOBs newArticle = new ArticleWithBLOBs();
         newArticle.setOid(article.getOid());
@@ -238,8 +259,12 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         newArticle.setVisitType(articleBO.getVisitType() == null ? ArticleVisitEnum.PUBLIC.getValue() : articleBO.getVisitType());
         newArticle.setContent(articleBO.getContent());
         newArticle.setText(JwUtil.clearHtml(articleBO.getContent()));
-        if (articleBO.getStatus() != null) {
+        if (StringUtils.isNotBlank(articleBO.getStatus())) {
             newArticle.setStatus(articleBO.getStatus());
+        }
+        if (ArticleStatusEnum.RECYCLE.getValue().equals(newArticle.getStatus()))
+        {
+            article.setRemoveRecycleTime(now);
         }
         try {
             articleTransDao.doUpdateByPrimaryKeySelective(newArticle);
@@ -259,7 +284,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
                     articleTagsTransDao.doInsertSelective(articleTags);
                 } catch (DaoException e) {
                     log.error("ArticleBizServiceImpl.doUpdateArticle exec failed, e:\n", e);
-                    throw ArticleTagsBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + articleBO.getOid() + ",tagsOid:" + t).print();
+                    throw ArticleTagsBizException.CREATE_FAILED_EXCEPTION.format("artOid:" + articleBO.getOid() + ", tagsOid:" + t).print();
                 }
             }
         }
@@ -268,6 +293,8 @@ public class ArticleBizServiceImpl implements ArticleBizService {
             tempArticleBizService.doUpdateTempArticleStatus(articleBO.getTempArtOid(),
                     TempArticleStatusEnum.RESTORE, article.getOid());
         }
+        registerBizEvent(article.getOid(), newArticle.getTitle(), newArticle.getStatus(), article.getStatus(), false);
+
         log.info("==========>Update article successfully, title = {}", articleBO.getTitle());
     }
 
@@ -284,20 +311,23 @@ public class ArticleBizServiceImpl implements ArticleBizService {
 
         }
 
-        if (ArticleStatusEnum.RECYCLE.getValue().equals(article.getStatus()) ||
-                ArticleStatusEnum.DELETE.getValue().equals(article.getStatus())) {
-            throw ArticleBizException.STATUS_NOT_SUPPORT_CN.format(article.getTitle()).print();
+        if (ArticleStatusEnum.RECYCLE.getValue().equals(article.getStatus())) {
+            throw ArticleBizException.STATUS_HAS_RECYCLE.format(article.getTitle()).print();
         }
+        Date now = DateUtil.getNow();
         ArticleWithBLOBs newArticle = new ArticleWithBLOBs();
         newArticle.setOid(article.getOid());
         newArticle.setStatus(ArticleStatusEnum.RECYCLE.getValue());
-        newArticle.setUpdateTime(DateUtil.getNow());
+        newArticle.setRemoveRecycleTime(now);
+        newArticle.setUpdateTime(now);
         try {
             articleTransDao.doUpdateByPrimaryKeySelective(newArticle);
         } catch (DaoException e) {
             log.error("ArticleBizServiceImpl.doRemoveToRecycle exec failed, e:\n", e);
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
         }
+        registerBizEvent(article.getOid(), article.getTitle(), newArticle.getStatus(), article.getStatus(), true);
+
     }
 
 
@@ -314,17 +344,20 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         if (ArticleStatusEnum.DELETE.getValue().equals(article.getStatus())) {
             throw ArticleBizException.HAS_DELETE_CN.format(article.getTitle()).print();
         }
+        ArticleWithBLOBs newArticle = new ArticleWithBLOBs();
+        Date now = DateUtil.getNow();
         try {
-            ArticleWithBLOBs newArticle = new ArticleWithBLOBs();
             newArticle.setOid(article.getOid());
             newArticle.setStatus(ArticleStatusEnum.DELETE.getValue());
-            newArticle.setUpdateTime(DateUtil.getNow());
+            newArticle.setDelTime(now);
+            newArticle.setUpdateTime(now);
             articleTransDao.doUpdateByPrimaryKeySelective(newArticle);
         } catch (DaoException e) {
             log.error("ArticleBizServiceImpl.doDeleteArticle exec failed, e:\n", e);
             throw ArticleBizException.DELETE_FAILED_EXCEPTION.format(oid).print();
 
         }
+        registerBizEvent(article.getOid(), article.getTitle(), newArticle.getStatus(), article.getStatus(), true);
     }
 
 
@@ -339,11 +372,16 @@ public class ArticleBizServiceImpl implements ArticleBizService {
             throw ArticleBizException.NOT_EXIST_EXCEPTION_CN.format(oid).print();
 
         }
-        if (!ArticleStatusEnum.PUBLISHED.getValue().equals(article.getStatus())) {
+
+        if (ArticleStatusEnum.DRAFT.getValue().equals(article.getStatus())) {
+            throw ArticleBizException.STATUS_HAS_DRAFT.format(article.getTitle()).print();
+        } else if (ArticleStatusEnum.RECYCLE.getValue().equals(article.getStatus())) {
+            throw ArticleBizException.STATUS_HAS_RECYCLE.format(article.getTitle()).print();
+        } else if (!ArticleStatusEnum.PUBLISHED.getValue().equals(article.getStatus())) {
             throw ArticleBizException.STATUS_NOT_PUBLISHED_CN.format(article.getTitle()).print();
         }
+        ArticleWithBLOBs newArticle = new ArticleWithBLOBs();
         try {
-            ArticleWithBLOBs newArticle = new ArticleWithBLOBs();
             newArticle.setOid(article.getOid());
             newArticle.setUpdateTime(DateUtil.getNow());
             newArticle.setStatus(ArticleStatusEnum.DRAFT.getValue());
@@ -352,6 +390,8 @@ public class ArticleBizServiceImpl implements ArticleBizService {
             log.error("  ArticleBizServiceImpl.doRemoveToDraft exec failed, e:\n", e);
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
         }
+        registerBizEvent(article.getOid(), article.getTitle(), newArticle.getStatus(), article.getStatus(), true);
+
     }
 
 
@@ -366,11 +406,15 @@ public class ArticleBizServiceImpl implements ArticleBizService {
             throw ArticleBizException.NOT_EXIST_EXCEPTION_CN.format(oid).print();
 
         }
-        if (!ArticleStatusEnum.DRAFT.getValue().equals(article.getStatus())) {
+        if (ArticleStatusEnum.PUBLISHED.getValue().equals(article.getStatus())) {
+            throw ArticleBizException.STATUS_HAS_PUBLISHED.format(article.getTitle()).print();
+        } else if (ArticleStatusEnum.RECYCLE.getValue().equals(article.getStatus())) {
+            throw ArticleBizException.STATUS_HAS_RECYCLE.format(article.getTitle()).print();
+        } else if (!ArticleStatusEnum.DRAFT.getValue().equals(article.getStatus())) {
             throw ArticleBizException.STATUS_NOT_DRAFT.format(article.getTitle()).print();
         }
+        ArticleWithBLOBs newArticle = new ArticleWithBLOBs();
         try {
-            ArticleWithBLOBs newArticle = new ArticleWithBLOBs();
             newArticle.setOid(article.getOid());
             newArticle.setUpdateTime(DateUtil.getNow());
             newArticle.setStatus(ArticleStatusEnum.PUBLISHED.getValue());
@@ -379,6 +423,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
             log.error("ArticleBizServiceImpl.doPublishedArticle exec failed, e:\n", e);
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
         }
+        registerBizEvent(article.getOid(), article.getTitle(), newArticle.getStatus(), article.getStatus(), true);
     }
 
 
@@ -481,20 +526,28 @@ public class ArticleBizServiceImpl implements ArticleBizService {
             throw ArticleBizException.NOT_EXIST_EXCEPTION_CN.format(oid).print();
 
         }
-        if (!ArticleStatusEnum.RECYCLE.getValue().equals(article.getStatus())) {
-            throw ArticleBizException.STATUS_NOT_DRAFT.format(article.getTitle()).print();
+
+        if (ArticleStatusEnum.DRAFT.getValue().equals(article.getStatus())) {
+            throw ArticleBizException.STATUS_HAS_DRAFT.format(article.getTitle()).print();
+        } else if (ArticleStatusEnum.PUBLISHED.getValue().equals(article.getStatus())) {
+            throw ArticleBizException.STATUS_HAS_PUBLISHED.format(article.getTitle()).print();
+        } else if (!ArticleStatusEnum.RECYCLE.getValue().equals(article.getStatus())) {
+            throw ArticleBizException.STATUS_NOT_RECYCLE.format(article.getTitle()).print();
         }
 
+
+        ArticleWithBLOBs newArticle = new ArticleWithBLOBs();
         try {
-            ArticleWithBLOBs newArticle = new ArticleWithBLOBs();
             newArticle.setOid(article.getOid());
             newArticle.setUpdateTime(DateUtil.getNow());
             newArticle.setStatus(ArticleStatusEnum.DRAFT.getValue());
-            articleTransDao.doUpdateByPrimaryKeySelective(newArticle);
+            newArticle.setRemoveRecycleTime(null);
+            articleBizDao.doRestoreFromRecycle(newArticle);
         } catch (DaoException e) {
             log.error("ArticleBizServiceImpl.doRestoreRecycleBinArts exec failed, e:\n", e);
             throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
         }
+        registerBizEvent(article.getOid(), article.getTitle(), newArticle.getStatus(), article.getStatus(), true);
     }
 
 
@@ -729,7 +782,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         ArticleBO bo = null;
         try {
             Long oid = Long.parseLong(artOid);
-            article = articleTransDao.queryArticleByPrimaryKey(oid);
+            article = articleTransDao.queryArticleByOidWithBLOBs(oid);
             bo = JwBuilder.of(ArticleBO::new)
                     .with(ArticleBO::setOid, article.getOid())
                     .with(ArticleBO::setTitle, StringEscapeUtils.escapeHtml4(article.getTitle()))
@@ -785,7 +838,7 @@ public class ArticleBizServiceImpl implements ArticleBizService {
                         .with(TempArticleBO::setTitle, StringEscapeUtils.escapeHtml4(tempArticle.getTitle()))
                         .with(TempArticleBO::setAuthor, StringEscapeUtils.escapeHtml4(tempArticle.getAuthor()))
                         .with(TempArticleBO::setContent, tempArticle.getContent())
-                        .with(TempArticleBO::setMenuOid, tempArticle.getMenuId())
+                        .with(TempArticleBO::setMenuOid, tempArticle.getMenuOid())
                         .with(TempArticleBO::setImgSrc, tempArticle.getImgSrc())
                         .with(TempArticleBO::setIsComment, tempArticle.getIsComment())
                         .with(TempArticleBO::setPassword, tempArticle.getPassword())
@@ -821,6 +874,15 @@ public class ArticleBizServiceImpl implements ArticleBizService {
         }
 
         return bo;
+    }
+
+    private void registerBizEvent(Long oid, String title, String newStatus, String oldStatus, boolean isOnlyStatusChange) {
+        BizEventLogEvent event = new BizEventLogEvent(this, SecurityContextHolder.getContext());
+        event.setBizEventTypeEnum(BizEventTypeEnum.ARTICLE);
+        event.setBizEventOptTypeEnum(BizEventOptTypeEnum.valueOfArticleStatus(newStatus, oldStatus, isOnlyStatusChange));
+        event.setOid(oid);
+        event.setDesc(title);
+        applicationContext.publishEvent(event);
     }
 
 }

@@ -20,6 +20,14 @@ public class AdminBizException extends JwBlogException {
             "管理员[%s] 不存在！.");
     public static final AdminBizException USERNAME_OR_PASSWORD_INCORRECT = new AdminBizException(ExceptionConstants.BIZ_PASSWORD_INCORRECT,
             "用户名或密码不正确！");
+    public static final AdminBizException OLD_PASSWORD_INCORRECT = new AdminBizException(ExceptionConstants.BIZ_PASSWORD_INCORRECT,
+            "旧密码不正确！");
+    public static final AdminBizException OLD_PASSWORD_NOT_SAME_AS_NEW = new AdminBizException(ExceptionConstants.BIZ_PASSWORD_INCORRECT,
+            "旧密码不能和新密码相同！");
+    public static final AdminBizException EMAIL_INCORRECT = new AdminBizException(ExceptionConstants.BIZ_PASSWORD_INCORRECT,
+            "邮箱不正确！");
+    public static final AdminBizException VERIFY_CODE_INCORRECT = new AdminBizException(ExceptionConstants.BIZ_PASSWORD_INCORRECT,
+            "验证码不正确！");
     public static final AdminBizException CREATE_FAILED_EXCEPTION = new AdminBizException(
             ExceptionConstants.BIZ_CREATE_FAIL, "The admin[%s] creation is failed.");
     public static final AdminBizException MODIFY_FAILED_EXCEPTION = new AdminBizException(

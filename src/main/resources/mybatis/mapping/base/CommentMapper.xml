@@ -138,28 +138,23 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="cn.jianwoo.blog.entity.Comment">
-    insert into comments (OID, ARTICLE_OID, USER_NAME, 
-      CLIENT_IP, USER_AREA, COMMENT_TIME, 
-      PARENT_OID, PRAISE_COUNT, CONTACT_QQ, 
-      CONTACT_WECHAT, CONTACT_WEIBO, CONTACT_TEL, 
-      HEAD_IMG_SRC, ART_DEL_STAUTS, READ_STATUS, 
-      CREATE_TIME, UPDATE_TIME, CONTENT
-      )
-    values (#{oid,jdbcType=BIGINT}, #{articleOid,jdbcType=BIGINT}, #{userName,jdbcType=VARCHAR}, 
-      #{clientIp,jdbcType=VARCHAR}, #{userArea,jdbcType=VARCHAR}, #{commentTime,jdbcType=TIMESTAMP}, 
-      #{parentOid,jdbcType=BIGINT}, #{praiseCount,jdbcType=BIGINT}, #{contactQq,jdbcType=VARCHAR}, 
-      #{contactWechat,jdbcType=VARCHAR}, #{contactWeibo,jdbcType=VARCHAR}, #{contactTel,jdbcType=VARCHAR}, 
-      #{headImgSrc,jdbcType=VARCHAR}, #{artDelStauts,jdbcType=VARCHAR}, #{readStatus,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR}
-      )
+  <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.Comment" useGeneratedKeys="true">
+    insert into comments (ARTICLE_OID, USER_NAME, CLIENT_IP, 
+      USER_AREA, COMMENT_TIME, PARENT_OID, 
+      PRAISE_COUNT, CONTACT_QQ, CONTACT_WECHAT, 
+      CONTACT_WEIBO, CONTACT_TEL, HEAD_IMG_SRC, 
+      ART_DEL_STAUTS, READ_STATUS, CREATE_TIME, 
+      UPDATE_TIME, CONTENT)
+    values (#{articleOid,jdbcType=BIGINT}, #{userName,jdbcType=VARCHAR}, #{clientIp,jdbcType=VARCHAR}, 
+      #{userArea,jdbcType=VARCHAR}, #{commentTime,jdbcType=TIMESTAMP}, #{parentOid,jdbcType=BIGINT}, 
+      #{praiseCount,jdbcType=BIGINT}, #{contactQq,jdbcType=VARCHAR}, #{contactWechat,jdbcType=VARCHAR}, 
+      #{contactWeibo,jdbcType=VARCHAR}, #{contactTel,jdbcType=VARCHAR}, #{headImgSrc,jdbcType=VARCHAR}, 
+      #{artDelStauts,jdbcType=VARCHAR}, #{readStatus,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="cn.jianwoo.blog.entity.Comment">
+  <insert id="insertSelective" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.Comment" useGeneratedKeys="true">
     insert into comments
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="oid != null">
-        OID,
-      </if>
       <if test="articleOid != null">
         ARTICLE_OID,
       </if>
@@ -213,9 +208,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="oid != null">
-        #{oid,jdbcType=BIGINT},
-      </if>
       <if test="articleOid != null">
         #{articleOid,jdbcType=BIGINT},
       </if>

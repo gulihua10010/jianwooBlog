@@ -44,5 +44,14 @@ public final class CacaheKeyConstants {
      */
     public final static String ADMIN_NAME_KEY = "jianwoo:admin:name:{0}";
 
+    /**
+     * ADMIN oid -- name
+     */
+    public final static String ADMIN_OID_NAME_KEY = "jianwoo:admin:oid::name:{0}";
+    /**
+     * LoginID -- VerifyCode
+     */
+    public final static String VERIFY_CODE_LOGIN_ID = "jianwoo:verify:code::loginID:{0}";
+
 
 }

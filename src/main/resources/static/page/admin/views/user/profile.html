@@ -1,0 +1,112 @@
+<title>用户信息修改</title>
+<style>
+
+
+</style>
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>管理员配置</cite></a>
+        <a><cite>用户信息修改</cite></a>
+    </div>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <div class="layui-form" id="layuiadmin-form-userinfo"
+                     lay-filter="layuiadmin-form-userProfile">
+                    <script type="text/html" template lay-url="/api/admin/user/profile/edit" lay-type="post"
+                            lay-data="{{ getParam()}}" lay-done="doEdit(d);">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">用户昵称</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" name="userNick" value="{{d.data.nickName}}" type="text"
+                                       lay-verify="required|maxLength" lay-max="20">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">手机号</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" name="userPhone" value="{{d.data.userPhone}}" type="text"
+                                       lay-verify="required|phone">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">电子邮箱</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" name="userEmail" value="{{ d.data.userEmail }}"
+                                       lay-verify="required|maxLength|email" lay-max="30" type="text">
+                            </div>
+                        </div>
+                        <div class="layui-form">
+                            <div class="layui-form-label">性别</div>
+                            <div class="layui-input-block">
+                                <input type="radio" name="userSex" value="10" title="男" {{check10(d.data.userSex)}}>
+                                <input type="radio" name="userSex" value="20" title="女" {{check20(d.data.userSex)}}>
+                            </div>
+                        </div>
+                        <input class="layui-input" name="loginID" value="{{ d.data.loginID }}" type="hidden">
+                    </script>
+
+                    <script type="text/html" template lay-url="/api/admin/token/generate"
+                            lay-data="{pageId: 'APF10'}" lay-type="post" lay-done="doUpdateToken(d);">
+                        <input type="hidden" name="subToken" id="subToken" value="{{d.token}}">
+                    </script>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"></label>
+                        <div class="layui-input-block">
+                            <input class="layui-btn submit" id="submit"
+                                   lay-filter="submit-user-edit" lay-submit
+                                   style="float: right" type="button" value="确认">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+<script>
+
+    doEdit = function (d) {
+        layui.use('user', layui.factory('user')).use(['admin', 'form', 'user'], function () {
+            var $ = layui.jquery
+                , form = layui.form
+                , element = layui.element;
+            element.render();
+            form.render();
+
+
+        })
+    }
+
+    function check10(value) {
+        if (value === '10') {
+            return 'checked'
+        }
+        return '';
+    }
+
+    function check20(value) {
+        if (value === '20') {
+            return 'checked'
+        }
+        return '';
+    }
+
+
+    doUpdateToken = function (d) {
+
+    }
+
+    function getParam() {
+        var setter = layui.setter
+        var loginID = layui.data(setter.tableName)[setter.request.loginIdKey];
+        return "{loginID:'" + loginID + "'}"
+    }
+</script>

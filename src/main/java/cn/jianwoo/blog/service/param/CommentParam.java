@@ -26,4 +26,13 @@ public class CommentParam extends PageParam {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public void processSortField(String field, String order) {
+        this.setSortOrder(order);
+        if ("artTitle".equals(field)) {
+            this.setSortField("A.TITLE");
+        } else if ("commentTimeDesc".equals(field)) {
+            this.setSortField(" C.COMMENT_TIME");
+        }
+    }
 }

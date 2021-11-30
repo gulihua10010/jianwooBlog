@@ -12,10 +12,10 @@ layui.define(['laytable', 'form'], function (exports) {
         , cols: [[
             {type: 'checkbox', fixed: 'right'}
             , {type: 'numbers', width: 40, title: 'SEQ',}
-            , {field: 'title', title: '文章标题', align: 'center'}
-            , {field: 'author', width: 120, title: '作者', sort: true, align: 'center'}
-            , {field: 'type', width: 170, title: '类型', sort: true, align: 'center'}
-            , {field: 'publishTimeDesc', title: '删除时间', width: 200, align: 'center'}
+            , {field: 'title', title: '文章标题', sort: true, align: 'center'}
+            , {field: 'author', width: 120, title: '作者',  align: 'center'}
+            , {field: 'type', width: 170, title: '类型',  align: 'center'}
+            , {field: 'removeRecycleTimeDesc', title: '删除时间', sort: true, width: 200, align: 'center'}
             , {title: '操作', width: 360, align: 'left', fixed: 'right', toolbar: '#table-content-art'}
 
         ]]
@@ -26,6 +26,19 @@ layui.define(['laytable', 'form'], function (exports) {
         , page: true
         , text: {none: '无数据'}
 
+    });
+
+
+    //触发排序事件
+    table.on('sort(content-art)', function(obj){
+
+        table.reload('article-table', {
+            initSort: obj
+            ,where: {
+                sortField: obj.field
+                ,sortOrder: obj.type
+            }
+        });
     });
 
     //监听搜索

@@ -52,7 +52,7 @@ public interface MenuBizService {
      * @return
      * @author gulihua
      */
-    void doAddMenu(MenuBO menuBO) throws JwBlogException;
+    void doCreateMenu(MenuBO menuBO) throws JwBlogException;
 
 
     /**
@@ -73,7 +73,7 @@ public interface MenuBizService {
      * @return
      * @author gulihua
      */
-    void doReSortMenuByoids(Long[] oids) throws JwBlogException;
+    void doResortMenuByOids(Long[] oids) throws JwBlogException;
 
 
     /**

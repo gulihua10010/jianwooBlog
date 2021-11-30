@@ -1,0 +1,22 @@
+<title>登录日志</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>日志管理</cite></a>
+        <a><cite>登录日志</cite></a>
+    </div>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <table id="loginLog-table" lay-filter="loginLog"></table>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use('bizLog', layui.factory('bizLog')).use(['admin', 'bizLog'], function () {
+
+    })
+</script>

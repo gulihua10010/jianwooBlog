@@ -15,8 +15,8 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
         , cols: [[
             {type: 'checkbox', fixed: 'right'}
             , {type: 'numbers', width: 40, title: 'SEQ',}
-            , {field: 'artTitle', width: 200, title: '文章标题', align: 'center'}
-            , {field: 'userName', width: 80, title: '用户', sort: true, align: 'center'}
+            , {field: 'artTitle', width: 200, sort: true, title: '文章标题', align: 'center'}
+            , {field: 'userName', width: 80, title: '用户',  align: 'center'}
             , {field: 'commentTimeDesc', width: 200, title: '时间', sort: true, align: 'center'}
             , {field: 'replyTo', title: '回复至', width: 80, align: 'center'}
             , {field: 'content', title: '内容', align: 'left'}
@@ -30,6 +30,18 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
         , page: true
         , text: {none: '无数据'}
 
+    });
+
+    //触发排序事件
+    table.on('sort(content-comm)', function(obj){
+
+        table.reload('comment-table', {
+            initSort: obj
+            ,where: {
+                sortField: obj.field
+                ,sortOrder: obj.type
+            }
+        });
     });
 
     //监听搜索

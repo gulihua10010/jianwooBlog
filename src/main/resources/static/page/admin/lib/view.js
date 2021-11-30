@@ -52,12 +52,12 @@ layui.define(['laytpl', 'layer'], function (exports) {
             , remove: true
         });
 
-        //跳转到登入页
-        var loginUrl = setter.loginPage;
-        if (redirectUrl) {
-            loginUrl += "?redirect=" + encodeURIComponent(redirectUrl);
-        }
-        location.href = loginUrl
+        // //跳转到登入页
+        // var loginUrl = setter.loginPage;
+        // if (redirectUrl) {
+        //     loginUrl += "?redirect=" + encodeURIComponent(redirectUrl);
+        // }
+        // // location.href = loginUrl
     };
 
     //Ajax请求

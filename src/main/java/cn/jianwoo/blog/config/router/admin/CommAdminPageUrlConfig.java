@@ -15,6 +15,9 @@ public class CommAdminPageUrlConfig extends UrlConfig {
     public static final String URL_ARTICLE_EDIT = "#/article/edit/id={id}";
 
     public static final String URL_LOGIN = "/passport/login";
+    public static final String URL_PASSWORD_FORGET = "/passport/password/forget";
+    public static final String URL_PASSWORD_CHANGE = "/passport/password/change";
+    public static final String URL_PASSPORT= "/passport";
     public static final String URL_ERROR = "/error";
 
 

@@ -325,63 +325,63 @@ public class TempArticleExample {
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdIsNull() {
-            addCriterion("MENU_ID is null");
+        public Criteria andMenuOidIsNull() {
+            addCriterion("MENU_OID is null");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdIsNotNull() {
-            addCriterion("MENU_ID is not null");
+        public Criteria andMenuOidIsNotNull() {
+            addCriterion("MENU_OID is not null");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdEqualTo(Integer value) {
-            addCriterion("MENU_ID =", value, "menuId");
+        public Criteria andMenuOidEqualTo(Integer value) {
+            addCriterion("MENU_OID =", value, "menuOid");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdNotEqualTo(Integer value) {
-            addCriterion("MENU_ID <>", value, "menuId");
+        public Criteria andMenuOidNotEqualTo(Integer value) {
+            addCriterion("MENU_OID <>", value, "menuOid");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdGreaterThan(Integer value) {
-            addCriterion("MENU_ID >", value, "menuId");
+        public Criteria andMenuOidGreaterThan(Integer value) {
+            addCriterion("MENU_OID >", value, "menuOid");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdGreaterThanOrEqualTo(Integer value) {
-            addCriterion("MENU_ID >=", value, "menuId");
+        public Criteria andMenuOidGreaterThanOrEqualTo(Integer value) {
+            addCriterion("MENU_OID >=", value, "menuOid");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdLessThan(Integer value) {
-            addCriterion("MENU_ID <", value, "menuId");
+        public Criteria andMenuOidLessThan(Integer value) {
+            addCriterion("MENU_OID <", value, "menuOid");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdLessThanOrEqualTo(Integer value) {
-            addCriterion("MENU_ID <=", value, "menuId");
+        public Criteria andMenuOidLessThanOrEqualTo(Integer value) {
+            addCriterion("MENU_OID <=", value, "menuOid");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdIn(List<Integer> values) {
-            addCriterion("MENU_ID in", values, "menuId");
+        public Criteria andMenuOidIn(List<Integer> values) {
+            addCriterion("MENU_OID in", values, "menuOid");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdNotIn(List<Integer> values) {
-            addCriterion("MENU_ID not in", values, "menuId");
+        public Criteria andMenuOidNotIn(List<Integer> values) {
+            addCriterion("MENU_OID not in", values, "menuOid");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdBetween(Integer value1, Integer value2) {
-            addCriterion("MENU_ID between", value1, value2, "menuId");
+        public Criteria andMenuOidBetween(Integer value1, Integer value2) {
+            addCriterion("MENU_OID between", value1, value2, "menuOid");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdNotBetween(Integer value1, Integer value2) {
-            addCriterion("MENU_ID not between", value1, value2, "menuId");
+        public Criteria andMenuOidNotBetween(Integer value1, Integer value2) {
+            addCriterion("MENU_OID not between", value1, value2, "menuOid");
             return (Criteria) this;
         }
 
@@ -665,63 +665,63 @@ public class TempArticleExample {
             return (Criteria) this;
         }
 
-        public Criteria andOldOidIsNull() {
-            addCriterion("OLD_OID is null");
+        public Criteria andOldArticleOidIsNull() {
+            addCriterion("OLD_ARTICLE_OID is null");
             return (Criteria) this;
         }
 
-        public Criteria andOldOidIsNotNull() {
-            addCriterion("OLD_OID is not null");
+        public Criteria andOldArticleOidIsNotNull() {
+            addCriterion("OLD_ARTICLE_OID is not null");
             return (Criteria) this;
         }
 
-        public Criteria andOldOidEqualTo(Long value) {
-            addCriterion("OLD_OID =", value, "oldOid");
+        public Criteria andOldArticleOidEqualTo(Long value) {
+            addCriterion("OLD_ARTICLE_OID =", value, "oldArticleOid");
             return (Criteria) this;
         }
 
-        public Criteria andOldOidNotEqualTo(Long value) {
-            addCriterion("OLD_OID <>", value, "oldOid");
+        public Criteria andOldArticleOidNotEqualTo(Long value) {
+            addCriterion("OLD_ARTICLE_OID <>", value, "oldArticleOid");
             return (Criteria) this;
         }
 
-        public Criteria andOldOidGreaterThan(Long value) {
-            addCriterion("OLD_OID >", value, "oldOid");
+        public Criteria andOldArticleOidGreaterThan(Long value) {
+            addCriterion("OLD_ARTICLE_OID >", value, "oldArticleOid");
             return (Criteria) this;
         }
 
-        public Criteria andOldOidGreaterThanOrEqualTo(Long value) {
-            addCriterion("OLD_OID >=", value, "oldOid");
+        public Criteria andOldArticleOidGreaterThanOrEqualTo(Long value) {
+            addCriterion("OLD_ARTICLE_OID >=", value, "oldArticleOid");
             return (Criteria) this;
         }
 
-        public Criteria andOldOidLessThan(Long value) {
-            addCriterion("OLD_OID <", value, "oldOid");
+        public Criteria andOldArticleOidLessThan(Long value) {
+            addCriterion("OLD_ARTICLE_OID <", value, "oldArticleOid");
             return (Criteria) this;
         }
 
-        public Criteria andOldOidLessThanOrEqualTo(Long value) {
-            addCriterion("OLD_OID <=", value, "oldOid");
+        public Criteria andOldArticleOidLessThanOrEqualTo(Long value) {
+            addCriterion("OLD_ARTICLE_OID <=", value, "oldArticleOid");
             return (Criteria) this;
         }
 
-        public Criteria andOldOidIn(List<Long> values) {
-            addCriterion("OLD_OID in", values, "oldOid");
+        public Criteria andOldArticleOidIn(List<Long> values) {
+            addCriterion("OLD_ARTICLE_OID in", values, "oldArticleOid");
             return (Criteria) this;
         }
 
-        public Criteria andOldOidNotIn(List<Long> values) {
-            addCriterion("OLD_OID not in", values, "oldOid");
+        public Criteria andOldArticleOidNotIn(List<Long> values) {
+            addCriterion("OLD_ARTICLE_OID not in", values, "oldArticleOid");
             return (Criteria) this;
         }
 
-        public Criteria andOldOidBetween(Long value1, Long value2) {
-            addCriterion("OLD_OID between", value1, value2, "oldOid");
+        public Criteria andOldArticleOidBetween(Long value1, Long value2) {
+            addCriterion("OLD_ARTICLE_OID between", value1, value2, "oldArticleOid");
             return (Criteria) this;
         }
 
-        public Criteria andOldOidNotBetween(Long value1, Long value2) {
-            addCriterion("OLD_OID not between", value1, value2, "oldOid");
+        public Criteria andOldArticleOidNotBetween(Long value1, Long value2) {
+            addCriterion("OLD_ARTICLE_OID not between", value1, value2, "oldArticleOid");
             return (Criteria) this;
         }
 
@@ -935,63 +935,63 @@ public class TempArticleExample {
             return (Criteria) this;
         }
 
-        public Criteria andRestoreOidIsNull() {
-            addCriterion("RESTORE_OID is null");
+        public Criteria andRestoreArticleOidIsNull() {
+            addCriterion("RESTORE_ARTICLE_OID is null");
             return (Criteria) this;
         }
 
-        public Criteria andRestoreOidIsNotNull() {
-            addCriterion("RESTORE_OID is not null");
+        public Criteria andRestoreArticleOidIsNotNull() {
+            addCriterion("RESTORE_ARTICLE_OID is not null");
             return (Criteria) this;
         }
 
-        public Criteria andRestoreOidEqualTo(Long value) {
-            addCriterion("RESTORE_OID =", value, "restoreOid");
+        public Criteria andRestoreArticleOidEqualTo(Long value) {
+            addCriterion("RESTORE_ARTICLE_OID =", value, "restoreArticleOid");
             return (Criteria) this;
         }
 
-        public Criteria andRestoreOidNotEqualTo(Long value) {
-            addCriterion("RESTORE_OID <>", value, "restoreOid");
+        public Criteria andRestoreArticleOidNotEqualTo(Long value) {
+            addCriterion("RESTORE_ARTICLE_OID <>", value, "restoreArticleOid");
             return (Criteria) this;
         }
 
-        public Criteria andRestoreOidGreaterThan(Long value) {
-            addCriterion("RESTORE_OID >", value, "restoreOid");
+        public Criteria andRestoreArticleOidGreaterThan(Long value) {
+            addCriterion("RESTORE_ARTICLE_OID >", value, "restoreArticleOid");
             return (Criteria) this;
         }
 
-        public Criteria andRestoreOidGreaterThanOrEqualTo(Long value) {
-            addCriterion("RESTORE_OID >=", value, "restoreOid");
+        public Criteria andRestoreArticleOidGreaterThanOrEqualTo(Long value) {
+            addCriterion("RESTORE_ARTICLE_OID >=", value, "restoreArticleOid");
             return (Criteria) this;
         }
 
-        public Criteria andRestoreOidLessThan(Long value) {
-            addCriterion("RESTORE_OID <", value, "restoreOid");
+        public Criteria andRestoreArticleOidLessThan(Long value) {
+            addCriterion("RESTORE_ARTICLE_OID <", value, "restoreArticleOid");
             return (Criteria) this;
         }
 
-        public Criteria andRestoreOidLessThanOrEqualTo(Long value) {
-            addCriterion("RESTORE_OID <=", value, "restoreOid");
+        public Criteria andRestoreArticleOidLessThanOrEqualTo(Long value) {
+            addCriterion("RESTORE_ARTICLE_OID <=", value, "restoreArticleOid");
             return (Criteria) this;
         }
 
-        public Criteria andRestoreOidIn(List<Long> values) {
-            addCriterion("RESTORE_OID in", values, "restoreOid");
+        public Criteria andRestoreArticleOidIn(List<Long> values) {
+            addCriterion("RESTORE_ARTICLE_OID in", values, "restoreArticleOid");
             return (Criteria) this;
         }
 
-        public Criteria andRestoreOidNotIn(List<Long> values) {
-            addCriterion("RESTORE_OID not in", values, "restoreOid");
+        public Criteria andRestoreArticleOidNotIn(List<Long> values) {
+            addCriterion("RESTORE_ARTICLE_OID not in", values, "restoreArticleOid");
             return (Criteria) this;
         }
 
-        public Criteria andRestoreOidBetween(Long value1, Long value2) {
-            addCriterion("RESTORE_OID between", value1, value2, "restoreOid");
+        public Criteria andRestoreArticleOidBetween(Long value1, Long value2) {
+            addCriterion("RESTORE_ARTICLE_OID between", value1, value2, "restoreArticleOid");
             return (Criteria) this;
         }
 
-        public Criteria andRestoreOidNotBetween(Long value1, Long value2) {
-            addCriterion("RESTORE_OID not between", value1, value2, "restoreOid");
+        public Criteria andRestoreArticleOidNotBetween(Long value1, Long value2) {
+            addCriterion("RESTORE_ARTICLE_OID not between", value1, value2, "restoreArticleOid");
             return (Criteria) this;
         }
 

@@ -53,4 +53,15 @@ public class ArticleQueryDaoImpl implements ArticleQueryDao {
         }
         return list.get(0);
     }
+
+    @Override
+    public ArticleWithBLOBs queryArticleByOidWithBLOBs(Long oid) throws DaoException {
+        ArticleExample example = new ArticleExample();
+        example.createCriteria().andOidEqualTo(oid).andStatusNotEqualTo(ArticleStatusEnum.DELETE.getValue());
+        List<ArticleWithBLOBs> list = articleMapper.selectByExampleWithBLOBs(example);
+        if (CollectionUtils.isEmpty(list)) {
+            throw DaoException.DAO_SELECTONE_IS_NULL.print();
+        }
+        return list.get(0);
+    }
 }

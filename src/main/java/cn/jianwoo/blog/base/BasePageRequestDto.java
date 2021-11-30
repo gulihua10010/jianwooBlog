@@ -17,9 +17,24 @@ import lombok.NoArgsConstructor;
 public class BasePageRequestDto extends BaseRequestDto {
     private static final long serialVersionUID = -2636842269647723969L;
 
+    /**
+     * 页码
+     */
     private Integer page = 1;
 
+    /**
+     * 每页数量
+     */
     private Integer limit = 10;
+
+    /**
+     * 排序字段
+     */
+    private String sortField;
+    /**
+     * 排序方式(asc:升序, desc:降序)
+     */
+    private String sortOrder;
 
 
 }

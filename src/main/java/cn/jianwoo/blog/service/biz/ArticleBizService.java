@@ -17,7 +17,7 @@ public interface ArticleBizService {
      * @return
      * @author gulihua
      */
-    void doSaveArticle(ArticleBO article) throws JwBlogException;
+    void doCreateArticle(ArticleBO article) throws JwBlogException;
 
 
     /**

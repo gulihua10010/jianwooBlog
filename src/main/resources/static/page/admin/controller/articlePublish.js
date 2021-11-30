@@ -214,7 +214,7 @@ layui.define(['layer', 'form', 'element', 'layupload', 'tinymce'], function (exp
         var tempArtOid = $('#tempData').val();
 
         if (btnstatus === 1) {
-            ajaxPost('/api/admin/article/submit',
+            ajaxPost('/api/admin/article/published',
                 1,
                 JSON.stringify({
                     title: field.title,

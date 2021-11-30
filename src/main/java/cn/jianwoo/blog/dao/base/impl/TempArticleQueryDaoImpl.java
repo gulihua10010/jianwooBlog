@@ -27,13 +27,13 @@ public class TempArticleQueryDaoImpl implements TempArticleQueryDao {
     }
 
     @Override
-    public TempArticle queryLastestTempArticle(Long oldOid, String pageType) throws DaoException {
+    public TempArticle queryLastestTempArticle(Long oldArticleOid, String pageType) {
         TempArticleExample example = new TempArticleExample();
         TempArticleExample.Criteria criteria = example.createCriteria().andStatusEqualTo(TempArticleStatusEnum.TEMP.getValue())
                 .andPageTypeEqualTo(pageType);
 
-        if (oldOid != null) {
-            criteria.andOldOidEqualTo(oldOid);
+        if (oldArticleOid != null) {
+            criteria.andOldArticleOidEqualTo(oldArticleOid);
         }
         example.setOrderByClause("UPDATE_TIME DESC");
         example.setRows(1);

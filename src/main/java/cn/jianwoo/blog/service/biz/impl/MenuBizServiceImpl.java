@@ -8,7 +8,10 @@ import cn.jianwoo.blog.dao.base.MenuTransDao;
 import cn.jianwoo.blog.dao.biz.MenuBizDao;
 import cn.jianwoo.blog.entity.Article;
 import cn.jianwoo.blog.entity.Menu;
+import cn.jianwoo.blog.enums.BizEventOptTypeEnum;
+import cn.jianwoo.blog.enums.BizEventTypeEnum;
 import cn.jianwoo.blog.enums.MenuTypeEnum;
+import cn.jianwoo.blog.event.BizEventLogEvent;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.exception.MenuBizException;
@@ -21,6 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +47,8 @@ public class MenuBizServiceImpl implements MenuBizService {
     private MenuBizDao menuBizDao;
     @Autowired
     private ArticleTransDao articleTransDao;
+    @Autowired
+    private ApplicationContext applicationContext;
 
     private static final Long TOP_LEVEL_MENU_OID = 0L;
 
@@ -137,7 +144,7 @@ public class MenuBizServiceImpl implements MenuBizService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void doAddMenu(MenuBO menuBO) throws JwBlogException {
+    public void doCreateMenu(MenuBO menuBO) throws JwBlogException {
 
         Date now = DateUtil.getNow();
 
@@ -160,6 +167,7 @@ public class MenuBizServiceImpl implements MenuBizService {
             log.error("MenuBizServiceImpl.doAddMenu exec failed, e:\n", e);
             throw MenuBizException.CREATE_FAILED_EXCEPTION.format(menuBO.getName()).print();
         }
+        registerBizEvent(menu.getOid(), menu.getText(), BizEventOptTypeEnum.CREATE);
     }
 
 
@@ -174,13 +182,14 @@ public class MenuBizServiceImpl implements MenuBizService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void doReSortMenuByoids(Long[] oids) throws JwBlogException {
+    public void doResortMenuByOids(Long[] oids) throws JwBlogException {
         int n = 0;
         for (Long oid : oids) {
             Menu menu = new Menu();
             menu.setOid(oid);
             menu.setIndex(++n);
             menu.setUpdateTime(new Date());
+            registerBizEvent(menu.getOid(), null, BizEventOptTypeEnum.UPDATE_MENU_SORT);
             try {
                 menuTransDao.doUpdateByPrimaryKeySelective(menu);
             } catch (DaoException e) {
@@ -204,8 +213,8 @@ public class MenuBizServiceImpl implements MenuBizService {
         } catch (DaoException e) {
             log.error("MenuBizServiceImpl.doUpdateMenuName exec failed, e:\n", e);
             throw MenuBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
-
         }
+        registerBizEvent(menu.getOid(), menu.getText(), BizEventOptTypeEnum.UPDATE);
     }
 
 
@@ -310,7 +319,7 @@ public class MenuBizServiceImpl implements MenuBizService {
             menu.setIndex(sort++);
             menu.setOid(oid);
             menu.setUpdateTime(new Date());
-
+            registerBizEvent(menu.getOid(), null, BizEventOptTypeEnum.UPDATE_MENU_SORT);
             try {
                 menuTransDao.doUpdateByPrimaryKeySelective(menu);
             } catch (DaoException e) {
@@ -337,8 +346,8 @@ public class MenuBizServiceImpl implements MenuBizService {
         } catch (DaoException e) {
             log.error("MenuBizServiceImpl.doUpdateMenu exec failed, e:\n", e);
             throw MenuBizException.MODIFY_FAILED_EXCEPTION.format(menuBO.getOid()).print();
-
         }
+        registerBizEvent(menu.getOid(), menu.getText(), BizEventOptTypeEnum.UPDATE);
     }
 
 
@@ -351,6 +360,7 @@ public class MenuBizServiceImpl implements MenuBizService {
             log.error("MenuBizServiceImpl.doRemoveMenuById exec failed, e:\n", e);
             throw MenuBizException.DELETE_FAILED_EXCEPTION.format(oid).print();
         }
+        registerBizEvent(oid, null, BizEventOptTypeEnum.DELETE);
 
     }
 
@@ -412,4 +422,12 @@ public class MenuBizServiceImpl implements MenuBizService {
 
     }
 
+    private void registerBizEvent(Long oid, String desc, BizEventOptTypeEnum optTypeEnum) {
+        BizEventLogEvent event = new BizEventLogEvent(this, SecurityContextHolder.getContext());
+        event.setBizEventTypeEnum(BizEventTypeEnum.MENU);
+        event.setBizEventOptTypeEnum(optTypeEnum);
+        event.setOid(oid);
+        event.setDesc(desc);
+        applicationContext.publishEvent(event);
+    }
 }

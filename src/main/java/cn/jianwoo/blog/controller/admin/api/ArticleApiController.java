@@ -73,7 +73,7 @@ public class ArticleApiController extends BaseController {
     /**
      * 文章提交(文章发布页面)<br/>
      * 文章STATUS 为 1 <br/>
-     * url:/api/admin/article/submit<br/>
+     * url:/api/admin/article/published<br/>
      *
      * @param param JSON 参数({@link ArticleSubmitRequest})
      *              title<br/>
@@ -93,8 +93,8 @@ public class ArticleApiController extends BaseController {
     @PageId(PageIdEnum.ARTICLE_PUBLISHED)
     @SubToken
     @ApiVersion()
-    @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_SUBMIT)
-    public String doArticleSubmit(@RequestBody String param) {
+    @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_PUBLISHED)
+    public String doArticlePublished(@RequestBody String param) {
         try {
             super.printRequestParams(param);
             ArticleSubmitRequest request = this.convertParam(param, ArticleSubmitRequest.class);
@@ -106,7 +106,7 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(request.getType(), "type", "文章类型不能为空!");
             BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
             BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
-            BizValidation.paramRangeValidate(request.getVisitType(), "visitType", "文章访问类型必须在[-1,0,1,2]中!",
+            BizValidation.paramRangeValidate(request.getVisitType(), "visitType", "文章访问类型必须在[10,11,20,21]中!",
                     ArticleVisitEnum.PUBLIC.getValue(), ArticleVisitEnum.PASSWORD.getValue(),
                     ArticleVisitEnum.PRIVATE.getValue(), ArticleVisitEnum.TOP.getValue());
             if (ArticleVisitEnum.PASSWORD.getValue().equals(request.getVisitType())) {
@@ -124,7 +124,7 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleBO::setTagOidList, request.getTagOidList())
                     .with(ArticleBO::setTempArtOid, request.getTempArtOid())
                     .with(ArticleBO::setStatus, ArticleStatusEnum.PUBLISHED.getValue()).build();
-            articleBizService.doSaveArticle(articleBO);
+            articleBizService.doCreateArticle(articleBO);
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
         }
@@ -178,7 +178,7 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleBO::setTagOidList, request.getTagOidList())
                     .with(ArticleBO::setTempArtOid, request.getTempArtOid())
                     .with(ArticleBO::setStatus, ArticleStatusEnum.DRAFT.getValue()).build();
-            articleBizService.doSaveArticle(articleBO);
+            articleBizService.doCreateArticle(articleBO);
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
         }
@@ -231,7 +231,7 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleBO::setTagOidList, request.getTagOidList())
                     .with(ArticleBO::setTempArtOid, request.getTempArtOid())
                     .with(ArticleBO::setStatus, ArticleStatusEnum.RECYCLE.getValue()).build();
-            articleBizService.doSaveArticle(articleBO);
+            articleBizService.doCreateArticle(articleBO);
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
         }
@@ -276,7 +276,7 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(request.getType(), "type", "文章类型不能为空!");
             BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
             BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
-            BizValidation.paramRangeValidate(request.getVisitType(), "visitType", "文章访问类型必须在[-1,0,1,2]中!",
+            BizValidation.paramRangeValidate(request.getVisitType(), "visitType", "文章访问类型必须在[10,11,20,21]中!",
                     ArticleVisitEnum.PUBLIC.getValue(), ArticleVisitEnum.PASSWORD.getValue(),
                     ArticleVisitEnum.PRIVATE.getValue(), ArticleVisitEnum.TOP.getValue());
             if (ArticleVisitEnum.PASSWORD.getValue().equals(request.getVisitType())) {
@@ -366,7 +366,7 @@ public class ArticleApiController extends BaseController {
 //            BizValidation.paramValidate(request.getType(), "type", "文章类型不能为空!");
             BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
             BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
-            BizValidation.paramRangeValidate(request.getVisitType(), "visitType", "文章访问类型必须在[-1,0,1,2]中!",
+            BizValidation.paramRangeValidate(request.getVisitType(), "visitType", "文章访问类型必须在[10,11,20,21]中!",
                     ArticleVisitEnum.PUBLIC.getValue(), ArticleVisitEnum.PASSWORD.getValue(),
                     ArticleVisitEnum.PRIVATE.getValue(), ArticleVisitEnum.TOP.getValue());
             if (ArticleVisitEnum.PASSWORD.getValue().equals(request.getVisitType())) {
@@ -539,7 +539,7 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(request.getType(), "type", "文章类型不能为空!");
             BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
             BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
-            BizValidation.paramRangeValidate(request.getVisitType(), "visitType", "文章访问类型必须在[-1,0,1,2]中!",
+            BizValidation.paramRangeValidate(request.getVisitType(), "visitType", "文章访问类型必须在[10,11,20,21]中!",
                     ArticleVisitEnum.PUBLIC.getValue(), ArticleVisitEnum.PASSWORD.getValue(),
                     ArticleVisitEnum.PRIVATE.getValue(), ArticleVisitEnum.TOP.getValue());
             if (ArticleVisitEnum.PASSWORD.getValue().equals(request.getVisitType())) {
@@ -567,7 +567,7 @@ public class ArticleApiController extends BaseController {
     }
 
     /**
-     * 分页查询有效的文章集合(STATUS = 0/1)(文章列表页面)<br/>
+     * 分页查询有效的文章集合(STATUS = 00/90)(文章列表页面)<br/>
      * url:/api/admin/article/effective/list<br/>
      *
      * @param param JSON 参数({@link ArticlePageRequest})
@@ -611,10 +611,13 @@ public class ArticleApiController extends BaseController {
         }
         artParam.setPageNo(param.getPage());
         artParam.setPageSize(param.getLimit());
-        PageInfo<ArticleBO> articleExtPageInfo = articleBizService.queryEffectiveArticleList(artParam);
-        List<ArticleSummaryVO> articleSummaryVOList = new ArrayList<>();
+        artParam.processSortField(param.getSortField(), param.getSortOrder());
+
+
+        PageInfo<ArticleBO> pageInfo = articleBizService.queryEffectiveArticleList(artParam);
+        List<ArticleSummaryVO> list = new ArrayList<>();
         ArticleSummaryResponse response = ArticleSummaryResponse.getInstance();
-        for (ArticleBO articleBO : articleExtPageInfo.getList()) {
+        for (ArticleBO articleBO : pageInfo.getList()) {
             ArticleSummaryVO vo = new ArticleSummaryVO();
             vo.setAuthor(articleBO.getAuthor());
             vo.setOid(articleBO.getOid());
@@ -625,17 +628,17 @@ public class ArticleApiController extends BaseController {
             vo.setPublishTime(articleBO.getPushTime());
             vo.setModifiedTimeStr(DateUtil.formatDateTime(articleBO.getModifiedTime()));
             vo.setModifiedTime(articleBO.getModifiedTime());
-            articleSummaryVOList.add(vo);
+            list.add(vo);
         }
-        response.setData(articleSummaryVOList);
-        response.setCount(articleExtPageInfo.getTotal());
+        response.setData(list);
+        response.setCount(pageInfo.getTotal());
         return super.responseToJSONString(response);
 
     }
 
 
     /**
-     * 分页查询回收站文章集合(STATUS = -1)(文章列表页面)<br/>
+     * 分页查询回收站文章集合(STATUS = 91)(文章列表页面)<br/>
      * url:/api/admin/article/recycle/list<br/>
      *
      * @param param JSON 参数({@link ArticlePageRequest})
@@ -669,24 +672,24 @@ public class ArticleApiController extends BaseController {
         }
         artParam.setPageNo(param.getPage());
         artParam.setPageSize(param.getLimit());
-        PageInfo<ArticleBO> articleExtPageInfo = articleBizService.queryRecycleBinArticleList(artParam);
-        List<ArticleSummaryVO> articleSummaryVOList = new ArrayList<>();
+        artParam.processSortField(param.getSortField(), param.getSortOrder());
+        PageInfo<ArticleBO> pageInfo = articleBizService.queryRecycleBinArticleList(artParam);
+        List<ArticleSummaryVO> list = new ArrayList<>();
         ArticleSummaryResponse response = ArticleSummaryResponse.getInstance();
-        for (ArticleBO articleBO : articleExtPageInfo.getList()) {
+        for (ArticleBO articleBO : pageInfo.getList()) {
             ArticleSummaryVO vo = new ArticleSummaryVO();
             vo.setAuthor(articleBO.getAuthor());
             vo.setOid(articleBO.getOid());
             vo.setTitle(articleBO.getTitle());
             vo.setType(articleBO.getTypeName());
             vo.setStatus(articleBO.getStatus());
-            vo.setPublishTimeStr(DateUtil.formatDateTime(articleBO.getPushTime()));
-            vo.setPublishTime(articleBO.getPushTime());
+            vo.setRemoveRecycleTime(articleBO.getRemoveRecycleTime());
             vo.setModifiedTimeStr(DateUtil.formatDateTime(articleBO.getModifiedTime()));
             vo.setModifiedTime(articleBO.getModifiedTime());
-            articleSummaryVOList.add(vo);
+            list.add(vo);
         }
-        response.setData(articleSummaryVOList);
-        response.setCount(articleExtPageInfo.getTotal());
+        response.setData(list);
+        response.setCount(pageInfo.getTotal());
         return super.responseToJSONString(response);
 
     }
@@ -966,14 +969,13 @@ public class ArticleApiController extends BaseController {
      *              visitType
      *              password<br/>
      *              isComment<br/>
-     *              oldOid<br/>
+     *              oldArticleOid<br/>
      *              pageType<br/>
      * @return 返回响应 {@link BaseResponseDto}
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
      */
-    @SubToken
     @ApiVersion()
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_TEMP_SAVE)
     public String doTempArticleSave(@RequestBody String param) {
@@ -986,12 +988,12 @@ public class ArticleApiController extends BaseController {
                     .with(TempArticleBO::setTitle, request.getTitle())
                     .with(TempArticleBO::setContent, request.getArticleContent())
                     .with(TempArticleBO::setAuthor, request.getAuthor())
-                    .with(TempArticleBO::setMenuOid, request.getMenuId())
+                    .with(TempArticleBO::setMenuOid, request.getMenuOid())
                     .with(TempArticleBO::setIsComment, request.getIsComment())
                     .with(TempArticleBO::setVisitType, request.getVisitType())
                     .with(TempArticleBO::setImgSrc, request.getImgSrc())
                     .with(TempArticleBO::setPassword, request.getPassword())
-                    .with(TempArticleBO::setOldOid, request.getOldOid())
+                    .with(TempArticleBO::setOldArticleOid, request.getOldArticleOid())
                     .with(TempArticleBO::setPageType, request.getPageType())
                     .build();
             if (CollectionUtils.isNotEmpty(request.getTags())) {
@@ -1027,14 +1029,13 @@ public class ArticleApiController extends BaseController {
      *              visitType
      *              password<br/>
      *              isComment<br/>
-     *              oldOid<br/>
+     *              oldArticleOid<br/>
      *              pageType<br/>
      * @return 返回响应 {@link BaseResponseDto}
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
      */
-    @SubToken
     @ApiVersion()
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_TEMP_UPDATE)
     public String doTempArticleUpdate(@RequestBody String param) {
@@ -1048,12 +1049,12 @@ public class ArticleApiController extends BaseController {
                     .with(TempArticleBO::setTitle, request.getTitle())
                     .with(TempArticleBO::setContent, request.getArticleContent())
                     .with(TempArticleBO::setAuthor, request.getAuthor())
-                    .with(TempArticleBO::setMenuOid, request.getMenuId())
+                    .with(TempArticleBO::setMenuOid, request.getMenuOid())
                     .with(TempArticleBO::setIsComment, request.getIsComment())
                     .with(TempArticleBO::setVisitType, request.getVisitType())
                     .with(TempArticleBO::setImgSrc, request.getImgSrc())
                     .with(TempArticleBO::setPassword, request.getPassword())
-                    .with(TempArticleBO::setOldOid, request.getOldOid())
+                    .with(TempArticleBO::setOldArticleOid, request.getOldArticleOid())
                     .with(TempArticleBO::setPageType, request.getPageType())
                     .build();
             if (CollectionUtils.isNotEmpty(request.getTags())) {
@@ -1161,7 +1162,6 @@ public class ArticleApiController extends BaseController {
      * msg
      * @author gulihua
      */
-    @SubToken
     @ApiVersion()
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_TEMP_UPDATE_RESTORE)
     public String doTempStatusUpdateRestore(@RequestBody String param) {
@@ -1190,7 +1190,6 @@ public class ArticleApiController extends BaseController {
      * msg
      * @author gulihua
      */
-    @SubToken
     @ApiVersion()
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_TEMP_UPDATE_VOID)
     public String doTempStatusUpdateVoid(@RequestBody String param) {

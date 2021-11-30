@@ -283,20 +283,14 @@ public class EmailTplApiController extends BaseController {
             EmailTplRequest request = this.convertParam(param, EmailTplRequest.class);
             BizValidation.paramValidate(request.getContent(), "content", "邮件模板内容不能为空!");
             BizValidation.paramValidate(request.getTestJsonData(), "testJsonData", "邮件模板测试json数据内容不能为空!");
-            EmailTplBO bo = JwBuilder.of(EmailTplBO::new)
-                    .with(EmailTplBO::setOid, request.getOid())
-                    .with(EmailTplBO::setEmailTplCode, request.getCode())
-                    .with(EmailTplBO::setContent, request.getContent())
-                    .with(EmailTplBO::setDesc, request.getDesc())
-                    .with(EmailTplBO::setSubject, request.getSubject())
-                    .with(EmailTplBO::setTestJsonData, request.getTestJsonData()).build();
-            String renderContent = emailTplBizService.doRenderEmailTpl(bo);
+
+            String renderContent = emailTplBizService.doRenderEmailTpl(request.getContent(), request.getTestJsonData());
             EmailTplRenderResponse response = EmailTplRenderResponse.getInstance();
             response.setData(renderContent);
+            return super.responseToJSONString(response);
         } catch (Exception e) {
             return super.exceptionToString(e);
         }
-        return super.responseToJSONString(response);
 
     }
 

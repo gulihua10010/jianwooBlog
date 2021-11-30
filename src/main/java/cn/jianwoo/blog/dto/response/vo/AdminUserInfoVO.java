@@ -19,7 +19,25 @@ import java.io.Serializable;
 public class AdminUserInfoVO implements Serializable {
     private static final long serialVersionUID = 8360453789834911774L;
 
+    /**
+     * 登录ID
+     */
+    private String loginID;
+    /**
+     * 昵称
+     */
     private String nickName;
+    /**
+     * 昵称
+     */
     private String userEmail;
+    /**
+     * 手机号码
+     */
+    private String userPhone;
+
+    /**
+     * 性别[10:男, 20:女]'
+     */
     private String userSex;
 }

@@ -61,7 +61,7 @@
                     </script>
 
                     <script type="text/html" template lay-url="/api/admin/token/generate"
-                            lay-data="{pageId: 'ET10'}" lay-type="post">
+                            lay-data="{pageId: 'ET10'}" lay-type="post"  lay-done="doUpdateToken(d);">
                         <input type="hidden" name="subToken" id="subToken" value="{{d.token}}">
                     </script>
                     <div class="layui-form-item">
@@ -96,6 +96,10 @@
 
 
         })
+    }
+    doUpdateToken =function (d)
+    {
+
     }
 
 

@@ -13,7 +13,7 @@ public interface TagsBizService {
      * @return
      * @author gulihua
      */
-    void doAddTag(String name) throws JwBlogException;
+    void doCreateTag(String name) throws JwBlogException;
 
 
     /**
@@ -69,7 +69,7 @@ public interface TagsBizService {
      * @return
      * @author gulihua
      */
-    void doAddTagList(List<String> tagList) throws JwBlogException;
+    void doAddCreateList(List<String> tagList) throws JwBlogException;
 
     /**
      * 查询所有标签

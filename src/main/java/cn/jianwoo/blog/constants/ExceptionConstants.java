@@ -66,6 +66,7 @@ public final class ExceptionConstants {
     public static final String UNAUTHORIZED_DESC = "接口鉴权失败，未经授权的操作!";
     public static final String LOGOUT_FAILED_MSG_1 = "退出登录失败, 用户ID secret为空!";
     public static final String LOGOUT_FAILED_MSG_2 = "退出登录失败, 用户未登录!";
+    public static final String LOGOUT_FAILED_MSG_3 = "退出登录失败, token解析失败!";
 
     public static final String EMAIL_SEND_FAILED = "400011";
     public static final String EMAIL_SEND_FAILED_DESC = "邮件发送失败，请检查邮件配置!";

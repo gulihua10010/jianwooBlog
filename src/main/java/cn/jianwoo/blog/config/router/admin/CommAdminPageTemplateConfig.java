@@ -13,6 +13,9 @@ public class CommAdminPageTemplateConfig extends UrlConfig {
 
     public static final String PAGE_INDEX = "/index";
     public static final String PAGE_LOGIN = "/login";
+    public static final String PAGE_PASSPORT= "/passport";
+    public static final String PAGE_FORGET_PASSWORD = "/forgetPassword";
+    public static final String PAGE_CHANGE_PASSWORD = "/changePassword";
     public static final String PAGE_404 = "/pages/tips/front_404";
     public static final String PAGE_ERROR = "/pages/tips/error";
 

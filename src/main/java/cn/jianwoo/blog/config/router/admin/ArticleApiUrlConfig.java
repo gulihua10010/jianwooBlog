@@ -9,7 +9,7 @@ import cn.jianwoo.blog.config.router.UrlConfig;
  */
 public class ArticleApiUrlConfig extends UrlConfig {
     public static final String URL_PREFIX = "/api/admin/article";
-    public static final String URL_ARTICLE_SUBMIT = "/submit";
+    public static final String URL_ARTICLE_PUBLISHED = "/published";
     public static final String URL_ARTICLE_SAVE_DRAFT = "/save/draft";
     public static final String URL_ARTICLE_SAVE_RECYCLE = "/save/recycle";
     public static final String URL_ARTICLE_UPDATE = "/update";

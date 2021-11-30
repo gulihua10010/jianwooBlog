@@ -9,7 +9,7 @@ import cn.jianwoo.blog.config.router.UrlConfig;
  */
 public class CommentApiUrlConfig extends UrlConfig {
     public static final String URL_PREFIX = "/api/admin/comment";
-    public static final String URL_COMMENT_ADD = "/add";
+    public static final String URL_COMMENT_CREATE = "/create";
     public static final String URL_COMMENT_REMOVE = "/remove";
     public static final String URL_COMMENT_REMOVE_LIST = "/remove/list";
     public static final String URL_COMMENT_QUERY = "/query";

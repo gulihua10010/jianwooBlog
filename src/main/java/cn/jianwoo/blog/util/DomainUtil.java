@@ -268,7 +268,6 @@ public class DomainUtil {
         if (null != fieldGetMethod) {
             rltValue = fieldGetMethod.invoke(domainObj);
         }
-
         return null == rltValue ? null : (Integer) rltValue;
     }
 
@@ -279,20 +278,15 @@ public class DomainUtil {
         if (null != fieldGetMethod) {
             rltValue = fieldGetMethod.invoke(domainObj);
         }
-
         return null == rltValue ? null : (Date) rltValue;
     }
 
 
     public static void fillStringValue(Object domainObj, String fieldName, String value) throws Exception {
         fieldName = fieldName.substring(0, 1).toUpperCase(Locale.US).concat(fieldName.substring(1));
-        try {
-            Method fieldSetMethod = domainObj.getClass().getMethod("set" + fieldName, String.class);
-            if (null != fieldSetMethod) {
-                fieldSetMethod.invoke(domainObj, value);
-            }
-
-        } catch (NoSuchMethodException var4) {
+        Method fieldSetMethod = domainObj.getClass().getMethod("set" + fieldName, String.class);
+        if (null != fieldSetMethod) {
+            fieldSetMethod.invoke(domainObj, value);
         }
     }
 
@@ -300,12 +294,7 @@ public class DomainUtil {
     public static void fillIntegerValue(Object domainObj, String fieldName, int value) throws Exception {
         Method fieldSetMethod = null;
         fieldName = fieldName.substring(0, 1).toUpperCase(Locale.US).concat(fieldName.substring(1));
-        try {
-            fieldSetMethod = domainObj.getClass().getMethod("set" + fieldName, Integer.class);
-        } catch (NoSuchMethodException var5) {
-            return;
-        }
-
+        fieldSetMethod = domainObj.getClass().getMethod("set" + fieldName, Integer.class);
         if (null != fieldSetMethod) {
             fieldSetMethod.invoke(domainObj, value);
         }
@@ -315,13 +304,9 @@ public class DomainUtil {
 
     public static void fillDateValue(Object domainObj, String fieldName, Date value) throws Exception {
         fieldName = fieldName.substring(0, 1).toUpperCase(Locale.US).concat(fieldName.substring(1));
-        try {
-            Method fieldSetMethod = domainObj.getClass().getMethod("set" + fieldName, Date.class);
-            if (null != fieldSetMethod) {
-                fieldSetMethod.invoke(domainObj, value);
-            }
-
-        } catch (NoSuchMethodException var4) {
+        Method fieldSetMethod = domainObj.getClass().getMethod("set" + fieldName, Date.class);
+        if (null != fieldSetMethod) {
+            fieldSetMethod.invoke(domainObj, value);
         }
     }
 

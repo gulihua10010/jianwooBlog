@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -87,5 +88,9 @@ public class ArticleVO implements Serializable {
      */
     private TempArticleVO tempArticle;
 
+    /**
+     * 回收站删除时间
+     */
+    private Date removeRecycleTime;
 
 }

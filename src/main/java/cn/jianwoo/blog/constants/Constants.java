@@ -58,6 +58,10 @@ public final class Constants {
     public static final String CLEAR_HTML_TAGS_WITHOUT_MEDIA_REGEX = "\\<(?!img |/?video|source ).*?>";
     public static final String CLEAR_HTML_TAGS_REGEX = "\\<.*?>";
     public static final String NEW_LINE_REGEX = "\n";
+    public static final String EMAIL_REGEX = "^([a-zA-Z0-9_\\.\\-])+\\@(([a-zA-Z0-9\\-])+\\.)+([a-zA-Z0-9]{2,4})+$";
+    public static final String PHONE_REGEX = "^1\\d{10}$";
+    //密码包含 数字,英文,字符中的两种以上，长度6-20
+    public static final String PASSWORD_REGEX = "^(?![0-9]+$)(?![a-z]+$)(?![A-Z]+$)(?!([^(0-9a-zA-Z)])+$).{6,20}$";
 
     //path
     public static final String ALL_PATH_PATTERNS = "/**";
@@ -70,6 +74,7 @@ public final class Constants {
 
     //admin
     public static final String ADMIN = "admin";
+    public static final String ADMIN_CN = "管理员";
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
     public static final String ACCESS_TOKEN = "access_token";
@@ -79,6 +84,8 @@ public final class Constants {
     public static final String WRONG_PASSWORD = "用户名或密码错误!";
     public static final String SUCCESS_LOGIN = "登录成功!!";
     public static final String SUCCESS_LOGOUT = "退出成功!!";
+    public static final String LOGOUT_DESC1 = "用户退出";
+    public static final String LOGOUT_DESC2 = "token失效退出";
     public static final String USER_KEY = "USER_ID";
     public static final String REFRESH_TOKEN = "refresh_token";
     public static final String REFRESH_ACCESS_TOKEN = "refresh_access_token";
@@ -86,6 +93,7 @@ public final class Constants {
     public static final String CURRENT_USER = "CURRENT_USER";
     public static final String LOGIN_USER_STATUS = "LOGIN_USER_STATUS";
     public static final String LOGIN_ID_SECRET = "login_id_secret";
+    public static final String LOGIN_ID = "login_id";
 
     public static final String LOGIN_SESSION = "JIANWOO.LOGIN.SESSION";
 

@@ -62,7 +62,7 @@ public class CommentApiController extends BaseController {
 
     /**
      * 文章评论添加(文章编辑页面)<br/>
-     * url:/api/admin/comment/add<br/>
+     * url:/api/admin/comment/create<br/>
      *
      * @param param JSON 参数({@link CommentAddRequest})
      *              commentText<br/>
@@ -77,7 +77,7 @@ public class CommentApiController extends BaseController {
      * @author gulihua
      */
     @ApiVersion()
-    @PostMapping(CommentApiUrlConfig.URL_COMMENT_ADD)
+    @PostMapping(CommentApiUrlConfig.URL_COMMENT_CREATE)
     public String doCreateComment(@RequestBody String param) {
         try {
             super.printRequestParams(param);
@@ -99,7 +99,7 @@ public class CommentApiController extends BaseController {
                     .with(CommentBO::setHeadImgSrc, request.getHeadImgUrl())
                     .build();
 
-            commentBizService.doAddComment(commentBO);
+            commentBizService.doCreateComment(commentBO);
 
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
@@ -238,7 +238,7 @@ public class CommentApiController extends BaseController {
      */
     @ApiVersion()
     @GetMapping(CommentApiUrlConfig.URL_COMMENT_QUERY)
-    public String queryCommentPage(CommentPageRequest param) {
+    public String queryCommentPageList(CommentPageRequest param) {
         super.printRequestParams(DomainUtil.toString(param));
         CommentParam commParam = new CommentParam();
         if (StringUtils.isNotBlank(param.getTitle())) {
@@ -246,14 +246,17 @@ public class CommentApiController extends BaseController {
         }
         commParam.setPageNo(param.getPage());
         commParam.setPageSize(param.getLimit());
+        commParam.processSortField(param.getSortField(), param.getSortOrder());
+
         if (null != param.getUnread() && new Integer(1).equals(param.getUnread())) {
             commParam.setReadStatus(new Integer(1).equals(param.getUnread()) ? CommReadEnum.UNREAD.getValue()
                     : CommReadEnum.READ.getValue());
         }
-        PageInfo<CommentBO> commentExtPageInfo = commentBizService.queryAllCommentPage(commParam);
-        List<CommentSummaryVO> commentVOList = new ArrayList<>();
+
+        PageInfo<CommentBO> pageInfo = commentBizService.queryAllCommentPage(commParam);
+        List<CommentSummaryVO> list = new ArrayList<>();
         CommentSummaryResponse response = CommentSummaryResponse.getInstance();
-        for (CommentBO commentBO : commentExtPageInfo.getList()) {
+        for (CommentBO commentBO : pageInfo.getList()) {
             CommentSummaryVO vo = new CommentSummaryVO();
             vo.setArtTitle(commentBO.getTitle());
             vo.setContent(StringEscapeUtils.escapeHtml4(commentBO.getContent()));
@@ -264,11 +267,11 @@ public class CommentApiController extends BaseController {
             vo.setReplyOid(commentBO.getParentOid());
             vo.setOid(commentBO.getOid());
             vo.setArtOid(commentBO.getArticleOid());
-            commentVOList.add(vo);
+            list.add(vo);
         }
 
-        response.setData(commentVOList);
-        response.setCount(commentExtPageInfo.getTotal());
+        response.setData(list);
+        response.setCount(pageInfo.getTotal());
         return super.responseToJSONString(response);
 
     }
@@ -308,7 +311,7 @@ public class CommentApiController extends BaseController {
                     .with(CommentBO::setParentOid, request.getParentOid())
                     .with(CommentBO::setHeadImgSrc, request.getHeadImgUrl())
                     .build();
-            commentBizService.doAddComment(commentBO);
+            commentBizService.doCreateComment(commentBO);
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
 

@@ -1,9 +1,7 @@
 package cn.jianwoo.blog.service.biz;
 
-import cn.jianwoo.blog.entity.TempArticle;
 import cn.jianwoo.blog.enums.TempArticlePageEnum;
 import cn.jianwoo.blog.enums.TempArticleStatusEnum;
-import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.bo.TempArticleBO;
 
@@ -47,10 +45,10 @@ public interface TempArticleBizService {
     /**
      * 根据编辑文章的oid和类型查询
      *
-     * @param oldOid 编辑文章的oid
-     * @param pageType   {@link TempArticlePageEnum}
+     * @param oldArticleOid 编辑文章的oid
+     * @param pageType      {@link TempArticlePageEnum}
      * @return
      * @author gulihua
      */
-    TempArticleBO queryLastestTempArticle(Long oldOid, String pageType) throws DaoException;
+    TempArticleBO queryLastestTempArticle(Long oldArticleOid, String pageType);
 }

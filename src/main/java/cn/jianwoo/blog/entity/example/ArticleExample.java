@@ -1095,6 +1095,66 @@ public class ArticleExample {
             return (Criteria) this;
         }
 
+        public Criteria andRemoveRecycleTimeIsNull() {
+            addCriterion("REMOVE_RECYCLE_TIME is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemoveRecycleTimeIsNotNull() {
+            addCriterion("REMOVE_RECYCLE_TIME is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemoveRecycleTimeEqualTo(Date value) {
+            addCriterion("REMOVE_RECYCLE_TIME =", value, "removeRecycleTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemoveRecycleTimeNotEqualTo(Date value) {
+            addCriterion("REMOVE_RECYCLE_TIME <>", value, "removeRecycleTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemoveRecycleTimeGreaterThan(Date value) {
+            addCriterion("REMOVE_RECYCLE_TIME >", value, "removeRecycleTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemoveRecycleTimeGreaterThanOrEqualTo(Date value) {
+            addCriterion("REMOVE_RECYCLE_TIME >=", value, "removeRecycleTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemoveRecycleTimeLessThan(Date value) {
+            addCriterion("REMOVE_RECYCLE_TIME <", value, "removeRecycleTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemoveRecycleTimeLessThanOrEqualTo(Date value) {
+            addCriterion("REMOVE_RECYCLE_TIME <=", value, "removeRecycleTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemoveRecycleTimeIn(List<Date> values) {
+            addCriterion("REMOVE_RECYCLE_TIME in", values, "removeRecycleTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemoveRecycleTimeNotIn(List<Date> values) {
+            addCriterion("REMOVE_RECYCLE_TIME not in", values, "removeRecycleTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemoveRecycleTimeBetween(Date value1, Date value2) {
+            addCriterion("REMOVE_RECYCLE_TIME between", value1, value2, "removeRecycleTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemoveRecycleTimeNotBetween(Date value1, Date value2) {
+            addCriterion("REMOVE_RECYCLE_TIME not between", value1, value2, "removeRecycleTime");
+            return (Criteria) this;
+        }
+
         public Criteria andCreateTimeIsNull() {
             addCriterion("CREATE_TIME is null");
             return (Criteria) this;

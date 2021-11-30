@@ -8,7 +8,10 @@ import cn.jianwoo.blog.dao.base.WebconfTransDao;
 import cn.jianwoo.blog.dao.biz.WebconfBizDao;
 import cn.jianwoo.blog.entity.Webconf;
 import cn.jianwoo.blog.entity.extension.WebconfExt;
+import cn.jianwoo.blog.enums.BizEventOptTypeEnum;
+import cn.jianwoo.blog.enums.BizEventTypeEnum;
 import cn.jianwoo.blog.enums.ValueTypeEnum;
+import cn.jianwoo.blog.event.BizEventLogEvent;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.exception.WebconfBizException;
@@ -23,6 +26,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +50,8 @@ public class WebconfBizServiceImpl implements WebconfBizService {
     private WebconfBizDao webconfBizDao;
     @Autowired
     private CacheStore<String, String> cacheStore;
+    @Autowired
+    private ApplicationContext applicationContext;
 
 
     @Override
@@ -164,7 +171,7 @@ public class WebconfBizServiceImpl implements WebconfBizService {
                     }
                     String cacheKey = MessageFormat.format(CacaheKeyConstants.WEBCONF_KEY, webconf.getKey());
                     cacheStore.put(cacheKey, o.getValue());
-
+                    registerBizEvent(webconf.getKey(), BizEventOptTypeEnum.CREATE);
                 } catch (DaoException e) {
                     log.error("WebconfBizServiceImpl.doUpdateConfig exec failed, e:\n", e);
                     throw WebconfBizException.MODIFY_FAILED_EXCEPTION.format(o.getKey()).print();
@@ -218,5 +225,11 @@ public class WebconfBizServiceImpl implements WebconfBizService {
 
     }
 
-
+    private void registerBizEvent(String key, BizEventOptTypeEnum optTypeEnum) {
+        BizEventLogEvent event = new BizEventLogEvent(this, SecurityContextHolder.getContext());
+        event.setBizEventTypeEnum(BizEventTypeEnum.WEBCONF);
+        event.setBizEventOptTypeEnum(optTypeEnum);
+        event.setDesc(key);
+        applicationContext.publishEvent(event);
+    }
 }

@@ -39,7 +39,7 @@ public class TempArticleSaveRequest extends BaseRequestDto {
     /**
      * 文章类别
      */
-    private Integer menuId;
+    private Integer menuOid;
 
     /**
      * 文章缩略图
@@ -67,9 +67,9 @@ public class TempArticleSaveRequest extends BaseRequestDto {
     private Long oid;
 
     /**
-     * temp article oldOid
+     * temp article oldArticleOid
      */
-    private Long oldOid;
+    private Long oldArticleOid;
 
     /**
      * temp article page

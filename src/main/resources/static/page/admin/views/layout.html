@@ -58,20 +58,19 @@
                 </a>
             </li>
             <li class="layui-nav-item" lay-unselect>
-                <script type="text/html" template lay-url="/api/admin/user/info"
-                        lay-done="layui.element.render('nav', 'layadmin-layout-right');">
+                <script type="text/html" template lay-url="/api/admin/user/info" lay-type="post"
+                        lay-data="{{ getParam()}}" lay-done="layui.element.render('nav', 'layadmin-layout-right');">
                     <a href="javascript:;">
                         <cite>{{ d.data.nickName }}</cite>
                     </a>
                     <dl class="layui-nav-child">
-                        <dd><a lay-href="set/user/info">基本资料</a></dd>
-                        <dd><a lay-href="set/user/password">修改密码</a></dd>
+                        <dd><a lay-href="user/profile">基本资料</a></dd>
+                        <dd><a lay-href="user/password">修改密码</a></dd>
                         <hr>
                         <dd layadmin-event="logout" style="text-align: center;"><a>退出</a></dd>
                     </dl>
                 </script>
             </li>
-
             <li class="layui-nav-item layui-hide-xs" lay-unselect>
                 <a href="javascript:;" layadmin-event="about"><i class="layui-icon layui-icon-more-vertical"></i></a>
             </li>
@@ -205,3 +204,13 @@
     <div class="layadmin-body-shade" layadmin-event="shade"></div>
 
 </div>
+<script>
+
+    function getParam() {
+        var setter = layui.setter
+        var username = layui.data(setter.tableName)[setter.request.loginIdKey];
+        return "{loginID:'" + username + "'}"
+    }
+
+
+</script>

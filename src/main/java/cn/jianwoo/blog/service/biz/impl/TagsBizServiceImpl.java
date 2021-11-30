@@ -7,6 +7,9 @@ import cn.jianwoo.blog.dao.base.TagsTransDao;
 import cn.jianwoo.blog.dao.biz.TagsBizDao;
 import cn.jianwoo.blog.entity.Tags;
 import cn.jianwoo.blog.entity.extension.ArticleTagsExt;
+import cn.jianwoo.blog.enums.BizEventOptTypeEnum;
+import cn.jianwoo.blog.enums.BizEventTypeEnum;
+import cn.jianwoo.blog.event.BizEventLogEvent;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.exception.TagsBizException;
@@ -15,6 +18,8 @@ import cn.jianwoo.blog.service.bo.TagsBO;
 import cn.jianwoo.blog.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,10 +37,12 @@ public class TagsBizServiceImpl implements TagsBizService {
     ArticleTagsTransDao articleTagsTransDao;
     @Autowired
     TagsBizDao tagsBizDao;
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void doAddTag(String name) throws JwBlogException {
+    public void doCreateTag(String name) throws JwBlogException {
         Tags oldTags = tagsTransDao.queryTagByName(name);
         if (null != oldTags) {
             throw TagsBizException.HAS_EXIST_EXCEPTION_CN.format(name).print();
@@ -48,11 +55,12 @@ public class TagsBizServiceImpl implements TagsBizService {
                 .with(Tags::setUpdateTime, now).build();
 
         try {
-            tagsTransDao.doInsert(tags);
+            tagsTransDao.doInsertSelective(tags);
         } catch (DaoException e) {
             log.error("TagsBizServiceImpl.doAddTag exec failed, e:\n", e);
             throw TagsBizException.CREATE_FAILED_EXCEPTION.format(name).print();
         }
+        registerBizEvent(tags.getOid(), tags.getContent(), BizEventOptTypeEnum.CREATE);
 
     }
 
@@ -96,6 +104,7 @@ public class TagsBizServiceImpl implements TagsBizService {
             log.error("TagsBizServiceImpl.doRemoveTags exec failed, e:\n", e);
             throw TagsBizException.DELETE_FAILED_EXCEPTION.format(oid).print();
         }
+        registerBizEvent(oid, null, BizEventOptTypeEnum.DELETE);
     }
 
 
@@ -116,13 +125,13 @@ public class TagsBizServiceImpl implements TagsBizService {
         } catch (DaoException e) {
             log.error("TagsBizServiceImpl.doUpdateTags exec failed, e:\n", e);
             throw TagsBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
-
         }
+        registerBizEvent(oid, tags.getContent(), BizEventOptTypeEnum.UPDATE);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void doAddTagList(List<String> tagList) throws JwBlogException {
+    public void doAddCreateList(List<String> tagList) throws JwBlogException {
         Date now = DateUtil.getNow();
         tagList = tagList.stream().distinct().collect(Collectors.toList());
         List<String> existTags = new ArrayList<>();
@@ -147,6 +156,7 @@ public class TagsBizServiceImpl implements TagsBizService {
                 log.error("TagsBizServiceImpl.doAddTagList exec failed, e:\n", e);
                 throw TagsBizException.CREATE_FAILED_EXCEPTION.format(tagName).print();
             }
+            registerBizEvent(tags.getOid(), tags.getContent(), BizEventOptTypeEnum.CREATE);
         }
 
 
@@ -182,5 +192,14 @@ public class TagsBizServiceImpl implements TagsBizService {
             throw TagsBizException.NOT_EXIST_EXCEPTION_CN.format(oid).print();
         }
 
+    }
+
+    private void registerBizEvent(Long oid, String desc, BizEventOptTypeEnum optTypeEnum) {
+        BizEventLogEvent event = new BizEventLogEvent(this, SecurityContextHolder.getContext());
+        event.setBizEventTypeEnum(BizEventTypeEnum.TAGS);
+        event.setBizEventOptTypeEnum(optTypeEnum);
+        event.setOid(oid);
+        event.setDesc(desc);
+        applicationContext.publishEvent(event);
     }
 }

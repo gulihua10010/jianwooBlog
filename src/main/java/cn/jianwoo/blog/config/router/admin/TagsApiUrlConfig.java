@@ -9,8 +9,8 @@ import cn.jianwoo.blog.config.router.UrlConfig;
  */
 public class TagsApiUrlConfig extends UrlConfig {
     public static final String URL_PREFIX = "/api/admin/tag";
-    public static final String URL_TAG_ADD = "/add";
-    public static final String URL_TAG_ADD_LIST = "/add/list";
+    public static final String URL_TAG_CREATE = "/create";
+    public static final String URL_TAG_CREATE_LIST = "/create/list";
     public static final String URL_TAG_REMOVE = "/remove";
     public static final String URL_TAG_UPDATE = "/update";
     public static final String URL_TAG_LIST = "/list";

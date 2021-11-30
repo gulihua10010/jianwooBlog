@@ -123,9 +123,15 @@
                 C.READ_STATUS = #{readStatus}
             </if>
         </where>
-        ORDER BY
-        A.TITLE ASC,
-        C.UPDATE_TIME DESC
+
+        <if test="orderByClause == null">
+            ORDER BY
+            A.TITLE ASC,
+            C.UPDATE_TIME DESC
+        </if>
+        <if test="orderByClause != null">
+            ORDER BY #{orderByClause}
+        </if>
     </select>
     <select id="selectCommentExtByOid" resultMap="ResultMapWithExt" parameterType="java.lang.Long">
         SELECT

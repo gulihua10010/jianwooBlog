@@ -97,6 +97,14 @@ public class BizValidation {
         }
 
     }
+    public static void paramMinLengthValidate(String paramValue, Integer length, String paramName, String msg) throws ValidationException {
+        if (null != paramValue && paramValue.length() < length) {
+            logger.error("Parameter verified failed, the length({}) of parameter '{}' is letter than {}. ", paramValue.length(), paramName, length);
+            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_STRING_LENGTH, msg, paramName);
+
+        }
+
+    }
 
     public static void paramNumberMinValidate(String paramValue, String min, String paramName, String msg) throws ValidationException {
         BigDecimal v;

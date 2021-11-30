@@ -10,6 +10,7 @@ import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.security.token.AuthToken;
 import cn.jianwoo.blog.service.biz.AdminBizService;
+import cn.jianwoo.blog.service.biz.EmailBizService;
 import cn.jianwoo.blog.service.bo.AdminBO;
 import cn.jianwoo.blog.service.bo.UserBO;
 import cn.jianwoo.blog.task.AsyncTask;
@@ -25,6 +26,7 @@ import org.springframework.util.DigestUtils;
 
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -39,6 +41,8 @@ public class AdminBizServiceImpl implements AdminBizService {
     private Long accessTokenExpiredSeconds;
     @Autowired
     private AsyncTask asyncTask;
+    @Autowired
+    private EmailBizService emailBizService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -114,6 +118,8 @@ public class AdminBizServiceImpl implements AdminBizService {
         String loginIdCacheKey = MessageFormat.format(CacaheKeyConstants.LOGIN_USER_STATUS, user.getId());
         jwCacheStore.put(loginIdCacheKey, true);
 
+        String loginIDNameKey = MessageFormat.format(CacaheKeyConstants.ADMIN_OID_NAME_KEY, user.getId());
+        jwCacheStore.put(loginIDNameKey, admin.getUsername());
         //执行异步任务
         asyncTask.execAdminUserLoginIpAreaTask(admin.getOid());
         log.info("========>> Admin [username={}, ip={}] login successfully!!!", name, ip);
@@ -169,5 +175,118 @@ public class AdminBizServiceImpl implements AdminBizService {
             }
         }
 
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void doChangePassword(String loginID, String oldPassword, String newPassword) throws JwBlogException {
+        log.info("========>> Start to change password , loginID= {}.", loginID);
+
+        Admin admin = adminTransDao.queryAdminByName(loginID);
+        if (admin == null) {
+            throw AdminBizException.NOT_EXIST_EXCEPTION_CN.format(loginID).print();
+        }
+        String pwd = DigestUtils.md5DigestAsHex(oldPassword.getBytes());
+        if (!pwd.equals(admin.getPassword())) {
+            log.warn("Change password failed, the old password[{}] is incorrect.", oldPassword);
+            throw AdminBizException.OLD_PASSWORD_INCORRECT.print();
+        }
+        if (oldPassword.equals(newPassword)) {
+            log.warn("Change password failed, the old password[{}] cannot be same as new password.", oldPassword);
+            throw AdminBizException.OLD_PASSWORD_NOT_SAME_AS_NEW.print();
+        }
+        Admin newAdmin = new Admin();
+        newAdmin.setOid(admin.getOid());
+        newAdmin.setPassword(DigestUtils.md5DigestAsHex(newPassword.getBytes()));
+        newAdmin.setUpdateTime(new Date());
+        try {
+            adminTransDao.doUpdateByPrimaryKeySelective(newAdmin);
+        } catch (DaoException e) {
+            log.warn("Change password failed. e:\r\n", e);
+            throw AdminBizException.MODIFY_FAILED_EXCEPTION.print();
+        }
+        log.info("========>> Change password End, loginID= {}", loginID);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void doChangePassword4Forget(String loginID, String newPassword, String verifyCode) throws JwBlogException {
+        log.info("========>> Start to change password , loginID= {}", loginID);
+
+        Admin admin = adminTransDao.queryAdminByName(loginID);
+        if (admin == null) {
+            throw AdminBizException.NOT_EXIST_EXCEPTION_CN.format(loginID).print();
+        }
+        String loginIDNameKey = MessageFormat.format(CacaheKeyConstants.VERIFY_CODE_LOGIN_ID, loginID);
+        Optional verifyConfirmCodeOpt = jwCacheStore.get(loginIDNameKey);
+        if (!verifyConfirmCodeOpt.isPresent()) {
+            throw AdminBizException.VERIFY_CODE_INCORRECT.print();
+        }
+        String verifyConfirmCode = (String) verifyConfirmCodeOpt.get();
+        if (null == verifyCode || !Objects.equals(verifyCode, verifyConfirmCode)) {
+            throw AdminBizException.VERIFY_CODE_INCORRECT.print();
+        }
+        String newPwd = DigestUtils.md5DigestAsHex(newPassword.getBytes());
+        if (admin.getPassword().equals(newPwd)) {
+            log.warn("Change password failed, the old password[{}] cannot be same as new password.", newPassword);
+            throw AdminBizException.OLD_PASSWORD_NOT_SAME_AS_NEW.print();
+        }
+        Admin newAdmin = new Admin();
+        newAdmin.setOid(admin.getOid());
+        newAdmin.setPassword(newPwd);
+        newAdmin.setUpdateTime(new Date());
+        try {
+            adminTransDao.doUpdateByPrimaryKeySelective(newAdmin);
+        } catch (DaoException e) {
+            log.warn("Change password failed. e:\r\n", e);
+            throw AdminBizException.MODIFY_FAILED_EXCEPTION.print();
+        }
+        log.info("========>> Change password End, loginID= {}", loginID);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void doChangePassword4ForgetCheck(String loginID, String email) throws JwBlogException {
+        log.info("========>> Start to change password Check, loginID= {}", loginID);
+        Admin admin = adminTransDao.queryAdminByName(loginID);
+        if (admin == null) {
+            throw AdminBizException.NOT_EXIST_EXCEPTION_CN.format(loginID).print();
+        }
+        if (email.equals(admin.getUserEmail())) {
+            throw AdminBizException.EMAIL_INCORRECT.print();
+        }
+        emailBizService.sendEmail4ForgetPwd(loginID, email);
+        log.info("========>> End to change password Check, loginID= {}", loginID);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void doSaveEditInfo(AdminBO adminBO) throws JwBlogException {
+        log.info("========>> Start to Save user edit info, loginID= {}", adminBO.getUsername());
+        Admin admin = adminTransDao.queryAdminByName(adminBO.getUsername());
+        if (admin == null) {
+            throw AdminBizException.NOT_EXIST_EXCEPTION_CN.format(adminBO.getUsername()).print();
+        }
+        Admin newAdmin = JwBuilder.of(Admin::new)
+                .with(Admin::setOid, admin.getOid())
+                .with(Admin::setUserNick, adminBO.getUserNick())
+                .with(Admin::setUserEmail, adminBO.getUserEmail())
+                .with(Admin::setUserPhone, adminBO.getUserPhone())
+                .with(Admin::setUserSex, adminBO.getUserSex())
+                .with(Admin::setUpdateTime, new Date())
+                .build();
+
+        try {
+            adminTransDao.doUpdateByPrimaryKeySelective(newAdmin);
+        } catch (DaoException e) {
+            log.warn("Change password failed. e:\r\n", e);
+            throw AdminBizException.MODIFY_FAILED_EXCEPTION.print();
+        }
+        String nameCacheKey = MessageFormat.format(CacaheKeyConstants.ADMIN_NAME_KEY, admin.getUsername());
+        String oidCacheKey = MessageFormat.format(CacaheKeyConstants.ADMIN_OID_KEY, admin.getOid());
+
+        jwCacheStore.delete(nameCacheKey);
+        jwCacheStore.delete(oidCacheKey);
+        log.info("========>> End to Save user edit info, loginID= {}", adminBO.getUsername());
     }
 }

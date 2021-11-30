@@ -9,7 +9,7 @@ import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.constants.WebConfDataConfig;
 import cn.jianwoo.blog.dao.base.EmailTransDao;
 import cn.jianwoo.blog.entity.Email;
-import cn.jianwoo.blog.enums.ProcStatusEnum;
+import cn.jianwoo.blog.enums.EmailSendStatusEnum;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.WebconfBizService;
@@ -58,7 +58,7 @@ public class NotifiyUtil {
             email.setSubject(subject);
             email.setContent(content);
             email.setFiles(JSON.toJSONString(attachmentList));
-            email.setProcStatus(ProcStatusEnum.INIT.getValue());
+            email.setProcStatus(EmailSendStatusEnum.INIT.getValue());
             email.setProcTime(now);
             email.setCreateTime(now);
             email.setUpdateTime(now);
@@ -70,17 +70,17 @@ public class NotifiyUtil {
                 files = attachmentList.stream().map(o -> new File(o.getFilePath())).collect(Collectors.toList());
             }
             updEmail.setOid(email.getOid());
-            updEmail.setProcStatus(ProcStatusEnum.SENDING.getValue());
+            updEmail.setProcStatus(EmailSendStatusEnum.SENDING.getValue());
             emailTransDao.doUpdateByPrimaryKeySelective(updEmail);
 
             MailUtil.send(account, emailTo, subject, content, isHtml, files.toArray(new File[0]));
 
-            updEmail.setProcStatus(ProcStatusEnum.SUCCESS.getValue());
+            updEmail.setProcStatus(EmailSendStatusEnum.SUCCESS.getValue());
             updEmail.setProcDesc(Constants.SUCCESS);
             emailTransDao.doUpdateByPrimaryKeySelective(updEmail);
         } catch (Exception e) {
             log.error(">>Start Send Email failed, e\r\n", e);
-            updEmail.setProcStatus(ProcStatusEnum.FAILED.getValue());
+            updEmail.setProcStatus(EmailSendStatusEnum.FAILED.getValue());
             updEmail.setProcDesc(e.getMessage());
             try {
                 emailTransDao.doUpdateByPrimaryKeySelective(updEmail);

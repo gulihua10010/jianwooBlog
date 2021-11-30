@@ -87,7 +87,7 @@ public class MenuApiController extends BaseController {
 
     /**
      * 菜单添加(菜单页面)<br/>
-     * url:api/admin/menu/add<br/>
+     * url:api/admin/menu/create<br/>
      *
      * @param param JSON 参数({@link MenuVoRequest})
      *              oid<br/>
@@ -101,10 +101,10 @@ public class MenuApiController extends BaseController {
      * msg
      * @author gulihua
      */
-    @PageId(PageIdEnum.MENU_ADD)
+    @PageId(PageIdEnum.MENU_CREATE)
     @SubToken()
     @ApiVersion()
-    @PostMapping(MenuApiUrlConfig.URL_MENU_ADD)
+    @PostMapping(MenuApiUrlConfig.URL_MENU_CREATE)
     public String createMenu(@RequestBody String param) {
         try {
             super.printRequestParams(param);
@@ -122,7 +122,7 @@ public class MenuApiController extends BaseController {
                     .with(MenuBO::setText, request.getText())
                     .with(MenuBO::setIcon, request.getIcon())
                     .with(MenuBO::setUrl, request.getUrl()).build();
-            menuBizService.doAddMenu(menuBO);
+            menuBizService.doCreateMenu(menuBO);
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
 

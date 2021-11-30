@@ -16,7 +16,7 @@ public enum PageIdEnum {
      * 评论页
      */
     COMMENT_LIST("C10"),
-    COMMENT_ADD("C11"),
+    COMMENT_CREATE("C11"),
     COMMENT_EDIT("C12"),
     COMMENT_VIEW("C13"),
     COMMENT_REPLY("C14"),
@@ -25,7 +25,7 @@ public enum PageIdEnum {
      * 菜单页
      */
     MENU_LIST("M10"),
-    MENU_ADD("M11"),
+    MENU_CREATE("M11"),
     MENU_EDIT("M12"),
 
     /**
@@ -34,8 +34,8 @@ public enum PageIdEnum {
     TAGS_LIST("T10"),
     TAGS_EDIT("T11"),
     TAGS_VIEW("T12"),
-    TAGS_ADD("T13"),
-    TAGS_ADD_LIST("T14"),
+    TAGS_CREATE("T13"),
+    TAGS_CREATE_LIST("T14"),
     /**
      * 控制台
      */
@@ -60,11 +60,23 @@ public enum PageIdEnum {
      * 后台首页
      */
     ADMIN_INDEX("AI10"),
+    /**
+     * PASSPORT
+     */
+    PASSPORT("P10"),
 
     /**
      * 登录
      */
     ADMIN_LOGIN("AL10"),
+    /**
+     * 用戶配置
+     */
+    ADMIN_PROFILE("APF10"),
+    /**
+     * 修改密碼
+     */
+    ADMIN_PASSWORD("APWD10"),
 
     /**
      * 邮件模板

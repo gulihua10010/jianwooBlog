@@ -96,4 +96,15 @@ public interface ArticleBizDao {
      * @author gulihua
      */
     void doUpdateArticlePraiseCnt(Long artOid) throws DaoException;
+
+
+    /**
+     * 恢复文章(与调用基础transDao区别在于REMOVE_RECYCLE_TIME字段可以更新为null)<br/>
+     * 文章回收站恢复时调用<br/>
+     *
+     * @param record ArticleWithBLOBs
+     * @return
+     * @author gulihua
+     */
+    void doRestoreFromRecycle(Article record) throws DaoException;
 }

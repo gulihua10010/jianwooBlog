@@ -51,3 +51,10 @@ webconf_facade.mandatory -- > required ✔
 layui前端对于500，404的控制 ✔
 浏览器preview乱码 !
 layer.msg 位置上方、居中 ✔
+登录日志 ✔
+事件日志 ✔
+table服务端的排序✔
+登录3次错误：验证码，6次错误（冻结5，10，20分钟），用户可以通过邮件授权码解冻
+密码不能和之前相同✔
+passport 和后端分离
+可以邮箱登录

@@ -17,7 +17,7 @@
                 <div class="layui-form" id="layuiadmin-form-emailTpl"
                      lay-filter="layuiadmin-form-emailTpl">
                     <script type="text/html" template lay-url="/api/admin/email/tpl/edit/{{ layui.router().search.id }}"
-                            lay-done="doView(d);">
+                            lay-done="doEdit(d);">
                         <div class="layui-form-item">
                             <label class="layui-form-label">邮件模板编号</label>
                             <div class="layui-input-block">
@@ -76,7 +76,7 @@
                     </script>
 
                     <script type="text/html" template lay-url="/api/admin/token/generate"
-                            lay-data="{pageId: 'ET11'}" lay-type="post">
+                            lay-data="{pageId: 'ET11'}" lay-type="post" lay-done="doUpdateToken(d);">
                         <input type="hidden" name="subToken" id="subToken" value="{{d.token}}">
                     </script>
                     <div class="layui-form-item">
@@ -99,18 +99,21 @@
 
 <script>
 
-    doView = function (d) {
+    doEdit = function (d) {
         layui.use('emailTpl', layui.factory('emailTpl')).use(['admin', 'form', 'emailTpl'], function () {
             var $ = layui.jquery
                 , form = layui.form
-                , admin = layui.admin
-                , view = layui.view
                 , element = layui.element;
             element.render();
             form.render();
 
 
         })
+    }
+
+    doUpdateToken =function (d)
+    {
+
     }
 
 

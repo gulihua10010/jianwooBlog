@@ -38,7 +38,7 @@ public class BaseController implements Serializable {
     protected void printRequestParams(String param) {
         String clazzName = Thread.currentThread().getStackTrace()[2].getClassName();
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info("receive the request in method {}.{} with param :: {}", clazzName, methodName, param);
+        log.info(">> receive the request in method [{}.{}] with param :: {}", clazzName, methodName, param);
     }
 
 
@@ -117,13 +117,15 @@ public class BaseController implements Serializable {
 
 
     protected String responseToJSONString(Object object) {
+        String clazzName = Thread.currentThread().getStackTrace()[2].getClassName();
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         String resp = "";
         if (null == object) {
             return resp;
         } else {
             resp = JSON.toJSONString(object);
         }
-        log.info("API response data: {}", resp);
+        log.info(">> API response data in method [{}.{}]: {}", clazzName, methodName, resp);
         return resp;
     }
 

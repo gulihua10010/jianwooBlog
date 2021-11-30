@@ -71,9 +71,9 @@ public class TempArticleBO implements Serializable {
     private List<TagsBO> artTagsList;
 
     /**
-     * 临时文章的OLD_OID
+     * 临时文章的OLD_ARTICLE_OID
      */
-    private Long oldOid;
+    private Long oldArticleOid;
 
     /**
      * temp article page
@@ -83,6 +83,6 @@ public class TempArticleBO implements Serializable {
     /**
      * 恢复的文章的oid
      */
-    private Long restoreOid;
+    private Long restoreArticleOid;
 
 }

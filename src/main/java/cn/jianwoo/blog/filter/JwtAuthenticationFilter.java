@@ -6,14 +6,18 @@ import cn.jianwoo.blog.cache.CacheStore;
 import cn.jianwoo.blog.constants.CacaheKeyConstants;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
+import cn.jianwoo.blog.enums.LoginEventTypeEnum;
+import cn.jianwoo.blog.event.LoginLogEvent;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.AdminBizService;
 import cn.jianwoo.blog.service.bo.AdminBO;
+import cn.jianwoo.blog.service.bo.UserBO;
 import cn.jianwoo.blog.util.JwtUtils;
 import com.alibaba.fastjson.JSONObject;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,8 +37,10 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -51,6 +57,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     private final static ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("application");
     private final static String accessTokenExpireSec = RESOURCE_BUNDLE.getString("access.token.expired.seconds");
     private final CacheStore<String, Object> jwCacheStore = SpringUtil.getBean(CacheStore.class);
+    private final ApplicationContext applicationContext = SpringUtil.getApplicationContext();
 
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
@@ -62,8 +69,16 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         log.info("==>>JwtAuthenticationFilter.doFilterInternal start, url: [{}]", request.getServletPath());
         if (isProtectedUrl(request)) {
-            JwAuthenticationToken authenticationToken = getAuthentication(request, response);
+            UserBO userBO = new UserBO();
+            JwAuthenticationToken authenticationToken = getAuthentication(request, response, userBO);
             if (authenticationToken == null) {
+                if (StringUtils.isNotBlank(userBO.getName())) {
+                    LoginLogEvent event = new LoginLogEvent(this, userBO.getName(), request);
+                    event.setEventTypeEnum(LoginEventTypeEnum.LOGOUT);
+                    event.setLoginDesc(Constants.LOGOUT_DESC2);
+                    event.setIsSuccess(true);
+                    applicationContext.publishEvent(event);
+                }
                 log.info("==>>JwtAuthenticationFilter.doFilterInternal authenticationToken is null...");
                 //手动设置异常
                 request.getSession().setAttribute("SPRING_SECURITY_LAST_EXCEPTION", new AuthenticationCredentialsNotFoundException("权限认证失败"));
@@ -84,7 +99,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
     }
 
-    private JwAuthenticationToken getAuthentication(HttpServletRequest request, HttpServletResponse response) {
+    private JwAuthenticationToken getAuthentication(HttpServletRequest request, HttpServletResponse response, UserBO userBO) {
         log.info("==>>JwtAuthenticationFilter.getAuthentication start...");
         List<GrantedAuthority> authorities = new ArrayList<>();
         String accessToken = request.getHeader(Constants.ACCESS_TOKEN);
@@ -160,10 +175,13 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 if (admin == null) {
                     return null;
                 }
+                userBO.setName(admin.getUsername());
+                Map param = new HashMap();
+                param.put(Constants.LOGIN_IP, request.getRemoteAddr());
 
                 authorities.add(new SimpleGrantedAuthority(Constants.ROLE_PREFIX + Constants.ADMIN.toUpperCase(Locale.ROOT)));
                 // 这里直接注入角色，因为JWT已经验证了用户合法性，所以principal和credentials直接为null即可
-                return new JwAuthenticationToken(authorities, null, null, null);
+                return new JwAuthenticationToken(authorities, admin.getUsername(), null, param);
             } catch (JwBlogException e) {
                 log.info("==>>JwtAuthenticationFilter.getAuthentication exec failed, e\r\n", e);
                 return null;

@@ -1,14 +1,18 @@
 package cn.jianwoo.blog.filter;
 
+import cn.hutool.extra.spring.SpringUtil;
 import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
+import cn.jianwoo.blog.enums.LoginEventTypeEnum;
+import cn.jianwoo.blog.event.LoginLogEvent;
 import cn.jianwoo.blog.security.token.AuthUserTokenBO;
 import cn.jianwoo.blog.util.DateUtil;
 import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.util.JwtUtils;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -34,6 +38,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final static ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("application");
     public static String refreshTokenExpireDays = RESOURCE_BUNDLE.getString("refresh.token.expired.days");
+    private final ApplicationContext applicationContext = SpringUtil.getApplicationContext();
 
 
     public LoginFilter() {
@@ -73,6 +78,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
                 request.getRemoteAddr(), DateUtil.getNowStandardFormat());
         response.setContentType(Constants.CONTENT_TYPE_JSON);
         response.getWriter().write(processException(exception));
+        LoginLogEvent event = new LoginLogEvent(this, username, request);
+        event.setEventTypeEnum(LoginEventTypeEnum.LOGIN);
+        event.setIsSuccess(false);
+        event.setReason(exception.getMessage());
+        applicationContext.publishEvent(event);
+
     }
 
     @Override
@@ -81,15 +92,20 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         log.info("==>>LoginFilter.successfulAuthentication start...");
 
         AuthUserTokenBO user = (AuthUserTokenBO) authResult.getPrincipal();
-        //将userId存入session
-        request.getSession().setAttribute(Constants.CURRENT_USER, user.getAuthToken().getUid());
+        //将userId存入session(程序不再使用session)
+//        request.getSession().setAttribute(Constants.CURRENT_USER, user.getAuthToken().getUid());
 
         generateAccessToken(response, user);
         generateRefreshToken(response, user);
 
         String encryptStr = JwUtil.encrypt(String.valueOf(user.getAuthToken().getUid()));
         response.addHeader(Constants.LOGIN_ID_SECRET, encryptStr);
+        response.addHeader(Constants.LOGIN_ID, user.getUsername());
         response.getWriter().write(processSuccessMsg(Constants.SUCCESS_LOGIN));
+        LoginLogEvent event = new LoginLogEvent(this, user.getUsername(), request);
+        event.setEventTypeEnum(LoginEventTypeEnum.LOGIN);
+        event.setIsSuccess(true);
+        applicationContext.publishEvent(event);
 
         log.info("==>>LoginFilter.successfulAuthentication end...");
 

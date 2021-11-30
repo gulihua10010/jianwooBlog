@@ -17,6 +17,7 @@
     <result column="STATUS" jdbcType="VARCHAR" property="status" />
     <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
     <result column="DEL_TIME" jdbcType="TIMESTAMP" property="delTime" />
+    <result column="REMOVE_RECYCLE_TIME" jdbcType="TIMESTAMP" property="removeRecycleTime" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
     <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -84,8 +85,8 @@
   </sql>
   <sql id="Base_Column_List">
     OID, AUTHOR, PUSH_TIME, TITLE, MODIFIED_TIME, MENU_ID, READ_COUNT, PRAISE_COUNT, 
-    IS_COMMENT, IMG_SRC, VISIT_TYPE, COMMENT_COUNT, `STATUS`, `PASSWORD`, DEL_TIME, CREATE_TIME, 
-    UPDATE_TIME
+    IS_COMMENT, IMG_SRC, VISIT_TYPE, COMMENT_COUNT, `STATUS`, `PASSWORD`, DEL_TIME, REMOVE_RECYCLE_TIME, 
+    CREATE_TIME, UPDATE_TIME
   </sql>
   <sql id="Blob_Column_List">
     CONTENT, `TEXT`
@@ -145,15 +146,15 @@
       READ_COUNT, PRAISE_COUNT, IS_COMMENT, 
       IMG_SRC, VISIT_TYPE, COMMENT_COUNT, 
       `STATUS`, `PASSWORD`, DEL_TIME, 
-      CREATE_TIME, UPDATE_TIME, CONTENT, 
-      `TEXT`)
+      REMOVE_RECYCLE_TIME, CREATE_TIME, UPDATE_TIME, 
+      CONTENT, `TEXT`)
     values (#{oid,jdbcType=BIGINT}, #{author,jdbcType=VARCHAR}, #{pushTime,jdbcType=TIMESTAMP}, 
       #{title,jdbcType=VARCHAR}, #{modifiedTime,jdbcType=TIMESTAMP}, #{menuId,jdbcType=INTEGER}, 
       #{readCount,jdbcType=BIGINT}, #{praiseCount,jdbcType=BIGINT}, #{isComment,jdbcType=CHAR}, 
       #{imgSrc,jdbcType=VARCHAR}, #{visitType,jdbcType=VARCHAR}, #{commentCount,jdbcType=BIGINT}, 
       #{status,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{delTime,jdbcType=TIMESTAMP}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR}, 
-      #{text,jdbcType=LONGVARCHAR})
+      #{removeRecycleTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{content,jdbcType=LONGVARCHAR}, #{text,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cn.jianwoo.blog.entity.ArticleWithBLOBs">
     insert into article
@@ -202,6 +203,9 @@
       </if>
       <if test="delTime != null">
         DEL_TIME,
+      </if>
+      <if test="removeRecycleTime != null">
+        REMOVE_RECYCLE_TIME,
       </if>
       <if test="createTime != null">
         CREATE_TIME,
@@ -261,6 +265,9 @@
       </if>
       <if test="delTime != null">
         #{delTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="removeRecycleTime != null">
+        #{removeRecycleTime,jdbcType=TIMESTAMP},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -330,6 +337,9 @@
       <if test="record.delTime != null">
         DEL_TIME = #{record.delTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.removeRecycleTime != null">
+        REMOVE_RECYCLE_TIME = #{record.removeRecycleTime,jdbcType=TIMESTAMP},
+      </if>
       <if test="record.createTime != null">
         CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
@@ -364,6 +374,7 @@
       `STATUS` = #{record.status,jdbcType=VARCHAR},
       `PASSWORD` = #{record.password,jdbcType=VARCHAR},
       DEL_TIME = #{record.delTime,jdbcType=TIMESTAMP},
+      REMOVE_RECYCLE_TIME = #{record.removeRecycleTime,jdbcType=TIMESTAMP},
       CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP},
       CONTENT = #{record.content,jdbcType=LONGVARCHAR},
@@ -389,6 +400,7 @@
       `STATUS` = #{record.status,jdbcType=VARCHAR},
       `PASSWORD` = #{record.password,jdbcType=VARCHAR},
       DEL_TIME = #{record.delTime,jdbcType=TIMESTAMP},
+      REMOVE_RECYCLE_TIME = #{record.removeRecycleTime,jdbcType=TIMESTAMP},
       CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -440,6 +452,9 @@
       <if test="delTime != null">
         DEL_TIME = #{delTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="removeRecycleTime != null">
+        REMOVE_RECYCLE_TIME = #{removeRecycleTime,jdbcType=TIMESTAMP},
+      </if>
       <if test="createTime != null">
         CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -471,6 +486,7 @@
       `STATUS` = #{status,jdbcType=VARCHAR},
       `PASSWORD` = #{password,jdbcType=VARCHAR},
       DEL_TIME = #{delTime,jdbcType=TIMESTAMP},
+      REMOVE_RECYCLE_TIME = #{removeRecycleTime,jdbcType=TIMESTAMP},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
       CONTENT = #{content,jdbcType=LONGVARCHAR},
@@ -493,6 +509,7 @@
       `STATUS` = #{status,jdbcType=VARCHAR},
       `PASSWORD` = #{password,jdbcType=VARCHAR},
       DEL_TIME = #{delTime,jdbcType=TIMESTAMP},
+      REMOVE_RECYCLE_TIME = #{removeRecycleTime,jdbcType=TIMESTAMP},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
     where OID = #{oid,jdbcType=BIGINT}

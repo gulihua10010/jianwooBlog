@@ -10,7 +10,10 @@ import cn.jianwoo.blog.entity.Comment;
 import cn.jianwoo.blog.entity.extension.CommentExt;
 import cn.jianwoo.blog.entity.query.CommentQuery;
 import cn.jianwoo.blog.enums.ArticleDelStatusEnum;
+import cn.jianwoo.blog.enums.BizEventOptTypeEnum;
+import cn.jianwoo.blog.enums.BizEventTypeEnum;
 import cn.jianwoo.blog.enums.CommReadEnum;
+import cn.jianwoo.blog.event.BizEventLogEvent;
 import cn.jianwoo.blog.exception.ArticleBizException;
 import cn.jianwoo.blog.exception.CommentBizException;
 import cn.jianwoo.blog.exception.DaoException;
@@ -27,6 +30,8 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -53,8 +58,11 @@ public class CommentBizServiceImpl implements CommentBizService {
     private CommentTransDao commentTransDao;
     @Autowired
     private AsyncTask asyncTask;
-    private static final Long TOP_PARENT_OID = 0L;
+    @Autowired
+    private ApplicationContext applicationContext;
 
+
+    private static final Long TOP_PARENT_OID = 0L;
 
     @Override
     public int countCommentsByArt(Long artOid) {
@@ -97,7 +105,7 @@ public class CommentBizServiceImpl implements CommentBizService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void doAddComment(CommentBO bo) throws JwBlogException {
+    public void doCreateComment(CommentBO bo) throws JwBlogException {
         Date now = DateUtil.getNow();
 
         Comment comment = JwBuilder.of(Comment::new)
@@ -138,6 +146,7 @@ public class CommentBizServiceImpl implements CommentBizService {
 
         //执行异步任务
         asyncTask.execCommentIpAreaTask(comment.getOid());
+        registerBizEvent(comment.getOid(), comment.getContent(), BizEventOptTypeEnum.CREATE);
 
     }
 
@@ -283,8 +292,8 @@ public class CommentBizServiceImpl implements CommentBizService {
             commentTransDao.doDeleteByPrimaryKey(oid);
         } catch (DaoException e) {
             log.warn("CommentBizServiceImpl.doDelCommentById deleted failed, oid={}", oid);
-
         }
+        registerBizEvent(oid, null, BizEventOptTypeEnum.DELETE);
 
     }
 
@@ -381,6 +390,8 @@ public class CommentBizServiceImpl implements CommentBizService {
             log.error("CommentBizServiceImpl.doUpdateReadByOid exec failed, e:\n", e);
             throw CommentBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
         }
+        registerBizEvent(oid, null, BizEventOptTypeEnum.UPDATE);
+
     }
 
 
@@ -436,6 +447,15 @@ public class CommentBizServiceImpl implements CommentBizService {
             commentList.addAll(subCommList);
         }
 
+    }
+
+    private void registerBizEvent(Long oid, String desc, BizEventOptTypeEnum optTypeEnum) {
+        BizEventLogEvent event = new BizEventLogEvent(this, SecurityContextHolder.getContext());
+        event.setBizEventTypeEnum(BizEventTypeEnum.COMMENT);
+        event.setBizEventOptTypeEnum(optTypeEnum);
+        event.setOid(oid);
+        event.setDesc(desc);
+        applicationContext.publishEvent(event);
     }
 
 }

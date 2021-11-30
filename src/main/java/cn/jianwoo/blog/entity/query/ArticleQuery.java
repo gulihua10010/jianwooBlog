@@ -8,7 +8,7 @@ import java.util.List;
  * @Description
  * @date 2020-11-02 18:39
  */
-public class ArticleQuery implements Serializable {
+public class ArticleQuery extends BaseQuery implements Serializable {
     private static final long serialVersionUID = 7533112279053614145L;
     private List<String> statusParams;
     private String title;

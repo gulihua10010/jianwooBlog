@@ -9,6 +9,9 @@ import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dao.base.EmailTemplateTransDao;
 import cn.jianwoo.blog.entity.EmailTemplate;
 import cn.jianwoo.blog.entity.query.EmailTplQuery;
+import cn.jianwoo.blog.enums.BizEventOptTypeEnum;
+import cn.jianwoo.blog.enums.BizEventTypeEnum;
+import cn.jianwoo.blog.event.BizEventLogEvent;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.EmailTplBizException;
 import cn.jianwoo.blog.exception.JwBlogException;
@@ -24,6 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -41,6 +46,8 @@ import java.util.List;
 public class EmailTplBizServiceImpl implements EmailTplBizService {
     @Autowired
     private EmailTemplateTransDao emailTemplateTransDao;
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Override
     public PageInfo<EmailTplBO> queryAllEmailTplPage(EmailTplParam param) {
@@ -86,16 +93,21 @@ public class EmailTplBizServiceImpl implements EmailTplBizService {
                 .with(EmailTemplate::setCreateTime, DateUtil.getNow())
                 .with(EmailTemplate::setUpdateTime, DateUtil.getNow()).build();
         try {
-            emailTemplateTransDao.doInsert(tpl);
+            emailTemplateTransDao.doInsertSelective(tpl);
         } catch (DaoException e) {
             log.error(">>doCreateEmailTpl exec failed, e\r\n", e);
             throw EmailTplBizException.CREATE_FAILED_EXCEPTION.format(param.getEmailTplCode()).print();
         }
+        registerBizEvent(tpl.getOid(), tpl.getEmailTplCode(), BizEventOptTypeEnum.CREATE);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void doUpdateEmailTpl(EmailTplBO param) throws JwBlogException {
+        EmailTemplate oldTpl = emailTemplateTransDao.queryEmailTplByCode(param.getEmailTplCode());
+        if (null != oldTpl) {
+            throw EmailTplBizException.HAS_EXIST_EXCEPTION_CN.format(param.getEmailTplCode()).print();
+        }
         EmailTemplate tpl = JwBuilder.of(EmailTemplate::new)
                 .with(EmailTemplate::setOid, param.getOid())
                 .with(EmailTemplate::setEmailTplCode, param.getEmailTplCode())
@@ -110,6 +122,7 @@ public class EmailTplBizServiceImpl implements EmailTplBizService {
             log.error(">>doUpdateEmailTpl exec failed, e\r\n", e);
             throw EmailTplBizException.MODIFY_FAILED_EXCEPTION.format(param.getOid()).print();
         }
+        registerBizEvent(tpl.getOid(), tpl.getEmailTplCode(), BizEventOptTypeEnum.UPDATE);
     }
 
     @Override
@@ -121,6 +134,7 @@ public class EmailTplBizServiceImpl implements EmailTplBizService {
             log.error(">>doRemoveEmailTpl exec failed, e\r\n", e);
             throw EmailTplBizException.DELETE_FAILED_EXCEPTION.format(oid).print();
         }
+        registerBizEvent(oid, null, BizEventOptTypeEnum.DELETE);
     }
 
     @Override
@@ -142,18 +156,28 @@ public class EmailTplBizServiceImpl implements EmailTplBizService {
     }
 
     @Override
-    public String doRenderEmailTpl(EmailTplBO param) throws JwBlogException {
+    public String doRenderEmailTpl(String content, String param) throws JwBlogException {
         try {
             //自动根据用户引入的模板引擎库的jar来自动选择使用的引擎
             //TemplateConfig为模板引擎的选项，可选内容有字符编码、模板路径、模板加载方式等，默认通过模板字符串渲染
             TemplateEngine engine = TemplateUtil.createEngine(new TemplateConfig());
 
             //假设我们引入的是Beetl引擎，则：
-            Template template = engine.getTemplate(param.getContent());
-            return template.render(JSON.parseObject(param.getTestJsonData()));
+            Template template = engine.getTemplate(content);
+            return template.render(JSON.parseObject(param));
         } catch (Exception e) {
             log.error(">>Render Email Template Failed, e:\r\n", e);
-            throw EmailTplBizException.TPL_RENDER_FAILED_CN.format(param.getEmailTplCode()).print();
+            throw EmailTplBizException.TPL_RENDER_FAILED_CN.print();
         }
     }
+
+    private void registerBizEvent(Long oid, String desc, BizEventOptTypeEnum optTypeEnum) {
+        BizEventLogEvent event = new BizEventLogEvent(this, SecurityContextHolder.getContext());
+        event.setBizEventTypeEnum(BizEventTypeEnum.EMAIL_TPL);
+        event.setBizEventOptTypeEnum(optTypeEnum);
+        event.setOid(oid);
+        event.setDesc(desc);
+        applicationContext.publishEvent(event);
+    }
+
 }

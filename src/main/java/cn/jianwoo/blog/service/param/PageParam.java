@@ -12,8 +12,42 @@ public class PageParam implements Serializable {
     private static final Integer DEFAULT_PAGE_NO = 1;
     private static final Integer DEFAULT_PAGE_SIZE = 10;
 
+
+    /**
+     * 页码
+     */
     private Integer pageNo = DEFAULT_PAGE_NO;
+
+    /**
+     * 每页数量
+     */
     private Integer pageSize = DEFAULT_PAGE_SIZE;
+
+    /**
+     * 排序字段
+     */
+    private String sortField;
+
+    /**
+     * 排序方式(asc:升序, desc:降序)
+     */
+    private String sortOrder;
+
+    public String getSortField() {
+        return this.sortField;
+    }
+
+    public void setSortField(String sortField) {
+        this.sortField = sortField;
+    }
+
+    public String getSortOrder() {
+        return this.sortOrder;
+    }
+
+    public void setSortOrder(String sortOrder) {
+        this.sortOrder = sortOrder;
+    }
 
     public Integer getPageNo() {
         return pageNo;

@@ -164,7 +164,7 @@ layui.define(['form', 'mouseRightMenu'], function (exports) {
                     form.on('submit(menu-add-submit)', function (formData) {
                         var field = formData.field;
                         ajaxPost(
-                            "/api/admin/menu/add",
+                            "/api/admin/menu/create",
                             1,
                             JSON.stringify({
                                 name: field.name,

@@ -209,7 +209,11 @@ layui.extend({
                 if (setter.interceptor) {
                     var local = layui.data(setter.tableName);
                     if (!local[setter.request.tokenName]) {
-                        return location.href = setter.loginPage + '?redirect=' + encodeURIComponent(pathURL); //跳转到登入页
+                        if (pathURL)
+                        {
+                            return location.href = setter.loginPage + '?redirect=' + encodeURIComponent(pathURL); //跳转到登入页
+                        }
+                        return location.href = setter.loginPage;
                     }
                 }
 
@@ -262,7 +266,7 @@ layui.extend({
     //扩展 lib 目录下的其它模块
     layui.each(setter.extend, function (index, item) {
         var mods = {};
-        mods[item] = '{/}' + setter.base + 'lib/extend/' + item;
+        mods[item] = '{/}' + setter.base + '../lib/extend/' + item;
         layui.extend(mods);
     });
 

@@ -34,6 +34,8 @@ public class Article implements Serializable {
 
     private Date delTime;
 
+    private Date removeRecycleTime;
+
     private Date createTime;
 
     private Date updateTime;
@@ -160,6 +162,14 @@ public class Article implements Serializable {
         this.delTime = delTime;
     }
 
+    public Date getRemoveRecycleTime() {
+        return removeRecycleTime;
+    }
+
+    public void setRemoveRecycleTime(Date removeRecycleTime) {
+        this.removeRecycleTime = removeRecycleTime;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -197,6 +207,7 @@ public class Article implements Serializable {
         sb.append(", status=").append(status);
         sb.append(", password=").append(password);
         sb.append(", delTime=").append(delTime);
+        sb.append(", removeRecycleTime=").append(removeRecycleTime);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append("]");

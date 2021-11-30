@@ -59,8 +59,9 @@ public interface EmailTplBizService {
     /**
      * 渲染邮件模板
      *
-     * @param param 参数
+     * @param content 内容
+     * @param param   JSON参数
      * @author gulihua
      */
-    String doRenderEmailTpl(EmailTplBO param) throws JwBlogException;
+    String doRenderEmailTpl(String content, String param) throws JwBlogException;
 }

@@ -51,7 +51,7 @@ public interface CommentBizService {
      * @return
      * @author gulihua
      */
-    void doAddComment(CommentBO bo) throws JwBlogException;
+    void doCreateComment(CommentBO bo) throws JwBlogException;
 
 
     /**

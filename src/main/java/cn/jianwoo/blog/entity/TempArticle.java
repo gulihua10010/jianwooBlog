@@ -10,7 +10,7 @@ public class TempArticle implements Serializable {
 
     private String title;
 
-    private Integer menuId;
+    private Integer menuOid;
 
     private Boolean isComment;
 
@@ -20,7 +20,7 @@ public class TempArticle implements Serializable {
 
     private String password;
 
-    private Long oldOid;
+    private Long oldArticleOid;
 
     private String tags;
 
@@ -28,7 +28,7 @@ public class TempArticle implements Serializable {
 
     private String status;
 
-    private Long restoreOid;
+    private Long restoreArticleOid;
 
     private Date createTime;
 
@@ -62,12 +62,12 @@ public class TempArticle implements Serializable {
         this.title = title == null ? null : title.trim();
     }
 
-    public Integer getMenuId() {
-        return menuId;
+    public Integer getMenuOid() {
+        return menuOid;
     }
 
-    public void setMenuId(Integer menuId) {
-        this.menuId = menuId;
+    public void setMenuOid(Integer menuOid) {
+        this.menuOid = menuOid;
     }
 
     public Boolean getIsComment() {
@@ -102,12 +102,12 @@ public class TempArticle implements Serializable {
         this.password = password == null ? null : password.trim();
     }
 
-    public Long getOldOid() {
-        return oldOid;
+    public Long getOldArticleOid() {
+        return oldArticleOid;
     }
 
-    public void setOldOid(Long oldOid) {
-        this.oldOid = oldOid;
+    public void setOldArticleOid(Long oldArticleOid) {
+        this.oldArticleOid = oldArticleOid;
     }
 
     public String getTags() {
@@ -134,12 +134,12 @@ public class TempArticle implements Serializable {
         this.status = status == null ? null : status.trim();
     }
 
-    public Long getRestoreOid() {
-        return restoreOid;
+    public Long getRestoreArticleOid() {
+        return restoreArticleOid;
     }
 
-    public void setRestoreOid(Long restoreOid) {
-        this.restoreOid = restoreOid;
+    public void setRestoreArticleOid(Long restoreArticleOid) {
+        this.restoreArticleOid = restoreArticleOid;
     }
 
     public Date getCreateTime() {
@@ -175,16 +175,16 @@ public class TempArticle implements Serializable {
         sb.append(", oid=").append(oid);
         sb.append(", author=").append(author);
         sb.append(", title=").append(title);
-        sb.append(", menuId=").append(menuId);
+        sb.append(", menuOid=").append(menuOid);
         sb.append(", isComment=").append(isComment);
         sb.append(", imgSrc=").append(imgSrc);
         sb.append(", visitType=").append(visitType);
         sb.append(", password=").append(password);
-        sb.append(", oldOid=").append(oldOid);
+        sb.append(", oldArticleOid=").append(oldArticleOid);
         sb.append(", tags=").append(tags);
         sb.append(", pageType=").append(pageType);
         sb.append(", status=").append(status);
-        sb.append(", restoreOid=").append(restoreOid);
+        sb.append(", restoreArticleOid=").append(restoreArticleOid);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", content=").append(content);

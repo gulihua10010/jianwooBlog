@@ -53,6 +53,15 @@ public class ArticleSummaryVO implements Serializable {
      * 文章最后修改时间 yyyy-MM-dd HH:mm:ss格式
      */
     private String modifiedTimeStr;
+
+    /**
+     * 文章删除时间
+     */
+    private Date delTime;
+    /**
+     * 文章删除时间 yyyy-MM-dd HH:mm:ss格式
+     */
+    private String delTimeStr;
     /**
      * 文章作者
      */
@@ -70,6 +79,11 @@ public class ArticleSummaryVO implements Serializable {
      */
     private String desc;
 
+    /**
+     * 回收站删除时间
+     */
+    private Date removeRecycleTime;
+
     public String getDesc() {
         return String.format(TEMPLATE, DomainUtil.format(this.author, Constants.ANAONYMOUS),
                 this.getPublishTimeDesc(),
@@ -83,6 +97,14 @@ public class ArticleSummaryVO implements Serializable {
 
     public String getPublishTimeDesc() {
         return DateUtil.optimizeTimeDesc(this.getPublishTime());
+    }
+
+    public String getDelTimeDesc() {
+        return DateUtil.optimizeTimeDesc(this.getDelTime());
+    }
+
+    public String getRemoveRecycleTimeDesc() {
+        return DateUtil.optimizeTimeDesc(this.getRemoveRecycleTime());
     }
 
 }

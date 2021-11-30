@@ -1,6 +1,6 @@
 package cn.jianwoo.blog.enums;
 
-public enum ProcStatusEnum {
+public enum EmailSendStatusEnum {
 
     /**
      * 还未发送
@@ -29,13 +29,13 @@ public enum ProcStatusEnum {
      */
     private String value;
 
-    ProcStatusEnum(String value) {
+    EmailSendStatusEnum(String value) {
         this.value = value;
     }
 
 
-    public static ProcStatusEnum getEnum(Integer name) {
-        ProcStatusEnum[] arry = ProcStatusEnum.values();
+    public static EmailSendStatusEnum getEnum(Integer name) {
+        EmailSendStatusEnum[] arry = EmailSendStatusEnum.values();
         for (int i = 0; i < arry.length; i++) {
             if (arry[i].name().equals(name)) {
                 return arry[i];

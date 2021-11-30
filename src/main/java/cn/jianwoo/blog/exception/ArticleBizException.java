@@ -36,6 +36,14 @@ public class ArticleBizException extends JwBlogException {
             ExceptionConstants.BIZ_STATUS_INCORRECT, "文章[%s]还未发布!");
     public static final ArticleBizException STATUS_NOT_DRAFT = new ArticleBizException(
             ExceptionConstants.BIZ_STATUS_INCORRECT, "文章[%s]还不是草稿!");
+    public static final ArticleBizException STATUS_HAS_DRAFT = new ArticleBizException(
+            ExceptionConstants.BIZ_STATUS_INCORRECT, "文章[%s]已经是草稿!");
+    public static final ArticleBizException STATUS_HAS_RECYCLE = new ArticleBizException(
+            ExceptionConstants.BIZ_STATUS_INCORRECT, "文章[%s]已经移除到回收站!");
+    public static final ArticleBizException STATUS_HAS_PUBLISHED= new ArticleBizException(
+            ExceptionConstants.BIZ_STATUS_INCORRECT, "文章[%s]已经发布!");
+    public static final ArticleBizException STATUS_NOT_RECYCLE = new ArticleBizException(
+            ExceptionConstants.BIZ_STATUS_INCORRECT, "文章[%s]已经移出回收站!");
     private static final long serialVersionUID = -4477787493913372810L;
     private final Logger logger = LoggerFactory.getLogger(ArticleBizException.class);
 

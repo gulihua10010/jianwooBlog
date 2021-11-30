@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html data-ng-app="eolinker" lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="description" content="简窝后台管理系统">
+    <meta name="keywords" content="简窝后台管理系统"/>
+    <meta name="keywords" lang="en" content="jianwoo,blog,gulihua">
+    <meta name="author" content="顾力华,简窝">
+    <meta name="product-type" content="1">
+    <meta name="version" content="1.0.0">
+    <!-- Browser-360 speed mode is enabled (webkit) -->
+    <meta name="renderer" content="webkit">
+    <!-- Use IE and Chrome latest version -->
+    <title>简窝后台管理系统</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="applicable-device" content="pc,mobile">
+    <meta name="msapplication-tooltip" content="简窝博客"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link href="/static/comm/img/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <link rel="alternate" href="https://jianwoo.cn" hreflang="zh-CN"/>
+    <link rel="stylesheet" href="/static/plugins/layui/css/layui.css" media="all">
+    <script>
+        /^http(s*):\/\//.test(location.href) || alert('系统错误');
+    </script>
+</head>
+<body>
+<div id="JW_app"></div>
+<script src="/static/plugins/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/static/page/passport/'
+        , version: '1.2.1'
+    }).use('index', function () {
+        //
+    });
+</script>
+</body>
+</html>

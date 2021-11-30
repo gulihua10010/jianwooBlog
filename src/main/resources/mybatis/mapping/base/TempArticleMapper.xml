@@ -5,16 +5,16 @@
     <id column="OID" jdbcType="BIGINT" property="oid" />
     <result column="AUTHOR" jdbcType="VARCHAR" property="author" />
     <result column="TITLE" jdbcType="VARCHAR" property="title" />
-    <result column="MENU_ID" jdbcType="INTEGER" property="menuId" />
+    <result column="MENU_OID" jdbcType="INTEGER" property="menuOid" />
     <result column="IS_COMMENT" jdbcType="CHAR" property="isComment" />
     <result column="IMG_SRC" jdbcType="VARCHAR" property="imgSrc" />
     <result column="VISIT_TYPE" jdbcType="VARCHAR" property="visitType" />
     <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
-    <result column="OLD_OID" jdbcType="BIGINT" property="oldOid" />
+    <result column="OLD_ARTICLE_OID" jdbcType="BIGINT" property="oldArticleOid" />
     <result column="TAGS" jdbcType="VARCHAR" property="tags" />
     <result column="PAGE_TYPE" jdbcType="VARCHAR" property="pageType" />
     <result column="STATUS" jdbcType="VARCHAR" property="status" />
-    <result column="RESTORE_OID" jdbcType="BIGINT" property="restoreOid" />
+    <result column="RESTORE_ARTICLE_OID" jdbcType="BIGINT" property="restoreArticleOid" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
     <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -80,8 +80,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    OID, AUTHOR, TITLE, MENU_ID, IS_COMMENT, IMG_SRC, VISIT_TYPE, `PASSWORD`, OLD_OID, 
-    TAGS, PAGE_TYPE, `STATUS`, RESTORE_OID, CREATE_TIME, UPDATE_TIME
+    OID, AUTHOR, TITLE, MENU_OID, IS_COMMENT, IMG_SRC, VISIT_TYPE, `PASSWORD`, OLD_ARTICLE_OID, 
+    TAGS, PAGE_TYPE, `STATUS`, RESTORE_ARTICLE_OID, CREATE_TIME, UPDATE_TIME
   </sql>
   <sql id="Blob_Column_List">
     CONTENT
@@ -135,34 +135,31 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="cn.jianwoo.blog.entity.TempArticle">
-    insert into temp_article (OID, AUTHOR, TITLE, 
-      MENU_ID, IS_COMMENT, IMG_SRC, 
-      VISIT_TYPE, `PASSWORD`, OLD_OID, 
-      TAGS, PAGE_TYPE, `STATUS`, 
-      RESTORE_OID, CREATE_TIME, UPDATE_TIME, 
-      CONTENT)
-    values (#{oid,jdbcType=BIGINT}, #{author,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
-      #{menuId,jdbcType=INTEGER}, #{isComment,jdbcType=CHAR}, #{imgSrc,jdbcType=VARCHAR}, 
-      #{visitType,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{oldOid,jdbcType=BIGINT}, 
-      #{tags,jdbcType=VARCHAR}, #{pageType,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
-      #{restoreOid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{content,jdbcType=LONGVARCHAR})
+  <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.TempArticle" useGeneratedKeys="true">
+    insert into temp_article (AUTHOR, TITLE, MENU_OID, 
+      IS_COMMENT, IMG_SRC, VISIT_TYPE, 
+      `PASSWORD`, OLD_ARTICLE_OID, TAGS, 
+      PAGE_TYPE, `STATUS`, RESTORE_ARTICLE_OID, 
+      CREATE_TIME, UPDATE_TIME, CONTENT
+      )
+    values (#{author,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{menuOid,jdbcType=INTEGER}, 
+      #{isComment,jdbcType=CHAR}, #{imgSrc,jdbcType=VARCHAR}, #{visitType,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{oldArticleOid,jdbcType=BIGINT}, #{tags,jdbcType=VARCHAR}, 
+      #{pageType,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{restoreArticleOid,jdbcType=BIGINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="cn.jianwoo.blog.entity.TempArticle">
+  <insert id="insertSelective" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.TempArticle" useGeneratedKeys="true">
     insert into temp_article
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="oid != null">
-        OID,
-      </if>
       <if test="author != null">
         AUTHOR,
       </if>
       <if test="title != null">
         TITLE,
       </if>
-      <if test="menuId != null">
-        MENU_ID,
+      <if test="menuOid != null">
+        MENU_OID,
       </if>
       <if test="isComment != null">
         IS_COMMENT,
@@ -176,8 +173,8 @@
       <if test="password != null">
         `PASSWORD`,
       </if>
-      <if test="oldOid != null">
-        OLD_OID,
+      <if test="oldArticleOid != null">
+        OLD_ARTICLE_OID,
       </if>
       <if test="tags != null">
         TAGS,
@@ -188,8 +185,8 @@
       <if test="status != null">
         `STATUS`,
       </if>
-      <if test="restoreOid != null">
-        RESTORE_OID,
+      <if test="restoreArticleOid != null">
+        RESTORE_ARTICLE_OID,
       </if>
       <if test="createTime != null">
         CREATE_TIME,
@@ -202,17 +199,14 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="oid != null">
-        #{oid,jdbcType=BIGINT},
-      </if>
       <if test="author != null">
         #{author,jdbcType=VARCHAR},
       </if>
       <if test="title != null">
         #{title,jdbcType=VARCHAR},
       </if>
-      <if test="menuId != null">
-        #{menuId,jdbcType=INTEGER},
+      <if test="menuOid != null">
+        #{menuOid,jdbcType=INTEGER},
       </if>
       <if test="isComment != null">
         #{isComment,jdbcType=CHAR},
@@ -226,8 +220,8 @@
       <if test="password != null">
         #{password,jdbcType=VARCHAR},
       </if>
-      <if test="oldOid != null">
-        #{oldOid,jdbcType=BIGINT},
+      <if test="oldArticleOid != null">
+        #{oldArticleOid,jdbcType=BIGINT},
       </if>
       <if test="tags != null">
         #{tags,jdbcType=VARCHAR},
@@ -238,8 +232,8 @@
       <if test="status != null">
         #{status,jdbcType=VARCHAR},
       </if>
-      <if test="restoreOid != null">
-        #{restoreOid,jdbcType=BIGINT},
+      <if test="restoreArticleOid != null">
+        #{restoreArticleOid,jdbcType=BIGINT},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -270,8 +264,8 @@
       <if test="record.title != null">
         TITLE = #{record.title,jdbcType=VARCHAR},
       </if>
-      <if test="record.menuId != null">
-        MENU_ID = #{record.menuId,jdbcType=INTEGER},
+      <if test="record.menuOid != null">
+        MENU_OID = #{record.menuOid,jdbcType=INTEGER},
       </if>
       <if test="record.isComment != null">
         IS_COMMENT = #{record.isComment,jdbcType=CHAR},
@@ -285,8 +279,8 @@
       <if test="record.password != null">
         `PASSWORD` = #{record.password,jdbcType=VARCHAR},
       </if>
-      <if test="record.oldOid != null">
-        OLD_OID = #{record.oldOid,jdbcType=BIGINT},
+      <if test="record.oldArticleOid != null">
+        OLD_ARTICLE_OID = #{record.oldArticleOid,jdbcType=BIGINT},
       </if>
       <if test="record.tags != null">
         TAGS = #{record.tags,jdbcType=VARCHAR},
@@ -297,8 +291,8 @@
       <if test="record.status != null">
         `STATUS` = #{record.status,jdbcType=VARCHAR},
       </if>
-      <if test="record.restoreOid != null">
-        RESTORE_OID = #{record.restoreOid,jdbcType=BIGINT},
+      <if test="record.restoreArticleOid != null">
+        RESTORE_ARTICLE_OID = #{record.restoreArticleOid,jdbcType=BIGINT},
       </if>
       <if test="record.createTime != null">
         CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
@@ -319,16 +313,16 @@
     set OID = #{record.oid,jdbcType=BIGINT},
       AUTHOR = #{record.author,jdbcType=VARCHAR},
       TITLE = #{record.title,jdbcType=VARCHAR},
-      MENU_ID = #{record.menuId,jdbcType=INTEGER},
+      MENU_OID = #{record.menuOid,jdbcType=INTEGER},
       IS_COMMENT = #{record.isComment,jdbcType=CHAR},
       IMG_SRC = #{record.imgSrc,jdbcType=VARCHAR},
       VISIT_TYPE = #{record.visitType,jdbcType=VARCHAR},
       `PASSWORD` = #{record.password,jdbcType=VARCHAR},
-      OLD_OID = #{record.oldOid,jdbcType=BIGINT},
+      OLD_ARTICLE_OID = #{record.oldArticleOid,jdbcType=BIGINT},
       TAGS = #{record.tags,jdbcType=VARCHAR},
       PAGE_TYPE = #{record.pageType,jdbcType=VARCHAR},
       `STATUS` = #{record.status,jdbcType=VARCHAR},
-      RESTORE_OID = #{record.restoreOid,jdbcType=BIGINT},
+      RESTORE_ARTICLE_OID = #{record.restoreArticleOid,jdbcType=BIGINT},
       CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP},
       CONTENT = #{record.content,jdbcType=LONGVARCHAR}
@@ -341,16 +335,16 @@
     set OID = #{record.oid,jdbcType=BIGINT},
       AUTHOR = #{record.author,jdbcType=VARCHAR},
       TITLE = #{record.title,jdbcType=VARCHAR},
-      MENU_ID = #{record.menuId,jdbcType=INTEGER},
+      MENU_OID = #{record.menuOid,jdbcType=INTEGER},
       IS_COMMENT = #{record.isComment,jdbcType=CHAR},
       IMG_SRC = #{record.imgSrc,jdbcType=VARCHAR},
       VISIT_TYPE = #{record.visitType,jdbcType=VARCHAR},
       `PASSWORD` = #{record.password,jdbcType=VARCHAR},
-      OLD_OID = #{record.oldOid,jdbcType=BIGINT},
+      OLD_ARTICLE_OID = #{record.oldArticleOid,jdbcType=BIGINT},
       TAGS = #{record.tags,jdbcType=VARCHAR},
       PAGE_TYPE = #{record.pageType,jdbcType=VARCHAR},
       `STATUS` = #{record.status,jdbcType=VARCHAR},
-      RESTORE_OID = #{record.restoreOid,jdbcType=BIGINT},
+      RESTORE_ARTICLE_OID = #{record.restoreArticleOid,jdbcType=BIGINT},
       CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -366,8 +360,8 @@
       <if test="title != null">
         TITLE = #{title,jdbcType=VARCHAR},
       </if>
-      <if test="menuId != null">
-        MENU_ID = #{menuId,jdbcType=INTEGER},
+      <if test="menuOid != null">
+        MENU_OID = #{menuOid,jdbcType=INTEGER},
       </if>
       <if test="isComment != null">
         IS_COMMENT = #{isComment,jdbcType=CHAR},
@@ -381,8 +375,8 @@
       <if test="password != null">
         `PASSWORD` = #{password,jdbcType=VARCHAR},
       </if>
-      <if test="oldOid != null">
-        OLD_OID = #{oldOid,jdbcType=BIGINT},
+      <if test="oldArticleOid != null">
+        OLD_ARTICLE_OID = #{oldArticleOid,jdbcType=BIGINT},
       </if>
       <if test="tags != null">
         TAGS = #{tags,jdbcType=VARCHAR},
@@ -393,8 +387,8 @@
       <if test="status != null">
         `STATUS` = #{status,jdbcType=VARCHAR},
       </if>
-      <if test="restoreOid != null">
-        RESTORE_OID = #{restoreOid,jdbcType=BIGINT},
+      <if test="restoreArticleOid != null">
+        RESTORE_ARTICLE_OID = #{restoreArticleOid,jdbcType=BIGINT},
       </if>
       <if test="createTime != null">
         CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
@@ -412,16 +406,16 @@
     update temp_article
     set AUTHOR = #{author,jdbcType=VARCHAR},
       TITLE = #{title,jdbcType=VARCHAR},
-      MENU_ID = #{menuId,jdbcType=INTEGER},
+      MENU_OID = #{menuOid,jdbcType=INTEGER},
       IS_COMMENT = #{isComment,jdbcType=CHAR},
       IMG_SRC = #{imgSrc,jdbcType=VARCHAR},
       VISIT_TYPE = #{visitType,jdbcType=VARCHAR},
       `PASSWORD` = #{password,jdbcType=VARCHAR},
-      OLD_OID = #{oldOid,jdbcType=BIGINT},
+      OLD_ARTICLE_OID = #{oldArticleOid,jdbcType=BIGINT},
       TAGS = #{tags,jdbcType=VARCHAR},
       PAGE_TYPE = #{pageType,jdbcType=VARCHAR},
       `STATUS` = #{status,jdbcType=VARCHAR},
-      RESTORE_OID = #{restoreOid,jdbcType=BIGINT},
+      RESTORE_ARTICLE_OID = #{restoreArticleOid,jdbcType=BIGINT},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
       CONTENT = #{content,jdbcType=LONGVARCHAR}
@@ -431,16 +425,16 @@
     update temp_article
     set AUTHOR = #{author,jdbcType=VARCHAR},
       TITLE = #{title,jdbcType=VARCHAR},
-      MENU_ID = #{menuId,jdbcType=INTEGER},
+      MENU_OID = #{menuOid,jdbcType=INTEGER},
       IS_COMMENT = #{isComment,jdbcType=CHAR},
       IMG_SRC = #{imgSrc,jdbcType=VARCHAR},
       VISIT_TYPE = #{visitType,jdbcType=VARCHAR},
       `PASSWORD` = #{password,jdbcType=VARCHAR},
-      OLD_OID = #{oldOid,jdbcType=BIGINT},
+      OLD_ARTICLE_OID = #{oldArticleOid,jdbcType=BIGINT},
       TAGS = #{tags,jdbcType=VARCHAR},
       PAGE_TYPE = #{pageType,jdbcType=VARCHAR},
       `STATUS` = #{status,jdbcType=VARCHAR},
-      RESTORE_OID = #{restoreOid,jdbcType=BIGINT},
+      RESTORE_ARTICLE_OID = #{restoreArticleOid,jdbcType=BIGINT},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
     where OID = #{oid,jdbcType=BIGINT}

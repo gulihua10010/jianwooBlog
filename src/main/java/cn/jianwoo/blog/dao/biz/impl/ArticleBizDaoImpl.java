@@ -94,4 +94,14 @@ public class ArticleBizDaoImpl implements ArticleBizDao {
             throw DaoException.DAO_UPDATE_RESULT_0.print();
         }
     }
+
+    @Override
+    public void doRestoreFromRecycle(Article record) throws DaoException {
+        int updRlt = articleBizMapper.restoreFromRecycle(record);
+        if (1 != updRlt) {
+            throw DaoException.DAO_UPDATE_RESULT_0.print();
+        }
+    }
+
+
 }

@@ -47,7 +47,7 @@ public class TagsApiController extends BaseController {
 
     /**
      * 标签添加(标签页面)<br/>
-     * url:/api/admin/tag/add<br/>
+     * url:/api/admin/tag/create<br/>
      *
      * @param param JSON 参数({@link TagRequest})
      *              tagText<br/>
@@ -58,14 +58,14 @@ public class TagsApiController extends BaseController {
      * @author gulihua
      */
     @ApiVersion()
-    @PostMapping(TagsApiUrlConfig.URL_TAG_ADD)
-    public String addTag(@RequestBody String param) {
+    @PostMapping(TagsApiUrlConfig.URL_TAG_CREATE)
+    public String createTag(@RequestBody String param) {
         try {
             super.printRequestParams(param);
             TagRequest request = this.convertParam(param, TagRequest.class);
             BizValidation.paramValidate(request.getTagText(), "tagText", "标签文本不能为空!");
             BizValidation.paramLengthValidate(request.getTagText(), Constants.TAGS_LENGTH, "tagText", "标签内容不能大于10个字符!");
-            tagsBizService.doAddTag(request.getTagText());
+            tagsBizService.doCreateTag(request.getTagText());
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
         }
@@ -133,7 +133,7 @@ public class TagsApiController extends BaseController {
 
     /**
      * 标签集合的添加(标签页面)<br/>
-     * url:/api/admin/tag/add/list<br/>
+     * url:/api/admin/tag/create/list<br/>
      *
      * @param param JSON 参数({@link TagListRequest})
      *              tagList<br/>
@@ -142,11 +142,11 @@ public class TagsApiController extends BaseController {
      * msg
      * @author gulihua
      */
-    @PageId(PageIdEnum.TAGS_ADD_LIST)
+    @PageId(PageIdEnum.TAGS_CREATE_LIST)
     @SubToken()
     @ApiVersion()
-    @PostMapping(TagsApiUrlConfig.URL_TAG_ADD_LIST)
-    public String addTagList(@RequestBody String param) {
+    @PostMapping(TagsApiUrlConfig.URL_TAG_CREATE_LIST)
+    public String createTagList(@RequestBody String param) {
         try {
             super.printRequestParams(param);
             TagListRequest request = this.convertParam(param, TagListRequest.class);
@@ -155,7 +155,7 @@ public class TagsApiController extends BaseController {
             for (String tag : request.getTagList()) {
                 BizValidation.paramLengthValidate(tag.trim(), Constants.TAGS_LENGTH, "tagName", "列表中标签内容不能大于10个字符!");
             }
-            tagsBizService.doAddTagList(request.getTagList());
+            tagsBizService.doAddCreateList(request.getTagList());
 
         } catch (JwBlogException e) {
             return super.exceptionToString(e);

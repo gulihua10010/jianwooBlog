@@ -4,6 +4,7 @@ layui.define(['laytable', 'form'], function (exports) {
         , view = layui.view
         , admin = layui.admin
         , $ = layui.jquery
+        , layer = layui.layer
     ;
     table.render({
         elem: '#emailTpl-table'
@@ -66,8 +67,8 @@ layui.define(['laytable', 'form'], function (exports) {
             JSON.stringify(field),
             "创建成功",
             function () {
-                admin.events.refresh();
-                form.render();
+                location.hash = '/emailTpl/list'
+
             }
         );
 
@@ -81,27 +82,69 @@ layui.define(['laytable', 'form'], function (exports) {
             JSON.stringify(field),
             "更新成功",
             function () {
-                admin.events.refresh();
-                form.render();
+                location.hash = '/emailTpl/list'
             }
         );
 
     });
 
-    $('#render-tpl').click(function (){
+    $('#testJsonData').blur(function () {
+        var testJsonData = $('#testJsonData').val();
+        if (!isEmpty(testJsonData)) {
+            validTestJson(testJsonData);
+        }
+    })
+
+
+    $('#render-tpl').click(function () {
         var content = $('#content').val();
         var testJsonData = $('#testJsonData').val();
-        ajaxPost(
-            '/api/admin/email/tpl/update',
+        if (isEmpty(content)) {
+            alertFail("提示", "请输入模板内容!", '#content');
+            return false;
+        }
+        if (isEmpty(testJsonData)) {
+            alertFail("提示", "请输入测试数据内容!", '#testJsonData');
+            return false;
+        }
+
+        if (!validTestJson(testJsonData)) {
+            return false;
+        }
+
+        ajaxApiPost(
+            '/api/admin/email/tpl/render',
             1,
-            JSON.stringify(field),
-            "更新成功",
-            function () {
-                admin.events.refresh();
-                form.render();
+            JSON.stringify({
+                content: content,
+                testJsonData: testJsonData,
+            }),
+            function (data) {
+                admin.popup({
+                    title: '查看渲染'
+                    , id: 'LAY-popup-art-emailTpl-render'
+                    , content: data.data
+                });
+            },
+            function (data) {
+                if (data && data.msg)
+                {
+                    alertFail("提示", data.msg);
+                }
+
             }
         );
     })
+
+    function validTestJson(data) {
+        try {
+            var d = JSON.parse(data)
+        } catch (e) {
+            alertFail("错误提示", "测试的JSON数据格式非法: " + e.message);
+            return false;
+        }
+        return true;
+    }
 
 
     exports('emailTpl', {})

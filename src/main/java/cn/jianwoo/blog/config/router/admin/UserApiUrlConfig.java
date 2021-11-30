@@ -8,8 +8,13 @@ import cn.jianwoo.blog.config.router.UrlConfig;
  * @date 2020-08-05 17:07
  */
 public class UserApiUrlConfig extends UrlConfig {
-    public static final String URL_PREFIX = "/api/admin";
-    public static final String URL_USER_INFO = "/user/info";
+    public static final String URL_PREFIX = "/api/admin/user";
+    public static final String URL_USER_INFO = "/info";
+    public static final String URL_USER_PROFILE_EDIT = "/profile/edit";
+    public static final String URL_USER_PROFILE_EDIT_UPDATE = "/profile/edit/update";
+    public static final String URL_USER_PASSWORD_CHANGE = "/password/change";
+    public static final String URL_USER_FORGET_PASSWORD_CHECK = "/forget/password/check";
+    public static final String URL_USER_FORGET_PASSWORD_CHANGE = "/forget/password/change";
 
 
     /**

@@ -1,6 +1,7 @@
 package cn.jianwoo.blog.util;
 
 import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
 import cn.hutool.crypto.symmetric.SymmetricCrypto;
 import cn.jianwoo.blog.constants.Constants;
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -178,6 +180,13 @@ public class JwUtil {
         String decryptStr = aes.decryptStr(encryptHex, CharsetUtil.CHARSET_UTF_8);
         return decryptStr;
 
+    }
+
+    public static String generateVerifyCode(int len) {
+        String word = "abcdefghijklmnopqrstuvwxyz";
+        String wordUpper = word.toUpperCase(Locale.ROOT);
+        String num = "0123456789";
+        return RandomUtil.randomString(word.concat(wordUpper).concat(num), len);
     }
 
 }
