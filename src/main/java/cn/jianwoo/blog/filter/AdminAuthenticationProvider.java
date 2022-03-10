@@ -10,6 +10,7 @@ import cn.jianwoo.blog.security.token.AuthToken;
 import cn.jianwoo.blog.security.token.AuthUserTokenBO;
 import cn.jianwoo.blog.service.biz.AdminBizService;
 import cn.jianwoo.blog.service.biz.WebconfBizService;
+import cn.jianwoo.blog.util.JwUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -22,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 
+import java.text.MessageFormat;
 import java.util.Map;
 
 /**
@@ -45,19 +47,22 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         log.info("==>AdminAuthenticationProvider.authenticate..");
         JwAuthenticationToken jwAuthenticationToken = (JwAuthenticationToken) authentication;
-        // 获取前端表单中输入后返回的用户名、密码
+        // 获取前端表单中输入后返回的用户名、密码(二次加密后)
         String userName = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
         Map<String, Object> param = jwAuthenticationToken.getParam();
         AuthUserTokenBO user = (AuthUserTokenBO) userDetailsService.loadUserByUsername(userName);
-        boolean isValid = passwordEncoder().matches(password, user.getPassword());
+
+        boolean isValid = passwordEncoder().matches(JwUtil.decrypt(password), user.getPassword());
         //验证验证码token(如果开启)
         try {
 
             String isNeed = webconfBizService.queryWebconfByKey(WebConfDataConfig.IS_LOGIN_NEED_CAPTCHA);
             if (Constants.TRUE.equals(isNeed)) {
                 String accessToken = (String) param.get(Constants.CAPTCHA_TOKEN);
-                String tokenStore = cacheStore.get(CacaheKeyConstants.LOGIN_CAPTCHA_AUTH).orElse(null);
+                String guid = (String) param.get(Constants.GUID);
+                String cacheKey = MessageFormat.format(CacaheKeyConstants.LOGIN_CAPTCHA_AUTH, guid);
+                String tokenStore = cacheStore.get(cacheKey).orElse(null);
                 boolean isCaptcha = null != accessToken && accessToken.equals(tokenStore);
                 if (!isCaptcha) {
                     throw new JwBlogException(ExceptionConstants.LOGIN_CAPTCHA_AUTH_INVALID,

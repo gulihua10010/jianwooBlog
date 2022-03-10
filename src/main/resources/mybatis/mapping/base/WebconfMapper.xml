@@ -5,6 +5,7 @@
     <id column="OID" jdbcType="BIGINT" property="oid" />
     <result column="KEY" jdbcType="VARCHAR" property="key" />
     <result column="DESC" jdbcType="VARCHAR" property="desc" />
+    <result column="CFG_TYPE" jdbcType="VARCHAR" property="cfgType" />
     <result column="VALUE_TYPE" jdbcType="VARCHAR" property="valueType" />
     <result column="STRING_VALUE" jdbcType="VARCHAR" property="stringValue" />
     <result column="INT_VALUE" jdbcType="INTEGER" property="intValue" />
@@ -74,7 +75,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    OID, `KEY`, `DESC`, VALUE_TYPE, STRING_VALUE, INT_VALUE, FLOAT_VALUE, BOOLEAN_VALUE, 
+    OID, `KEY`, `DESC`, CFG_TYPE, VALUE_TYPE, STRING_VALUE, INT_VALUE, FLOAT_VALUE, BOOLEAN_VALUE, 
     DATE_VALUE, `VALID`, CREATE_TIME, UPDATE_TIME
   </sql>
   <select id="selectByExample" parameterType="cn.jianwoo.blog.entity.example.WebconfExample" resultMap="BaseResultMap">
@@ -83,7 +84,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from webconf
+    from WEBCONF
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -95,37 +96,42 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from webconf
+    from WEBCONF
     where OID = #{oid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from webconf
+    delete from WEBCONF
     where OID = #{oid,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="cn.jianwoo.blog.entity.example.WebconfExample">
-    delete from webconf
+    delete from WEBCONF
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.Webconf" useGeneratedKeys="true">
-    insert into webconf (`KEY`, `DESC`, VALUE_TYPE, 
-      STRING_VALUE, INT_VALUE, FLOAT_VALUE, 
-      BOOLEAN_VALUE, DATE_VALUE, `VALID`, 
-      CREATE_TIME, UPDATE_TIME)
-    values (#{key,jdbcType=VARCHAR}, #{desc,jdbcType=VARCHAR}, #{valueType,jdbcType=VARCHAR}, 
-      #{stringValue,jdbcType=VARCHAR}, #{intValue,jdbcType=INTEGER}, #{floatValue,jdbcType=DECIMAL}, 
-      #{booleanValue,jdbcType=CHAR}, #{dateValue,jdbcType=TIMESTAMP}, #{valid,jdbcType=CHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+    insert into WEBCONF (`KEY`, `DESC`, CFG_TYPE, 
+      VALUE_TYPE, STRING_VALUE, INT_VALUE, 
+      FLOAT_VALUE, BOOLEAN_VALUE, DATE_VALUE, 
+      `VALID`, CREATE_TIME, UPDATE_TIME
+      )
+    values (#{key,jdbcType=VARCHAR}, #{desc,jdbcType=VARCHAR}, #{cfgType,jdbcType=VARCHAR}, 
+      #{valueType,jdbcType=VARCHAR}, #{stringValue,jdbcType=VARCHAR}, #{intValue,jdbcType=INTEGER}, 
+      #{floatValue,jdbcType=DECIMAL}, #{booleanValue,jdbcType=CHAR}, #{dateValue,jdbcType=TIMESTAMP}, 
+      #{valid,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.Webconf" useGeneratedKeys="true">
-    insert into webconf
+    insert into WEBCONF
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="key != null">
         `KEY`,
       </if>
       <if test="desc != null">
         `DESC`,
+      </if>
+      <if test="cfgType != null">
+        CFG_TYPE,
       </if>
       <if test="valueType != null">
         VALUE_TYPE,
@@ -162,6 +168,9 @@
       <if test="desc != null">
         #{desc,jdbcType=VARCHAR},
       </if>
+      <if test="cfgType != null">
+        #{cfgType,jdbcType=VARCHAR},
+      </if>
       <if test="valueType != null">
         #{valueType,jdbcType=VARCHAR},
       </if>
@@ -192,13 +201,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="cn.jianwoo.blog.entity.example.WebconfExample" resultType="java.lang.Long">
-    select count(*) from webconf
+    select count(*) from WEBCONF
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update webconf
+    update WEBCONF
     <set>
       <if test="record.oid != null">
         OID = #{record.oid,jdbcType=BIGINT},
@@ -208,6 +217,9 @@
       </if>
       <if test="record.desc != null">
         `DESC` = #{record.desc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cfgType != null">
+        CFG_TYPE = #{record.cfgType,jdbcType=VARCHAR},
       </if>
       <if test="record.valueType != null">
         VALUE_TYPE = #{record.valueType,jdbcType=VARCHAR},
@@ -242,10 +254,11 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update webconf
+    update WEBCONF
     set OID = #{record.oid,jdbcType=BIGINT},
       `KEY` = #{record.key,jdbcType=VARCHAR},
       `DESC` = #{record.desc,jdbcType=VARCHAR},
+      CFG_TYPE = #{record.cfgType,jdbcType=VARCHAR},
       VALUE_TYPE = #{record.valueType,jdbcType=VARCHAR},
       STRING_VALUE = #{record.stringValue,jdbcType=VARCHAR},
       INT_VALUE = #{record.intValue,jdbcType=INTEGER},
@@ -260,13 +273,16 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="cn.jianwoo.blog.entity.Webconf">
-    update webconf
+    update WEBCONF
     <set>
       <if test="key != null">
         `KEY` = #{key,jdbcType=VARCHAR},
       </if>
       <if test="desc != null">
         `DESC` = #{desc,jdbcType=VARCHAR},
+      </if>
+      <if test="cfgType != null">
+        CFG_TYPE = #{cfgType,jdbcType=VARCHAR},
       </if>
       <if test="valueType != null">
         VALUE_TYPE = #{valueType,jdbcType=VARCHAR},
@@ -299,9 +315,10 @@
     where OID = #{oid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.jianwoo.blog.entity.Webconf">
-    update webconf
+    update WEBCONF
     set `KEY` = #{key,jdbcType=VARCHAR},
       `DESC` = #{desc,jdbcType=VARCHAR},
+      CFG_TYPE = #{cfgType,jdbcType=VARCHAR},
       VALUE_TYPE = #{valueType,jdbcType=VARCHAR},
       STRING_VALUE = #{stringValue,jdbcType=VARCHAR},
       INT_VALUE = #{intValue,jdbcType=INTEGER},

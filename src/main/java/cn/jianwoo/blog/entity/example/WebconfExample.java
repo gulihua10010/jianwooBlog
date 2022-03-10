@@ -326,6 +326,76 @@ public class WebconfExample {
             return (Criteria) this;
         }
 
+        public Criteria andCfgTypeIsNull() {
+            addCriterion("CFG_TYPE is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCfgTypeIsNotNull() {
+            addCriterion("CFG_TYPE is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCfgTypeEqualTo(String value) {
+            addCriterion("CFG_TYPE =", value, "cfgType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCfgTypeNotEqualTo(String value) {
+            addCriterion("CFG_TYPE <>", value, "cfgType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCfgTypeGreaterThan(String value) {
+            addCriterion("CFG_TYPE >", value, "cfgType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCfgTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("CFG_TYPE >=", value, "cfgType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCfgTypeLessThan(String value) {
+            addCriterion("CFG_TYPE <", value, "cfgType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCfgTypeLessThanOrEqualTo(String value) {
+            addCriterion("CFG_TYPE <=", value, "cfgType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCfgTypeLike(String value) {
+            addCriterion("CFG_TYPE like", value, "cfgType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCfgTypeNotLike(String value) {
+            addCriterion("CFG_TYPE not like", value, "cfgType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCfgTypeIn(List<String> values) {
+            addCriterion("CFG_TYPE in", values, "cfgType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCfgTypeNotIn(List<String> values) {
+            addCriterion("CFG_TYPE not in", values, "cfgType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCfgTypeBetween(String value1, String value2) {
+            addCriterion("CFG_TYPE between", value1, value2, "cfgType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCfgTypeNotBetween(String value1, String value2) {
+            addCriterion("CFG_TYPE not between", value1, value2, "cfgType");
+            return (Criteria) this;
+        }
+
         public Criteria andValueTypeIsNull() {
             addCriterion("VALUE_TYPE is null");
             return (Criteria) this;
@@ -913,6 +983,11 @@ public class WebconfExample {
 
         public Criteria andDescLikeInsensitive(String value) {
             addCriterion("upper(`DESC`) like", value.toUpperCase(), "desc");
+            return (Criteria) this;
+        }
+
+        public Criteria andCfgTypeLikeInsensitive(String value) {
+            addCriterion("upper(CFG_TYPE) like", value.toUpperCase(), "cfgType");
             return (Criteria) this;
         }
 

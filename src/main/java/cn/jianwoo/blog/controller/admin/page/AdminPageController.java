@@ -53,7 +53,7 @@ public class AdminPageController {
      */
     @PageId(PageIdEnum.PASSPORT)
     @RequestMapping(CommAdminPageUrlConfig.URL_PASSPORT)
-    public String login() {
+    public String passport() {
         return CommAdminPageTemplateConfig.PAGE_PREFIX + CommAdminPageTemplateConfig.PAGE_PASSPORT;
     }
 

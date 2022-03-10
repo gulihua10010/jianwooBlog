@@ -8,11 +8,22 @@ public interface AdminQueryDao {
 
 
     /**
-     * 通过名字查询
+     * 通过LoginId(名字:username)查询<br>
+     * 结果为null时抛出<br>
      *
-     * @param name 名字
+     * @param loginID 名字
      * @return
      * @author gulihua
      */
-    Admin queryAdminByName(String name);
+    Admin queryAdminByLoginId(String loginID) throws DaoException;
+
+    /**
+     * 通过username查询
+     * 结果为null时不抛出<br>
+     *
+     * @param username 名字
+     * @return
+     * @author gulihua
+     */
+    Admin queryAdminByUsername(String username);
 }

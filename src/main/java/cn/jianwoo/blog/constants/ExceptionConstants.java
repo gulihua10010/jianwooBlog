@@ -18,6 +18,7 @@ public final class ExceptionConstants {
     public static final String BIZ_DELETE_FAIL = "200005";
     public static final String BIZ_STATUS_INCORRECT = "200006";
     public static final String BIZ_PASSWORD_INCORRECT = "200007";
+    public static final String BIZ_PAGE_TIMEOUT = "200008";
 
     public static final String VALIDATION_FAILED_NULL = "300001";
     public static final String VALIDATION_FAILED_EMPTY = "300002";
@@ -70,6 +71,8 @@ public final class ExceptionConstants {
 
     public static final String EMAIL_SEND_FAILED = "400011";
     public static final String EMAIL_SEND_FAILED_DESC = "邮件发送失败，请检查邮件配置!";
+
+    public static final String USER_BLOCK = "账号已被冻结! 请1小时后重试!";
 
     private ExceptionConstants() {
     }

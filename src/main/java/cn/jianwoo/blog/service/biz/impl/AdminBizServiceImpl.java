@@ -5,25 +5,32 @@ import cn.jianwoo.blog.cache.CacheStore;
 import cn.jianwoo.blog.constants.CacaheKeyConstants;
 import cn.jianwoo.blog.dao.base.AdminTransDao;
 import cn.jianwoo.blog.entity.Admin;
+import cn.jianwoo.blog.enums.LoginEventTypeEnum;
+import cn.jianwoo.blog.event.LoginLogEvent;
 import cn.jianwoo.blog.exception.AdminBizException;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.security.token.AuthToken;
+import cn.jianwoo.blog.service.base.AdminBaseService;
 import cn.jianwoo.blog.service.biz.AdminBizService;
-import cn.jianwoo.blog.service.biz.EmailBizService;
 import cn.jianwoo.blog.service.bo.AdminBO;
+import cn.jianwoo.blog.service.bo.ForgetPwdResBO;
 import cn.jianwoo.blog.service.bo.UserBO;
+import cn.jianwoo.blog.service.notify.NotifyMsgService;
 import cn.jianwoo.blog.task.AsyncTask;
 import cn.jianwoo.blog.util.DateUtil;
 import cn.jianwoo.blog.util.JwUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.Objects;
@@ -42,20 +49,26 @@ public class AdminBizServiceImpl implements AdminBizService {
     @Autowired
     private AsyncTask asyncTask;
     @Autowired
-    private EmailBizService emailBizService;
+    private NotifyMsgService emailBizService;
+    @Autowired
+    private AdminBaseService adminBaseService;
+    @Autowired
+    private ApplicationContext applicationContext;
+    @Autowired
+    protected HttpServletRequest request;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void register(String name, String password, String ip) throws JwBlogException {
-        log.info("========>> Start admin register,name={}", name);
-        Admin existAdmin = adminTransDao.queryAdminByName(name);
+    public void register(String username, String password, String ip) throws JwBlogException {
+        log.info("========>> Start admin register,name={}", username);
+        Admin existAdmin = adminBaseService.queryAdminByUsername(username);
         if (existAdmin != null) {
-            throw AdminBizException.HAS_EXIST_EXCEPTION_CN.format(name).print();
+            throw AdminBizException.HAS_EXIST_EXCEPTION_CN.format(username).print();
         }
         Date date = DateUtil.getNow();
 
         Admin admin = new Admin();
-        admin.setUsername(name);
+        admin.setUsername(username);
         admin.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
         admin.setRegisterIp(ip);
         admin.setCreateTime(date);
@@ -64,23 +77,23 @@ public class AdminBizServiceImpl implements AdminBizService {
             adminTransDao.doInsertSelective(admin);
         } catch (DaoException e) {
             log.error("AdminBizServiceImpl.register exec failed, e:\n", e);
-            throw AdminBizException.CREATE_FAILED_EXCEPTION.format(name).print();
+            throw AdminBizException.CREATE_FAILED_EXCEPTION.format(username).print();
 
         }
 
         //执行异步任务
         asyncTask.execAdminUserRegIpAreaTask(admin.getOid());
-        log.info("========>> Admin [username={}] register successfully!!", name);
+        log.info("========>> Admin [username={}] register successfully!!", username);
     }
 
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public AuthToken authLogin(String name, String ip) throws JwBlogException {
+    public AuthToken authLogin(String loginID, String ip) throws JwBlogException {
 
-        log.info("========>> Start admin login,name= {},ip= {}", name, ip);
+        log.info("========>> Start admin login,name= {},ip= {}", loginID, ip);
 
-        Admin admin = adminTransDao.queryAdminByName(name);
+        Admin admin = adminBaseService.queryAdminByLoginId(loginID);
         //security已经做过校验，这里不再做
 //        if (admin == null) {
 //            throw AdminBizException.NOT_EXIST_EXCEPTION_CN.format(name).print();
@@ -93,14 +106,14 @@ public class AdminBizServiceImpl implements AdminBizService {
 //        }
         Admin updAdmin = new Admin();
         updAdmin.setOid(admin.getOid());
-        updAdmin.setUpdateTime(new Date());
+//        updAdmin.setUpdateTime(new Date());
         updAdmin.setLastLoginIp(ip);
         updAdmin.setLastLoginTime(new Date());
         try {
             adminTransDao.doUpdateByPrimaryKeySelective(updAdmin);
         } catch (DaoException e) {
             log.error("AdminBizServiceImpl.authLogin exec failed, e:\n", e);
-            throw AdminBizException.MODIFY_FAILED_EXCEPTION.format(name).print();
+            throw AdminBizException.MODIFY_FAILED_EXCEPTION.format(loginID).print();
         }
 
         //生成jwt token对象
@@ -122,28 +135,25 @@ public class AdminBizServiceImpl implements AdminBizService {
         jwCacheStore.put(loginIDNameKey, admin.getUsername());
         //执行异步任务
         asyncTask.execAdminUserLoginIpAreaTask(admin.getOid());
-        log.info("========>> Admin [username={}, ip={}] login successfully!!!", name, ip);
+        log.info("========>> Admin [username={}, ip={}] login successfully!!!", loginID, ip);
 
         return authToken;
 
     }
 
     @Override
-    public AdminBO queryAdminByName(String name) throws JwBlogException {
-        String cacheKey = MessageFormat.format(CacaheKeyConstants.ADMIN_NAME_KEY, name);
+    public AdminBO queryAdminInfoByLoginId(String loginID) throws JwBlogException {
+        String cacheKey = MessageFormat.format(CacaheKeyConstants.ADMIN_NAME_KEY, loginID);
 
         if (jwCacheStore.hasKey(cacheKey)) {
             Optional<Object> adminBO = jwCacheStore.get(cacheKey);
             if (adminBO.isPresent()) {
                 return (AdminBO) adminBO.get();
             } else {
-                throw AdminBizException.NOT_EXIST_EXCEPTION.format(name).print();
+                throw AdminBizException.NOT_EXIST_EXCEPTION.format(loginID).print();
             }
         } else {
-            Admin admin = adminTransDao.queryAdminByName(name);
-            if (admin == null) {
-                throw AdminBizException.NOT_EXIST_EXCEPTION_CN.format(name).print();
-            }
+            Admin admin = adminBaseService.queryAdminByLoginId(loginID);
             AdminBO adminBO = new AdminBO();
             BeanUtils.copyProperties(admin, adminBO);
             jwCacheStore.put(cacheKey, adminBO);
@@ -163,16 +173,13 @@ public class AdminBizServiceImpl implements AdminBizService {
                 throw AdminBizException.NOT_EXIST_EXCEPTION.format(oid).print();
             }
         } else {
-            try {
-                Admin admin = adminTransDao.queryAdminByPrimaryKey(oid);
-                AdminBO adminBO = JwBuilder.of(AdminBO::new)
-                        .with(AdminBO::setOid, admin.getOid())
-                        .with(AdminBO::setUsername, admin.getUsername()).build();
-                jwCacheStore.put(cacheKey, adminBO);
-                return adminBO;
-            } catch (DaoException e) {
-                throw AdminBizException.NOT_EXIST_EXCEPTION.format(oid).print();
-            }
+            Admin admin = adminBaseService.queryAdminByOid(oid);
+            AdminBO adminBO = JwBuilder.of(AdminBO::new)
+                    .with(AdminBO::setOid, admin.getOid())
+                    .with(AdminBO::setUsername, admin.getUsername()).build();
+            jwCacheStore.put(cacheKey, adminBO);
+            return adminBO;
+
         }
 
     }
@@ -182,17 +189,16 @@ public class AdminBizServiceImpl implements AdminBizService {
     public void doChangePassword(String loginID, String oldPassword, String newPassword) throws JwBlogException {
         log.info("========>> Start to change password , loginID= {}.", loginID);
 
-        Admin admin = adminTransDao.queryAdminByName(loginID);
-        if (admin == null) {
-            throw AdminBizException.NOT_EXIST_EXCEPTION_CN.format(loginID).print();
-        }
+        Admin admin = adminBaseService.queryAdminByLoginId(loginID);
         String pwd = DigestUtils.md5DigestAsHex(oldPassword.getBytes());
         if (!pwd.equals(admin.getPassword())) {
             log.warn("Change password failed, the old password[{}] is incorrect.", oldPassword);
+            registerLog(admin.getUsername(), AdminBizException.OLD_PASSWORD_INCORRECT.getMsg(), LoginEventTypeEnum.CHANGE_PASSWORD);
             throw AdminBizException.OLD_PASSWORD_INCORRECT.print();
         }
         if (oldPassword.equals(newPassword)) {
             log.warn("Change password failed, the old password[{}] cannot be same as new password.", oldPassword);
+            registerLog(admin.getUsername(), AdminBizException.OLD_PASSWORD_NOT_SAME_AS_NEW.getMsg(), LoginEventTypeEnum.CHANGE_PASSWORD);
             throw AdminBizException.OLD_PASSWORD_NOT_SAME_AS_NEW.print();
         }
         Admin newAdmin = new Admin();
@@ -209,26 +215,58 @@ public class AdminBizServiceImpl implements AdminBizService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void doChangePassword4Forget(String loginID, String newPassword, String verifyCode) throws JwBlogException {
-        log.info("========>> Start to change password , loginID= {}", loginID);
-
-        Admin admin = adminTransDao.queryAdminByName(loginID);
-        if (admin == null) {
-            throw AdminBizException.NOT_EXIST_EXCEPTION_CN.format(loginID).print();
+    public ForgetPwdResBO doForgetCaptchaAuth(String loginID, String email, String captchaCode) throws JwBlogException {
+        ForgetPwdResBO resBO = ForgetPwdResBO.getInstance();
+        Admin admin = adminBaseService.queryAdminByLoginId(loginID);
+        if (!email.equals(admin.getUserEmail())) {
+            registerLog(admin.getUsername(), AdminBizException.EMAIL_INCORRECT.getMsg(), LoginEventTypeEnum.FORGET_PASSWORD);
+            throw AdminBizException.EMAIL_INCORRECT.print();
         }
+        resBO.setLoginIdEncrypt(JwUtil.encrypt(loginID));
+        resBO.setCaptchaCodeEncrypt(JwUtil.encrypt(captchaCode));
+
         String loginIDNameKey = MessageFormat.format(CacaheKeyConstants.VERIFY_CODE_LOGIN_ID, loginID);
         Optional verifyConfirmCodeOpt = jwCacheStore.get(loginIDNameKey);
         if (!verifyConfirmCodeOpt.isPresent()) {
-            throw AdminBizException.VERIFY_CODE_INCORRECT.print();
+            resBO.setReason(AdminBizException.VERIFY_CODE_INCORRECT.getMsg());
+            resBO.setCode(AdminBizException.VERIFY_CODE_INCORRECT.getCode());
+            registerLog(admin.getUsername(), AdminBizException.VERIFY_CODE_INCORRECT.getMsg(), LoginEventTypeEnum.FORGET_PASSWORD);
+            return resBO;
+        }
+        String captchaConfirmCode = (String) verifyConfirmCodeOpt.get();
+        if (null == captchaCode || !Objects.equals(captchaCode, captchaConfirmCode)) {
+            registerLog(admin.getUsername(), AdminBizException.VERIFY_CODE_INCORRECT.getMsg(), LoginEventTypeEnum.FORGET_PASSWORD);
+            resBO.setReason(AdminBizException.VERIFY_CODE_INCORRECT.getMsg());
+        }
+        return resBO;
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void doChangePassword4Forget(String loginIdEncrypt, String newPasswordEncrypt, String captchaCodeEncrypt) throws JwBlogException {
+        log.info("========>> Start to change password , loginID= {}", loginIdEncrypt);
+        String loginID = JwUtil.decrypt(loginIdEncrypt);
+        String captchaCode = JwUtil.decrypt(captchaCodeEncrypt);
+        String newPassword = JwUtil.decrypt(newPasswordEncrypt);
+
+        Admin admin = adminBaseService.queryAdminByLoginId(loginID);
+
+        String loginIDNameKey = MessageFormat.format(CacaheKeyConstants.VERIFY_CODE_LOGIN_ID, loginID);
+        Optional verifyConfirmCodeOpt = jwCacheStore.get(loginIDNameKey);
+        if (!verifyConfirmCodeOpt.isPresent()) {
+            registerLog(admin.getUsername(), AdminBizException.PAGE_TIMEOUT.getMsg(), LoginEventTypeEnum.FORGET_PASSWORD);
+            throw AdminBizException.PAGE_TIMEOUT.print();
         }
         String verifyConfirmCode = (String) verifyConfirmCodeOpt.get();
-        if (null == verifyCode || !Objects.equals(verifyCode, verifyConfirmCode)) {
+        if (null == captchaCode || !Objects.equals(captchaCode, verifyConfirmCode)) {
+            registerLog(admin.getUsername(), AdminBizException.VERIFY_CODE_INCORRECT.getMsg(), LoginEventTypeEnum.FORGET_PASSWORD);
             throw AdminBizException.VERIFY_CODE_INCORRECT.print();
         }
         String newPwd = DigestUtils.md5DigestAsHex(newPassword.getBytes());
         if (admin.getPassword().equals(newPwd)) {
             log.warn("Change password failed, the old password[{}] cannot be same as new password.", newPassword);
+            registerLog(admin.getUsername(), AdminBizException.OLD_PASSWORD_NOT_SAME_AS_NEW.getMsg(), LoginEventTypeEnum.FORGET_PASSWORD);
             throw AdminBizException.OLD_PASSWORD_NOT_SAME_AS_NEW.print();
         }
         Admin newAdmin = new Admin();
@@ -239,34 +277,21 @@ public class AdminBizServiceImpl implements AdminBizService {
             adminTransDao.doUpdateByPrimaryKeySelective(newAdmin);
         } catch (DaoException e) {
             log.warn("Change password failed. e:\r\n", e);
+            registerLog(admin.getUsername(), AdminBizException.MODIFY_FAILED_EXCEPTION.getMsg(), LoginEventTypeEnum.FORGET_PASSWORD);
             throw AdminBizException.MODIFY_FAILED_EXCEPTION.print();
         }
+
+        registerLog(admin.getUsername(), null, LoginEventTypeEnum.FORGET_PASSWORD);
+        jwCacheStore.delete(loginIDNameKey);
         log.info("========>> Change password End, loginID= {}", loginID);
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void doChangePassword4ForgetCheck(String loginID, String email) throws JwBlogException {
-        log.info("========>> Start to change password Check, loginID= {}", loginID);
-        Admin admin = adminTransDao.queryAdminByName(loginID);
-        if (admin == null) {
-            throw AdminBizException.NOT_EXIST_EXCEPTION_CN.format(loginID).print();
-        }
-        if (email.equals(admin.getUserEmail())) {
-            throw AdminBizException.EMAIL_INCORRECT.print();
-        }
-        emailBizService.sendEmail4ForgetPwd(loginID, email);
-        log.info("========>> End to change password Check, loginID= {}", loginID);
-    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void doSaveEditInfo(AdminBO adminBO) throws JwBlogException {
         log.info("========>> Start to Save user edit info, loginID= {}", adminBO.getUsername());
-        Admin admin = adminTransDao.queryAdminByName(adminBO.getUsername());
-        if (admin == null) {
-            throw AdminBizException.NOT_EXIST_EXCEPTION_CN.format(adminBO.getUsername()).print();
-        }
+        Admin admin = adminBaseService.queryAdminByLoginId(adminBO.getUsername());
         Admin newAdmin = JwBuilder.of(Admin::new)
                 .with(Admin::setOid, admin.getOid())
                 .with(Admin::setUserNick, adminBO.getUserNick())
@@ -284,9 +309,41 @@ public class AdminBizServiceImpl implements AdminBizService {
         }
         String nameCacheKey = MessageFormat.format(CacaheKeyConstants.ADMIN_NAME_KEY, admin.getUsername());
         String oidCacheKey = MessageFormat.format(CacaheKeyConstants.ADMIN_OID_KEY, admin.getOid());
+        registerLog(admin.getUsername(), null, LoginEventTypeEnum.EDIT_USER);
 
         jwCacheStore.delete(nameCacheKey);
         jwCacheStore.delete(oidCacheKey);
         log.info("========>> End to Save user edit info, loginID= {}", adminBO.getUsername());
     }
+
+    @Override
+    public void doSendCaptcha4Forget(String loginID, String email) throws JwBlogException {
+        log.info("========>> Start to change password Check, loginID= {}", loginID);
+
+        Admin admin = adminBaseService.queryAdminByLoginId(loginID);
+        if (!email.equals(admin.getUserEmail())) {
+            registerLog(admin.getUsername(), AdminBizException.EMAIL_INCORRECT.getMsg(),
+                    LoginEventTypeEnum.FORGET_PASSWORD);
+            throw AdminBizException.EMAIL_INCORRECT.print();
+        }
+        String captchaCode = JwUtil.generateVerifyCode(6);
+        String loginIDNameKey = MessageFormat.format(CacaheKeyConstants.VERIFY_CODE_LOGIN_ID, loginID);
+        jwCacheStore.put(loginIDNameKey, captchaCode, 1, TimeUnit.HOURS);
+        emailBizService.sendCaptcha4ForgetPwd(loginID, captchaCode, email);
+        log.info("========>> End to change password Check, loginID= {}", loginID);
+    }
+
+
+    private void registerLog(String loginID, String reason, LoginEventTypeEnum eventType) {
+        LoginLogEvent event = new LoginLogEvent(this, loginID, request);
+        event.setEventTypeEnum(eventType);
+        event.setIsSuccess(true);
+        if (StringUtils.isNotBlank(reason)) {
+            event.setReason(reason);
+            event.setIsSuccess(false);
+        }
+        applicationContext.publishEvent(event);
+    }
+
+
 }

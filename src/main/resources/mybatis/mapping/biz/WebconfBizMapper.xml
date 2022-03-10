@@ -41,7 +41,7 @@
         SELECT
         <include refid="Ext_Column_List"/>
         FROM WEBCONF W LEFT JOIN WEBCONF_FACADE F
-        ON W.OID = F.CONF_OID
+        ON W.KEY = F.CFG_KEY
         WHERE W.VALID = '1'
     </select>
 

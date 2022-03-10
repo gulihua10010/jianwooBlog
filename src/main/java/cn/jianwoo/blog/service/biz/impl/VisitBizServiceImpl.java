@@ -47,6 +47,7 @@ public class VisitBizServiceImpl implements VisitBizService {
             visitExtList.forEach(o -> {
                 VisitBO visitBO = new VisitBO();
                 BeanUtils.copyProperties(o, visitBO);
+                visitBO.setArticleTitle(o.getTitle());
                 list.add(visitBO);
             });
         }

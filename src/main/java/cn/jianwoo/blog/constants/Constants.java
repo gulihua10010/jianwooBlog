@@ -79,6 +79,7 @@ public final class Constants {
     public static final String PASSWORD = "password";
     public static final String ACCESS_TOKEN = "access_token";
     public static final String CAPTCHA_TOKEN = "captcha_token";
+    public static final String GUID = "guid";
     public static final String LOGIN_IP = "login_ip";
     public static final String AUTH_TOKEN = "AUTH_TOKEN";
     public static final String WRONG_PASSWORD = "用户名或密码错误!";

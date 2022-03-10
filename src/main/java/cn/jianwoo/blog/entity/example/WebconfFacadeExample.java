@@ -185,63 +185,73 @@ public class WebconfFacadeExample {
             return (Criteria) this;
         }
 
-        public Criteria andConfOidIsNull() {
-            addCriterion("CONF_OID is null");
+        public Criteria andCfgKeyIsNull() {
+            addCriterion("CFG_KEY is null");
             return (Criteria) this;
         }
 
-        public Criteria andConfOidIsNotNull() {
-            addCriterion("CONF_OID is not null");
+        public Criteria andCfgKeyIsNotNull() {
+            addCriterion("CFG_KEY is not null");
             return (Criteria) this;
         }
 
-        public Criteria andConfOidEqualTo(Long value) {
-            addCriterion("CONF_OID =", value, "confOid");
+        public Criteria andCfgKeyEqualTo(String value) {
+            addCriterion("CFG_KEY =", value, "cfgKey");
             return (Criteria) this;
         }
 
-        public Criteria andConfOidNotEqualTo(Long value) {
-            addCriterion("CONF_OID <>", value, "confOid");
+        public Criteria andCfgKeyNotEqualTo(String value) {
+            addCriterion("CFG_KEY <>", value, "cfgKey");
             return (Criteria) this;
         }
 
-        public Criteria andConfOidGreaterThan(Long value) {
-            addCriterion("CONF_OID >", value, "confOid");
+        public Criteria andCfgKeyGreaterThan(String value) {
+            addCriterion("CFG_KEY >", value, "cfgKey");
             return (Criteria) this;
         }
 
-        public Criteria andConfOidGreaterThanOrEqualTo(Long value) {
-            addCriterion("CONF_OID >=", value, "confOid");
+        public Criteria andCfgKeyGreaterThanOrEqualTo(String value) {
+            addCriterion("CFG_KEY >=", value, "cfgKey");
             return (Criteria) this;
         }
 
-        public Criteria andConfOidLessThan(Long value) {
-            addCriterion("CONF_OID <", value, "confOid");
+        public Criteria andCfgKeyLessThan(String value) {
+            addCriterion("CFG_KEY <", value, "cfgKey");
             return (Criteria) this;
         }
 
-        public Criteria andConfOidLessThanOrEqualTo(Long value) {
-            addCriterion("CONF_OID <=", value, "confOid");
+        public Criteria andCfgKeyLessThanOrEqualTo(String value) {
+            addCriterion("CFG_KEY <=", value, "cfgKey");
             return (Criteria) this;
         }
 
-        public Criteria andConfOidIn(List<Long> values) {
-            addCriterion("CONF_OID in", values, "confOid");
+        public Criteria andCfgKeyLike(String value) {
+            addCriterion("CFG_KEY like", value, "cfgKey");
             return (Criteria) this;
         }
 
-        public Criteria andConfOidNotIn(List<Long> values) {
-            addCriterion("CONF_OID not in", values, "confOid");
+        public Criteria andCfgKeyNotLike(String value) {
+            addCriterion("CFG_KEY not like", value, "cfgKey");
             return (Criteria) this;
         }
 
-        public Criteria andConfOidBetween(Long value1, Long value2) {
-            addCriterion("CONF_OID between", value1, value2, "confOid");
+        public Criteria andCfgKeyIn(List<String> values) {
+            addCriterion("CFG_KEY in", values, "cfgKey");
             return (Criteria) this;
         }
 
-        public Criteria andConfOidNotBetween(Long value1, Long value2) {
-            addCriterion("CONF_OID not between", value1, value2, "confOid");
+        public Criteria andCfgKeyNotIn(List<String> values) {
+            addCriterion("CFG_KEY not in", values, "cfgKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andCfgKeyBetween(String value1, String value2) {
+            addCriterion("CFG_KEY between", value1, value2, "cfgKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andCfgKeyNotBetween(String value1, String value2) {
+            addCriterion("CFG_KEY not between", value1, value2, "cfgKey");
             return (Criteria) this;
         }
 
@@ -1052,6 +1062,11 @@ public class WebconfFacadeExample {
 
         public Criteria andUpdateTimeNotBetween(Date value1, Date value2) {
             addCriterion("UPDATE_TIME not between", value1, value2, "updateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andCfgKeyLikeInsensitive(String value) {
+            addCriterion("upper(CFG_KEY) like", value.toUpperCase(), "cfgKey");
             return (Criteria) this;
         }
 

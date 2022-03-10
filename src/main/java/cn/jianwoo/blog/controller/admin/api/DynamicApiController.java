@@ -135,9 +135,9 @@ public class DynamicApiController extends BaseController {
                 vo.setUserName(domain.getUserName());
                 vo.setClientIp(domain.getClientIp());
 //                vo.setArea(domain.getArea());
-                String content = StringEscapeUtils.escapeHtml4(domain.getContent());
+                String content = StringEscapeUtils.escapeHtml4(domain.getContent());//
                 if (content.length() > 50) {
-                    content.substring(0, 50).concat(Constants.ELLIPSIS);
+                    content = content.substring(0, 50).concat(Constants.ELLIPSIS);
                 }
                 vo.setContent(content);
                 list.add(vo);

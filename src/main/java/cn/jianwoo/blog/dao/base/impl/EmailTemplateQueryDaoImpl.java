@@ -45,7 +45,7 @@ public class EmailTemplateQueryDaoImpl implements EmailTemplateQueryDao {
     public EmailTemplate queryEmailTplByCode(String code) {
         EmailTemplateExample example = new EmailTemplateExample();
         example.createCriteria().andEmailTplCodeEqualTo(code);
-        List<EmailTemplate> list = emailTemplateMapper.selectByExample(example);
+        List<EmailTemplate> list = emailTemplateMapper.selectByExampleWithBLOBs(example);
         if (CollectionUtils.isNotEmpty(list)) {
             return list.get(0);
         }

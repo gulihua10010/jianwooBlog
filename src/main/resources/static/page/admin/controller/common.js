@@ -10,14 +10,17 @@ layui.extend({
     , mouseRightMenu: "{/}" + layui.setter.base + 'lib/extend/mouseRightMenu'
     , laytable: "{/}" + layui.setter.base + 'lib/extend/laytable'
     , layupload: "{/}" + layui.setter.base + 'lib/extend/layupload'
-}).define("form", function (exports) {
+    , base64: '../admin/lib/extend/base64'
+}).define(["form", "base64"], function (exports) {
     var $ = layui.$
         , layer = layui.layer
         , laytpl = layui.laytpl
         , setter = layui.setter
         , view = layui.view
         , admin = layui.admin
-        , form = layui.form;
+        , form = layui.form
+        , base64 = layui.base64
+    ;
 
 
     //公共业务的逻辑处理可以写在此处，切换任何页面都会执行
@@ -103,7 +106,7 @@ layui.extend({
 
     }
 
-    parseUrlParam = function (url){
+    parseUrlParam = function (url) {
         var theRequest = new Object()
         var idx = url.indexOf('?');
         if (idx !== -1) {
@@ -199,7 +202,7 @@ layui.extend({
             , offset: '250px'
         });
         if (input_dom !== undefined) {
-            setTimeout(function(){
+            setTimeout(function () {
                 $(input_dom).focus();
                 $(input_dom).addClass('layui-form-danger')
             }, 7)
@@ -236,7 +239,6 @@ layui.extend({
             scrollTop: (offset.top + p_top)
         })
     }
-
 
 
     form.verify({
@@ -310,19 +312,33 @@ layui.extend({
         });
     }
 
-    //需要导入crypto-js.min.js
-    //加密
-    aesEncrypt= function (str, key)
-    {
-        return  CryptoJS.AES.encrypt(str, CryptoJS.enc.Utf8.parse(key), {
+    /**
+     * 需要导入crypto-js.min.js
+     * 1.aes加密
+     * 2.base加密
+     * @param str 要加密的字符串
+     * @param key base64加密后的秘钥
+     * @returns {*} 加密后的字符串
+     */
+    aesEncrypt = function (str, key) {
+        return base64.encode(CryptoJS.AES.encrypt(str, CryptoJS.enc.Utf8.parse(base64.decode(key)), {
             mode: CryptoJS.mode.ECB,
             padding: CryptoJS.pad.Pkcs7
-        }).toString();
+        }).toString());
     }
 
-    //解密
+
+    /**
+     * 需要导入crypto-js.min.js
+     * 解密
+     * 1.base解密
+     * 2.aes解密
+     * @param str 加密后的字符串
+     * @param key base64加密后的秘钥
+     * @returns {*} 解密后的字符串
+     */
     aesDecrypt = function (str, key) {
-        return CryptoJS.AES.decrypt(str, CryptoJS.enc.Utf8.parse(key), {
+        return CryptoJS.AES.decrypt(base64.decode(str), CryptoJS.enc.Utf8.parse(base64.decode(key)), {
             mode: CryptoJS.mode.ECB,
             padding: CryptoJS.pad.Pkcs7
         }).toString(CryptoJS.enc.Utf8);
@@ -333,7 +349,7 @@ layui.extend({
     adminVerifyJwt = function () {
         view.loading($('body')); //loading
         admin.req({
-            url: "/api/admin/jwt/verify/token"
+            url: setter.verifyTokenApi
             , type: 'get'
             , dataType: 'json'
             , async: false
@@ -345,6 +361,26 @@ layui.extend({
             }
         });
     }
+
+    guid = function () {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+    getGuid = function () {
+        var uuid = layui.data(setter.tableName)["guid"];
+        if (!uuid) {
+            uuid = guid();
+            layui.data(setter.tableName, {
+                key: "guid"
+                , value: uuid
+            });
+        }
+        return uuid;
+    }
+
 
     //退出
     admin.events.logout = function () {
@@ -362,8 +398,7 @@ layui.extend({
                 //清空本地记录的 token，并跳转到登入页
                 admin.exit();
             }
-            , fail :function (res)
-            {
+            , fail: function (res) {
                 alertFail('提示', res[setter.response.msgName]);
             }
 

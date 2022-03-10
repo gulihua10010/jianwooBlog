@@ -24,11 +24,13 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function (exports) {
 
         , interceptor: true //是否开启未登入拦截
 
-        , loginPage : '/admin/passport/login'
+        , loginPage : '/admin/passport#login'
 
-        , cryptoKey : '11111111'
+        , cryptoKey : 'ZEhsd1pUMWliRzluSUE9PQ=='
 
         , saveArticleTime : 30000
+
+        , verifyTokenApi : "/api/admin/jwt/verify/token"
 
         //自定义请求字段
         , request: {

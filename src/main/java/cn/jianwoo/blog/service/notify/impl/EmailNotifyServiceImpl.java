@@ -1,13 +1,12 @@
-package cn.jianwoo.blog.service.biz.impl;
+package cn.jianwoo.blog.service.notify.impl;
 
 import cn.jianwoo.blog.cache.CacheStore;
 import cn.jianwoo.blog.constants.CacaheKeyConstants;
 import cn.jianwoo.blog.dao.base.EmailTemplateTransDao;
 import cn.jianwoo.blog.entity.EmailTemplate;
 import cn.jianwoo.blog.exception.JwBlogException;
-import cn.jianwoo.blog.service.biz.EmailBizService;
 import cn.jianwoo.blog.service.biz.EmailTplBizService;
-import cn.jianwoo.blog.util.JwUtil;
+import cn.jianwoo.blog.service.notify.NotifyMsgService;
 import cn.jianwoo.blog.util.NotifiyUtil;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +23,8 @@ import java.text.MessageFormat;
  */
 @Service
 @Slf4j
-public class EmailBizServiceImpl implements EmailBizService {
+public class EmailNotifyServiceImpl implements NotifyMsgService {
+
     @Value("${jw.emailtpl.code.forgetPassword}")
     private String forgetPwdCode;
     @Autowired
@@ -37,21 +37,19 @@ public class EmailBizServiceImpl implements EmailBizService {
     private EmailTplBizService emailTplBizService;
 
     @Override
-    public void sendEmail4ForgetPwd(String loginID, String emailTo) throws JwBlogException {
+    public void sendCaptcha4ForgetPwd(String loginID, String captchaCode, String recipient) throws JwBlogException {
         EmailTemplate emailTemplate = emailTemplateTransDao.queryEmailTplByCode(forgetPwdCode);
         if (null == emailTemplate) {
             log.warn("Email Template is not set for code {}", forgetPwdCode);
             return;
         }
-        String verifyCode = JwUtil.generateVerifyCode(6);
-        String loginIDNameKey = MessageFormat.format(CacaheKeyConstants.VERIFY_CODE_LOGIN_ID, loginID);
-        jwCacheStore.put(loginIDNameKey, verifyCode);
+
         JSONObject map = new JSONObject();
         map.put("username", loginID);
-        map.put("verifyCode", verifyCode);
-        String content = emailTplBizService.doRenderEmailTpl(emailTemplate.getEmailTplCode(), map.toJSONString());
+        map.put("verifyCode", captchaCode);
+        String content = emailTplBizService.doRenderEmailTpl(emailTemplate.getContent(), map.toJSONString());
 
-        notifiyUtil.sendEmail(emailTo, emailTemplate.getSubject(), content);
+        notifiyUtil.sendEmail(recipient, emailTemplate.getSubject(), content);
 
     }
 }

@@ -1,7 +1,7 @@
 package cn.jianwoo.blog.config;
 
 import cn.jianwoo.blog.config.router.admin.CommAdminPageUrlConfig;
-import cn.jianwoo.blog.config.router.admin.LoginApiUrlConfig;
+import cn.jianwoo.blog.config.router.admin.PassportApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.filter.AdminAuthenticationProvider;
 import cn.jianwoo.blog.filter.JwtAuthenticationFilter;
@@ -67,7 +67,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .loginPage(CommAdminPageUrlConfig.URL_PREFIX + CommAdminPageUrlConfig.URL_LOGIN)
-//                .loginProcessingUrl(LoginApiUrlConfig.URL_PREFIX.concat(LoginApiUrlConfig.URL_LOGIN_AUTH))
+//                .loginProcessingUrl(PassportApiUrlConfig.URL_PREFIX.concat(PassportApiUrlConfig.URL_LOGIN_AUTH))
 //                .failureUrl(CommAdminPageUrlConfig.URL_PREFIX + CommAdminPageUrlConfig.URL_LOGIN)
                 .defaultSuccessUrl(CommAdminPageUrlConfig.URL_PREFIX)
 //                .failureHandler(securityAuthenticationFailureHandler)
@@ -76,7 +76,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
 
                 .logout()
-                .logoutUrl(LoginApiUrlConfig.URL_PREFIX + LoginApiUrlConfig.URL_LOGIN_OUT)
+                .logoutUrl(PassportApiUrlConfig.URL_PREFIX + PassportApiUrlConfig.URL_PASSPORT_LOGIN_OUT)
                 .logoutSuccessHandler(securityLogoutSuccessHandler)
                 .logoutSuccessUrl(CommAdminPageUrlConfig.URL_PREFIX + CommAdminPageUrlConfig.URL_LOGIN)
                 .permitAll()
@@ -100,7 +100,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     public LoginFilter loginFilter() throws Exception {
         LoginFilter loginFilter = new LoginFilter(authenticationManager());
-        loginFilter.setFilterProcessesUrl(LoginApiUrlConfig.URL_PREFIX.concat(LoginApiUrlConfig.URL_LOGIN_AUTH));
+        loginFilter.setFilterProcessesUrl(PassportApiUrlConfig.URL_PREFIX.concat(PassportApiUrlConfig.URL_PASSPORT_LOGIN_AUTH));
         return loginFilter;
 
     }

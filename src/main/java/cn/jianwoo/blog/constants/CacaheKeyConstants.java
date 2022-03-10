@@ -23,12 +23,20 @@ public final class CacaheKeyConstants {
      */
     public final static String INVALID_TOKEN = "jianwoo:admin:invalid:token:{0}";
 
-    public static final String LOGIN_CAPTCHA_AUTH = "JIANWOO.LOGIN.CAPTCHA.AUTH";
+    public static final String LOGIN_CAPTCHA_AUTH = "JIANWOO.LOGIN.CAPTCHA.AUTH:{0}";
+    public static final String FORGET_CAPTCHA_AUTH = "JIANWOO.FORGET.CAPTCHA.AUTH:{0}";
+    //gt_server_status
+    public static final String GT_SERVER_STATUS = "JIANWOO.GT.SERVER.STATUS:{0}";
+    public static final String GT_SERVER_USER = "JIANWOO.GT.SERVER.USER:{0}";
 
     /**
      * 网站配置
      */
     public final static String WEBCONF_KEY = "jianwoo:web:config:{0}";
+    /**
+     * 网站配置类型
+     */
+    public final static String WEBCONF_TYPE = "jianwoo:web:config:type:{0}";
     /**
      * 邮件配置
      */

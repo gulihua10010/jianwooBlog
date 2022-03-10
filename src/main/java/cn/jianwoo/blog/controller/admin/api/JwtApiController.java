@@ -21,7 +21,7 @@ public class JwtApiController extends BaseController {
 
 
     /**
-     * 初始化登录验证码<br/>
+     * 验证token<br/>
      * url:/api/admin/jwt/verify/token<br/>
      *
      * @return 返回响应 {@link BaseResponseDto}

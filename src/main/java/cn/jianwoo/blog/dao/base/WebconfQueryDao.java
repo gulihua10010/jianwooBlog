@@ -27,4 +27,14 @@ public interface WebconfQueryDao {
      * @author gulihua
      */
     Webconf queryWebconfByKey(String key) throws JwBlogException;
+
+
+    /**
+     * 通过cfgType获取网站配置
+     *
+     * @param cfgType 配置类型
+     * @return
+     * @author gulihua
+     */
+    List<Webconf> queryWebconfsByType(String cfgType) throws JwBlogException;
 }

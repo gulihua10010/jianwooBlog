@@ -48,4 +48,16 @@ public class WebconfQueryDaoImpl implements WebconfQueryDao {
         }
         return webconfList.get(0);
     }
+
+    @Override
+    public List<Webconf> queryWebconfsByType(String cfgType) throws JwBlogException {
+        WebconfExample example = new WebconfExample();
+        example.createCriteria().andCfgTypeEqualTo(cfgType);
+        List<Webconf> webconfList = webconfMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(webconfList)) {
+            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_NULL,
+                    ExceptionConstants.VALIDATION_FAILED_INVALID_DESC_CN);
+        }
+        return webconfList;
+    }
 }

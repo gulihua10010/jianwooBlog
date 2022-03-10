@@ -9,8 +9,6 @@ import cn.jianwoo.blog.cache.CacheStore;
 import cn.jianwoo.blog.config.apiversion.ApiVersion;
 import cn.jianwoo.blog.config.router.admin.UserApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
-import cn.jianwoo.blog.dto.request.ForgetPasswordCheckRequest;
-import cn.jianwoo.blog.dto.request.ForgetPasswordRequest;
 import cn.jianwoo.blog.dto.request.PasswordChangeRequest;
 import cn.jianwoo.blog.dto.request.UserEditInfoRequest;
 import cn.jianwoo.blog.dto.request.UserInfoRequest;
@@ -64,7 +62,7 @@ public class UserApiController extends BaseController {
             UserInfoRequest request = this.convertParam(param, UserInfoRequest.class);
             BizValidation.paramValidate(request.getLoginID(), "loginID", "用户登录ID不能为空!");
 
-            AdminBO admin = adminBizService.queryAdminByName(request.getLoginID().trim());
+            AdminBO admin = adminBizService.queryAdminInfoByLoginId(request.getLoginID().trim());
             AdminUserInfoVO vo = JwBuilder.of(AdminUserInfoVO::new)
                     .with(AdminUserInfoVO::setNickName, Constants.ADMIN_CN).build();
             if (null != admin) {
@@ -105,7 +103,7 @@ public class UserApiController extends BaseController {
 //            {
 //                request.setLoginID(adminName);
 //            }
-            AdminBO admin = adminBizService.queryAdminByName(request.getLoginID().trim());
+            AdminBO admin = adminBizService.queryAdminInfoByLoginId(request.getLoginID().trim());
             AdminUserInfoVO vo = new AdminUserInfoVO();
             if (null != admin) {
                 vo.setLoginID(admin.getUsername());
@@ -200,61 +198,6 @@ public class UserApiController extends BaseController {
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
     }
 
-
-    /**
-     * 忘记密码<br/>
-     * url:/api/admin/user/forget/password/check<br/>
-     *
-     * @param param JSON 参数({@link PasswordChangeRequest})<br/>
-     *              loginID<br/>
-     *              email<br/>
-     * @return 返回响应 {@link BaseResponseDto}
-     * status<br/>
-     * @author gulihua
-     */
-    @ApiVersion()
-    @PostMapping(UserApiUrlConfig.URL_USER_FORGET_PASSWORD_CHECK)
-    public String doForgetPasswordCheck(@RequestBody String param) {
-        try {
-            super.printRequestParams(param);
-            ForgetPasswordCheckRequest request = this.convertParam(param, ForgetPasswordCheckRequest.class);
-            BizValidation.paramValidate(request.getLoginID(), "loginID", "登录ID不能为空!");
-            BizValidation.paramValidate(request.getEmail(), "email", "邮箱不能为空!");
-            adminBizService.doChangePassword4ForgetCheck(request.getLoginID(), request.getEmail());
-        } catch (JwBlogException e) {
-            return super.exceptionToString(e);
-        }
-        return super.responseToJSONString(BaseResponseDto.SUCCESS);
-    }
-
-
-    /**
-     * 忘记密码<br/>
-     * url:/api/admin/user/forget/password/check<br/>
-     *
-     * @param param JSON 参数({@link PasswordChangeRequest})<br/>
-     *              loginID<br/>
-     *              newPassword<br/>
-     *              verifyCode<br/>
-     * @return 返回响应 {@link BaseResponseDto}
-     * status<br/>
-     * @author gulihua
-     */
-    @ApiVersion()
-    @PostMapping(UserApiUrlConfig.URL_USER_FORGET_PASSWORD_CHANGE)
-    public String doForgetPasswordChange(@RequestBody String param) {
-        try {
-            super.printRequestParams(param);
-            ForgetPasswordRequest request = this.convertParam(param, ForgetPasswordRequest.class);
-            BizValidation.paramValidate(request.getLoginID(), "loginID", "登录ID不能为空!");
-            BizValidation.paramValidate(request.getNewPassword(), "newPassword", "新密码不能为空!");
-            BizValidation.paramValidate(request.getVerifyCode(), "verifyCode", "验证码不能为空!");
-            adminBizService.doChangePassword4Forget(request.getLoginID(), request.getNewPassword(), request.getVerifyCode());
-        } catch (JwBlogException e) {
-            return super.exceptionToString(e);
-        }
-        return super.responseToJSONString(BaseResponseDto.SUCCESS);
-    }
 
 
 }

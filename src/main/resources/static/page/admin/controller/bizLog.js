@@ -33,7 +33,7 @@ layui.define(['laytable', 'form'], function (exports) {
             },
             {
                 field: 'processStatus', title: '处理状态', align: 'center', templet: function (d) {
-                    return format(d)
+                    return formatStatus(d)
                 }
             },
             {
@@ -51,12 +51,18 @@ layui.define(['laytable', 'form'], function (exports) {
         , text: {none: '无数据'}
 
     });
+    var formatStatus = function (d) {
+        if (d.processStatus === '90') {
+            return '<span style="color:green">' + '成功' + '</span>';
+        }
+        return '<span style="color:red">' + '失败' + '</span>';
 
+    }
     var format = function (d) {
         if (d.processStatus === '91') {
-            return '<span style="color:red">' + d[d.LAY_COL.field] + '</span>';
+            return '<span style="color:red">' + (!d[d.LAY_COL.field] ? '' : d[d.LAY_COL.field]) + '</span>';
         }
-        return d[d.LAY_COL.field];
+        return !d[d.LAY_COL.field] ? '' : d[d.LAY_COL.field];
     }
     table.render({
         elem: '#bizLog-table'

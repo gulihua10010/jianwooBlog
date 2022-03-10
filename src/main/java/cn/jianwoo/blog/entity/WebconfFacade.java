@@ -6,7 +6,7 @@ import java.util.Date;
 public class WebconfFacade implements Serializable {
     private Long oid;
 
-    private Long confOid;
+    private String cfgKey;
 
     private String desc;
 
@@ -42,12 +42,12 @@ public class WebconfFacade implements Serializable {
         this.oid = oid;
     }
 
-    public Long getConfOid() {
-        return confOid;
+    public String getCfgKey() {
+        return cfgKey;
     }
 
-    public void setConfOid(Long confOid) {
-        this.confOid = confOid;
+    public void setCfgKey(String cfgKey) {
+        this.cfgKey = cfgKey == null ? null : cfgKey.trim();
     }
 
     public String getDesc() {
@@ -153,7 +153,7 @@ public class WebconfFacade implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", oid=").append(oid);
-        sb.append(", confOid=").append(confOid);
+        sb.append(", cfgKey=").append(cfgKey);
         sb.append(", desc=").append(desc);
         sb.append(", titleDsp=").append(titleDsp);
         sb.append(", tipsDsp=").append(tipsDsp);

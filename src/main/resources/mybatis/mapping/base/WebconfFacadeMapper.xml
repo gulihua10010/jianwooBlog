@@ -3,7 +3,7 @@
 <mapper namespace="cn.jianwoo.blog.dao.base.mapper.WebconfFacadeMapper">
   <resultMap id="BaseResultMap" type="cn.jianwoo.blog.entity.WebconfFacade">
     <id column="OID" jdbcType="BIGINT" property="oid" />
-    <result column="CONF_OID" jdbcType="BIGINT" property="confOid" />
+    <result column="CFG_KEY" jdbcType="VARCHAR" property="cfgKey" />
     <result column="DESC" jdbcType="VARCHAR" property="desc" />
     <result column="TITLE_DSP" jdbcType="VARCHAR" property="titleDsp" />
     <result column="TIPS_DSP" jdbcType="VARCHAR" property="tipsDsp" />
@@ -76,7 +76,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    OID, CONF_OID, `DESC`, TITLE_DSP, TIPS_DSP, FORM_TYPE, TAB_TYPE, TAB_TYPE_DSP, REQUIRED, 
+    OID, CFG_KEY, `DESC`, TITLE_DSP, TIPS_DSP, FORM_TYPE, TAB_TYPE, TAB_TYPE_DSP, REQUIRED, 
     VALIDATE_TYPE, VALIDATE_VALUE, `INDEX`, CREATE_TIME, UPDATE_TIME
   </sql>
   <select id="selectByExample" parameterType="cn.jianwoo.blog.entity.example.WebconfFacadeExample" resultMap="BaseResultMap">
@@ -111,12 +111,12 @@
     </if>
   </delete>
   <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.WebconfFacade" useGeneratedKeys="true">
-    insert into webconf_facade (CONF_OID, `DESC`, TITLE_DSP, 
+    insert into webconf_facade (CFG_KEY, `DESC`, TITLE_DSP, 
       TIPS_DSP, FORM_TYPE, TAB_TYPE, 
       TAB_TYPE_DSP, REQUIRED, VALIDATE_TYPE, 
       VALIDATE_VALUE, `INDEX`, CREATE_TIME, 
       UPDATE_TIME)
-    values (#{confOid,jdbcType=BIGINT}, #{desc,jdbcType=VARCHAR}, #{titleDsp,jdbcType=VARCHAR}, 
+    values (#{cfgKey,jdbcType=VARCHAR}, #{desc,jdbcType=VARCHAR}, #{titleDsp,jdbcType=VARCHAR}, 
       #{tipsDsp,jdbcType=VARCHAR}, #{formType,jdbcType=VARCHAR}, #{tabType,jdbcType=VARCHAR}, 
       #{tabTypeDsp,jdbcType=VARCHAR}, #{required,jdbcType=CHAR}, #{validateType,jdbcType=VARCHAR}, 
       #{validateValue,jdbcType=VARCHAR}, #{index,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
@@ -125,8 +125,8 @@
   <insert id="insertSelective" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.WebconfFacade" useGeneratedKeys="true">
     insert into webconf_facade
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="confOid != null">
-        CONF_OID,
+      <if test="cfgKey != null">
+        CFG_KEY,
       </if>
       <if test="desc != null">
         `DESC`,
@@ -166,8 +166,8 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="confOid != null">
-        #{confOid,jdbcType=BIGINT},
+      <if test="cfgKey != null">
+        #{cfgKey,jdbcType=VARCHAR},
       </if>
       <if test="desc != null">
         #{desc,jdbcType=VARCHAR},
@@ -219,8 +219,8 @@
       <if test="record.oid != null">
         OID = #{record.oid,jdbcType=BIGINT},
       </if>
-      <if test="record.confOid != null">
-        CONF_OID = #{record.confOid,jdbcType=BIGINT},
+      <if test="record.cfgKey != null">
+        CFG_KEY = #{record.cfgKey,jdbcType=VARCHAR},
       </if>
       <if test="record.desc != null">
         `DESC` = #{record.desc,jdbcType=VARCHAR},
@@ -266,7 +266,7 @@
   <update id="updateByExample" parameterType="map">
     update webconf_facade
     set OID = #{record.oid,jdbcType=BIGINT},
-      CONF_OID = #{record.confOid,jdbcType=BIGINT},
+      CFG_KEY = #{record.cfgKey,jdbcType=VARCHAR},
       `DESC` = #{record.desc,jdbcType=VARCHAR},
       TITLE_DSP = #{record.titleDsp,jdbcType=VARCHAR},
       TIPS_DSP = #{record.tipsDsp,jdbcType=VARCHAR},
@@ -286,8 +286,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="cn.jianwoo.blog.entity.WebconfFacade">
     update webconf_facade
     <set>
-      <if test="confOid != null">
-        CONF_OID = #{confOid,jdbcType=BIGINT},
+      <if test="cfgKey != null">
+        CFG_KEY = #{cfgKey,jdbcType=VARCHAR},
       </if>
       <if test="desc != null">
         `DESC` = #{desc,jdbcType=VARCHAR},
@@ -330,7 +330,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.jianwoo.blog.entity.WebconfFacade">
     update webconf_facade
-    set CONF_OID = #{confOid,jdbcType=BIGINT},
+    set CFG_KEY = #{cfgKey,jdbcType=VARCHAR},
       `DESC` = #{desc,jdbcType=VARCHAR},
       TITLE_DSP = #{titleDsp,jdbcType=VARCHAR},
       TIPS_DSP = #{tipsDsp,jdbcType=VARCHAR},

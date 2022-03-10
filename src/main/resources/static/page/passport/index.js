@@ -1,12 +1,3 @@
-/**
-
- @Name：layuiAdmin 主入口
- @Author：贤心
- @Site：http://www.layui.com/admin/
- @License：LPPL
-
- */
-
 layui.extend({
     setter: '../admin/config' //配置文件
     , admin: '../admin/lib/admin' //核心模块
@@ -14,166 +5,8 @@ layui.extend({
     , common: '../admin/controller/common' //通用模块
 }).define(['setter', 'admin', 'common'], function (exports) {
     var setter = layui.setter
-        , element = layui.element
         , admin = layui.admin
-        , tabsPage = admin.tabsPage
         , view = layui.view
-
-
-        //打开标签页
-        , openTabsPage = function (url, text) {
-            //遍历页签选项卡
-            var matchTo
-                , tabs = $('#LAY_app_tabsheader>li')
-                , path = url.replace(/(^http(s*):)|(\?[\s\S]*$)/g, '');
-
-            tabs.each(function (index) {
-                var li = $(this)
-                    , layid = li.attr('lay-id');
-
-                if (layid === url) {
-                    matchTo = true;
-                    tabsPage.index = index;
-                }
-            });
-
-            text = text || '新标签页';
-
-            if (setter.pageTabs) {
-                //如果未在选项卡中匹配到，则追加选项卡
-                if (!matchTo) {
-                    $(APP_BODY).append([
-                        '<div class="layadmin-tabsbody-item layui-show">'
-                        , '<iframe src="' + url + '" frameborder="0" class="layadmin-iframe"></iframe>'
-                        , '</div>'
-                    ].join(''));
-                    tabsPage.index = tabs.length;
-                    element.tabAdd(FILTER_TAB_TBAS, {
-                        title: '<span>' + text + '</span>'
-                        , id: url
-                        , attr: path
-                    });
-                }
-            } else {
-                location.hash = url;
-            }
-
-            //定位当前tabs
-            element.tabChange(FILTER_TAB_TBAS, url);
-            admin.tabsBodyChange(tabsPage.index, {
-                url: url
-                , text: text
-            });
-        }
-        //根据路由渲染页面
-        , renderPage = function () {
-            var router = layui.router()
-                , path = router.path
-                , pathURL = admin.correctRouter(router.path.join('/'))
-
-
-            //默认读取主页
-            if (!path.length) path = [''];
-
-            //如果最后一项为空字符，则读取默认文件
-            if (path[path.length - 1] === '') {
-                path[path.length - 1] = setter.entry;
-            }
-
-
-
-            //重置状态
-            var reset = function (type) {
-                //renderPage.haveInit && layer.closeAll();
-                if (renderPage.haveInit) {
-                    $('.layui-layer').each(function () {
-                        var othis = $(this),
-                            index = othis.attr('times');
-                        if (!othis.hasClass('layui-layim')) {
-                            layer.close(index);
-                        }
-                    });
-                }
-                renderPage.haveInit = true;
-
-                $(APP_BODY).scrollTop(0);
-                delete tabsPage.type; //重置页面标签的来源类型
-            };
-
-            //如果路由来自于 tab 切换，则不重新请求视图
-            if (tabsPage.type === 'tab') {
-                //切换到非主页、或者切换到主页且主页必须有内容。方可阻止请求
-                if (pathURL !== '/' || (pathURL === '/' && admin.tabsBody().html())) {
-                    admin.tabsBodyChange(tabsPage.index);
-                    return reset(tabsPage.type);
-                }
-            }
-
-            //请求视图渲染
-            view().render(path.join('/')).then(function (res) {
-
-                //遍历页签选项卡
-                var matchTo
-                    , tabs = $('#LAY_app_tabsheader>li');
-
-                tabs.each(function (index) {
-                    var li = $(this)
-                        , layid = li.attr('lay-id');
-
-                    if (layid === pathURL) {
-                        matchTo = true;
-                        tabsPage.index = index;
-                    }
-                });
-
-                //如果未在选项卡中匹配到，则追加选项卡
-                if (setter.pageTabs && pathURL !== '/') {
-                    if (!matchTo) {
-                        $(APP_BODY).append('<div class="layadmin-tabsbody-item layui-show"></div>');
-                        tabsPage.index = tabs.length;
-                        element.tabAdd(FILTER_TAB_TBAS, {
-                            title: '<span>' + (res.title || '新标签页') + '</span>'
-                            , id: pathURL
-                            , attr: router.href
-                        });
-                    }
-                }
-
-                this.container = admin.tabsBody(tabsPage.index);
-                setter.pageTabs || this.container.scrollTop(0); //如果不开启标签页，则跳转时重置滚动条
-
-                //定位当前tabs
-                element.tabChange(FILTER_TAB_TBAS, pathURL);
-                admin.tabsBodyChange(tabsPage.index);
-
-            }).done(function () {
-                // layui.use('common', layui.cache.callback.common);
-                $win.on('resize', layui.data.resize);
-
-                element.render('breadcrumb', 'breadcrumb');
-
-                //容器 scroll 事件，剔除吸附层
-                admin.tabsBody(tabsPage.index).on('scroll', function () {
-                    var othis = $(this)
-                        , elemDate = $('.layui-laydate')
-                        , layerOpen = $('.layui-layer')[0];
-
-                    //关闭 layDate
-                    if (elemDate[0]) {
-                        elemDate.each(function () {
-                            var thisElemDate = $(this);
-                            thisElemDate.hasClass('layui-laydate-static') || thisElemDate.remove();
-                        });
-                        othis.find('input').blur();
-                    }
-
-                    //关闭 Tips 层
-                    layerOpen && layer.closeAll('tips');
-                });
-            });
-
-            reset();
-        }
 
         //入口页面
         , entryPage = function (fn) {
@@ -181,6 +14,7 @@ layui.extend({
                 , container = view(setter.container)
                 , pathURL = admin.correctRouter(router.path.join('/'))
                 , path = router.path
+                , hash = location.hash
                 , isIndPage;
 
             //检查是否属于独立页面
@@ -192,20 +26,33 @@ layui.extend({
 
             //将模块根路径设置为 controller 目录
             layui.config({
-                base: setter.base + '../admin/controller/'
+                base: setter.base + '../passport/controller/'
             });
 
+
+
+            var html = hash;
+            if (html.indexOf('?') !== -1)
+            {
+                html = html.substr(0, html.indexOf('?'))
+            }
+
+            if (!html)
+            {
+                html = 'login';
+            }
+            html = html.replace("#", "")
             //默认读取主页
-            if (!path.length || path.length ===1 && path[0] === '') path = ['login'];
+            if (!path.length || path.length ===1 && path[0] === '') path = [html];
 
 
             container.render(path.join('/')).done(function () {
                 admin.pageType = 'alone';
             });
+
         }
 
-        , APP_BODY = '#LAY_app_body', FILTER_TAB_TBAS = 'layadmin-layout-tabs'
-        , $ = layui.$, $win = $(window);
+        ;
 
 
 
@@ -240,7 +87,6 @@ layui.extend({
 
 
     //对外输出
-    exports('passport', {
-        render: renderPage
+    exports('index', {
     });
 });

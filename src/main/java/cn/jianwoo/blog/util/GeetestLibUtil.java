@@ -44,6 +44,11 @@ public class GeetestLibUtil {
     public static final String fn_geetest_seccode = "geetest_seccode";
 
     /**
+     * 极验验证类型
+     */
+    public static final String fn_geetest_type = "geetest_type";
+
+    /**
      * 公钥
      */
     private String captchaId = "";

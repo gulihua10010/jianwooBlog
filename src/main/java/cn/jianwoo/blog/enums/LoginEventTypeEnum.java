@@ -21,6 +21,15 @@ public enum LoginEventTypeEnum {
      * 修改密码
      */
     CHANGE_PASSWORD("30", "修改密码"),
+    /**
+     * 忘记密码
+     */
+    FORGET_PASSWORD("40", "忘记密码"),
+
+    /**
+     * 编辑用户信息
+     */
+    EDIT_USER("40", "编辑用户信息"),
     ;
 
     /**

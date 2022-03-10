@@ -52,12 +52,12 @@ layui.define(['laytpl', 'layer'], function (exports) {
             , remove: true
         });
 
-        // //跳转到登入页
-        // var loginUrl = setter.loginPage;
-        // if (redirectUrl) {
-        //     loginUrl += "?redirect=" + encodeURIComponent(redirectUrl);
-        // }
-        // // location.href = loginUrl
+        //跳转到登入页
+        var loginUrl = setter.loginPage;
+        if (redirectUrl) {
+            loginUrl += "?redirect=" + encodeURIComponent(redirectUrl);
+        }
+        location.href = loginUrl
     };
 
     //Ajax请求
@@ -90,9 +90,12 @@ layui.define(['laytpl', 'layer'], function (exports) {
             options.headers[request.tokenName] = request.tokenName in options.headers
                 ? options.headers[request.tokenName]
                 : (layui.data(setter.tableName)[request.tokenName] || '');
-            options.headers[request.refreshTokenName] = request.refreshTokenName in options.headers
-                ? options.headers[request.refreshTokenName]
-                : (layui.data(setter.tableName)[request.refreshTokenName] || '');
+            if (options.url !== setter.verifyTokenApi)
+            {
+                options.headers[request.refreshTokenName] = request.refreshTokenName in options.headers
+                    ? options.headers[request.refreshTokenName]
+                    : (layui.data(setter.tableName)[request.refreshTokenName] || '');
+            }
         }
         options.data = sendData;
         if (options.type === 'post' && request.type === 'string') {
@@ -137,6 +140,7 @@ layui.define(['laytpl', 'layer'], function (exports) {
             }
             , error: function (e, code) {
                 var responseJSON = e.responseJSON;
+                // console.log(responseJSON)
                 if (responseJSON && responseJSON[response.statusName] == response.statusCode.logout) {
                     var redirect = layui.router().href;
                     view.exit(redirect);

@@ -234,13 +234,23 @@ layui.extend({
 
             }
         }
+        , callApiToken = function (loop)
+        {
+            adminVerifyJwt();
+            if (!loop) {
+                setInterval(function () {
+                    callApiToken(true)
+                }, 10000);
+            }
+        }
 
         , APP_BODY = '#LAY_app_body', FILTER_TAB_TBAS = 'layadmin-layout-tabs'
         , $ = layui.$, $win = $(window);
 
 
-    adminVerifyJwt();
 
+
+    callApiToken();
 
     //初始主体结构
     layui.link(

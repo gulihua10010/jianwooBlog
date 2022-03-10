@@ -28,6 +28,8 @@ public class AdminBizException extends JwBlogException {
             "邮箱不正确！");
     public static final AdminBizException VERIFY_CODE_INCORRECT = new AdminBizException(ExceptionConstants.BIZ_PASSWORD_INCORRECT,
             "验证码不正确！");
+    public static final AdminBizException PAGE_TIMEOUT = new AdminBizException(ExceptionConstants.BIZ_PAGE_TIMEOUT,
+            "页面超时！");
     public static final AdminBizException CREATE_FAILED_EXCEPTION = new AdminBizException(
             ExceptionConstants.BIZ_CREATE_FAIL, "The admin[%s] creation is failed.");
     public static final AdminBizException MODIFY_FAILED_EXCEPTION = new AdminBizException(

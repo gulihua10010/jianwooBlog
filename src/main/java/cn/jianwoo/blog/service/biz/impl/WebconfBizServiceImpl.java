@@ -35,6 +35,7 @@ import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -49,7 +50,7 @@ public class WebconfBizServiceImpl implements WebconfBizService {
     @Autowired
     private WebconfBizDao webconfBizDao;
     @Autowired
-    private CacheStore<String, String> cacheStore;
+    private CacheStore<String, Object> cacheStore;
     @Autowired
     private ApplicationContext applicationContext;
 
@@ -188,7 +189,7 @@ public class WebconfBizServiceImpl implements WebconfBizService {
         String cacheKey = MessageFormat.format(CacaheKeyConstants.WEBCONF_KEY, key);
         if (cacheStore.hasKey(cacheKey)) {
             //理论上永远不会为null，因为key存在，且value不能为null
-            return cacheStore.get(cacheKey).orElse(null);
+            return (String) cacheStore.get(cacheKey).orElse(null);
         }
         Webconf webConf = webconfTransDao.queryWebconfByKey(key);
         String value = null;
@@ -206,6 +207,37 @@ public class WebconfBizServiceImpl implements WebconfBizService {
         }
         cacheStore.put(cacheKey, value);
         return value;
+    }
+
+    @Override
+    public Map<String, String> queryWebconfByType(String cfgType) throws JwBlogException {
+        Map<String, String> confMap = new HashMap<>();
+        if (StringUtils.isBlank(cfgType)) return confMap;
+        String cacheKey = MessageFormat.format(CacaheKeyConstants.WEBCONF_TYPE, cfgType);
+        if (cacheStore.hasKey(cacheKey)) {
+            //理论上永远不会为null，因为key存在，且value不能为null
+            return (Map<String, String>) cacheStore.get(cacheKey).orElse(confMap);
+        }
+        List<Webconf> webconfList = webconfTransDao.queryWebconfsByType(cfgType);
+        for (Webconf webConf : webconfList) {
+            String value = null;
+            if (ValueTypeEnum.STRING.getValue().equals(webConf.getValueType())) {
+                value = format(webConf.getStringValue());
+            } else if (ValueTypeEnum.FLOAT.getValue().equals(webConf.getValueType())) {
+                value = formatFloat2Str(webConf.getFloatValue());
+            } else if (ValueTypeEnum.INTEGER.getValue().equals(webConf.getValueType())) {
+                value = formatInt2Str(webConf.getIntValue());
+            } else if (ValueTypeEnum.BOOLEAN.getValue().equals(webConf.getValueType())) {
+                value = formatBoolean2Str(webConf.getBooleanValue());
+            } else if (ValueTypeEnum.DATE.getValue().equals(webConf.getValueType())) {
+                value = DateUtil.formatTimestamp(webConf.getDateValue());
+            }
+            confMap.put(webConf.getKey(), value);
+        }
+
+
+        cacheStore.put(cacheKey, confMap);
+        return confMap;
     }
 
     private BigDecimal formatStr2Float(String v) {

@@ -2,7 +2,7 @@ package cn.jianwoo.blog.config;
 
 import cn.jianwoo.blog.config.router.admin.CommAdminPageUrlConfig;
 import cn.jianwoo.blog.config.router.admin.CommApiUrlConfig;
-import cn.jianwoo.blog.config.router.admin.LoginApiUrlConfig;
+import cn.jianwoo.blog.config.router.admin.PassportApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.interceptor.LoginHandleInterceptor;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,10 +23,10 @@ public class WebConfig implements WebMvcConfigurer {
     private String uploadPath;
     private static final String[] EXCLUDE_PATH = {
             CommAdminPageUrlConfig.URL_PREFIX + CommAdminPageUrlConfig.URL_LOGIN,
-            LoginApiUrlConfig.URL_PREFIX + LoginApiUrlConfig.URL_PREFIX,
-            LoginApiUrlConfig.URL_PREFIX + LoginApiUrlConfig.URL_LOGIN_CAPTCHA_INIT,
-            LoginApiUrlConfig.URL_PREFIX + LoginApiUrlConfig.URL_LOGIN_CAPTCHA_VERIFY,
-            LoginApiUrlConfig.URL_PREFIX + LoginApiUrlConfig.URL_LOGIN_AUTH,
+            PassportApiUrlConfig.URL_PREFIX + PassportApiUrlConfig.URL_PREFIX,
+            PassportApiUrlConfig.URL_PREFIX + PassportApiUrlConfig.URL_PASSPORT_CAPTCHA_INIT,
+            PassportApiUrlConfig.URL_PREFIX + PassportApiUrlConfig.URL_PASSPORT_CAPTCHA_VERIFY,
+            PassportApiUrlConfig.URL_PREFIX + PassportApiUrlConfig.URL_PASSPORT_LOGIN_AUTH,
             Constants.ALL_STATIC_PATTERNS,
             Constants.ALL_RES_PATTERNS
 

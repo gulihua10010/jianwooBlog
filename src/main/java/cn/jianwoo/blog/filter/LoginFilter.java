@@ -6,7 +6,9 @@ import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.enums.LoginEventTypeEnum;
 import cn.jianwoo.blog.event.LoginLogEvent;
+import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.security.token.AuthUserTokenBO;
+import cn.jianwoo.blog.service.biz.LoginFailedBizService;
 import cn.jianwoo.blog.util.DateUtil;
 import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.util.JwtUtils;
@@ -14,6 +16,7 @@ import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -39,6 +42,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final static ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("application");
     public static String refreshTokenExpireDays = RESOURCE_BUNDLE.getString("refresh.token.expired.days");
     private final ApplicationContext applicationContext = SpringUtil.getApplicationContext();
+    private final LoginFailedBizService loginFailedBizService = SpringUtil.getBean(LoginFailedBizService.class);
 
 
     public LoginFilter() {
@@ -57,11 +61,24 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String username = request.getParameter(Constants.USERNAME);
         String password = request.getParameter(Constants.PASSWORD);
         String accessToken = request.getParameter(Constants.CAPTCHA_TOKEN);
+        String guid = request.getParameter(Constants.GUID);
 
 
         Map<String, Object> map = new HashMap<>();
         map.put(Constants.LOGIN_IP, request.getRemoteAddr());
         map.put(Constants.CAPTCHA_TOKEN, accessToken);
+        map.put(Constants.GUID, guid);
+        boolean isBlock = false;
+        try {
+            isBlock = loginFailedBizService.queryIsBlock(username, request.getRemoteAddr());
+        } catch (JwBlogException e) {
+            log.error(">>LoginFilter.attemptAuthentication exec failed, e:\r\n", e);
+
+        }
+        if (isBlock) {
+            throw new AuthenticationServiceException(ExceptionConstants.USER_BLOCK);
+
+        }
         return authenticationManager.authenticate(new JwAuthenticationToken(
                 null, username, password, map));
 
@@ -82,6 +99,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         event.setEventTypeEnum(LoginEventTypeEnum.LOGIN);
         event.setIsSuccess(false);
         event.setReason(exception.getMessage());
+        doCheckAdminBlock(username, request.getRemoteAddr());
         applicationContext.publishEvent(event);
 
     }
@@ -104,9 +122,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.getWriter().write(processSuccessMsg(Constants.SUCCESS_LOGIN));
         LoginLogEvent event = new LoginLogEvent(this, user.getUsername(), request);
         event.setEventTypeEnum(LoginEventTypeEnum.LOGIN);
-        event.setIsSuccess(true);
+        event.setIsSuccess(true);//
         applicationContext.publishEvent(event);
+        try {
+            loginFailedBizService.doVoidRecord(user.getUsername(), request.getRemoteAddr());
+        } catch (JwBlogException e) {
+            log.error(">>LoginFilter.successfulAuthentication exec failed, e:\r\n", e);
 
+        }
         log.info("==>>LoginFilter.successfulAuthentication end...");
 
     }
@@ -131,6 +154,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         // 将token放入响应头中
         response.setContentType(Constants.CONTENT_TYPE_JSON);
         response.addHeader(Constants.REFRESH_TOKEN, token);
+    }
+
+    private void doCheckAdminBlock(String loginId, String ip) {
+        try {
+            loginFailedBizService.doSaveRecord(loginId, ip);
+        } catch (JwBlogException e) {
+            log.error(">>LoginFilter.doCheckAdminBlock exec failed, e:\r\n", e);
+        }
     }
 
 

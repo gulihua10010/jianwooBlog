@@ -5,6 +5,7 @@ import cn.jianwoo.blog.service.bo.WebconfBO;
 import cn.jianwoo.blog.service.bo.WebconfResBO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface WebconfBizService {
 
@@ -37,6 +38,17 @@ public interface WebconfBizService {
      * @author gulihua
      */
     String queryWebconfByKey(String key) throws JwBlogException;
+
+
+    /**
+     * 通过type获取网站配置<br>
+     * (优化)先从缓存拿，没有再从数据库拿<br>
+     *
+     * @param cfgType 配置类型
+     * @return
+     * @author gulihua
+     */
+    Map<String, String> queryWebconfByType(String cfgType) throws JwBlogException;
 
 
 }

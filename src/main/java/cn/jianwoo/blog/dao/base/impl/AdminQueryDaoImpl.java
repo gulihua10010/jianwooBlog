@@ -27,9 +27,20 @@ public class AdminQueryDaoImpl implements AdminQueryDao {
 
 
     @Override
-    public Admin queryAdminByName(String name) {
+    public Admin queryAdminByLoginId(String loginID) throws DaoException {
         AdminExample example = new AdminExample();
-        example.createCriteria().andUsernameEqualTo(name);
+        example.createCriteria().andUsernameEqualTo(loginID);
+        List<Admin> admins = adminMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(admins)) {
+            throw DaoException.DAO_LIST_IS_NULL;
+        }
+        return admins.get(0);
+    }
+
+    @Override
+    public Admin queryAdminByUsername(String username) {
+        AdminExample example = new AdminExample();
+        example.createCriteria().andUsernameEqualTo(username);
         List<Admin> admins = adminMapper.selectByExample(example);
         if (CollectionUtils.isNotEmpty(admins)) {
             return admins.get(0);

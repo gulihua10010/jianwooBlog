@@ -1,5 +1,10 @@
 package cn.jianwoo.blog;
 
+import cn.hutool.core.codec.Base64;
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
+import cn.hutool.crypto.symmetric.SymmetricCrypto;
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.dao.base.EmailTemplateTransDao;
@@ -9,6 +14,7 @@ import cn.jianwoo.blog.entity.extension.MenuExt;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.MenuBizService;
 import cn.jianwoo.blog.util.DomainUtil;
+import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.util.JwtUtils;
 import cn.jianwoo.blog.util.NotifiyUtil;
 import com.alibaba.fastjson.JSON;
@@ -19,9 +25,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
+
 //@RunWith(SpringJUnit4ClassRunner.class)
 @MapperScan(basePackages = {"cn.jianwoo.blog.dao.base.mapper", "cn.jianwoo.blog.dao.biz.mapper", "com.baidu.fsg.uid.worker.dao"})
 @SpringBootTest()
@@ -129,5 +138,23 @@ class BlogApplicationTests {
     void Test1()
     {
 //        System.out.println(JSON.toJSONString(emailTemplateTransDao.queryAllEmailTplList()));
+        //构建
+//        String pwd = new String(Base64.decode("RmVqazZjTUxFNVVnQmpRaW04TXNuUT09"));
+//        System.out.println(pwd);
+//        String key = new String(Base64.decode("ZEhsd1pUMWliRzluSUE9PQ=="));
+//        System.out.println(key);
+//        SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, "dHlwZT1ibG9nIA==".getBytes(StandardCharsets.UTF_8));
+//        //解密为字符串
+//        String decryptStr = aes.decryptStr("b7YLsLqb2A8IX7nM9+wTUg==", CharsetUtil.CHARSET_UTF_8);
+        //构建
+         final  ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("application");
+        String base64Security = RESOURCE_BUNDLE.getString("aes.secret");
+
+        SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES,
+                new String(Base64.decode(base64Security)).getBytes(StandardCharsets.UTF_8));
+        //解密为字符串
+        String decryptStr = aes.decryptStr((Base64.decode(Base64.decode("RmVqazZjTUxFNVVnQmpRaW04TXNuUT09"))), CharsetUtil.CHARSET_UTF_8);
+        System.out.println(decryptStr);
+        System.out.println(JwUtil.decrypt("RmVqazZjTUxFNVVnQmpRaW04TXNuUT09"));
     }
 }

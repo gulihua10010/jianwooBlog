@@ -11,6 +11,8 @@ public class Webconf implements Serializable {
 
     private String desc;
 
+    private String cfgType;
+
     private String valueType;
 
     private String stringValue;
@@ -53,6 +55,14 @@ public class Webconf implements Serializable {
 
     public void setDesc(String desc) {
         this.desc = desc == null ? null : desc.trim();
+    }
+
+    public String getCfgType() {
+        return cfgType;
+    }
+
+    public void setCfgType(String cfgType) {
+        this.cfgType = cfgType == null ? null : cfgType.trim();
     }
 
     public String getValueType() {
@@ -136,6 +146,7 @@ public class Webconf implements Serializable {
         sb.append(", oid=").append(oid);
         sb.append(", key=").append(key);
         sb.append(", desc=").append(desc);
+        sb.append(", cfgType=").append(cfgType);
         sb.append(", valueType=").append(valueType);
         sb.append(", stringValue=").append(stringValue);
         sb.append(", intValue=").append(intValue);

@@ -71,8 +71,8 @@ layui.define('view', function (exports) {
             , sendAuthCode: function (options) {
                 options = $.extend({
                     seconds: 60
-                    , elemPhone: '#LAY_phone'
-                    , elemVercode: '#LAY_vercode'
+                    , elemEmail: '#LAY_email'
+                    , elemLoginId: '#LAY_loginId'
                 }, options);
 
                 var seconds = options.seconds
@@ -96,41 +96,51 @@ layui.define('view', function (exports) {
                 };
 
                 $body.off('click', options.elem).on('click', options.elem, function () {
-                    options.elemPhone = $(options.elemPhone);
-                    options.elemVercode = $(options.elemVercode);
+                    options.elemEmail = $(options.elemEmail);
+                    options.elemLoginId = $(options.elemLoginId);
+                    options.elemCaptchaCode = $(options.elemCaptchaCode);
 
-                    var elemPhone = options.elemPhone
-                        , value = elemPhone.val();
+                    var elemEmail = options.elemEmail
+                        , email = elemEmail.val()
+                        , elemLoginId = options.elemLoginId
+                        , loginId = elemLoginId.val()
+                        , response = setter.response
+                    ;
 
                     if (seconds !== options.seconds || $(this).hasClass(DISABLED)) return;
 
-                    if (!/^1\d{10}$/.test(value)) {
-                        elemPhone.focus();
-                        return layer.msg('请输入正确的手机号')
+                    // if (!/^1\d{10}$/.test(value)) {
+                    //     elemPhone.focus();
+                    //     return layer.msg('请输入正确的手机号')
+                    // }
+                    if (!loginId) {
+                        elemLoginId.focus();
+                        return layer.msg('请输入登录ID')
                     }
+                    if (!/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(email)) {
+                        elemEmail.focus();
+                        return layer.msg('请输入正确的邮箱地址')
+                    }
+
                     ;
 
                     if (typeof options.ajax === 'object') {
                         var success = options.ajax.success;
                         delete options.ajax.success;
                     }
-
-                    admin.req($.extend(true, {
-                        url: '/auth/code'
-                        , type: 'get'
-                        , data: {
-                            phone: value
-                        }
-                        , success: function (res) {
-                            layer.msg('验证码已发送至你的手机，请注意查收', {
-                                icon: 1
-                                , shade: 0
-                            });
-                            options.elemVercode.focus();
+                    ajaxPost(options.ajax.url
+                        , 1
+                        , JSON.stringify({
+                            email: email,
+                            loginId: loginId
+                        })
+                        , "验证码已发送至你的邮箱，请注意查收"
+                        , function (res){
+                            options.elemCaptchaCode.focus();
                             countDown();
                             success && success(res);
-                        }
-                    }, options.ajax));
+                        });
+
                 });
             }
 

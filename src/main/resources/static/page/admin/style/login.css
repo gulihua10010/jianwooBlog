@@ -18,9 +18,7 @@ html, body, #LAY_app {
 #LAY-user-login,
 .layadmin-user-display-show {
     display: block !important;
-    background: url("/static/comm/img/admin_bg.jpeg") no-repeat fixed center;
-    background-size: 100% 100%;
-    position: center
+
 
 }
 
