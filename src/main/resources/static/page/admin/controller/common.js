@@ -408,6 +408,7 @@ layui.extend({
             }
         );
 
+        view.removeLoad();
 
     }
 

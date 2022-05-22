@@ -154,7 +154,7 @@ layui.define(['laytable'],function (exports) {
                                     type: type.val(),
                                     accessType: field.isPublic,
                                     password: field.passwContent,
-                                    isComment: iscomment !== 0,
+                                    isComment: isComment !== 0,
                                     subToken: field.subToken
                                 }),
                                 "更新成功",
