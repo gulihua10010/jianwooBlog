@@ -14,7 +14,7 @@ public class CommentExt extends Comment {
     /**
      * 文章标题
      */
-    private String title;
+    private String articleTitle;
 
     /**
      * 回复给用户名
@@ -45,13 +45,13 @@ public class CommentExt extends Comment {
         this.replyComments = replyComments;
     }
 
-
-    public String getTitle() {
-        return title;
+    @Override
+    public String getArticleTitle() {
+        return this.articleTitle;
     }
 
-
-    public void setTitle(String title) {
-        this.title = title;
+    @Override
+    public void setArticleTitle(String articleTitle) {
+        this.articleTitle = articleTitle;
     }
 }

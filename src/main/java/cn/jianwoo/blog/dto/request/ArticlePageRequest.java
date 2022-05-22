@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * @author GuLihua
  * @Description
@@ -29,6 +31,16 @@ public class ArticlePageRequest extends BasePageRequestDto {
      * 文章状态(00:草稿, 90:已发布, 91:回收站 )
      */
     private String status;
+
+    /**
+     * 标签
+     */
+    private List<Integer> tags;
+
+    /**
+     * 类型
+     */
+    private Integer category;
 
 
 }

@@ -3,7 +3,7 @@ package cn.jianwoo.blog.service.biz.impl;
 import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.dao.base.TempArticleTransDao;
 import cn.jianwoo.blog.entity.TempArticle;
-import cn.jianwoo.blog.enums.ArticleVisitEnum;
+import cn.jianwoo.blog.enums.ArticleAccessEnum;
 import cn.jianwoo.blog.enums.TempArticleStatusEnum;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
@@ -12,6 +12,7 @@ import cn.jianwoo.blog.service.biz.TempArticleBizService;
 import cn.jianwoo.blog.service.bo.TagsBO;
 import cn.jianwoo.blog.service.bo.TempArticleBO;
 import cn.jianwoo.blog.util.DateUtil;
+import cn.jianwoo.blog.util.JwUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import lombok.extern.slf4j.Slf4j;
@@ -54,8 +55,8 @@ public class TempArticleBizServiceImpl implements TempArticleBizService {
             }
         }
         articleBO.setIsComment(articleBO.getIsComment() != null && articleBO.getIsComment());
-        if (articleBO.getVisitType() == null) {
-            articleBO.setVisitType(ArticleVisitEnum.PUBLIC.getValue());
+        if (articleBO.getAccessType() == null) {
+            articleBO.setAccessType(ArticleAccessEnum.PUBLIC.getValue());
         }
         TempArticle article = JwBuilder.of(TempArticle::new)
                 .with(TempArticle::setAuthor, articleBO.getAuthor())
@@ -64,15 +65,15 @@ public class TempArticleBizServiceImpl implements TempArticleBizService {
                 .with(TempArticle::setStatus, TempArticleStatusEnum.TEMP.getValue())
                 .with(TempArticle::setIsComment, articleBO.getIsComment())
                 .with(TempArticle::setImgSrc, articleBO.getImgSrc())
-                .with(TempArticle::setVisitType, articleBO.getVisitType())
+                .with(TempArticle::setAccessType, articleBO.getAccessType())
                 .with(TempArticle::setContent, articleBO.getContent())
                 .with(TempArticle::setOldArticleOid, articleBO.getOldArticleOid())
                 .with(TempArticle::setPageType, articleBO.getPageType())
                 .with(TempArticle::setUpdateTime, now)
                 .build();
 
-        if (ArticleVisitEnum.PASSWORD.getValue().equals(articleBO.getVisitType())) {
-            article.setPassword(articleBO.getPassword());
+        if (ArticleAccessEnum.PASSWORD.getValue().equals(articleBO.getAccessType())) {
+            article.setPassword(JwUtil.encrypt(articleBO.getPassword()));
         }
         if (CollectionUtils.isNotEmpty(articleBO.getArtTagsList())) {
             article.setTags(JSON.toJSONString(articleBO.getArtTagsList()));
@@ -131,11 +132,11 @@ public class TempArticleBizServiceImpl implements TempArticleBizService {
         article.setMenuOid(articleBO.getMenuOid());
         article.setIsComment(articleBO.getIsComment() != null && articleBO.getIsComment());
         article.setImgSrc(articleBO.getImgSrc());
-        if (ArticleVisitEnum.PASSWORD.getValue().equals(articleBO.getVisitType())) {
-            article.setPassword(articleBO.getPassword());
+        if (ArticleAccessEnum.PASSWORD.getValue().equals(articleBO.getAccessType())) {
+            article.setPassword(JwUtil.encrypt(articleBO.getPassword()));
         }
         article.setUpdateTime(now);
-        article.setVisitType(articleBO.getVisitType() == null ? ArticleVisitEnum.PUBLIC.getValue() : articleBO.getVisitType());
+        article.setAccessType(articleBO.getAccessType() == null ? ArticleAccessEnum.PUBLIC.getValue() : articleBO.getAccessType());
         article.setContent(articleBO.getContent());
         if (articleBO.getStatus() != null) {
             article.setStatus(articleBO.getStatus());

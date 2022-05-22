@@ -24,6 +24,33 @@ public class ArticleParam extends PageParam {
      */
     private String text;
 
+
+    /**
+     * 标签
+     */
+    private List<Integer> tags;
+
+    /**
+     * 类型
+     */
+    private Integer category;
+
+    public List<Integer> getTags() {
+        return this.tags;
+    }
+
+    public void setTags(List<Integer> tags) {
+        this.tags = tags;
+    }
+
+    public Integer getCategory() {
+        return this.category;
+    }
+
+    public void setCategory(Integer category) {
+        this.category = category;
+    }
+
     public String getTitle() {
         return title;
     }

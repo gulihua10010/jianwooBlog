@@ -9,7 +9,7 @@ import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.config.apiversion.ApiVersion;
 import cn.jianwoo.blog.config.router.admin.CommentApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
-import cn.jianwoo.blog.dto.request.CommentAddRequest;
+import cn.jianwoo.blog.dto.request.CommentRequest;
 import cn.jianwoo.blog.dto.request.CommentPageRequest;
 import cn.jianwoo.blog.dto.request.CommentReplyRequest;
 import cn.jianwoo.blog.dto.request.EntityOidListRequest;
@@ -64,14 +64,14 @@ public class CommentApiController extends BaseController {
      * 文章评论添加(文章编辑页面)<br/>
      * url:/api/admin/comment/create<br/>
      *
-     * @param param JSON 参数({@link CommentAddRequest})
+     * @param param JSON 参数({@link CommentRequest})<br/>
      *              commentText<br/>
      *              username<br/>
      *              qq<br/>
      *              artId<br/>
      *              commentParentId<br/>
-     *              headImgUrl<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     *              avatarSrc<br/>
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -81,7 +81,7 @@ public class CommentApiController extends BaseController {
     public String doCreateComment(@RequestBody String param) {
         try {
             super.printRequestParams(param);
-            CommentAddRequest request = this.convertParam(param, CommentAddRequest.class);
+            CommentRequest request = this.convertParam(param, CommentRequest.class);
             BizValidation.paramValidate(request.getArtId(), "artId", "文章id不能为空!");
             BizValidation.paramValidate(request.getCommentParentId(), "commentParentId", "评论父id不能为空!");
             BizValidation.paramValidate(request.getCommentText(), "commentText", "评论内容不能为空!");
@@ -96,7 +96,7 @@ public class CommentApiController extends BaseController {
                     .with(CommentBO::setContactTel, request.getContactTel())//
                     .with(CommentBO::setContent, request.getCommentText())
                     .with(CommentBO::setParentOid, request.getCommentParentId())
-                    .with(CommentBO::setHeadImgSrc, request.getHeadImgUrl())
+                    .with(CommentBO::setAvatarSrc, request.getAvatarSrc())
                     .build();
 
             commentBizService.doCreateComment(commentBO);
@@ -113,9 +113,9 @@ public class CommentApiController extends BaseController {
      * 文章评论删除(文章编辑页面/评论列表)<br/>
      * url:/api/admin/comment/remove<br/>
      *
-     * @param param JSON 参数({@link EntityOidRequest})
+     * @param param JSON 参数({@link EntityOidRequest})<br/>
      *              entityOid<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -125,9 +125,9 @@ public class CommentApiController extends BaseController {
     public String doRemoveComm(@RequestBody String param) {
         try {
             super.printRequestParams(param);
-            EntityOidRequest request = this.convertParam(param, EntityOidRequest.class);
-            BizValidation.paramValidate(request.getEntityOid(), "entityOid", "评论id不能为空!");
-            commentBizService.doDelCommentById(request.getEntityOid());
+            EntityOidRequest req = this.convertParam(param, EntityOidRequest.class);
+            BizValidation.paramValidate(req.getEntityOid(), "entityOid", "评论id不能为空!");
+            commentBizService.doDelCommentById(req.getEntityOid(), request.getRemoteAddr());
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
 
@@ -139,9 +139,9 @@ public class CommentApiController extends BaseController {
      * 文章评论集合删除(评论列表)<br/>
      * url:/api/admin/comment/remove/list<br/>
      *
-     * @param param JSON 参数({@link EntityOidListRequest})
+     * @param param JSON 参数({@link EntityOidListRequest})<br/>
      *              entityOidList<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -151,9 +151,9 @@ public class CommentApiController extends BaseController {
     public String doRemoveCommList(@RequestBody String param) {
         try {
             super.printRequestParams(param);
-            EntityOidListRequest request = this.convertParam(param, EntityOidListRequest.class);
-            BizValidation.paramValidate(request.getEntityOidList(), "entityOidList", "评论id不能为空!");
-            commentBizService.doDelCommentByListOid(request.getEntityOidList());
+            EntityOidListRequest req = this.convertParam(param, EntityOidListRequest.class);
+            BizValidation.paramValidate(req.getEntityOidList(), "entityOidList", "评论id不能为空!");
+            commentBizService.doDelCommentByListOid(req.getEntityOidList(), request.getRemoteAddr());
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
 
@@ -172,7 +172,7 @@ public class CommentApiController extends BaseController {
         Integer seq = 1;
         for (CommentBO commentBO : commentList) {
             CommentSummaryVO vo = new CommentSummaryVO();
-            vo.setArtTitle(commentBO.getTitle());
+            vo.setArtTitle(commentBO.getArticleTitle());
             vo.setContent(commentBO.getContent());
             vo.setCommentTimeStr(DateUtil.formatDateTime(commentBO.getCommentTime()));
             vo.setCommentTime(commentBO.getCommentTime());
@@ -215,10 +215,10 @@ public class CommentApiController extends BaseController {
      * 分页查询评论(评论列表)<br/>
      * url:/api/admin/comment/query<br/>
      *
-     * @param param JSON 参数({@link CommentPageRequest})
+     * @param param JSON 参数({@link CommentPageRequest})<br/>
      *              title<br/>
      *              unread<br/>
-     * @return 返回响应 {@link CommentSummaryResponse}
+     * @return 返回响应 {@link CommentSummaryResponse}<br/>
      * code<br/>
      * count<br/>
      * data<br/>
@@ -239,40 +239,45 @@ public class CommentApiController extends BaseController {
     @ApiVersion()
     @GetMapping(CommentApiUrlConfig.URL_COMMENT_QUERY)
     public String queryCommentPageList(CommentPageRequest param) {
-        super.printRequestParams(DomainUtil.toString(param));
-        CommentParam commParam = new CommentParam();
-        if (StringUtils.isNotBlank(param.getTitle())) {
-            commParam.setTitle(param.getTitle().trim());
-        }
-        commParam.setPageNo(param.getPage());
-        commParam.setPageSize(param.getLimit());
-        commParam.processSortField(param.getSortField(), param.getSortOrder());
+        try {
+            super.printRequestParams(DomainUtil.toString(param));
+            CommentParam commParam = new CommentParam();
+            if (StringUtils.isNotBlank(param.getTitle())) {
+                commParam.setTitle(param.getTitle().trim());
+            }
+            commParam.setPageNo(param.getPage());
+            commParam.setPageSize(param.getLimit());
+            commParam.processSortField(param.getSortField(), param.getSortOrder());
 
-        if (null != param.getUnread() && new Integer(1).equals(param.getUnread())) {
-            commParam.setReadStatus(new Integer(1).equals(param.getUnread()) ? CommReadEnum.UNREAD.getValue()
-                    : CommReadEnum.READ.getValue());
-        }
+            if (null != param.getUnread() && new Integer(1).equals(param.getUnread())) {
+                commParam.setReadStatus(new Integer(1).equals(param.getUnread()) ? CommReadEnum.UNREAD.getValue()
+                        : CommReadEnum.READ.getValue());
+            }
 
-        PageInfo<CommentBO> pageInfo = commentBizService.queryAllCommentPage(commParam);
-        List<CommentSummaryVO> list = new ArrayList<>();
-        CommentSummaryResponse response = CommentSummaryResponse.getInstance();
-        for (CommentBO commentBO : pageInfo.getList()) {
-            CommentSummaryVO vo = new CommentSummaryVO();
-            vo.setArtTitle(commentBO.getTitle());
-            vo.setContent(StringEscapeUtils.escapeHtml4(commentBO.getContent()));
-            vo.setCommentTimeStr(DateUtil.formatDateTime(commentBO.getCommentTime()));
-            vo.setCommentTime(commentBO.getCommentTime());
-            vo.setUserName(commentBO.getUserName());
-            vo.setReplyTo(commentBO.getParentUserName());
-            vo.setReplyOid(commentBO.getParentOid());
-            vo.setOid(commentBO.getOid());
-            vo.setArtOid(commentBO.getArticleOid());
-            list.add(vo);
-        }
+            PageInfo<CommentBO> pageInfo = commentBizService.queryAllCommentPage(commParam);
+            List<CommentSummaryVO> list = new ArrayList<>();
+            CommentSummaryResponse response = CommentSummaryResponse.getInstance();
+            for (CommentBO commentBO : pageInfo.getList()) {
+                CommentSummaryVO vo = new CommentSummaryVO();
+                vo.setArtTitle(commentBO.getArticleTitle());
+                vo.setContent(StringEscapeUtils.escapeHtml4(commentBO.getContent()));
+                vo.setCommentTimeStr(DateUtil.formatDateTime(commentBO.getCommentTime()));
+                vo.setCommentTime(commentBO.getCommentTime());
+                vo.setUserName(commentBO.getUserName());
+                vo.setReplyTo(commentBO.getParentUserName());
+                vo.setReplyOid(commentBO.getParentOid());
+                vo.setOid(commentBO.getOid());
+                vo.setArtOid(commentBO.getArticleOid());
+                list.add(vo);
+            }
 
-        response.setData(list);
-        response.setCount(pageInfo.getTotal());
-        return super.responseToJSONString(response);
+            response.setData(list);
+            response.setCount(pageInfo.getTotal());
+            return super.responseToJSONString(response);
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+
+        }
 
     }
 
@@ -280,22 +285,22 @@ public class CommentApiController extends BaseController {
      * 评论回复(评论列表)<br/>
      * url:/api/admin/comment/reply<br/>
      *
-     * @param param JSON 参数({@link CommentReplyRequest})
+     * @param param JSON 参数({@link CommentReplyRequest})<br/>
      *              content<br/>
      *              parentOid<br/>
      *              artOid<br/>
-     *              headImgUrl<br/>
+     *              avatarSrc<br/>
      *              qq<br/>
      * @return 返回响应 {@link BaseResponseDto}
-     * status(000000-SUCCESS,999999-SYSTEM ERROR)
-     * msg
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)<br/>
+     * msg<br/>
      * @author gulihua
      */
     @PageId(PageIdEnum.COMMENT_REPLY)
     @SubToken
     @ApiVersion()
     @PostMapping(CommentApiUrlConfig.URL_COMMENT_REPLY)
-    public String doRreplyComment(@RequestBody String param) {
+    public String doReplyComment(@RequestBody String param) {
         try {
             super.printRequestParams(param);
             CommentReplyRequest request = this.convertParam(param, CommentReplyRequest.class);
@@ -309,7 +314,7 @@ public class CommentApiController extends BaseController {
                     .with(CommentBO::setContactQq, request.getContactQq())
                     .with(CommentBO::setContent, request.getContent())
                     .with(CommentBO::setParentOid, request.getParentOid())
-                    .with(CommentBO::setHeadImgSrc, request.getHeadImgUrl())
+                    .with(CommentBO::setAvatarSrc, request.getAvatarSrc())
                     .build();
             commentBizService.doCreateComment(commentBO);
         } catch (JwBlogException e) {
@@ -323,27 +328,27 @@ public class CommentApiController extends BaseController {
      * 根据文章oid查询文章评论(文章编辑列表)<br/>
      * url:/api/admin/comment/query/article/list<br/>
      *
-     * @param param JSON 参数({@link EntityOidRequest})
+     * @param param JSON 参数({@link EntityOidRequest})<br/>
      *              entityOid<br/>
-     * @return 返回响应 {@link BaseResponseDto}
-     * commentList
-     * --headImgSrc
-     * --userName
-     * --commentTimeStr
-     * --commentTime
-     * --content
-     * --parentUserName
-     * --oid
-     * --replyList
-     * ----headImgSrc
-     * ----userName
-     * ----commentTimeStr
-     * ----commentTime
-     * ----content
-     * ----parentUserName
-     * ----oid
-     * status(000000-SUCCESS,999999-SYSTEM ERROR)
-     * msg
+     * @return 返回响应 {@link BaseResponseDto}<br/>
+     * commentList<br/>
+     * --avatarSrc<br/>
+     * --userName<br/>
+     * --commentTimeStr<br/>
+     * --commentTime<br/>
+     * --content<br/>
+     * --parentUserName<br/>
+     * --oid<br/>
+     * --replyList<br/>
+     * ----avatarSrc<br/>
+     * ----userName<br/>
+     * ----commentTimeStr<br/>
+     * ----commentTime<br/>
+     * ----content<br/>
+     * ----parentUserName<br/>
+     * ----oid<br/>
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)<br/>
+     * msg<br/>
      * @author gulihua
      */
     @PostMapping(CommentApiUrlConfig.URL_COMMENT_QUERY_ARTICLE_LIST)
@@ -364,7 +369,7 @@ public class CommentApiController extends BaseController {
                 vo.setContent(commentBO.getContent());
                 vo.setCommentTimeStr(DateUtil.formatDateTime(commentBO.getCommentTime()));
                 vo.setCommentTime(commentBO.getCommentTime());
-                vo.setHeadImgSrc(commentBO.getHeadImgSrc());
+                vo.setAvatarSrc(commentBO.getAvatarSrc());
                 vo.setOid(commentBO.getOid());
                 List<ArticleCommentListVO> replyList = new ArrayList<>();
                 if (CollectionUtils.isNotEmpty(commentBO.getReplyComments())) {
@@ -374,7 +379,7 @@ public class CommentApiController extends BaseController {
                         replyVo.setContent(rep.getContent());
                         replyVo.setCommentTimeStr(DateUtil.formatDateTime(rep.getCommentTime()));
                         replyVo.setCommentTime(rep.getCommentTime());
-                        replyVo.setHeadImgSrc(rep.getHeadImgSrc());
+                        replyVo.setAvatarSrc(rep.getAvatarSrc());
                         replyVo.setOid(rep.getOid());
                         replyVo.setParentUserName(rep.getParentUserName());
                         replyList.add(replyVo);
@@ -398,11 +403,11 @@ public class CommentApiController extends BaseController {
      * 文章已读(評論列表列表)<br/>
      * url:/api/admin/comment/read/list<br/>
      *
-     * @param param JSON 参数({@link EntityOidListRequest})
+     * @param param JSON 参数({@link EntityOidListRequest})<br/>
      *              entityOidList<br/>
-     * @return 返回响应 {@link BaseResponseDto}
-     * status(000000-SUCCESS,999999-SYSTEM ERROR)
-     * msg
+     * @return 返回响应 {@link BaseResponseDto}<br/>
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)<br/>
+     * msg<br/>
      * @author gulihua
      */
     @ApiVersion()
@@ -427,8 +432,8 @@ public class CommentApiController extends BaseController {
      * @param param JSON 参数({@link EntityOidRequest})
      *              entityOid<br/>
      * @return 返回响应 {@link BaseResponseDto}
-     * status(000000-SUCCESS,999999-SYSTEM ERROR)
-     * msg
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)<br/>
+     * msg<br/>
      * @author gulihua
      */
     @ApiVersion()
@@ -451,20 +456,20 @@ public class CommentApiController extends BaseController {
      * url:/api/admin/comment/info/{id}<br/>
      *
      * @param id
-     * @return 返回响应 {@link CommentInfoResponse}
-     * status(000000-SUCCESS,999999-SYSTEM ERROR)
-     * msg
-     * data
-     * --oid
-     * --userName
-     * --headImgSrc
-     * --contactQq
-     * --contactWechat
-     * --contactWeibo
-     * --contactTel
-     * --clientIp
-     * --content
-     * --commentTime
+     * @return 返回响应 {@link CommentInfoResponse}<br/>
+     * status(000000-SUCCESS,999999-SYSTEM ERROR)<br/>
+     * msg<br/>
+     * data<br/>
+     * --oid<br/>
+     * --userName<br/>
+     * --avatarSrc<br/>
+     * --contactQq<br/>
+     * --contactWechat<br/>
+     * --contactWeibo<br/>
+     * --contactTel<br/>
+     * --clientIp<br/>
+     * --content<br/>
+     * --commentTime<br/>
      * @author gulihua
      */
     @ApiVersion()
@@ -479,8 +484,8 @@ public class CommentApiController extends BaseController {
                     .with(CommentVO::setOid, commentBO.getOid())
                     .with(CommentVO::setUserName, commentBO.getUserName())
                     .with(CommentVO::setArtOid, commentBO.getArticleOid())
-                    .with(CommentVO::setArtTitle, commentBO.getTitle())
-                    .with(CommentVO::setHeadImgSrc, commentBO.getHeadImgSrc())
+                    .with(CommentVO::setArtTitle, commentBO.getArticleTitle())
+                    .with(CommentVO::setAvatarSrc, commentBO.getAvatarSrc())
                     .with(CommentVO::setClientIp, commentBO.getClientIp())
                     .with(CommentVO::setUserArea, DomainUtil.format(commentBO.getUserArea(), Constants.UNKNOW))
                     .with(CommentVO::setContactQq, commentBO.getContactQq())

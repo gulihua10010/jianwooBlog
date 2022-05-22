@@ -5,13 +5,8 @@ import cn.hutool.extra.mail.MailUtil;
 import cn.jianwoo.blog.cache.CacheStore;
 import cn.jianwoo.blog.constants.CacaheKeyConstants;
 import cn.jianwoo.blog.constants.Constants;
-import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.constants.WebConfDataConfig;
-import cn.jianwoo.blog.dao.base.EmailTransDao;
-import cn.jianwoo.blog.entity.Email;
 import cn.jianwoo.blog.enums.CfgTypeEnum;
-import cn.jianwoo.blog.enums.EmailSendStatusEnum;
-import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.WebconfBizService;
 import cn.jianwoo.blog.service.bo.AttachmentBO;
@@ -22,12 +17,10 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.mail.internet.InternetAddress;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -47,50 +40,24 @@ public class NotifiyUtil {
     private CacheStore<String, MailAccount> cacheStore;
     @Autowired
     private WebconfBizService webconfBizService;
-    @Autowired
-    private EmailTransDao emailTransDao;
 
 
     private void sendEmail(List<String> emailTo, String subject, String content, boolean isHtml, List<AttachmentBO> attachmentList) throws JwBlogException {
         log.info(">>Start Send Email::emailTo = [{}], subject = [{}], content = [{}]", JSON.toJSONString(emailTo), subject, content);
-        Email email = new Email();
-        Email updEmail = new Email();
         try {
-            Date now = DateUtil.getNow();
-            email.setToEmail(JSON.toJSONString(emailTo));
-            email.setSubject(subject);
-            email.setContent(content);
-            email.setFiles(CollectionUtils.isNotEmpty(attachmentList) ? JSON.toJSONString(attachmentList) : null);
-            email.setProcStatus(EmailSendStatusEnum.INIT.getValue());
-            email.setProcTime(now);
-            email.setCreateTime(now);
-            email.setUpdateTime(now);
-            emailTransDao.doInsert(email);
+
             MailAccount account = fetchMailAcct();
             log.info("<<Fetch Email account::[{}]", JSON.toJSONString(account));
             List<File> files = new ArrayList<>();
             if (CollectionUtils.isNotEmpty(attachmentList)) {
                 files = attachmentList.stream().map(o -> new File(o.getFilePath())).collect(Collectors.toList());
             }
-            updEmail.setOid(email.getOid());
-            updEmail.setProcStatus(EmailSendStatusEnum.SENDING.getValue());
-            emailTransDao.doUpdateByPrimaryKeySelective(updEmail);
 
             MailUtil.send(account, emailTo, subject, content, isHtml, files.toArray(new File[0]));
 
-            updEmail.setProcStatus(EmailSendStatusEnum.SUCCESS.getValue());
-            updEmail.setProcDesc(Constants.SUCCESS);
-            emailTransDao.doUpdateByPrimaryKeySelective(updEmail);
         } catch (Exception e) {
             log.error(">>Start Send Email failed, e\r\n", e);
-            updEmail.setProcStatus(EmailSendStatusEnum.FAILED.getValue());
-            updEmail.setProcDesc(e.getMessage());
-            try {
-                emailTransDao.doUpdateByPrimaryKeySelective(updEmail);
-            } catch (DaoException daoException) {
-                log.error(">> Insert into Email failed, e\r\n", daoException);
-            }
-            throw new JwBlogException(ExceptionConstants.EMAIL_SEND_FAILED, ExceptionConstants.EMAIL_SEND_FAILED_DESC);
+            throw new JwBlogException(e);
 
         }
     }
@@ -102,7 +69,7 @@ public class NotifiyUtil {
             log.info(">>Fetch MailAcct from cache success.");
             return cacheStore.get(CacaheKeyConstants.EMAIL_CFG).get();
         }
-        Map<String,String> cfgMap = webconfBizService.queryWebconfByType(CfgTypeEnum.EMAIL.getValue());
+        Map<String, String> cfgMap = webconfBizService.queryWebconfByType(CfgTypeEnum.EMAIL.getValue());
         String host = cfgMap.get(WebConfDataConfig.EMAIL_HOST);
         String port = cfgMap.get(WebConfDataConfig.EMAIL_PORT);
         String sender = cfgMap.get(WebConfDataConfig.EMAIL_SENDER);
@@ -151,35 +118,102 @@ public class NotifiyUtil {
 
     }
 
-    public void sendEmailText(List<String> emailTo, String subject, String content, List<AttachmentBO> attachmentList) throws JwBlogException {
-        sendEmail(emailTo, subject, content, false, attachmentList);
+    /**
+     * 发送邮件(纯文本)
+     *
+     * @param emailTos       收件人(支持多个)
+     * @param subject        主题
+     * @param content        内容
+     * @param attachmentList 附件列表
+     * @author gulihua
+     */
+    public void sendEmailText(List<String> emailTos, String subject, String content, List<AttachmentBO> attachmentList) throws JwBlogException {
+        sendEmail(emailTos, subject, content, false, attachmentList);
     }
 
-    public void sendEmailText(List<String> emailTo, String subject, String content) throws JwBlogException {
-        sendEmail(emailTo, subject, content, false, null);
+    /**
+     * 发送邮件(纯文本)
+     *
+     * @param emailTos 收件人(支持多个)
+     * @param subject  主题
+     * @param content  内容
+     * @author gulihua
+     */
+    public void sendEmailText(List<String> emailTos, String subject, String content) throws JwBlogException {
+        sendEmail(emailTos, subject, content, false, null);
     }
 
-    public void sendEmail(List<String> emailTo, String subject, String content, List<AttachmentBO> attachmentList) throws JwBlogException {
-        sendEmail(emailTo, subject, content, true, attachmentList);
+    /**
+     * 发送邮件(支持HTML)
+     *
+     * @param emailTos       收件人(支持多个)
+     * @param subject        主题
+     * @param content        内容
+     * @param attachmentList 附件列表
+     * @author gulihua
+     */
+    public void sendEmail(List<String> emailTos, String subject, String content, List<AttachmentBO> attachmentList) throws JwBlogException {
+        sendEmail(emailTos, subject, content, true, attachmentList);
     }
 
-    public void sendEmail(List<String> emailTo, String subject, String content) throws JwBlogException {
-        sendEmail(emailTo, subject, content, true, null);
+    /**
+     * 发送邮件(支持HTML)
+     *
+     * @param emailTos 收件人(支持多个)
+     * @param subject  主题
+     * @param content  内容
+     * @author gulihua
+     */
+    public void sendEmail(List<String> emailTos, String subject, String content) throws JwBlogException {
+        sendEmail(emailTos, subject, content, true, null);
     }
 
-    //
+    /**
+     * 发送邮件(纯文本)
+     *
+     * @param emailTo        收件人
+     * @param subject        主题
+     * @param content        内容
+     * @param attachmentList 附件列表
+     * @author gulihua
+     */
     public void sendEmailText(String emailTo, String subject, String content, List<AttachmentBO> attachmentList) throws JwBlogException {
         sendEmail(Collections.singletonList(emailTo), subject, content, false, attachmentList);
     }
 
+    /**
+     * 发送邮件(纯文本)
+     *
+     * @param emailTo 收件人
+     * @param subject 主题
+     * @param content 内容
+     * @author gulihua
+     */
     public void sendEmailText(String emailTo, String subject, String content) throws JwBlogException {
         sendEmail(Collections.singletonList(emailTo), subject, content, false, null);
     }
 
+    /**
+     * 发送邮件(支持HTML)
+     *
+     * @param emailTo        收件人
+     * @param subject        主题
+     * @param content        内容
+     * @param attachmentList 附件列表
+     * @author gulihua
+     */
     public void sendEmail(String emailTo, String subject, String content, List<AttachmentBO> attachmentList) throws JwBlogException {
         sendEmail(Collections.singletonList(emailTo), subject, content, true, attachmentList);
     }
 
+    /**
+     * 发送邮件(支持HTML)
+     *
+     * @param emailTo 收件人
+     * @param subject 主题
+     * @param content 内容
+     * @author gulihua
+     */
     public void sendEmail(String emailTo, String subject, String content) throws JwBlogException {
         sendEmail(Collections.singletonList(emailTo), subject, content, true, null);
     }

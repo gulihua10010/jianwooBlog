@@ -26,6 +26,10 @@ public class ArticleBizException extends JwBlogException {
             ExceptionConstants.BIZ_NOT_EXIST, "The article[%s] query failed.");
     public static final ArticleBizException QUERY_FAILED_EXCEPTION_CN = new ArticleBizException(
             ExceptionConstants.BIZ_NOT_EXIST, "文章[%s]查询失败.");
+    public static final ArticleBizException ARTICLE_NOT_EXISTS_EXCEPTION_CN = new ArticleBizException(
+            ExceptionConstants.BIZ_NOT_EXIST, "该文章不存在!");
+    public static final ArticleBizException ARTICLE_NOT_ALLOW_COMMENT_EXCEPTION_CN = new ArticleBizException(
+            ExceptionConstants.BIZ_NOT_EXIST, "该文章不允许评论!");
     public static final ArticleBizException STATUS_NOT_SUPPORT = new ArticleBizException(
             ExceptionConstants.BIZ_STATUS_INCORRECT, "The status of article[%s] must be PUBLISHED or DRAFT.");
     public static final ArticleBizException STATUS_NOT_SUPPORT_CN = new ArticleBizException(
@@ -34,6 +38,12 @@ public class ArticleBizException extends JwBlogException {
             ExceptionConstants.BIZ_STATUS_INCORRECT, "文章[%s]已经删除!");
     public static final ArticleBizException STATUS_NOT_PUBLISHED_CN = new ArticleBizException(
             ExceptionConstants.BIZ_STATUS_INCORRECT, "文章[%s]还未发布!");
+    public static final ArticleBizException PASSWORD_VERIFY_CN = new ArticleBizException(
+            ExceptionConstants.BIZ_OPERATION_PASSWORD_VERIFY, "文章[%s]需要验证密码!");
+    public static final ArticleBizException PASSWORD_INCORRECT_CN = new ArticleBizException(
+            ExceptionConstants.BIZ_OPERATION_FAILED, "文章[%s]验证失败, 密码不正确!");
+    public static final ArticleBizException PRIVATE_NOT_OPERATION = new ArticleBizException(
+            ExceptionConstants.BIZ_OPERATION_FAILED, "您没有权限访问文章[%s]!");
     public static final ArticleBizException STATUS_NOT_DRAFT = new ArticleBizException(
             ExceptionConstants.BIZ_STATUS_INCORRECT, "文章[%s]还不是草稿!");
     public static final ArticleBizException STATUS_HAS_DRAFT = new ArticleBizException(

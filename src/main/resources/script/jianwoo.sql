@@ -816,8 +816,43 @@ VALUES ('IS_FORGET_NEED_CAPTCHA', '忘记密码是否需要图形验证码', 'SY
 INSERT INTO `webconf_facade` (`CFG_KEY`, `DESC`, `TITLE_DSP`, `TIPS_DSP`, `FORM_TYPE`, `TAB_TYPE`, `TAB_TYPE_DSP`, `REQUIRED`, `VALIDATE_TYPE`, `VALIDATE_VALUE`, `INDEX`, `CREATE_TIME`, `UPDATE_TIME`)
 VALUES ('IS_FORGET_NEED_CAPTCHA', '忘记密码是否需要图形验证码', '忘记密码是否需要验证码', NULL, 'INPUT_CHECKBOX', 'SYS', '系统配置', NULL, NULL, NULL, 12, NOW(), NOW());
 
+INSERT INTO `WEBCONF` (`KEY`, `DESC`, `CFG_TYPE`, `VALUE_TYPE`, `STRING_VALUE`, `INT_VALUE`, `FLOAT_VALUE`, `BOOLEAN_VALUE`, `DATE_VALUE`, `VALID`, `CREATE_TIME`, `UPDATE_TIME`)
+VALUES ('MAX_LOGIN_FAILED_TIMES', '登录最大失败次数', 'SYS', 'I', NULL, 3, NULL, NULL, NULL, '1', NOW(), NOW());
+INSERT INTO `webconf_facade` (`CFG_KEY`, `DESC`, `TITLE_DSP`, `TIPS_DSP`, `FORM_TYPE`, `TAB_TYPE`, `TAB_TYPE_DSP`, `REQUIRED`, `VALIDATE_TYPE`, `VALIDATE_VALUE`, `INDEX`, `CREATE_TIME`, `UPDATE_TIME`)
+VALUES ('MAX_LOGIN_FAILED_TIMES', '登录最大失败次数', '登录最大失败次数', '如果登录失败达到允许的最大失败次数,则冻结1小时', 'INPUT_TEXT_NUMBER', 'SYS', '系统配置', '1', NULL, NULL, 15, NOW(), NOW());
+
+DROP TABLE IF EXISTS LOGIN_FAILED_EVENT ;
+CREATE TABLE `LOGIN_FAILED_EVENT` (
+                                      `OID` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '表自增唯一id',
+                                      `LOGIN_ID` varchar(20) NOT NULL COMMENT 'LOGIN ID',
+                                      `LOGIN_IP` varchar(20) DEFAULT NULL COMMENT '登录ip',
+                                      `FAILED_TIMES` INT DEFAULT 0 COMMENT '失败次数',
+                                      `IS_BLOCK` char(1) DEFAULT '0' COMMENT '是否冻结',
+                                      `BLOCK_TIME` datetime DEFAULT NULL COMMENT '冻结时间',
+                                      `UNBLOCK_TIME` datetime DEFAULT NULL COMMENT '解冻时间',
+                                      `STATUS` varchar(20) DEFAULT '00' COMMENT '状态:00有效,91废弃',
+                                      `CREATE_TIME` datetime NOT NULL,
+                                      `UPDATE_TIME` datetime NOT NULL,
+                                      PRIMARY KEY (`OID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='登录失败事件表';
+INSERT INTO `WEBCONF` (`KEY`, `DESC`, `CFG_TYPE`, `VALUE_TYPE`, `STRING_VALUE`, `INT_VALUE`, `FLOAT_VALUE`, `BOOLEAN_VALUE`, `DATE_VALUE`, `VALID`, `CREATE_TIME`, `UPDATE_TIME`)
+VALUES ('COMMENT_ON_FREQUENCY', '评论频率表达式', 'SYS', 'S', '10 Time(s) 1 Minutes(s)', NULL, NULL, NULL, NULL, '1', NOW(), NOW());
+
+INSERT INTO `webconf_facade` (`CFG_KEY`, `DESC`, `TITLE_DSP`, `TIPS_DSP`, `FORM_TYPE`, `TAB_TYPE`, `TAB_TYPE_DSP`, `REQUIRED`, `VALIDATE_TYPE`, `VALIDATE_VALUE`, `INDEX`, `CREATE_TIME`, `UPDATE_TIME`)
+VALUES ('COMMENT_ON_FREQUENCY', '评论频率表达式', '评论频率', '数字1:次数,*代表不限<br> 数字2:时间<br>后面是时间单位,支持[\'Second(s)\',\'Minutes(s)\',\'Hour(s)\']', 'INPUT_TEXT', 'SYS', '系统配置', NULL, 'maxLength', '{\"maxLength\":{\"value\":30,\"layVerifyExpress\":\"lay-max=\'30\'\"}}', 16, NOW(), NOW());
+ALTER TABLE webconf_facade MODIFY `TIPS_DSP` varchar(100) DEFAULT NULL;
 
 
+DROP TABLE IF EXISTS BIZ_PRAISE ;
+CREATE TABLE `BIZ_PRAISE` (
+                              `OID` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '表自增唯一id',
+                              `BIZ_OID` BIGINT NOT NULL COMMENT '文章/评论oid',
+                              `USER_IP` varchar(20) DEFAULT NULL COMMENT '用户ip',
+                              `TYPE` varchar(2) DEFAULT NULL COMMENT '类型,10:文章,20:评论',
+                              `CREATE_TIME` datetime NOT NULL,
+                              `UPDATE_TIME` datetime NOT NULL,
+                              PRIMARY KEY (`OID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='文章/评论赞记录表';
 
-
+ALTER TABLE comments ADD `IS_DELETE` char(1) DEFAULT '0' comment '是否已经删除' AFTER READ_STATUS;
 

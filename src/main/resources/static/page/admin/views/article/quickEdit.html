@@ -9,7 +9,7 @@
     }
 </style>
 <div class=" layui-form" id="layuiadmin-form-article-quick-edit" lay-filter="layuiadmin-form-article-quick-edit">
-    <script type="text/html" template lay-url="/api/admin/article/info/{{ d.params.oid }}"
+    <script type="text/html" template lay-url="/api/admin/article/edit/info/{{ d.params.oid }}"
             lay-done="doEdit(d)">
         <div class="layui-card-body">
             <div class="layui-form-item">
@@ -34,33 +34,33 @@
                 <div class="layui-input-block">
 
                     <input class="ispublic-radio" id="public" lay-filter="public" name="isPublic"
-                           {{# if(d.data.visitType=== 1 || d.data.visitType=== 2){ }} checked {{# }
+                           {{# if(d.data.accessType == 21 || d.data.accessType == 20){ }} checked {{# }
                            }} title="公开"
-                           type="radio" value="1">
+                           type="radio" value="20">
                     <span id="hometop1"><input id="hometop" lay-skin="primary" name="isPublic"
-                                               {{# if(d.data.visitType=== 2){ }} checked {{# } }} title="将文章置于首页顶端"
+                                               {{# if(d.data.accessType == 21){ }} checked {{# } }} title="将文章置于首页顶端"
                                                type="checkbox"
-                                               value="2"></span><br>
+                                               value="21"></span><br>
                     <input class="ispublic-radio" id="passw" lay-filter="passw" name="isPublic"
-                           {{# if(d.data.visitType=== -1){ }} checked {{# } }}
+                           {{# if(d.data.accessType == 11){ }} checked {{# } }}
                            title="密码保护"
                            type="radio"
-                           value="-1"><br>
+                           value="11"><br>
                     <input autocomplete="off" class="layui-input passw"
                            id="passw-content"
                            name="passwContent" placeholder="密码" lay-verify="pass"
-                           {{# if(d.data.visitType !== -1){ }} style="display: none" {{# } }}
+                           {{# if(d.data.accessType != 11){ }} style="display: none" {{# } }}
                            value="{{d.data.password}}"
                            type="password">
                     <input autocomplete="off" class="layui-input passw"
                            id="passw-content-confirm" lay-verify="repass"
                            name="passwContentConfirm" placeholder="确认密码"
-                           {{# if(d.data.visitType !== -1){ }} style="display: none" {{# } }}
+                           {{# if(d.data.accessType != 11){ }} style="display: none" {{# } }}
                            type="password">
                     <input class="ispublic-radio" id="secret" lay-filter="secret" name="isPublic"
-                           {{# if(d.data.visitType=== 0){ }} checked {{# } }}
+                           {{# if(d.data.accessType == 10){ }} checked {{# } }}
                            title="私密" type="radio"
-                           value="0">
+                           value="10">
                 </div>
                 <span id="pwd-tips-tags" style="color: red; display:none;margin-left: 110px"></span>
             </div>

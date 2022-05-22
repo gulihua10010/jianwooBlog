@@ -3,6 +3,7 @@ package cn.jianwoo.blog.dao.biz.mapper;
 import cn.jianwoo.blog.entity.Article;
 import cn.jianwoo.blog.entity.extension.ArticleExt;
 import cn.jianwoo.blog.entity.query.ArticleQuery;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -100,4 +101,13 @@ public interface ArticleBizMapper {
      */
     int restoreFromRecycle(Article record);
 
+
+    /**
+     * 分页获取首页文章列表
+     *
+     * @param param 参数
+     * @return
+     * @author gulihua
+     */
+    List<ArticleExt> selectArticleListMain(@Param("param") ArticleQuery param, @Param("isPrivate") boolean isPrivate);
 }

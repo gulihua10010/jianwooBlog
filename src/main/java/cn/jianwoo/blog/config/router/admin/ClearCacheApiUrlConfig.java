@@ -9,8 +9,8 @@ import cn.jianwoo.blog.config.router.UrlConfig;
  */
 public class ClearCacheApiUrlConfig extends UrlConfig {
     public static final String URL_PREFIX = "/api/admin/cache";
-    public static final String URL_COMMENT_ADD = "/clear";
-    public static final String URL_COMMENT_INFO = "/info";
+    public static final String URL_CACHE_CLEAR = "/clear";
+    public static final String URL_CACHE_INFO = "/info";
 
 
 

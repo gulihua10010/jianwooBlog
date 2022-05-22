@@ -107,4 +107,16 @@ public interface ArticleBizDao {
      * @author gulihua
      */
     void doRestoreFromRecycle(Article record) throws DaoException;
+
+
+
+    /**
+     * 分页获取首页文章列表
+     *
+     * @param param 参数
+     * @param isPrivate 是否博主私有ip
+     * @return
+     * @author gulihua
+     */
+    List<ArticleExt> queryArticleListMain(ArticleQuery param, boolean isPrivate);
 }

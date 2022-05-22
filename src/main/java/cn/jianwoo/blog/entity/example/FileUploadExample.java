@@ -735,6 +735,76 @@ public class FileUploadExample {
             return (Criteria) this;
         }
 
+        public Criteria andCdnUrlIsNull() {
+            addCriterion("CDN_URL is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCdnUrlIsNotNull() {
+            addCriterion("CDN_URL is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCdnUrlEqualTo(String value) {
+            addCriterion("CDN_URL =", value, "cdnUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andCdnUrlNotEqualTo(String value) {
+            addCriterion("CDN_URL <>", value, "cdnUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andCdnUrlGreaterThan(String value) {
+            addCriterion("CDN_URL >", value, "cdnUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andCdnUrlGreaterThanOrEqualTo(String value) {
+            addCriterion("CDN_URL >=", value, "cdnUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andCdnUrlLessThan(String value) {
+            addCriterion("CDN_URL <", value, "cdnUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andCdnUrlLessThanOrEqualTo(String value) {
+            addCriterion("CDN_URL <=", value, "cdnUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andCdnUrlLike(String value) {
+            addCriterion("CDN_URL like", value, "cdnUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andCdnUrlNotLike(String value) {
+            addCriterion("CDN_URL not like", value, "cdnUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andCdnUrlIn(List<String> values) {
+            addCriterion("CDN_URL in", values, "cdnUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andCdnUrlNotIn(List<String> values) {
+            addCriterion("CDN_URL not in", values, "cdnUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andCdnUrlBetween(String value1, String value2) {
+            addCriterion("CDN_URL between", value1, value2, "cdnUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andCdnUrlNotBetween(String value1, String value2) {
+            addCriterion("CDN_URL not between", value1, value2, "cdnUrl");
+            return (Criteria) this;
+        }
+
         public Criteria andFileMd5IsNull() {
             addCriterion("FILE_MD5 is null");
             return (Criteria) this;
@@ -1157,6 +1227,11 @@ public class FileUploadExample {
 
         public Criteria andUrlLikeInsensitive(String value) {
             addCriterion("upper(URL) like", value.toUpperCase(), "url");
+            return (Criteria) this;
+        }
+
+        public Criteria andCdnUrlLikeInsensitive(String value) {
+            addCriterion("upper(CDN_URL) like", value.toUpperCase(), "cdnUrl");
             return (Criteria) this;
         }
 

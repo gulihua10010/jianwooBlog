@@ -12,5 +12,5 @@ public interface EmailTemplateTransDao extends EmailTemplateQueryDao {
 
     void doUpdateByPrimaryKeySelective(EmailTemplate record) throws DaoException;
 
-    void doDeleteByPrimaryKey(Long oid) throws DaoException;
+    void doDeleteByPrimaryKey(String code) throws DaoException;
 }

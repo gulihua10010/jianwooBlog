@@ -49,7 +49,7 @@ public class ConsoleApiController extends BaseController {
      * 查詢已发布的最近10篇文章列表(控制台首页)<br/>
      * url:/api/admin/console/recent/article/published/query<br/>
      *
-     * @return 返回响应 {@link ArticleSummaryResponse}
+     * @return 返回响应 {@link ArticleSummaryResponse}<br/>
      * code<br/>
      * count<br/>
      * data<br/>
@@ -66,28 +66,33 @@ public class ConsoleApiController extends BaseController {
     @ApiVersion()
     @GetMapping(ConsoleApiUrlConfig.URL_RECENT_ARTICLE_PUBLISHED_QUERY)
     public String queryPublishedArticleList() {
-        List<ArticleBO> articleList = articleBizService.queryRecentPublishedArts(10);
-        ArticleSummaryResponse response = ArticleSummaryResponse.getInstance();
-        if (CollectionUtils.isNotEmpty(articleList)) {
-            List<ArticleSummaryVO> articleSummaryVOList = articleList.stream().map(data -> {
-                ArticleSummaryVO vo = new ArticleSummaryVO();
-                vo.setAuthor(data.getAuthor());
-                vo.setPublishTimeStr(DateUtil.formatDateTime(data.getPushTime()));
-                vo.setPublishTime(data.getPushTime());
-                vo.setOid(data.getOid());
-                vo.setTitle(data.getTitle());
-                return vo;
-            }).collect(Collectors.toList());
-            response.setData(articleSummaryVOList);
+        try {
+            List<ArticleBO> articleList = articleBizService.queryRecentPublishedArts(10);
+            ArticleSummaryResponse response = ArticleSummaryResponse.getInstance();
+            if (CollectionUtils.isNotEmpty(articleList)) {
+                List<ArticleSummaryVO> articleSummaryVOList = articleList.stream().map(data -> {
+                    ArticleSummaryVO vo = new ArticleSummaryVO();
+                    vo.setAuthor(data.getAuthor());
+                    vo.setPublishTimeStr(DateUtil.formatDateTime(data.getPushTime()));
+                    vo.setPublishTime(data.getPushTime());
+                    vo.setOid(data.getOid());
+                    vo.setTitle(data.getTitle());
+                    return vo;
+                }).collect(Collectors.toList());
+                response.setData(articleSummaryVOList);
+            }
+            return super.responseToJSONString(response);
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+
         }
-        return super.responseToJSONString(response);
     }
 
     /**
      * 查詢最近10篇文章草稿列表(控制台首页)<br/>
      * url:/api/admin/console/recent/article/draft/query<br/>
      *
-     * @return 返回响应 {@link ArticleSummaryResponse}
+     * @return 返回响应 {@link ArticleSummaryResponse}<br/>
      * code<br/>
      * count<br/>
      * data<br/>
@@ -104,28 +109,33 @@ public class ConsoleApiController extends BaseController {
     @ApiVersion()
     @GetMapping(ConsoleApiUrlConfig.URL_RECENT_ARTICLE_DRAFT_QUERY)
     public String queryDraftArticleList() {
-        List<ArticleBO> articleList = articleBizService.queryRecentDraft(10);
-        ArticleSummaryResponse response = ArticleSummaryResponse.getInstance();
-        if (CollectionUtils.isNotEmpty(articleList)) {
-            List<ArticleSummaryVO> articleSummaryVOList = articleList.stream().map(data -> {
-                ArticleSummaryVO vo = new ArticleSummaryVO();
-                vo.setAuthor(data.getAuthor());
-                vo.setPublishTimeStr(DateUtil.formatDateTime(data.getPushTime()));
-                vo.setPublishTime(data.getPushTime());
-                vo.setOid(data.getOid());
-                vo.setTitle(data.getTitle());
-                return vo;
-            }).collect(Collectors.toList());
-            response.setData(articleSummaryVOList);
+        try {
+            List<ArticleBO> articleList = articleBizService.queryRecentDraft(10);
+            ArticleSummaryResponse response = ArticleSummaryResponse.getInstance();
+            if (CollectionUtils.isNotEmpty(articleList)) {
+                List<ArticleSummaryVO> articleSummaryVOList = articleList.stream().map(data -> {
+                    ArticleSummaryVO vo = new ArticleSummaryVO();
+                    vo.setAuthor(data.getAuthor());
+                    vo.setPublishTimeStr(DateUtil.formatDateTime(data.getPushTime()));
+                    vo.setPublishTime(data.getPushTime());
+                    vo.setOid(data.getOid());
+                    vo.setTitle(data.getTitle());
+                    return vo;
+                }).collect(Collectors.toList());
+                response.setData(articleSummaryVOList);
+            }
+            return super.responseToJSONString(response);
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+
         }
-        return super.responseToJSONString(response);
     }
 
     /**
      * 查詢最近10个文章评论列表(控制台首页)<br/>
      * url:/api/admin/console/recent/comment/query<br/>
      *
-     * @return 返回响应 {@link CommentSummaryResponse}
+     * @return 返回响应 {@link CommentSummaryResponse}<br/>
      * code<br/>
      * count<br/>
      * data<br/>
@@ -146,29 +156,34 @@ public class ConsoleApiController extends BaseController {
     @ApiVersion()
     @GetMapping(ConsoleApiUrlConfig.URL_RECENT_COMMENT_QUERY)
     public String queryCommentList() {
-        List<CommentBO> commentExtList = commentBizService.queryRecentComments(10);
-        CommentSummaryResponse response = CommentSummaryResponse.getInstance();
-        if (CollectionUtils.isNotEmpty(commentExtList)) {
-            List<CommentSummaryVO> list = new ArrayList<>();
-            commentExtList.forEach(domain -> {
-                CommentSummaryVO vo = new CommentSummaryVO();
-                vo.setArtOid(domain.getArticleOid());
-                vo.setCommentTimeStr(DateUtil.formatDateTime(domain.getCommentTime()));
-                vo.setCommentTime(domain.getCommentTime());
-                vo.setArtTitle(domain.getTitle());
-                vo.setUserName(domain.getUserName());
-                vo.setClientIp(domain.getClientIp());
-                vo.setTemplateName(templateName);
-                String content = StringEscapeUtils.escapeHtml4(domain.getContent());
-                if (content.length() > 50) {
-                    content.substring(0, 50).concat(Constants.ELLIPSIS);
-                }
-                vo.setContent(content);
-                list.add(vo);
-            });
-            response.setData(list);
+        try {
+            List<CommentBO> commentExtList = commentBizService.queryRecentComments(10);
+            CommentSummaryResponse response = CommentSummaryResponse.getInstance();
+            if (CollectionUtils.isNotEmpty(commentExtList)) {
+                List<CommentSummaryVO> list = new ArrayList<>();
+                commentExtList.forEach(domain -> {
+                    CommentSummaryVO vo = new CommentSummaryVO();
+                    vo.setArtOid(domain.getArticleOid());
+                    vo.setCommentTimeStr(DateUtil.formatDateTime(domain.getCommentTime()));
+                    vo.setCommentTime(domain.getCommentTime());
+                    vo.setArtTitle(domain.getArticleTitle());
+                    vo.setUserName(domain.getUserName());
+                    vo.setClientIp(domain.getClientIp());
+                    vo.setTemplateName(templateName);
+                    String content = StringEscapeUtils.escapeHtml4(domain.getContent());
+                    if (content.length() > 50) {
+                        content.substring(0, 50).concat(Constants.ELLIPSIS);
+                    }
+                    vo.setContent(content);
+                    list.add(vo);
+                });
+                response.setData(list);
+            }
+            return super.responseToJSONString(response);
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+
         }
-        return super.responseToJSONString(response);
     }
 
 
@@ -176,7 +191,7 @@ public class ConsoleApiController extends BaseController {
      * 查詢发布文章的数量<br/>
      * url:/api/admin/console/published/articles/count<br/>
      *
-     * @return 返回响应 {@link ConsoleCountResponse}
+     * @return 返回响应 {@link ConsoleCountResponse}<br/>
      * status<br/>
      * data<br/>
      * --count<br/>
@@ -185,12 +200,17 @@ public class ConsoleApiController extends BaseController {
     @ApiVersion()
     @GetMapping(ConsoleApiUrlConfig.URL_PUBLISHED_ARTICLES_COUNT)
     public String queryPublishedArtsCount() {
-        ConsoleCountResponse response = ConsoleCountResponse.getInstance();
-        int publishedArtsCount = articleBizService.countWithPublishArts();
-        ConsoleCountVO vo = JwBuilder.of(ConsoleCountVO::new)
-                .with(ConsoleCountVO::setCount, publishedArtsCount).build();
-        response.setData(vo);
-        return super.responseToJSONString(response);
+        try {
+            ConsoleCountResponse response = ConsoleCountResponse.getInstance();
+            int publishedArtsCount = articleBizService.countWithPublishArts();
+            ConsoleCountVO vo = JwBuilder.of(ConsoleCountVO::new)
+                    .with(ConsoleCountVO::setCount, publishedArtsCount).build();
+            response.setData(vo);
+            return super.responseToJSONString(response);
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+
+        }
     }
 
 
@@ -198,7 +218,7 @@ public class ConsoleApiController extends BaseController {
      * 查詢草稿文章的数量<br/>
      * url:/api/admin/console/draft/articles/count<br/>
      *
-     * @return 返回响应 {@link ConsoleCountResponse}
+     * @return 返回响应 {@link ConsoleCountResponse}<br/>
      * status<br/>
      * data<br/>
      * --count<br/>
@@ -219,7 +239,7 @@ public class ConsoleApiController extends BaseController {
      * 查詢评论的数量<br/>
      * url:/api/admin/console/comment/count<br/>
      *
-     * @return 返回响应 {@link ConsoleCountResponse}
+     * @return 返回响应 {@link ConsoleCountResponse}<br/>
      * status<br/>
      * data<br/>
      * --count<br/>
@@ -228,19 +248,24 @@ public class ConsoleApiController extends BaseController {
     @ApiVersion()
     @GetMapping(ConsoleApiUrlConfig.URL_COMMENT_COUNT)
     public String queryCommentCount() {
-        ConsoleCountResponse response = ConsoleCountResponse.getInstance();
-        int commentCount = commentBizService.countAllComments();
-        ConsoleCountVO vo = JwBuilder.of(ConsoleCountVO::new)
-                .with(ConsoleCountVO::setCount, commentCount).build();
-        response.setData(vo);
-        return super.responseToJSONString(response);
+        try {
+            ConsoleCountResponse response = ConsoleCountResponse.getInstance();
+            int commentCount = commentBizService.countAllComments();
+            ConsoleCountVO vo = JwBuilder.of(ConsoleCountVO::new)
+                    .with(ConsoleCountVO::setCount, commentCount).build();
+            response.setData(vo);
+            return super.responseToJSONString(response);
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+
+        }
     }
 
     /**
      * 查詢文章表情的数量<br/>
      * url:/api/admin/console/tags/count<br/>
      *
-     * @return 返回响应 {@link ConsoleCountResponse}
+     * @return 返回响应 {@link ConsoleCountResponse}<br/>
      * status<br/>
      * data<br/>
      * --count<br/>
@@ -249,11 +274,16 @@ public class ConsoleApiController extends BaseController {
     @ApiVersion()
     @GetMapping(ConsoleApiUrlConfig.URL_TAGS_COUNT)
     public String queryTagsCount() {
-        ConsoleCountResponse response = ConsoleCountResponse.getInstance();
-        int tagsCount = tagsBizService.countAllTags();
-        ConsoleCountVO vo = JwBuilder.of(ConsoleCountVO::new)
-                .with(ConsoleCountVO::setCount, tagsCount).build();
-        response.setData(vo);
-        return super.responseToJSONString(response);
+        try {
+            ConsoleCountResponse response = ConsoleCountResponse.getInstance();
+            int tagsCount = tagsBizService.countAllTags();
+            ConsoleCountVO vo = JwBuilder.of(ConsoleCountVO::new)
+                    .with(ConsoleCountVO::setCount, tagsCount).build();
+            response.setData(vo);
+            return super.responseToJSONString(response);
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+
+        }
     }
 }

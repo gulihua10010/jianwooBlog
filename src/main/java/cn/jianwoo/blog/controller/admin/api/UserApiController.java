@@ -48,7 +48,7 @@ public class UserApiController extends BaseController {
      * 获取管理员用户信息<br/>
      * url:/api/admin/user/info<br/>
      *
-     * @return 返回响应 {@link UserResponse}
+     * @return 返回响应 {@link UserResponse}<br/>
      * status<br/>
      * data<br/>
      * --nickName<br/>
@@ -82,7 +82,7 @@ public class UserApiController extends BaseController {
      * 获取管理员编辑用户信息<br/>
      * url:/api/admin/user/profile/edit<br/>
      *
-     * @return 返回响应 {@link UserResponse}
+     * @return 返回响应 {@link UserResponse}<br/>
      * status<br/>
      * data<br/>
      * --ip<br/>
@@ -90,6 +90,7 @@ public class UserApiController extends BaseController {
      * --email<br/>
      * --sex<br/>
      * --userPhone<br/>
+     * --avatarSrc<br/>
      * @author gulihua
      */
     @ApiVersion()
@@ -98,7 +99,7 @@ public class UserApiController extends BaseController {
         try {
             super.printRequestParams(param);
             UserInfoRequest request = this.convertParam(param, UserInfoRequest.class);
-//            BizValidation.paramValidate(request.getLoginID(), "loginID", "用户登录ID不能为空!");
+            BizValidation.paramValidate(request.getLoginID(), "loginID", "用户登录ID不能为空!");
 //            if (StringUtils.isBlank(request.getLoginID()))
 //            {
 //                request.setLoginID(adminName);
@@ -111,6 +112,7 @@ public class UserApiController extends BaseController {
                 vo.setUserEmail(admin.getUserEmail());
                 vo.setUserPhone(admin.getUserPhone());
                 vo.setUserSex(admin.getUserSex());
+                vo.setAvatarSrc(admin.getAvatarSrc());
             }
             UserResponse response = UserResponse.getInstance();
             response.setData(vo);
@@ -127,10 +129,14 @@ public class UserApiController extends BaseController {
      * 保存用户信息<br/>
      * url:/api/admin/user/profile/edit/update<br/>
      *
-     * @param param JSON 参数({@link PasswordChangeRequest})
+     * @param param JSON 参数({@link UserEditInfoRequest})<br/>
      *              loginID<br/>
-     *              password<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     *              userNick<br/>
+     *              userEmail<br/>
+     *              userPhone<br/>
+     *              userSex<br/>
+     *              avatarSrc<br/>
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status<br/>
      * @author gulihua
      */
@@ -156,7 +162,9 @@ public class UserApiController extends BaseController {
                     .with(AdminBO::setUserEmail, request.getUserEmail())
                     .with(AdminBO::setUserPhone, request.getUserPhone())
                     .with(AdminBO::setUserSex, request.getUserSex())
-                    .with(AdminBO::setUserNick, request.getUserNick()).build();
+                    .with(AdminBO::setUserNick, request.getUserNick())
+                    .with(AdminBO::setAvatarSrc, request.getAvatarSrc())
+                    .build();
             adminBizService.doSaveEditInfo(adminBO);
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
@@ -173,7 +181,7 @@ public class UserApiController extends BaseController {
      *              loginID<br/>
      *              oldPassword<br/>
      *              newPassword<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status<br/>
      * @author gulihua
      */

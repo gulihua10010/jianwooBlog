@@ -12,7 +12,7 @@
         <result column="PRAISE_COUNT" jdbcType="BIGINT" property="praiseCount"/>
         <result column="IS_COMMENT" jdbcType="CHAR" property="isComment"/>
         <result column="IMG_SRC" jdbcType="VARCHAR" property="imgSrc"/>
-        <result column="VISIT_TYPE" jdbcType="VARCHAR" property="visitType"/>
+        <result column="ACCESS_TYPE" jdbcType="VARCHAR" property="accessType" />
         <result column="COMMENT_COUNT" jdbcType="BIGINT" property="commentCount"/>
         <result column="STATUS" jdbcType="VARCHAR" property="status"/>
         <result column="PASSWORD" jdbcType="VARCHAR" property="password"/>
@@ -32,7 +32,7 @@
 
     <sql id="Base_Column_List">
         OID, AUTHOR, PUSH_TIME, TITLE, MODIFIED_TIME, MENU_ID, READ_COUNT, PRAISE_COUNT,
-    IS_COMMENT, IMG_SRC, VISIT_TYPE, COMMENT_COUNT, `STATUS`, `PASSWORD`, DEL_TIME, REMOVE_RECYCLE_TIME,
+    IS_COMMENT, IMG_SRC, ACCESS_TYPE, COMMENT_COUNT, `STATUS`, `PASSWORD`, DEL_TIME, REMOVE_RECYCLE_TIME,
     CREATE_TIME, UPDATE_TIME
     </sql>
     <sql id="Blob_Column_List">
@@ -76,7 +76,7 @@
         <include refid="Base_Column_List"/>
         <!--        ,-->
         <!--        <include refid="Blob_Column_List"/>-->
-        FROM article WHERE STATUS = '90' ORDER BY MODIFIED_TIME DESC LIMIT #{limit,jdbcType=INTEGER}
+        FROM article WHERE STATUS = '90' AND ACCESS_TYPE != '10' ORDER BY MODIFIED_TIME DESC LIMIT #{limit,jdbcType=INTEGER}
     </select>
 
     <select id="selectPublishedHotArts" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -84,7 +84,7 @@
         <include refid="Base_Column_List"/>
         <!--        ,-->
         <!--        <include refid="Blob_Column_List"/>-->
-        FROM article WHERE STATUS = '90' ORDER BY COMMENT_COUNT,PRAISE_COUNT DESC LIMIT #{limit,jdbcType=INTEGER}
+        FROM article WHERE STATUS = '90' AND ACCESS_TYPE != '10' ORDER BY COMMENT_COUNT,PRAISE_COUNT DESC LIMIT #{limit,jdbcType=INTEGER}
     </select>
 
     <select id="selectArticleListByStatus" parameterType="cn.jianwoo.blog.entity.query.ArticleQuery"
@@ -143,4 +143,44 @@
         </set>
         where OID = #{oid,jdbcType=BIGINT}
     </update>
+
+
+
+    <select id="selectArticleListMain" parameterType="map"
+            resultMap="ResultMapWithExt">
+        SELECT A.TITLE,A.AUTHOR,A.OID,A.ACCESS_TYPE,A.PUSH_TIME,A.COMMENT_COUNT,A.TEXT,A.IMG_SRC,
+               A.PRAISE_COUNT,A.READ_COUNT,A.MODIFIED_TIME,M.NAME AS TYPE_NAME
+        FROM ARTICLE A
+            LEFT JOIN MENU M ON M.OID=A.MENU_ID
+        WHERE STATUS = '90'
+
+        <if test="param.title != null">
+            AND A.TITLE LIKE CONCAT('%',#{param.title,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="param.text != null">
+            AND A.TEXT LIKE CONCAT('%',#{param.text,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="param.category != null">
+            AND A.MENU_ID = #{param.category, jdbcType=INTEGER}
+        </if>
+        <if test="param.tags != null">
+        AND A.OID IN (
+            SELECT T.ARTICLE_OID FROM ARTICLE_TAGS T WHERE T.TAGS_OID IN
+            <foreach item="item" collection="param.tags" separator="," open="(" close=")" index="">
+                #{param.item, jdbcType=INTEGER}
+            </foreach>
+            )
+        </if>
+        <if test="!isPrivate">
+            AND A.ACCESS_TYPE != '10'
+        </if>
+        <if test="param.orderByClause == null">
+            ORDER BY MODIFIED_TIME DESC
+        </if>
+        <if test="param.orderByClause != null">
+            ORDER BY #{param.orderByClause}
+        </if>
+
+    </select>
+
 </mapper>

@@ -5,21 +5,26 @@ import cn.jianwoo.blog.cache.CacheStore;
 import cn.jianwoo.blog.constants.CacaheKeyConstants;
 import cn.jianwoo.blog.dao.base.AdminTransDao;
 import cn.jianwoo.blog.entity.Admin;
+import cn.jianwoo.blog.enums.AsyncIpEnum;
 import cn.jianwoo.blog.enums.LoginEventTypeEnum;
+import cn.jianwoo.blog.enums.TaskTypeEnum;
 import cn.jianwoo.blog.event.LoginLogEvent;
 import cn.jianwoo.blog.exception.AdminBizException;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.security.token.AuthToken;
 import cn.jianwoo.blog.service.base.AdminBaseService;
+import cn.jianwoo.blog.service.base.AsyncAutoTaskBaseService;
 import cn.jianwoo.blog.service.biz.AdminBizService;
 import cn.jianwoo.blog.service.bo.AdminBO;
 import cn.jianwoo.blog.service.bo.ForgetPwdResBO;
 import cn.jianwoo.blog.service.bo.UserBO;
 import cn.jianwoo.blog.service.notify.NotifyMsgService;
-import cn.jianwoo.blog.task.AsyncTask;
+import cn.jianwoo.blog.task.bo.TaskDataD0020BO;
 import cn.jianwoo.blog.util.DateUtil;
 import cn.jianwoo.blog.util.JwUtil;
+import cn.jianwoo.blog.util.TransactionUtils;
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -46,16 +51,21 @@ public class AdminBizServiceImpl implements AdminBizService {
     private CacheStore<String, Object> jwCacheStore;
     @Value("${access.token.expired.seconds}")
     private Long accessTokenExpiredSeconds;
+
     @Autowired
-    private AsyncTask asyncTask;
+    private AsyncAutoTaskBaseService asyncAutoTaskBaseService;
     @Autowired
-    private NotifyMsgService emailBizService;
+    private NotifyMsgService emailNotifyService;
     @Autowired
     private AdminBaseService adminBaseService;
     @Autowired
     private ApplicationContext applicationContext;
     @Autowired
     protected HttpServletRequest request;
+    @Value("${jw.emailtpl.code.forgetPassword}")
+    private String forgetPwdCode;
+    @Autowired
+    private TransactionUtils transactionUtils;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -81,8 +91,22 @@ public class AdminBizServiceImpl implements AdminBizService {
 
         }
 
+
         //执行异步任务
-        asyncTask.execAdminUserRegIpAreaTask(admin.getOid());
+        TaskDataD0020BO taskDataD0020BO = new TaskDataD0020BO();
+        taskDataD0020BO.setOid(admin.getOid());
+        taskDataD0020BO.setIp(admin.getRegisterIp());
+        taskDataD0020BO.setAsyncIpType(AsyncIpEnum.ADMIN_REG.name());
+        Long taskId = null;
+        try {
+
+            taskId = asyncAutoTaskBaseService.doCreateTask(TaskTypeEnum.D0020.getValue(), JSONObject.toJSONString(taskDataD0020BO));
+        } catch (JwBlogException e) {
+            log.error("\r\n>>AdminBizServiceImpl.register exec failed, e\r\n", e);
+        }
+        if (taskId != null) {
+            transactionUtils.doTriggerTaskAfterCommit(taskId);
+        }
         log.info("========>> Admin [username={}] register successfully!!", username);
     }
 
@@ -93,7 +117,12 @@ public class AdminBizServiceImpl implements AdminBizService {
 
         log.info("========>> Start admin login,name= {},ip= {}", loginID, ip);
 
-        Admin admin = adminBaseService.queryAdminByLoginId(loginID);
+        Admin admin = null;
+        if (JwUtil.isEmail(loginID)) {
+            admin = adminBaseService.queryAdminByEmail(loginID);
+        } else {
+            admin = adminBaseService.queryAdminByLoginId(loginID);
+        }
         //security已经做过校验，这里不再做
 //        if (admin == null) {
 //            throw AdminBizException.NOT_EXIST_EXCEPTION_CN.format(name).print();
@@ -133,8 +162,22 @@ public class AdminBizServiceImpl implements AdminBizService {
 
         String loginIDNameKey = MessageFormat.format(CacaheKeyConstants.ADMIN_OID_NAME_KEY, user.getId());
         jwCacheStore.put(loginIDNameKey, admin.getUsername());
+
         //执行异步任务
-        asyncTask.execAdminUserLoginIpAreaTask(admin.getOid());
+        TaskDataD0020BO taskDataD0020BO = new TaskDataD0020BO();
+        taskDataD0020BO.setOid(updAdmin.getOid());
+        taskDataD0020BO.setIp(updAdmin.getLastLoginIp());
+        taskDataD0020BO.setAsyncIpType(AsyncIpEnum.ADMIN_LOGIN.name());
+        Long taskId = null;
+        try {
+
+            taskId = asyncAutoTaskBaseService.doCreateTask(TaskTypeEnum.D0020.getValue(), JSONObject.toJSONString(taskDataD0020BO));
+        } catch (JwBlogException e) {
+            log.error("\r\n>>AdminBizServiceImpl.authLogin exec failed, e\r\n", e);
+        }
+        if (taskId != null) {
+            transactionUtils.doTriggerTaskAfterCommit(taskId);
+        }
         log.info("========>> Admin [username={}, ip={}] login successfully!!!", loginID, ip);
 
         return authToken;
@@ -298,6 +341,7 @@ public class AdminBizServiceImpl implements AdminBizService {
                 .with(Admin::setUserEmail, adminBO.getUserEmail())
                 .with(Admin::setUserPhone, adminBO.getUserPhone())
                 .with(Admin::setUserSex, adminBO.getUserSex())
+                .with(Admin::setAvatarSrc, adminBO.getAvatarSrc())
                 .with(Admin::setUpdateTime, new Date())
                 .build();
 
@@ -329,7 +373,11 @@ public class AdminBizServiceImpl implements AdminBizService {
         String captchaCode = JwUtil.generateVerifyCode(6);
         String loginIDNameKey = MessageFormat.format(CacaheKeyConstants.VERIFY_CODE_LOGIN_ID, loginID);
         jwCacheStore.put(loginIDNameKey, captchaCode, 1, TimeUnit.HOURS);
-        emailBizService.sendCaptcha4ForgetPwd(loginID, captchaCode, email);
+        JSONObject param = new JSONObject();
+        param.put("username", loginID);
+        param.put("verifyCode", captchaCode);
+        //忘记密码发验证码
+        emailNotifyService.doSend(forgetPwdCode, param, email);
         log.info("========>> End to change password Check, loginID= {}", loginID);
     }
 

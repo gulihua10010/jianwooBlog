@@ -13,7 +13,7 @@ public class EmailTemplateApiUrlConfig extends UrlConfig {
     public static final String URL_EMAIL_TPL_REMOVE = "/remove";
     public static final String URL_EMAIL_TPL_UPDATE = "/update";
     public static final String URL_EMAIL_TPL_QUERY_LIST = "/query/list";
-    public static final String URL_EMAIL_TPL_EDIT = "/edit/{id}";
+    public static final String URL_EMAIL_TPL_EDIT = "/edit/{code}";
     public static final String URL_EMAIL_TPL_RENDER = "/render";
 
 

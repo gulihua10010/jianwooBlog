@@ -745,6 +745,76 @@ public class AdminExample {
             return (Criteria) this;
         }
 
+        public Criteria andAvatarSrcIsNull() {
+            addCriterion("AVATAR_SRC is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarSrcIsNotNull() {
+            addCriterion("AVATAR_SRC is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarSrcEqualTo(String value) {
+            addCriterion("AVATAR_SRC =", value, "avatarSrc");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarSrcNotEqualTo(String value) {
+            addCriterion("AVATAR_SRC <>", value, "avatarSrc");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarSrcGreaterThan(String value) {
+            addCriterion("AVATAR_SRC >", value, "avatarSrc");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarSrcGreaterThanOrEqualTo(String value) {
+            addCriterion("AVATAR_SRC >=", value, "avatarSrc");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarSrcLessThan(String value) {
+            addCriterion("AVATAR_SRC <", value, "avatarSrc");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarSrcLessThanOrEqualTo(String value) {
+            addCriterion("AVATAR_SRC <=", value, "avatarSrc");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarSrcLike(String value) {
+            addCriterion("AVATAR_SRC like", value, "avatarSrc");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarSrcNotLike(String value) {
+            addCriterion("AVATAR_SRC not like", value, "avatarSrc");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarSrcIn(List<String> values) {
+            addCriterion("AVATAR_SRC in", values, "avatarSrc");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarSrcNotIn(List<String> values) {
+            addCriterion("AVATAR_SRC not in", values, "avatarSrc");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarSrcBetween(String value1, String value2) {
+            addCriterion("AVATAR_SRC between", value1, value2, "avatarSrc");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarSrcNotBetween(String value1, String value2) {
+            addCriterion("AVATAR_SRC not between", value1, value2, "avatarSrc");
+            return (Criteria) this;
+        }
+
         public Criteria andLastLoginIpIsNull() {
             addCriterion("LAST_LOGIN_IP is null");
             return (Criteria) this;
@@ -1102,6 +1172,11 @@ public class AdminExample {
 
         public Criteria andRegisterAreaLikeInsensitive(String value) {
             addCriterion("upper(REGISTER_AREA) like", value.toUpperCase(), "registerArea");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarSrcLikeInsensitive(String value) {
+            addCriterion("upper(AVATAR_SRC) like", value.toUpperCase(), "avatarSrc");
             return (Criteria) this;
         }
 

@@ -1,0 +1,28 @@
+<title>消息</title>
+<div class="layui-fluid" style="padding: 0 !important; margin: 0;!important;">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="layui-inline" style="margin-bottom: 3px;">
+                <button class="layui-btn" lay-submit data-type="reload" lay-filter="msg-all-read" style="background-color: rgb(76,157,248);padding-left: 2px;padding-right: 2px">
+                    全部标记已读
+                </button>
+            </div>
+            <table id="msg-table" lay-filter="msg"></table>
+            <script id="table-content-msg" type="text/html">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"
+                   href="{{d.link}}"><i
+                        class="layui-icon layui-icon-form"></i>查看</a>
+            </script>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use('msg', layui.factory('msg')).use(['admin', 'msg'], function () {
+        var $ = layui.jquery
+            , form = layui.form
+            , element = layui.element;
+        element.render();
+        form.render();
+    })
+</script>

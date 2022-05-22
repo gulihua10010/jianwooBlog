@@ -65,7 +65,7 @@ public class TempArticleBizException extends JwBlogException {
 
     @Override
     public TempArticleBizException print() {
-        logger.warn("==>TagsBizException, code:" + this.code + ", msg:" + this.msg);
+        logger.warn("==>TempArticleBizException, code:" + this.code + ", msg:" + this.msg);
         return this;
     }
 

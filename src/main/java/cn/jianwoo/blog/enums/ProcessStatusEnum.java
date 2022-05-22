@@ -9,6 +9,11 @@ public enum ProcessStatusEnum {
 
 
     /**
+     * 未处理
+     */
+    INIT("00", "未处理"),
+
+    /**
      * 成功
      */
     SUCCESS("90", "成功"),
@@ -33,6 +38,14 @@ public enum ProcessStatusEnum {
     ProcessStatusEnum(String value, String desc) {
         this.desc = desc;
         this.value = value;
+    }
+
+    public String getDesc() {
+        return this.desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
     ProcessStatusEnum(String value) {

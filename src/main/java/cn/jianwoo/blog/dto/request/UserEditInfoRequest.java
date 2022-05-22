@@ -40,5 +40,9 @@ public class UserEditInfoRequest extends BaseRequestDto {
      * 性别[10:男, 20:女]'
      */
     private String userSex;
+    /**
+     * 头像
+     */
+    private String avatarSrc;
 
 }

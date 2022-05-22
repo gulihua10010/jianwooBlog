@@ -31,12 +31,12 @@ public class BizEventLogListener implements ApplicationListener<BizEventLogEvent
         Date now = DateUtil.getNow();
         log.info(">>BizEventLogListener.onApplicationEvent start, [loginId{}]", bizEventLogEvent.getUsername());
 
-        BizEventLog loginLog = JwBuilder.of(BizEventLog::new)
+        BizEventLog eventLog = JwBuilder.of(BizEventLog::new)
                 .with(BizEventLog::setLoginId, bizEventLogEvent.getUsername())
                 .with(BizEventLog::setUserName, bizEventLogEvent.getUsername())
                 .with(BizEventLog::setEventType, bizEventLogEvent.getBizEventTypeEnum().getValue())
                 .with(BizEventLog::setOptType, bizEventLogEvent.getBizEventOptTypeEnum().getValue())
-                .with(BizEventLog::setOid, bizEventLogEvent.getOid())
+                .with(BizEventLog::setOptEntityId, bizEventLogEvent.getOptEntityId())
                 .with(BizEventLog::setTriggerTime, now)
                 .with(BizEventLog::setOptEntityDesc, bizEventLogEvent.getDesc())
                 .with(BizEventLog::setTriggerIp, bizEventLogEvent.getIp())
@@ -45,7 +45,7 @@ public class BizEventLogListener implements ApplicationListener<BizEventLogEvent
                 .with(BizEventLog::setCreateTime, now)
                 .with(BizEventLog::setUpdateTime, now).build();
         try {
-            bizEventLogTransDao.doInsertSelective(loginLog);
+            bizEventLogTransDao.doInsertSelective(eventLog);
         } catch (DaoException e) {
             log.error("\r\n>>BizEventLogListener.onApplicationEvent exec failed, e\r\n", e);
         }

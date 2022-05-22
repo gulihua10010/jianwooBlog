@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="{{ layui.setter.base }}style/jw_admin.css?v={{ layui.admin.v }}-1" media="all">
 </script>
 <div class="layui-fluid" id="layuiadmin-form-comment" lay-filter="layuiadmin-form-comment">
-    <script type="text/html" template lay-url="/api/admin/article/info/{{ d.params.oid }}"
+    <script type="text/html" template lay-url="/api/admin/article/edit/detail/{{ d.params.oid }}"
             lay-done="doView(d);">
         <div class="layui-row layui-col-space15">
             <div class="layui-col-md12 art-left">
@@ -71,7 +71,7 @@
         <div class="comment-list">
             <div class="media-body">
                 <a href="javascript:" class="media-left" style="float: left;">
-                    <img src="{{ comm.headImgSrc }}" height="46px"
+                    <img src="{{ comm.avatarSrc }}" height="46px"
                          width="46px">
                 </a>
                 <div class="pad-btm">
@@ -89,7 +89,7 @@
                 <div>
                     <div class="media-body">
                         <a href="javascript:" class="media-left" style="float: left;">
-                            <img src="{{rep.headImgSrc}}" height="46px"
+                            <img src="{{rep.avatarSrc}}" height="46px"
                                  width="46px">
                         </a>
                         <div class="pad-btm">

@@ -55,7 +55,7 @@ public class ArticleVO implements Serializable {
     /**
      * 访问类型
      */
-    private String visitType;
+    private String accessType;
     /**
      * 密码
      */

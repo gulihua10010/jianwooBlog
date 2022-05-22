@@ -49,10 +49,10 @@ public class TagsApiController extends BaseController {
      * 标签添加(标签页面)<br/>
      * url:/api/admin/tag/create<br/>
      *
-     * @param param JSON 参数({@link TagRequest})
+     * @param param JSON 参数({@link TagRequest})<br/>
      *              tagText<br/>
      *              oid<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -77,10 +77,10 @@ public class TagsApiController extends BaseController {
      * 标签更新(标签页面)<br/>
      * url:/api/admin/tag/update<br/>
      *
-     * @param param JSON 参数({@link TagRequest})
+     * @param param JSON 参数({@link TagRequest})<br/>
      *              tagText<br/>
      *              oid<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -109,9 +109,9 @@ public class TagsApiController extends BaseController {
      * 标签删除(标签页面)<br/>
      * url:/api/admin/tag/remove<br/>
      *
-     * @param param JSON 参数({@link EntityOidRequest})
+     * @param param JSON 参数({@link EntityOidRequest})<br/>
      *              entityOid<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -135,9 +135,9 @@ public class TagsApiController extends BaseController {
      * 标签集合的添加(标签页面)<br/>
      * url:/api/admin/tag/create/list<br/>
      *
-     * @param param JSON 参数({@link TagListRequest})
+     * @param param JSON 参数({@link TagListRequest})<br/>
      *              tagList<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -169,7 +169,7 @@ public class TagsApiController extends BaseController {
      * 获取所有标签<br/>
      * url:/api/admin/tag/list<br/>
      *
-     * @return 返回响应 {@link TagListResponse}
+     * @return 返回响应 {@link TagListResponse}<br/>
      * status<br/>
      * data<br/>
      * --id<br/>
@@ -179,20 +179,25 @@ public class TagsApiController extends BaseController {
     @ApiVersion()
     @GetMapping(TagsApiUrlConfig.URL_TAG_LIST)
     public String queryTagsList() {
-        TagListResponse response = TagListResponse.getInstance();
-        List<TagsVO> list = new ArrayList<TagsVO>();
-        List<TagsBO> tags = tagsBizService.queryAllTags();
-        if (CollectionUtils.isNotEmpty(tags)) {
-            for (TagsBO tag : tags) {
-                TagsVO vo = JwBuilder.of(TagsVO::new)
-                        .with(TagsVO::setId, tag.getId())
-                        .with(TagsVO::setName, StringEscapeUtils.escapeHtml4(tag.getName())).build();
-                list.add(vo);
+        try {
+            TagListResponse response = TagListResponse.getInstance();
+            List<TagsVO> list = new ArrayList<TagsVO>();
+            List<TagsBO> tags = tagsBizService.queryAllTags();
+            if (CollectionUtils.isNotEmpty(tags)) {
+                for (TagsBO tag : tags) {
+                    TagsVO vo = JwBuilder.of(TagsVO::new)
+                            .with(TagsVO::setId, tag.getId())
+                            .with(TagsVO::setName, StringEscapeUtils.escapeHtml4(tag.getName())).build();
+                    list.add(vo);
+                }
             }
-        }
 
-        response.setData(list);
-        return super.responseToJSONString(response);
+            response.setData(list);
+            return super.responseToJSONString(response);
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+
+        }
 
     }
 
@@ -200,7 +205,7 @@ public class TagsApiController extends BaseController {
      * 获取文章标签<br/>
      * url:/api/admin/tag/article/list/{artId}<br/>
      *
-     * @return 返回响应 {@link TagListResponse}
+     * @return 返回响应 {@link TagListResponse}<br/>
      * status<br/>
      * data<br/>
      * --id<br/>
@@ -235,7 +240,7 @@ public class TagsApiController extends BaseController {
      * url:/api/admin/tag/info/{id}<br/>
      *
      * @param id TAG oid<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua

@@ -8,6 +8,12 @@ public class Comment implements Serializable {
 
     private Long articleOid;
 
+    private String articleTitle;
+
+    private String articleAuthor;
+
+    private String articlePushBy;
+
     private String userName;
 
     private String clientIp;
@@ -28,11 +34,13 @@ public class Comment implements Serializable {
 
     private String contactTel;
 
-    private String headImgSrc;
+    private String avatarSrc;
 
     private String artDelStauts;
 
     private String readStatus;
+
+    private Boolean isDelete;
 
     private Date createTime;
 
@@ -56,6 +64,30 @@ public class Comment implements Serializable {
 
     public void setArticleOid(Long articleOid) {
         this.articleOid = articleOid;
+    }
+
+    public String getArticleTitle() {
+        return articleTitle;
+    }
+
+    public void setArticleTitle(String articleTitle) {
+        this.articleTitle = articleTitle == null ? null : articleTitle.trim();
+    }
+
+    public String getArticleAuthor() {
+        return articleAuthor;
+    }
+
+    public void setArticleAuthor(String articleAuthor) {
+        this.articleAuthor = articleAuthor == null ? null : articleAuthor.trim();
+    }
+
+    public String getArticlePushBy() {
+        return articlePushBy;
+    }
+
+    public void setArticlePushBy(String articlePushBy) {
+        this.articlePushBy = articlePushBy == null ? null : articlePushBy.trim();
     }
 
     public String getUserName() {
@@ -138,12 +170,12 @@ public class Comment implements Serializable {
         this.contactTel = contactTel == null ? null : contactTel.trim();
     }
 
-    public String getHeadImgSrc() {
-        return headImgSrc;
+    public String getAvatarSrc() {
+        return avatarSrc;
     }
 
-    public void setHeadImgSrc(String headImgSrc) {
-        this.headImgSrc = headImgSrc == null ? null : headImgSrc.trim();
+    public void setAvatarSrc(String avatarSrc) {
+        this.avatarSrc = avatarSrc == null ? null : avatarSrc.trim();
     }
 
     public String getArtDelStauts() {
@@ -160,6 +192,14 @@ public class Comment implements Serializable {
 
     public void setReadStatus(String readStatus) {
         this.readStatus = readStatus == null ? null : readStatus.trim();
+    }
+
+    public Boolean getIsDelete() {
+        return isDelete;
+    }
+
+    public void setIsDelete(Boolean isDelete) {
+        this.isDelete = isDelete;
     }
 
     public Date getCreateTime() {
@@ -194,6 +234,9 @@ public class Comment implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", oid=").append(oid);
         sb.append(", articleOid=").append(articleOid);
+        sb.append(", articleTitle=").append(articleTitle);
+        sb.append(", articleAuthor=").append(articleAuthor);
+        sb.append(", articlePushBy=").append(articlePushBy);
         sb.append(", userName=").append(userName);
         sb.append(", clientIp=").append(clientIp);
         sb.append(", userArea=").append(userArea);
@@ -204,9 +247,10 @@ public class Comment implements Serializable {
         sb.append(", contactWechat=").append(contactWechat);
         sb.append(", contactWeibo=").append(contactWeibo);
         sb.append(", contactTel=").append(contactTel);
-        sb.append(", headImgSrc=").append(headImgSrc);
+        sb.append(", avatarSrc=").append(avatarSrc);
         sb.append(", artDelStauts=").append(artDelStauts);
         sb.append(", readStatus=").append(readStatus);
+        sb.append(", isDelete=").append(isDelete);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", content=").append(content);

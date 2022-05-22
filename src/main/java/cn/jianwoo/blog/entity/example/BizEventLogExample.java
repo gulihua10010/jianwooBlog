@@ -465,73 +465,73 @@ public class BizEventLogExample {
             return (Criteria) this;
         }
 
-        public Criteria andOptEntityOidIsNull() {
-            addCriterion("OPT_ENTITY_OID is null");
+        public Criteria andOptEntityIdIsNull() {
+            addCriterion("OPT_ENTITY_ID is null");
             return (Criteria) this;
         }
 
-        public Criteria andOptEntityOidIsNotNull() {
-            addCriterion("OPT_ENTITY_OID is not null");
+        public Criteria andOptEntityIdIsNotNull() {
+            addCriterion("OPT_ENTITY_ID is not null");
             return (Criteria) this;
         }
 
-        public Criteria andOptEntityOidEqualTo(String value) {
-            addCriterion("OPT_ENTITY_OID =", value, "optEntityOid");
+        public Criteria andOptEntityIdEqualTo(String value) {
+            addCriterion("OPT_ENTITY_ID =", value, "optEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andOptEntityOidNotEqualTo(String value) {
-            addCriterion("OPT_ENTITY_OID <>", value, "optEntityOid");
+        public Criteria andOptEntityIdNotEqualTo(String value) {
+            addCriterion("OPT_ENTITY_ID <>", value, "optEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andOptEntityOidGreaterThan(String value) {
-            addCriterion("OPT_ENTITY_OID >", value, "optEntityOid");
+        public Criteria andOptEntityIdGreaterThan(String value) {
+            addCriterion("OPT_ENTITY_ID >", value, "optEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andOptEntityOidGreaterThanOrEqualTo(String value) {
-            addCriterion("OPT_ENTITY_OID >=", value, "optEntityOid");
+        public Criteria andOptEntityIdGreaterThanOrEqualTo(String value) {
+            addCriterion("OPT_ENTITY_ID >=", value, "optEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andOptEntityOidLessThan(String value) {
-            addCriterion("OPT_ENTITY_OID <", value, "optEntityOid");
+        public Criteria andOptEntityIdLessThan(String value) {
+            addCriterion("OPT_ENTITY_ID <", value, "optEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andOptEntityOidLessThanOrEqualTo(String value) {
-            addCriterion("OPT_ENTITY_OID <=", value, "optEntityOid");
+        public Criteria andOptEntityIdLessThanOrEqualTo(String value) {
+            addCriterion("OPT_ENTITY_ID <=", value, "optEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andOptEntityOidLike(String value) {
-            addCriterion("OPT_ENTITY_OID like", value, "optEntityOid");
+        public Criteria andOptEntityIdLike(String value) {
+            addCriterion("OPT_ENTITY_ID like", value, "optEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andOptEntityOidNotLike(String value) {
-            addCriterion("OPT_ENTITY_OID not like", value, "optEntityOid");
+        public Criteria andOptEntityIdNotLike(String value) {
+            addCriterion("OPT_ENTITY_ID not like", value, "optEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andOptEntityOidIn(List<String> values) {
-            addCriterion("OPT_ENTITY_OID in", values, "optEntityOid");
+        public Criteria andOptEntityIdIn(List<String> values) {
+            addCriterion("OPT_ENTITY_ID in", values, "optEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andOptEntityOidNotIn(List<String> values) {
-            addCriterion("OPT_ENTITY_OID not in", values, "optEntityOid");
+        public Criteria andOptEntityIdNotIn(List<String> values) {
+            addCriterion("OPT_ENTITY_ID not in", values, "optEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andOptEntityOidBetween(String value1, String value2) {
-            addCriterion("OPT_ENTITY_OID between", value1, value2, "optEntityOid");
+        public Criteria andOptEntityIdBetween(String value1, String value2) {
+            addCriterion("OPT_ENTITY_ID between", value1, value2, "optEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andOptEntityOidNotBetween(String value1, String value2) {
-            addCriterion("OPT_ENTITY_OID not between", value1, value2, "optEntityOid");
+        public Criteria andOptEntityIdNotBetween(String value1, String value2) {
+            addCriterion("OPT_ENTITY_ID not between", value1, value2, "optEntityId");
             return (Criteria) this;
         }
 
@@ -1015,8 +1015,8 @@ public class BizEventLogExample {
             return (Criteria) this;
         }
 
-        public Criteria andOptEntityOidLikeInsensitive(String value) {
-            addCriterion("upper(OPT_ENTITY_OID) like", value.toUpperCase(), "optEntityOid");
+        public Criteria andOptEntityIdLikeInsensitive(String value) {
+            addCriterion("upper(OPT_ENTITY_ID) like", value.toUpperCase(), "optEntityId");
             return (Criteria) this;
         }
 

@@ -25,7 +25,6 @@ public interface EmailTplBizService {
      * 添加邮件模板
      *
      * @param param 参数
-     * @return PageInfo<EmailTemplate>
      * @author gulihua
      */
     void doCreateEmailTpl(EmailTplBO param) throws JwBlogException;
@@ -41,19 +40,19 @@ public interface EmailTplBizService {
     /**
      * 删除邮件模板
      *
-     * @param oid OID
+     * @param code 模板编码
      * @author gulihua
      */
-    void doRemoveEmailTpl(Long oid) throws JwBlogException;
+    void doRemoveEmailTpl(String code) throws JwBlogException;
 
     /**
      * 获取所有邮件模板
      *
-     * @param oid OID
+     * @param code 模板编码
      * @return EmailTplBO
      * @author gulihua
      */
-    EmailTplBO queryEmailTplByOid(String oid) throws JwBlogException;
+    EmailTplBO queryEmailTplByCode(String code) throws JwBlogException;
 
 
     /**

@@ -7,15 +7,15 @@ import cn.jianwoo.blog.exception.DaoException;
 import java.util.List;
 
 public interface EmailTemplateQueryDao {
-    EmailTemplate queryEmailTemplateByPrimaryKey(Long oid) throws DaoException;
+    EmailTemplate queryEmailTemplateByPrimaryKey(String code) throws DaoException;
 
     /**
-     * 查询所有的模板
+     * 查询所有有效的模板
      *
      * @return
      * @author gulihua
      */
-    List<EmailTemplate> queryAllEmailTplList(EmailTplQuery query);
+    List<EmailTemplate> queryAllEffectiveEmailTplList(EmailTplQuery query);
 
     /**
      * 根据code查询模板

@@ -21,6 +21,7 @@ public class DateUtil extends cn.hutool.core.date.DateUtil {
     public static final String DATE_FORMAT_YYYYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
     public static final String DATE_FORMAT_YYYYMMDDHHMMSS_TIMESTAMP = "yyyyMMddHHmmssSSS";
     public static final String DATE_FORMAT_YYYYMMDD = "yyyy-MM-dd";
+    public static final String DATE_FORMAT_YYYYMM = "yyyyMM";
     public static final String DATE_FORMAT_MMDDHHMM = "MM月dd日 HH:mm";
     public static final String DATE_FORMAT_YYYYMMDDHHMM = "yyyy年MM月dd日 HH:mm";
 
@@ -141,7 +142,8 @@ public class DateUtil extends cn.hutool.core.date.DateUtil {
         Calendar c2 = Calendar.getInstance();
         c2.setTime(new Date());
         c2.add(Calendar.DATE, -1);
-        if (c2.get(Calendar.DATE) == c1.get(Calendar.DATE)) {
+        if (c2.get(Calendar.DATE) == c1.get(Calendar.DATE) && c2.get(Calendar.YEAR) == c1.get(Calendar.YEAR)
+                && c2.get(Calendar.MONTH) == c1.get(Calendar.MONTH)) {
             return "昨天";
         }
         if (c2.get(Calendar.YEAR) == c1.get(Calendar.YEAR)) {
@@ -151,5 +153,15 @@ public class DateUtil extends cn.hutool.core.date.DateUtil {
         return cn.hutool.core.date.DateUtil.format(date, DATE_FORMAT_YYYYMMDDHHMM);
 
 
+    }
+
+
+    /**
+     * 获取日期目录 yyyyMM(当前时间)
+     *
+     */
+    public static String getCommDateFolder()
+    {
+        return  format(new Date(), DATE_FORMAT_YYYYMM);
     }
 }

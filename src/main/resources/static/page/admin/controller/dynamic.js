@@ -2,8 +2,8 @@ layui.define(['laytable', 'form'], function (exports) {
     var table = layui.laytable
 
     table.render({
-        elem: '#visit-table'
-        , url: "/api/admin/dynamic/visit/query?v=1"
+        elem: '#access-table'
+        , url: "/api/admin/dynamic/access/query?v=1"
         , cols: [[
             {field: 'desc', title: '访问记录', align: 'center'}
 

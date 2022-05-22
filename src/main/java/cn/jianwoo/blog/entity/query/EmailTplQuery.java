@@ -1,5 +1,7 @@
 package cn.jianwoo.blog.entity.query;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
 
 /**
@@ -21,7 +23,10 @@ public class EmailTplQuery extends BaseQuery implements Serializable {
     }
 
     public String getCode() {
-        return this.code;
+        if (StringUtils.isBlank(this.code)) {
+            return null;
+        }
+        return String.format("%%%s%%", this.code);
     }
 
     public void setCode(String code) {

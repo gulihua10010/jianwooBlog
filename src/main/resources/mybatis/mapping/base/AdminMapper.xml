@@ -11,6 +11,7 @@
     <result column="USER_SEX" jdbcType="VARCHAR" property="userSex" />
     <result column="REGISTER_IP" jdbcType="VARCHAR" property="registerIp" />
     <result column="REGISTER_AREA" jdbcType="VARCHAR" property="registerArea" />
+    <result column="AVATAR_SRC" jdbcType="VARCHAR" property="avatarSrc" />
     <result column="LAST_LOGIN_IP" jdbcType="VARCHAR" property="lastLoginIp" />
     <result column="LAST_LOGIN_AREA" jdbcType="VARCHAR" property="lastLoginArea" />
     <result column="LAST_LOGIN_TIME" jdbcType="TIMESTAMP" property="lastLoginTime" />
@@ -77,7 +78,8 @@
   </sql>
   <sql id="Base_Column_List">
     OID, USERNAME, `PASSWORD`, USER_NICK, USER_PHONE, USER_EMAIL, USER_SEX, REGISTER_IP, 
-    REGISTER_AREA, LAST_LOGIN_IP, LAST_LOGIN_AREA, LAST_LOGIN_TIME, CREATE_TIME, UPDATE_TIME
+    REGISTER_AREA, AVATAR_SRC, LAST_LOGIN_IP, LAST_LOGIN_AREA, LAST_LOGIN_TIME, CREATE_TIME, 
+    UPDATE_TIME
   </sql>
   <select id="selectByExample" parameterType="cn.jianwoo.blog.entity.example.AdminExample" resultMap="BaseResultMap">
     select
@@ -113,14 +115,14 @@
   <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.Admin" useGeneratedKeys="true">
     insert into admin (USERNAME, `PASSWORD`, USER_NICK, 
       USER_PHONE, USER_EMAIL, USER_SEX, 
-      REGISTER_IP, REGISTER_AREA, LAST_LOGIN_IP, 
-      LAST_LOGIN_AREA, LAST_LOGIN_TIME, CREATE_TIME, 
-      UPDATE_TIME)
+      REGISTER_IP, REGISTER_AREA, AVATAR_SRC, 
+      LAST_LOGIN_IP, LAST_LOGIN_AREA, LAST_LOGIN_TIME, 
+      CREATE_TIME, UPDATE_TIME)
     values (#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{userNick,jdbcType=VARCHAR}, 
       #{userPhone,jdbcType=VARCHAR}, #{userEmail,jdbcType=VARCHAR}, #{userSex,jdbcType=VARCHAR}, 
-      #{registerIp,jdbcType=VARCHAR}, #{registerArea,jdbcType=VARCHAR}, #{lastLoginIp,jdbcType=VARCHAR}, 
-      #{lastLoginArea,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+      #{registerIp,jdbcType=VARCHAR}, #{registerArea,jdbcType=VARCHAR}, #{avatarSrc,jdbcType=VARCHAR}, 
+      #{lastLoginIp,jdbcType=VARCHAR}, #{lastLoginArea,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=TIMESTAMP}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.Admin" useGeneratedKeys="true">
     insert into admin
@@ -148,6 +150,9 @@
       </if>
       <if test="registerArea != null">
         REGISTER_AREA,
+      </if>
+      <if test="avatarSrc != null">
+        AVATAR_SRC,
       </if>
       <if test="lastLoginIp != null">
         LAST_LOGIN_IP,
@@ -189,6 +194,9 @@
       </if>
       <if test="registerArea != null">
         #{registerArea,jdbcType=VARCHAR},
+      </if>
+      <if test="avatarSrc != null">
+        #{avatarSrc,jdbcType=VARCHAR},
       </if>
       <if test="lastLoginIp != null">
         #{lastLoginIp,jdbcType=VARCHAR},
@@ -243,6 +251,9 @@
       <if test="record.registerArea != null">
         REGISTER_AREA = #{record.registerArea,jdbcType=VARCHAR},
       </if>
+      <if test="record.avatarSrc != null">
+        AVATAR_SRC = #{record.avatarSrc,jdbcType=VARCHAR},
+      </if>
       <if test="record.lastLoginIp != null">
         LAST_LOGIN_IP = #{record.lastLoginIp,jdbcType=VARCHAR},
       </if>
@@ -274,6 +285,7 @@
       USER_SEX = #{record.userSex,jdbcType=VARCHAR},
       REGISTER_IP = #{record.registerIp,jdbcType=VARCHAR},
       REGISTER_AREA = #{record.registerArea,jdbcType=VARCHAR},
+      AVATAR_SRC = #{record.avatarSrc,jdbcType=VARCHAR},
       LAST_LOGIN_IP = #{record.lastLoginIp,jdbcType=VARCHAR},
       LAST_LOGIN_AREA = #{record.lastLoginArea,jdbcType=VARCHAR},
       LAST_LOGIN_TIME = #{record.lastLoginTime,jdbcType=TIMESTAMP},
@@ -310,6 +322,9 @@
       <if test="registerArea != null">
         REGISTER_AREA = #{registerArea,jdbcType=VARCHAR},
       </if>
+      <if test="avatarSrc != null">
+        AVATAR_SRC = #{avatarSrc,jdbcType=VARCHAR},
+      </if>
       <if test="lastLoginIp != null">
         LAST_LOGIN_IP = #{lastLoginIp,jdbcType=VARCHAR},
       </if>
@@ -338,6 +353,7 @@
       USER_SEX = #{userSex,jdbcType=VARCHAR},
       REGISTER_IP = #{registerIp,jdbcType=VARCHAR},
       REGISTER_AREA = #{registerArea,jdbcType=VARCHAR},
+      AVATAR_SRC = #{avatarSrc,jdbcType=VARCHAR},
       LAST_LOGIN_IP = #{lastLoginIp,jdbcType=VARCHAR},
       LAST_LOGIN_AREA = #{lastLoginArea,jdbcType=VARCHAR},
       LAST_LOGIN_TIME = #{lastLoginTime,jdbcType=TIMESTAMP},

@@ -198,7 +198,7 @@ public class TagsBizServiceImpl implements TagsBizService {
         BizEventLogEvent event = new BizEventLogEvent(this, SecurityContextHolder.getContext());
         event.setBizEventTypeEnum(BizEventTypeEnum.TAGS);
         event.setBizEventOptTypeEnum(optTypeEnum);
-        event.setOid(oid);
+        event.setOptEntityId(oid != null ? String.valueOf(oid) : null);
         event.setDesc(desc);
         applicationContext.publishEvent(event);
     }

@@ -62,6 +62,10 @@ public final class Constants {
     public static final String PHONE_REGEX = "^1\\d{10}$";
     //密码包含 数字,英文,字符中的两种以上，长度6-20
     public static final String PASSWORD_REGEX = "^(?![0-9]+$)(?![a-z]+$)(?![A-Z]+$)(?!([^(0-9a-zA-Z)])+$).{6,20}$";
+    //日期正则:yyyy-MM-dd
+    public static final String DATE_REGEX = "^(\\d{4})[-\\/](\\d{1}|0\\d{1}|1[0-2])([-\\/](\\d{1}|0\\d{1}|[1-2][0-9]|3[0-1]))*$";
+    //日期时间正则:yyyy-MM-dd HH:mm:ss
+    public static final String DATETIME_REGEX = "^(\\d{4})[-\\/](\\d{1}|0\\d{1}|1[0-2])([-\\/](\\d{1}|0\\d{1}|[1-2][0-9]|3[0-1]))*\\s(\\d{1}|[0-1]\\d{1}|2[0-3])[:]([0-5]\\d{1})[:]([0-5]\\d{1})$";
 
     //path
     public static final String ALL_PATH_PATTERNS = "/**";
@@ -95,8 +99,11 @@ public final class Constants {
     public static final String LOGIN_USER_STATUS = "LOGIN_USER_STATUS";
     public static final String LOGIN_ID_SECRET = "login_id_secret";
     public static final String LOGIN_ID = "login_id";
+    public static final String USER_PREFIX = "jw_";
 
     public static final String LOGIN_SESSION = "JIANWOO.LOGIN.SESSION";
+    public static final String IP_SPLIT = "@@";
+    public static final String EMAIL_TPL_CODE_EXCEPTION = "-1";
 
 
 }

@@ -83,7 +83,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">评论者头像</label>
                         <div class="layui-input-block">
-                            <img class="layui-upload-img" id="headImgSrc" style="margin-left: 5px" src="{{d.data.headImgSrc}}"
+                            <img class="layui-upload-img" id="avatarSrc" style="margin-left: 5px" src="{{d.data.avatarSrc}}"
                                  width="50">
 
                         </div>
@@ -169,7 +169,7 @@
         <div class="comment-list">
             <div class="media-body" data-id="{{ comm.oid}}">
                 <a href="javascript:" class="media-left" style="float: left;">
-                    <img src="{{ comm.headImgSrc }}" height="46px"
+                    <img src="{{ comm.avatarSrc }}" height="46px"
                          width="46px">
                 </a>
                 <div class="pad-btm">
@@ -193,7 +193,7 @@
                 <div>
                     <div class="media-body" data-id="{{ rep.oid}}">
                         <a href="javascript:" class="media-left" style="float: left;">
-                            <img src="{{rep.headImgSrc}}" height="46px"
+                            <img src="{{rep.avatarSrc}}" height="46px"
                                  width="46px">
                         </a>
                         <div class="pad-btm">

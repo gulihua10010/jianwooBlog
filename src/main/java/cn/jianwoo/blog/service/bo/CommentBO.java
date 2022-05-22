@@ -85,7 +85,7 @@ public class CommentBO implements Serializable {
     /**
      * 头像路径
      */
-    private String headImgSrc;
+    private String avatarSrc;
 
     /**
      * 文章删除状态
@@ -104,7 +104,7 @@ public class CommentBO implements Serializable {
     /**
      * 文章标题
      */
-    private String title;
+    private String articleTitle;
 
     /**
      * 回复给用户名

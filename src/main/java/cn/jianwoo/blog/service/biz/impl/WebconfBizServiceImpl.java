@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -171,8 +172,8 @@ public class WebconfBizServiceImpl implements WebconfBizService {
                         o.setValue(Constants.BLANK);
                     }
                     String cacheKey = MessageFormat.format(CacaheKeyConstants.WEBCONF_KEY, webconf.getKey());
-                    cacheStore.put(cacheKey, o.getValue());
-                    registerBizEvent(webconf.getKey(), BizEventOptTypeEnum.CREATE);
+                    cacheStore.put(cacheKey, o.getValue(), 2, TimeUnit.HOURS);
+                    registerBizEvent(webconf.getKey(), BizEventOptTypeEnum.UPDATE);
                 } catch (DaoException e) {
                     log.error("WebconfBizServiceImpl.doUpdateConfig exec failed, e:\n", e);
                     throw WebconfBizException.MODIFY_FAILED_EXCEPTION.format(o.getKey()).print();
@@ -189,7 +190,7 @@ public class WebconfBizServiceImpl implements WebconfBizService {
         String cacheKey = MessageFormat.format(CacaheKeyConstants.WEBCONF_KEY, key);
         if (cacheStore.hasKey(cacheKey)) {
             //理论上永远不会为null，因为key存在，且value不能为null
-            return (String) cacheStore.get(cacheKey).orElse(null);
+            return  (String) cacheStore.get(cacheKey).orElse(null);
         }
         Webconf webConf = webconfTransDao.queryWebconfByKey(key);
         String value = null;
@@ -205,7 +206,7 @@ public class WebconfBizServiceImpl implements WebconfBizService {
         } else if (ValueTypeEnum.DATE.getValue().equals(webConf.getValueType())) {
             value = DateUtil.formatTimestamp(webConf.getDateValue());
         }
-        cacheStore.put(cacheKey, value);
+        cacheStore.put(cacheKey, value, 2, TimeUnit.HOURS);
         return value;
     }
 
@@ -216,7 +217,7 @@ public class WebconfBizServiceImpl implements WebconfBizService {
         String cacheKey = MessageFormat.format(CacaheKeyConstants.WEBCONF_TYPE, cfgType);
         if (cacheStore.hasKey(cacheKey)) {
             //理论上永远不会为null，因为key存在，且value不能为null
-            return (Map<String, String>) cacheStore.get(cacheKey).orElse(confMap);
+            return  (Map<String, String>) cacheStore.get(cacheKey).orElse(confMap);
         }
         List<Webconf> webconfList = webconfTransDao.queryWebconfsByType(cfgType);
         for (Webconf webConf : webconfList) {
@@ -261,6 +262,7 @@ public class WebconfBizServiceImpl implements WebconfBizService {
         BizEventLogEvent event = new BizEventLogEvent(this, SecurityContextHolder.getContext());
         event.setBizEventTypeEnum(BizEventTypeEnum.WEBCONF);
         event.setBizEventOptTypeEnum(optTypeEnum);
+        event.setOptEntityId(key);
         event.setDesc(key);
         applicationContext.publishEvent(event);
     }

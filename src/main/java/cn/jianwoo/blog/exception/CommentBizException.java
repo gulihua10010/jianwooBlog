@@ -16,8 +16,23 @@ public class CommentBizException extends JwBlogException {
             ExceptionConstants.BIZ_NOT_EXIST, "The comment[%s] does not exist.");
     public static final CommentBizException NOT_EXIST_EXCEPTION_CN = new CommentBizException(
             ExceptionConstants.BIZ_NOT_EXIST, "评论[%s]不存在!");
+    public static final CommentBizException THIS_COMMENT_NOT_EXIST_EXCEPTION_CN = new CommentBizException(
+            ExceptionConstants.BIZ_NOT_EXIST, "该评论不存在!");
+    //Operation without permission
+    public static final CommentBizException OPERATION_WITHOUT_PERMISSION = new CommentBizException(
+            ExceptionConstants.BIZ_OPERATION_FAILED, "您没有权限操作!拒绝访问!");
+    public static final CommentBizException ARTICLE_NOT_SAME = new CommentBizException(
+            ExceptionConstants.BIZ_NOT_MATCH, "修改评论的文章与之前的不一致!");
+    public static final CommentBizException FREQUENCY_HIGH_CN = new CommentBizException(
+            ExceptionConstants.BIZ_OPERATION_FAILED, "系统检测到您评论的频率过高,请稍后再试!");
+
+    public static final ArticleBizException BLOG_NOT_ALLOW_COMMENT_EXCEPTION_CN = new ArticleBizException(
+            ExceptionConstants.BIZ_NOT_EXIST, "该博客不允许评论!");
+
     public static final CommentBizException CREATE_FAILED_EXCEPTION = new CommentBizException(
             ExceptionConstants.BIZ_CREATE_FAIL, "The comment[%s] creation is failed.");
+    public static final CommentBizException CREATE_FAILED_EXCEPTION_CN = new CommentBizException(
+            ExceptionConstants.BIZ_CREATE_FAIL, "评论发表失败!");
     public static final CommentBizException MODIFY_FAILED_EXCEPTION = new CommentBizException(
             ExceptionConstants.BIZ_MODIFY_FAIL, "The comment[%s] modification is failed.");
     public static final CommentBizException DELETE_FAILED_EXCEPTION = new CommentBizException(

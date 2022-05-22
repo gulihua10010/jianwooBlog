@@ -41,4 +41,13 @@ public class AdminBaseServiceImpl implements AdminBaseService {
     public Admin queryAdminByUsername(String username) {
         return adminTransDao.queryAdminByUsername(username);
     }
+
+    @Override
+    public Admin queryAdminByEmail(String email) throws JwBlogException {
+        try {
+            return adminTransDao.queryAdminByEmail(email);
+        } catch (DaoException e) {
+            throw AdminBizException.NOT_EXIST_EXCEPTION_CN.format(email).print();
+        }
+    }
 }

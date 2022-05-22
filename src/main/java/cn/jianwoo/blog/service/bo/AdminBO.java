@@ -55,6 +55,11 @@ public class AdminBO implements Serializable {
     private String userSex;
 
     /**
+     * 头像
+     */
+    private String avatarSrc;
+
+    /**
      * 注册IP地址
      */
     private String registerIp;

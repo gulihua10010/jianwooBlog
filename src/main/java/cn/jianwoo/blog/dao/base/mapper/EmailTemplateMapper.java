@@ -10,7 +10,7 @@ public interface EmailTemplateMapper {
 
     int deleteByExample(EmailTemplateExample example);
 
-    int deleteByPrimaryKey(Long oid);
+    int deleteByPrimaryKey(String emailTplCode);
 
     int insert(EmailTemplate record);
 
@@ -20,7 +20,7 @@ public interface EmailTemplateMapper {
 
     List<EmailTemplate> selectByExample(EmailTemplateExample example);
 
-    EmailTemplate selectByPrimaryKey(Long oid);
+    EmailTemplate selectByPrimaryKey(String emailTplCode);
 
     int updateByExampleSelective(@Param("record") EmailTemplate record, @Param("example") EmailTemplateExample example);
 

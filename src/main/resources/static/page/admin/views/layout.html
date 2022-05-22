@@ -30,15 +30,15 @@
         <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right">
 
             <li class="layui-nav-item" lay-unselect>
-                <a lay-href="dynamic" layadmin-event="message">
+                <a layadmin-event="message" id="message">
                     <i class="layui-icon layui-icon-notice"></i>
 
-                    <!-- 如果有新消息，则显示小圆点 -->
-                    <!--          <script type="text/html" template lay-url="./json/message/new.js">-->
-                    <!--          {{# if(d.data.newmsg){ }} -->
-                    <!--            <span class="layui-badge-dot"></span>-->
-                    <!--          {{# } }}-->
-                    <!--          </script>-->
+<!--                     如果有新消息，则显示小圆点-->
+                              <script type="text/html" template lay-url="/api/admin/msg/unread/count">
+                              {{# if(d.count){ }}
+                                <span class="layui-badge" style="border-radius: 50px">{{d.count}}</span>
+                              {{# } }}
+                              </script>
 
                 </a>
             </li>
@@ -96,6 +96,9 @@
                     var path = layui.router().path
                     ,pathURL = layui.admin.correctRouter(path.join('/'))
                     ,dataName = layui.setter.response.dataName;
+                    if(path.length == 0) {
+                        path = [''];
+                    }
 
                     layui.each(d[dataName], function(index, item){
                     var hasChildren = typeof item.list === 'object' && item.list.length > 0
@@ -212,5 +215,22 @@
         return "{loginID:'" + username + "'}"
     }
 
+    var $ = layui.jquery;
+
+
+    $('#message').click(function (){
+        layui.admin.popup({
+            title: '我的消息'
+            , area: ['60%', '75%']
+            , id: 'LAY-popup-msg-list'
+            , success: function (layero, index) {
+                layui.view(this.id).render('msg/list').done(function () {
+                    layui.form.render(null, 'LAY-popup-msg-list');
+
+                });
+            }
+        });
+
+    });
 
 </script>

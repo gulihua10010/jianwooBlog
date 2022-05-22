@@ -1,6 +1,7 @@
 package cn.jianwoo.blog.service.notify;
 
 import cn.jianwoo.blog.exception.JwBlogException;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * 消息发送接口
@@ -12,13 +13,13 @@ public interface NotifyMsgService {
 
 
     /**
-     * 忘记密码发验证码
+     * 邮件发送
      *
-     * @param loginID   登录ID
-     * @param captcha 验证码
-     * @param captcha 收信人
+     * @param emailTplCode 邮件模板编码
+     * @param param        参数
+     * @param recipient    收信人
      * @return
      * @author gulihua
      */
-    void sendCaptcha4ForgetPwd(String loginID, String captcha, String recipient) throws JwBlogException;
+    void doSend(String emailTplCode, JSONObject param, String recipient) throws JwBlogException;
 }

@@ -32,7 +32,7 @@ public class CommentReplyRequest extends BasePageRequestDto {
     /**
      * 头像url
      */
-    private String headImgUrl;
+    private String avatarSrc;
     /**
      * qq
      */

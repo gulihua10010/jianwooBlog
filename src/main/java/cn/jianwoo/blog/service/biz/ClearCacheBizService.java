@@ -15,10 +15,11 @@ public interface ClearCacheBizService {
      * @param isClearCache 是否清除缓存
      * @param isClearLog   是否清除日志
      * @param isClearTemp  是否清除临时目录
+     * @param isCleanMemory  是否清除内存缓存:jwCacheStore
      * @return
      * @author gulihua
      */
-    void clearCache(boolean isClearCache, boolean isClearLog, boolean isClearTemp) throws JwBlogException;
+    void clearCache(boolean isClearCache, boolean isClearLog, boolean isClearTemp, boolean isCleanMemory) throws JwBlogException;
 
 
     /**

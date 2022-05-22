@@ -19,10 +19,7 @@ import lombok.NoArgsConstructor;
 public class EmailTplRequest extends BaseRequestDto {
     private static final long serialVersionUID = 1691429969857619376L;
 
-    /**
-     * 主键
-     */
-    private Long oid;
+
     /**
      * 邮件模板编号
      */

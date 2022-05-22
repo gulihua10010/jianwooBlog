@@ -16,7 +16,7 @@ public class TempArticle implements Serializable {
 
     private String imgSrc;
 
-    private String visitType;
+    private String accessType;
 
     private String password;
 
@@ -86,12 +86,12 @@ public class TempArticle implements Serializable {
         this.imgSrc = imgSrc == null ? null : imgSrc.trim();
     }
 
-    public String getVisitType() {
-        return visitType;
+    public String getAccessType() {
+        return accessType;
     }
 
-    public void setVisitType(String visitType) {
-        this.visitType = visitType == null ? null : visitType.trim();
+    public void setAccessType(String accessType) {
+        this.accessType = accessType == null ? null : accessType.trim();
     }
 
     public String getPassword() {
@@ -178,7 +178,7 @@ public class TempArticle implements Serializable {
         sb.append(", menuOid=").append(menuOid);
         sb.append(", isComment=").append(isComment);
         sb.append(", imgSrc=").append(imgSrc);
-        sb.append(", visitType=").append(visitType);
+        sb.append(", accessType=").append(accessType);
         sb.append(", password=").append(password);
         sb.append(", oldArticleOid=").append(oldArticleOid);
         sb.append(", tags=").append(tags);

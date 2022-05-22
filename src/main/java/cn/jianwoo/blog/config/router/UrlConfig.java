@@ -10,6 +10,7 @@ import cn.jianwoo.blog.constants.Constants;
 public class UrlConfig {
     public static final int DEFAULT_VERSION = 1;
     public static final String VERSION_PLACEHOLDER = "/{version}";
+    public static final String ALL_PATTERNS = "/*";
     private static final String VERSION_PRE_FIX = "v";
 
     protected static String getVersion(float version) {

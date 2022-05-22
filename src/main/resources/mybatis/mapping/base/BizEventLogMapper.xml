@@ -7,7 +7,7 @@
     <result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
     <result column="EVENT_TYPE" jdbcType="VARCHAR" property="eventType" />
     <result column="OPT_TYPE" jdbcType="VARCHAR" property="optType" />
-    <result column="OPT_ENTITY_OID" jdbcType="VARCHAR" property="optEntityOid" />
+    <result column="OPT_ENTITY_ID" jdbcType="VARCHAR" property="optEntityId" />
     <result column="OPT_ENTITY_DESC" jdbcType="VARCHAR" property="optEntityDesc" />
     <result column="TRIGGER_TIME" jdbcType="TIMESTAMP" property="triggerTime" />
     <result column="TRIGGER_IP" jdbcType="VARCHAR" property="triggerIp" />
@@ -75,8 +75,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    OID, LOGIN_ID, USER_NAME, EVENT_TYPE, OPT_TYPE, OPT_ENTITY_OID, OPT_ENTITY_DESC, 
-    TRIGGER_TIME, TRIGGER_IP, PROCESS_STATUS, FAILED_REASON, CREATE_TIME, UPDATE_TIME
+    OID, LOGIN_ID, USER_NAME, EVENT_TYPE, OPT_TYPE, OPT_ENTITY_ID, OPT_ENTITY_DESC, TRIGGER_TIME, 
+    TRIGGER_IP, PROCESS_STATUS, FAILED_REASON, CREATE_TIME, UPDATE_TIME
   </sql>
   <select id="selectByExample" parameterType="cn.jianwoo.blog.entity.example.BizEventLogExample" resultMap="BaseResultMap">
     select
@@ -111,12 +111,12 @@
   </delete>
   <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.BizEventLog" useGeneratedKeys="true">
     insert into biz_event_log (LOGIN_ID, USER_NAME, EVENT_TYPE, 
-      OPT_TYPE, OPT_ENTITY_OID, OPT_ENTITY_DESC, 
+      OPT_TYPE, OPT_ENTITY_ID, OPT_ENTITY_DESC, 
       TRIGGER_TIME, TRIGGER_IP, PROCESS_STATUS, 
       FAILED_REASON, CREATE_TIME, UPDATE_TIME
       )
     values (#{loginId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{eventType,jdbcType=VARCHAR}, 
-      #{optType,jdbcType=VARCHAR}, #{optEntityOid,jdbcType=VARCHAR}, #{optEntityDesc,jdbcType=VARCHAR}, 
+      #{optType,jdbcType=VARCHAR}, #{optEntityId,jdbcType=VARCHAR}, #{optEntityDesc,jdbcType=VARCHAR}, 
       #{triggerTime,jdbcType=TIMESTAMP}, #{triggerIp,jdbcType=VARCHAR}, #{processStatus,jdbcType=VARCHAR}, 
       #{failedReason,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
       )
@@ -136,8 +136,8 @@
       <if test="optType != null">
         OPT_TYPE,
       </if>
-      <if test="optEntityOid != null">
-        OPT_ENTITY_OID,
+      <if test="optEntityId != null">
+        OPT_ENTITY_ID,
       </if>
       <if test="optEntityDesc != null">
         OPT_ENTITY_DESC,
@@ -174,8 +174,8 @@
       <if test="optType != null">
         #{optType,jdbcType=VARCHAR},
       </if>
-      <if test="optEntityOid != null">
-        #{optEntityOid,jdbcType=VARCHAR},
+      <if test="optEntityId != null">
+        #{optEntityId,jdbcType=VARCHAR},
       </if>
       <if test="optEntityDesc != null">
         #{optEntityDesc,jdbcType=VARCHAR},
@@ -224,8 +224,8 @@
       <if test="record.optType != null">
         OPT_TYPE = #{record.optType,jdbcType=VARCHAR},
       </if>
-      <if test="record.optEntityOid != null">
-        OPT_ENTITY_OID = #{record.optEntityOid,jdbcType=VARCHAR},
+      <if test="record.optEntityId != null">
+        OPT_ENTITY_ID = #{record.optEntityId,jdbcType=VARCHAR},
       </if>
       <if test="record.optEntityDesc != null">
         OPT_ENTITY_DESC = #{record.optEntityDesc,jdbcType=VARCHAR},
@@ -260,7 +260,7 @@
       USER_NAME = #{record.userName,jdbcType=VARCHAR},
       EVENT_TYPE = #{record.eventType,jdbcType=VARCHAR},
       OPT_TYPE = #{record.optType,jdbcType=VARCHAR},
-      OPT_ENTITY_OID = #{record.optEntityOid,jdbcType=VARCHAR},
+      OPT_ENTITY_ID = #{record.optEntityId,jdbcType=VARCHAR},
       OPT_ENTITY_DESC = #{record.optEntityDesc,jdbcType=VARCHAR},
       TRIGGER_TIME = #{record.triggerTime,jdbcType=TIMESTAMP},
       TRIGGER_IP = #{record.triggerIp,jdbcType=VARCHAR},
@@ -287,8 +287,8 @@
       <if test="optType != null">
         OPT_TYPE = #{optType,jdbcType=VARCHAR},
       </if>
-      <if test="optEntityOid != null">
-        OPT_ENTITY_OID = #{optEntityOid,jdbcType=VARCHAR},
+      <if test="optEntityId != null">
+        OPT_ENTITY_ID = #{optEntityId,jdbcType=VARCHAR},
       </if>
       <if test="optEntityDesc != null">
         OPT_ENTITY_DESC = #{optEntityDesc,jdbcType=VARCHAR},
@@ -320,7 +320,7 @@
       USER_NAME = #{userName,jdbcType=VARCHAR},
       EVENT_TYPE = #{eventType,jdbcType=VARCHAR},
       OPT_TYPE = #{optType,jdbcType=VARCHAR},
-      OPT_ENTITY_OID = #{optEntityOid,jdbcType=VARCHAR},
+      OPT_ENTITY_ID = #{optEntityId,jdbcType=VARCHAR},
       OPT_ENTITY_DESC = #{optEntityDesc,jdbcType=VARCHAR},
       TRIGGER_TIME = #{triggerTime,jdbcType=TIMESTAMP},
       TRIGGER_IP = #{triggerIp,jdbcType=VARCHAR},

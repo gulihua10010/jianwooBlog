@@ -224,7 +224,7 @@ input:-webkit-autofill {
 
 .comment-content {
     display: block;
-    padding: 10px 20px 10px;
+    padding: 10px;
 }
 
 .comment-content .media-body, .comment-content-reply .media-body {

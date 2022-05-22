@@ -30,7 +30,7 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function (exports) {
 
         , saveArticleTime : 30000
 
-        , verifyTokenApi : "/api/admin/jwt/verify/token"
+        , notifyMsgApi : "/api/admin/msg/timer/newest/query/list"
 
         //自定义请求字段
         , request: {

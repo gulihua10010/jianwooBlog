@@ -47,4 +47,15 @@ public class AdminQueryDaoImpl implements AdminQueryDao {
         }
         return null;
     }
+
+    @Override
+    public Admin queryAdminByEmail(String email) throws DaoException {
+        AdminExample example = new AdminExample();
+        example.createCriteria().andUserEmailEqualTo(email);
+        List<Admin> admins = adminMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(admins)) {
+            throw DaoException.DAO_LIST_IS_NULL;
+        }
+        return admins.get(0);
+    }
 }

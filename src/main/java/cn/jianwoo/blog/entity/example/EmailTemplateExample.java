@@ -125,66 +125,6 @@ public class EmailTemplateExample {
             criteria.add(new Criterion(condition, value1, value2));
         }
 
-        public Criteria andOidIsNull() {
-            addCriterion("OID is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidIsNotNull() {
-            addCriterion("OID is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidEqualTo(Long value) {
-            addCriterion("OID =", value, "oid");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidNotEqualTo(Long value) {
-            addCriterion("OID <>", value, "oid");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidGreaterThan(Long value) {
-            addCriterion("OID >", value, "oid");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidGreaterThanOrEqualTo(Long value) {
-            addCriterion("OID >=", value, "oid");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidLessThan(Long value) {
-            addCriterion("OID <", value, "oid");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidLessThanOrEqualTo(Long value) {
-            addCriterion("OID <=", value, "oid");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidIn(List<Long> values) {
-            addCriterion("OID in", values, "oid");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidNotIn(List<Long> values) {
-            addCriterion("OID not in", values, "oid");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidBetween(Long value1, Long value2) {
-            addCriterion("OID between", value1, value2, "oid");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidNotBetween(Long value1, Long value2) {
-            addCriterion("OID not between", value1, value2, "oid");
-            return (Criteria) this;
-        }
-
         public Criteria andEmailTplCodeIsNull() {
             addCriterion("EMAIL_TPL_CODE is null");
             return (Criteria) this;
@@ -462,6 +402,76 @@ public class EmailTemplateExample {
 
         public Criteria andTestJsonDataNotBetween(String value1, String value2) {
             addCriterion("TEST_JSON_DATA not between", value1, value2, "testJsonData");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusUsedIsNull() {
+            addCriterion("STATUS_USED is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusUsedIsNotNull() {
+            addCriterion("STATUS_USED is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusUsedEqualTo(Boolean value) {
+            addCriterion("STATUS_USED =", value, "statusUsed");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusUsedNotEqualTo(Boolean value) {
+            addCriterion("STATUS_USED <>", value, "statusUsed");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusUsedGreaterThan(Boolean value) {
+            addCriterion("STATUS_USED >", value, "statusUsed");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusUsedGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("STATUS_USED >=", value, "statusUsed");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusUsedLessThan(Boolean value) {
+            addCriterion("STATUS_USED <", value, "statusUsed");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusUsedLessThanOrEqualTo(Boolean value) {
+            addCriterion("STATUS_USED <=", value, "statusUsed");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusUsedLike(Boolean value) {
+            addCriterion("STATUS_USED like", value, "statusUsed");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusUsedNotLike(Boolean value) {
+            addCriterion("STATUS_USED not like", value, "statusUsed");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusUsedIn(List<Boolean> values) {
+            addCriterion("STATUS_USED in", values, "statusUsed");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusUsedNotIn(List<Boolean> values) {
+            addCriterion("STATUS_USED not in", values, "statusUsed");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusUsedBetween(Boolean value1, Boolean value2) {
+            addCriterion("STATUS_USED between", value1, value2, "statusUsed");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusUsedNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("STATUS_USED not between", value1, value2, "statusUsed");
             return (Criteria) this;
         }
 

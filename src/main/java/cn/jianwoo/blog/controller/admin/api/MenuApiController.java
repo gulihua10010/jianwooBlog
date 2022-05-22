@@ -62,9 +62,9 @@ public class MenuApiController extends BaseController {
      * 菜单排序(菜单页面)<br/>
      * url:api/admin/menu/sort<br/>
      *
-     * @param param JSON 参数({@link EntityOidListRequest})
+     * @param param JSON 参数({@link EntityOidListRequest})<br/>
      *              entityOidList<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -89,14 +89,14 @@ public class MenuApiController extends BaseController {
      * 菜单添加(菜单页面)<br/>
      * url:api/admin/menu/create<br/>
      *
-     * @param param JSON 参数({@link MenuVoRequest})
+     * @param param JSON 参数({@link MenuVoRequest})<br/>
      *              oid<br/>
      *              parentOid<br/>
      *              text<br/>
      *              url<br/>
      *              name<br/>
      *              icon<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -135,14 +135,14 @@ public class MenuApiController extends BaseController {
      * 菜单更新(菜单页面)<br/>
      * url:api/admin/menu/update<br/>
      *
-     * @param param JSON 参数({@link MenuVoRequest})
+     * @param param JSON 参数({@link MenuVoRequest})<br/>
      *              oid<br/>
      *              parentOid<br/>
      *              text<br/>
      *              url<br/>
      *              name<br/>
      *              icon<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -181,9 +181,9 @@ public class MenuApiController extends BaseController {
      * 验证子菜单是否存在，删除菜单前验证(菜单页面)<br/>
      * url:api/admin/menu/validate/submenu<br/>
      *
-     * @param param JSON 参数({@link EntityOidRequest})
+     * @param param JSON 参数({@link EntityOidRequest})<br/>
      *              entityOid<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -211,9 +211,9 @@ public class MenuApiController extends BaseController {
      * 验证菜单下文章是否存在，删除菜单前验证(菜单页面)<br/>
      * url:api/admin/menu/validate/article/exist<br/>
      *
-     * @param param JSON 参数({@link EntityOidRequest})
+     * @param param JSON 参数({@link EntityOidRequest})<br/>
      *              entityOid<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -242,9 +242,9 @@ public class MenuApiController extends BaseController {
      * 删除菜单(菜单页面)<br/>
      * url:api/admin/menu/remove<br/>
      *
-     * @param param JSON 参数({@link EntityOidRequest})
+     * @param param JSON 参数({@link EntityOidRequest})<br/>
      *              entityOid<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -271,7 +271,7 @@ public class MenuApiController extends BaseController {
      * 获取后台菜单信息<br/>
      * url:/api/admin/menu/backend/info/list<br/>
      *
-     * @return 返回响应 {@link BackendMenuResponse}
+     * @return 返回响应 {@link BackendMenuResponse}<br/>
      * status<br/>
      * count<br/>
      * data<br/>
@@ -295,13 +295,15 @@ public class MenuApiController extends BaseController {
                 BackendMenuVO vo = new BackendMenuVO();
                 vo.setIcon(menuBO.getIcon());
                 vo.setTitle(menuBO.getText());
-                for (MenuBO subMenu : menuBO.getSubMenuList()) {
-                    BackendSubMenuVO subMenuVO = JwBuilder.of(BackendSubMenuVO::new)
-                            .with(BackendSubMenuVO::setTitle, subMenu.getText())
-                            .with(BackendSubMenuVO::setName, subMenu.getName())
-                            .with(BackendSubMenuVO::setJump, subMenu.getUrl())
-                            .build();
-                    subMenuVOList.add(subMenuVO);
+                if (CollectionUtils.isNotEmpty(menuBO.getSubMenuList())) {
+                    for (MenuBO subMenu : menuBO.getSubMenuList()) {
+                        BackendSubMenuVO subMenuVO = JwBuilder.of(BackendSubMenuVO::new)
+                                .with(BackendSubMenuVO::setTitle, subMenu.getText())
+                                .with(BackendSubMenuVO::setName, subMenu.getName())
+                                .with(BackendSubMenuVO::setJump, subMenu.getUrl())
+                                .build();
+                        subMenuVOList.add(subMenuVO);
+                    }
                 }
                 vo.setList(subMenuVOList);
                 list.add(vo);
@@ -319,7 +321,7 @@ public class MenuApiController extends BaseController {
      * 获取前台菜单(文章类别)<br/>
      * url:/api/admin/menu/article/type/list<br/>
      *
-     * @return 返回响应 {@link ArticleMenuResponse}
+     * @return 返回响应 {@link ArticleMenuResponse}<br/>
      * status<br/>
      * data<br/>
      * --id<br/>
@@ -329,20 +331,25 @@ public class MenuApiController extends BaseController {
     @ApiVersion()
     @GetMapping(MenuApiUrlConfig.URL_MENU_ARTICLE_TYPE_LIST)
     public String queryArticleTypeMenuList() {
-        ArticleMenuResponse response = ArticleMenuResponse.getInstance();
-        List<ArticleMenuVO> list = new ArrayList<>();
-        List<Menu> menuList = menuBizService.querySubMenuOrderedList(MenuTypeEnum.FRONTEND.getValue());
-        if (CollectionUtils.isNotEmpty(menuList)) {
-            for (Menu menu : menuList) {
-                ArticleMenuVO vo = JwBuilder.of(ArticleMenuVO::new)
-                        .with(ArticleMenuVO::setId, menu.getOid())
-                        .with(ArticleMenuVO::setName, StringEscapeUtils.escapeHtml4(menu.getText())).build();
-                list.add(vo);
+        try {
+            ArticleMenuResponse response = ArticleMenuResponse.getInstance();
+            List<ArticleMenuVO> list = new ArrayList<>();
+            List<Menu> menuList = menuBizService.querySubMenuOrderedList(MenuTypeEnum.FRONTEND.getValue());
+            if (CollectionUtils.isNotEmpty(menuList)) {
+                for (Menu menu : menuList) {
+                    ArticleMenuVO vo = JwBuilder.of(ArticleMenuVO::new)
+                            .with(ArticleMenuVO::setId, menu.getOid())
+                            .with(ArticleMenuVO::setName, StringEscapeUtils.escapeHtml4(menu.getText())).build();
+                    list.add(vo);
+                }
             }
-        }
 
-        response.setData(list);
-        return super.responseToJSONString(response);
+            response.setData(list);
+            return super.responseToJSONString(response);
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+
+        }
 
     }
 
@@ -351,7 +358,7 @@ public class MenuApiController extends BaseController {
      * 获取前台首页菜单<br/>
      * url:/api/admin/menu/home/list<br/>
      *
-     * @return 返回响应 {@link ArticleMenuResponse}
+     * @return 返回响应 {@link ArticleMenuResponse}<br/>
      * status<br/>
      * data<br/>
      * --id<br/>
@@ -412,10 +419,10 @@ public class MenuApiController extends BaseController {
 
 
     /**
-     * 获取前台首页菜单<br/>
+     * 获取前台首页菜单详情信息<br/>
      * url:/api/admin/menu/info/{id}<br/>
      *
-     * @return 返回响应 {@link ArticleMenuResponse}
+     * @return 返回响应 {@link ArticleMenuResponse}<br/>
      * status<br/>
      * data<br/>
      * --id<br/>

@@ -171,7 +171,7 @@
                                                        title="{{ item.titleDsp }}"
                                                        value="{{formatNum(item.value,item.valueType )}}"
                                                        data-key="{{item.formType}}"
-                                                       lay-verify="{{#  if(item.required){ }}required|{{#  } }}{{item.validateType}}"
+                                                       lay-verify="{{#  if(item.required){ }}required|{{#  } }}{{item.validateType}} |number"
                                                        {{ validateValue(item.validateType,item.validateValue) }}
                                                        data-validateType="{{item.validateType}}"
                                                        data-validateValue="{{=item.validateValue}}"
@@ -397,7 +397,7 @@
     }
 
     function check(value) {
-        if (value === 'true') {
+        if (value.toLowerCase() === 'true') {
             return 'checked'
         }
         return '';

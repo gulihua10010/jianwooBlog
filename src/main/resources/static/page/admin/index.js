@@ -234,12 +234,12 @@ layui.extend({
 
             }
         }
-        , callApiToken = function (loop)
+        , callTimerMsgApi = function (loop)
         {
-            adminVerifyJwt();
+            timerMsgNotify();
             if (!loop) {
                 setInterval(function () {
-                    callApiToken(true)
+                    callTimerMsgApi(true)
                 }, 10000);
             }
         }
@@ -250,7 +250,7 @@ layui.extend({
 
 
 
-    callApiToken();
+    callTimerMsgApi();
 
     //初始主体结构
     layui.link(

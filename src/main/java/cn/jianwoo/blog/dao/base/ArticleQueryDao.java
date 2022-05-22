@@ -16,7 +16,7 @@ public interface ArticleQueryDao {
      * @param oid 主键
      * @return
      * @author gulihua
-     * @see [ArticleQueryDao.queryArticleByOidWithBLOBs]
+     * @see {@link ArticleQueryDao.queryArticleByOidWithBLOBs}
      */
     @Deprecated
     ArticleWithBLOBs queryArticleByPrimaryKey(Long oid) throws DaoException;
@@ -30,6 +30,16 @@ public interface ArticleQueryDao {
      * @author gulihua
      */
     List<Article> queryArticleByStatus(String status);
+
+    /**
+     * 通过状态和访问类型 查询文章
+     *
+     * @param statusList     状态集合{@link cn.jianwoo.blog.enums.ArticleStatusEnum}
+     * @param accessTypeList 访问类型集合{@link cn.jianwoo.blog.enums.ArticleAccessEnum}
+     * @return
+     * @author gulihua
+     */
+    List<Article> queryArticleByStatusAndAccessType(List<String> statusList, List<String> accessTypeList);
 
 
     /**
@@ -46,7 +56,7 @@ public interface ArticleQueryDao {
      * 通过oid 查询有效的文章(STATUS({@link cn.jianwoo.blog.enums.ArticleStatusEnum}) != 99) <br>
      * 不含文章内容<br>
      *
-     * @param oid 主键
+     * @param oid 文章主键
      * @return
      * @author gulihua
      */

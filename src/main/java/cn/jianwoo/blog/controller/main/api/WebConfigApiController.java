@@ -1,5 +1,6 @@
 package cn.jianwoo.blog.controller.main.api;
 
+import cn.jianwoo.blog.annotation.IpLimit;
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.config.apiversion.ApiVersion;
 import cn.jianwoo.blog.config.router.main.WebConfigApiUrlConfig;
@@ -36,9 +37,9 @@ public class WebConfigApiController extends BaseController {
      * 查询网站配置<br/>
      * url:/api/main/config/query<br/>
      *
-     * @param param JSON 参数({@link WebconfRequest})
+     * @param param JSON 参数({@link WebconfRequest})<br/>
      *              key
-     * @return 返回响应 {@link WebConfigCommResponse}
+     * @return 返回响应 {@link WebConfigCommResponse}<br/>
      * status<br/>
      * data<br/>
      * --value<br/> \
@@ -46,6 +47,7 @@ public class WebConfigApiController extends BaseController {
      */
     @PostMapping(WebConfigApiUrlConfig.URL_CONFIG_QUERY)
     @ApiVersion()
+    @IpLimit(key = "getWebConfig")
     public String getWebConfig(@RequestBody String param) {
         WebConfigCommResponse response = WebConfigCommResponse.getInstance();
         try {

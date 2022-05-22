@@ -2,11 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.jianwoo.blog.dao.base.mapper.EmailTemplateMapper">
   <resultMap id="BaseResultMap" type="cn.jianwoo.blog.entity.EmailTemplate">
-    <id column="OID" jdbcType="BIGINT" property="oid" />
-    <result column="EMAIL_TPL_CODE" jdbcType="VARCHAR" property="emailTplCode" />
+    <id column="EMAIL_TPL_CODE" jdbcType="VARCHAR" property="emailTplCode" />
     <result column="DESC" jdbcType="VARCHAR" property="desc" />
     <result column="SUBJECT" jdbcType="VARCHAR" property="subject" />
     <result column="TEST_JSON_DATA" jdbcType="VARCHAR" property="testJsonData" />
+    <result column="STATUS_USED" jdbcType="VARCHAR" property="statusUsed" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
     <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -72,7 +72,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    OID, EMAIL_TPL_CODE, `DESC`, SUBJECT, TEST_JSON_DATA, CREATE_TIME, UPDATE_TIME
+    EMAIL_TPL_CODE, `DESC`, SUBJECT, TEST_JSON_DATA, STATUS_USED, CREATE_TIME, UPDATE_TIME
   </sql>
   <sql id="Blob_Column_List">
     CONTENT
@@ -108,17 +108,17 @@
     </if>
     <include refid="MySQLDialectSuffix" />
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
     select 
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
     from email_template
-    where OID = #{oid,jdbcType=BIGINT}
+    where EMAIL_TPL_CODE = #{emailTplCode,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from email_template
-    where OID = #{oid,jdbcType=BIGINT}
+    where EMAIL_TPL_CODE = #{emailTplCode,jdbcType=VARCHAR}
   </delete>
   <delete id="deleteByExample" parameterType="cn.jianwoo.blog.entity.example.EmailTemplateExample">
     delete from email_template
@@ -126,15 +126,15 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.EmailTemplate" useGeneratedKeys="true">
+  <insert id="insert" parameterType="cn.jianwoo.blog.entity.EmailTemplate">
     insert into email_template (EMAIL_TPL_CODE, `DESC`, SUBJECT, 
-      TEST_JSON_DATA, CREATE_TIME, UPDATE_TIME, 
-      CONTENT)
+      TEST_JSON_DATA, STATUS_USED, CREATE_TIME, 
+      UPDATE_TIME, CONTENT)
     values (#{emailTplCode,jdbcType=VARCHAR}, #{desc,jdbcType=VARCHAR}, #{subject,jdbcType=VARCHAR}, 
-      #{testJsonData,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{content,jdbcType=LONGVARCHAR})
+      #{testJsonData,jdbcType=VARCHAR}, #{statusUsed,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.EmailTemplate" useGeneratedKeys="true">
+  <insert id="insertSelective" parameterType="cn.jianwoo.blog.entity.EmailTemplate">
     insert into email_template
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="emailTplCode != null">
@@ -148,6 +148,9 @@
       </if>
       <if test="testJsonData != null">
         TEST_JSON_DATA,
+      </if>
+      <if test="statusUsed != null">
+        STATUS_USED,
       </if>
       <if test="createTime != null">
         CREATE_TIME,
@@ -172,6 +175,9 @@
       <if test="testJsonData != null">
         #{testJsonData,jdbcType=VARCHAR},
       </if>
+      <if test="statusUsed != null">
+        #{statusUsed,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -192,9 +198,6 @@
   <update id="updateByExampleSelective" parameterType="map">
     update email_template
     <set>
-      <if test="record.oid != null">
-        OID = #{record.oid,jdbcType=BIGINT},
-      </if>
       <if test="record.emailTplCode != null">
         EMAIL_TPL_CODE = #{record.emailTplCode,jdbcType=VARCHAR},
       </if>
@@ -206,6 +209,9 @@
       </if>
       <if test="record.testJsonData != null">
         TEST_JSON_DATA = #{record.testJsonData,jdbcType=VARCHAR},
+      </if>
+      <if test="record.statusUsed != null">
+        STATUS_USED = #{record.statusUsed,jdbcType=VARCHAR},
       </if>
       <if test="record.createTime != null">
         CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
@@ -223,11 +229,11 @@
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
     update email_template
-    set OID = #{record.oid,jdbcType=BIGINT},
-      EMAIL_TPL_CODE = #{record.emailTplCode,jdbcType=VARCHAR},
+    set EMAIL_TPL_CODE = #{record.emailTplCode,jdbcType=VARCHAR},
       `DESC` = #{record.desc,jdbcType=VARCHAR},
       SUBJECT = #{record.subject,jdbcType=VARCHAR},
       TEST_JSON_DATA = #{record.testJsonData,jdbcType=VARCHAR},
+      STATUS_USED = #{record.statusUsed,jdbcType=VARCHAR},
       CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP},
       CONTENT = #{record.content,jdbcType=LONGVARCHAR}
@@ -237,11 +243,11 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update email_template
-    set OID = #{record.oid,jdbcType=BIGINT},
-      EMAIL_TPL_CODE = #{record.emailTplCode,jdbcType=VARCHAR},
+    set EMAIL_TPL_CODE = #{record.emailTplCode,jdbcType=VARCHAR},
       `DESC` = #{record.desc,jdbcType=VARCHAR},
       SUBJECT = #{record.subject,jdbcType=VARCHAR},
       TEST_JSON_DATA = #{record.testJsonData,jdbcType=VARCHAR},
+      STATUS_USED = #{record.statusUsed,jdbcType=VARCHAR},
       CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -251,9 +257,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="cn.jianwoo.blog.entity.EmailTemplate">
     update email_template
     <set>
-      <if test="emailTplCode != null">
-        EMAIL_TPL_CODE = #{emailTplCode,jdbcType=VARCHAR},
-      </if>
       <if test="desc != null">
         `DESC` = #{desc,jdbcType=VARCHAR},
       </if>
@@ -262,6 +265,9 @@
       </if>
       <if test="testJsonData != null">
         TEST_JSON_DATA = #{testJsonData,jdbcType=VARCHAR},
+      </if>
+      <if test="statusUsed != null">
+        STATUS_USED = #{statusUsed,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
@@ -273,28 +279,28 @@
         CONTENT = #{content,jdbcType=LONGVARCHAR},
       </if>
     </set>
-    where OID = #{oid,jdbcType=BIGINT}
+    where EMAIL_TPL_CODE = #{emailTplCode,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.jianwoo.blog.entity.EmailTemplate">
     update email_template
-    set EMAIL_TPL_CODE = #{emailTplCode,jdbcType=VARCHAR},
-      `DESC` = #{desc,jdbcType=VARCHAR},
+    set `DESC` = #{desc,jdbcType=VARCHAR},
       SUBJECT = #{subject,jdbcType=VARCHAR},
       TEST_JSON_DATA = #{testJsonData,jdbcType=VARCHAR},
+      STATUS_USED = #{statusUsed,jdbcType=VARCHAR},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
       CONTENT = #{content,jdbcType=LONGVARCHAR}
-    where OID = #{oid,jdbcType=BIGINT}
+    where EMAIL_TPL_CODE = #{emailTplCode,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.jianwoo.blog.entity.EmailTemplate">
     update email_template
-    set EMAIL_TPL_CODE = #{emailTplCode,jdbcType=VARCHAR},
-      `DESC` = #{desc,jdbcType=VARCHAR},
+    set `DESC` = #{desc,jdbcType=VARCHAR},
       SUBJECT = #{subject,jdbcType=VARCHAR},
       TEST_JSON_DATA = #{testJsonData,jdbcType=VARCHAR},
+      STATUS_USED = #{statusUsed,jdbcType=VARCHAR},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
-    where OID = #{oid,jdbcType=BIGINT}
+    where EMAIL_TPL_CODE = #{emailTplCode,jdbcType=VARCHAR}
   </update>
   <sql id="MySQLDialectSuffix">
     <if test="start != null and rows != null">

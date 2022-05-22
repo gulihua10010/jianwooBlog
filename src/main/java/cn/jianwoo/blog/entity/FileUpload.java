@@ -22,6 +22,8 @@ public class FileUpload implements Serializable {
 
     private String url;
 
+    private String cdnUrl;
+
     private String fileMd5;
 
     private Boolean isChunk;
@@ -108,6 +110,14 @@ public class FileUpload implements Serializable {
         this.url = url == null ? null : url.trim();
     }
 
+    public String getCdnUrl() {
+        return cdnUrl;
+    }
+
+    public void setCdnUrl(String cdnUrl) {
+        this.cdnUrl = cdnUrl == null ? null : cdnUrl.trim();
+    }
+
     public String getFileMd5() {
         return fileMd5;
     }
@@ -171,6 +181,7 @@ public class FileUpload implements Serializable {
         sb.append(", mediaInfo=").append(mediaInfo);
         sb.append(", path=").append(path);
         sb.append(", url=").append(url);
+        sb.append(", cdnUrl=").append(cdnUrl);
         sb.append(", fileMd5=").append(fileMd5);
         sb.append(", isChunk=").append(isChunk);
         sb.append(", isDelete=").append(isDelete);

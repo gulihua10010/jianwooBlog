@@ -21,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ArticleCommentListVO implements Serializable {
     private static final long serialVersionUID = 7882315214967519501L;
-    private String headImgSrc;
+    private String avatarSrc;
     private String userName;
     private String commentTimeStr;
     private Date commentTime;

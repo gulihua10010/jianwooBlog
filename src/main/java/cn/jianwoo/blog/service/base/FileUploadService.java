@@ -1,7 +1,7 @@
 package cn.jianwoo.blog.service.base;
 
-import cn.jianwoo.blog.entity.FileUpload;
 import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.service.bo.FileUploadBO;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -19,5 +19,5 @@ public interface FileUploadService {
      * @return FileUpload 文件上传对象
      * @author gulihua
      */
-    FileUpload doUpload(MultipartFile multipartFile, String url, boolean isReName) throws JwBlogException;
+    FileUploadBO doUpload(MultipartFile multipartFile, String url, boolean isReName) throws JwBlogException;
 }

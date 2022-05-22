@@ -22,6 +22,8 @@ public class Admin implements Serializable {
 
     private String registerArea;
 
+    private String avatarSrc;
+
     private String lastLoginIp;
 
     private String lastLoginArea;
@@ -106,6 +108,14 @@ public class Admin implements Serializable {
         this.registerArea = registerArea == null ? null : registerArea.trim();
     }
 
+    public String getAvatarSrc() {
+        return avatarSrc;
+    }
+
+    public void setAvatarSrc(String avatarSrc) {
+        this.avatarSrc = avatarSrc == null ? null : avatarSrc.trim();
+    }
+
     public String getLastLoginIp() {
         return lastLoginIp;
     }
@@ -161,6 +171,7 @@ public class Admin implements Serializable {
         sb.append(", userSex=").append(userSex);
         sb.append(", registerIp=").append(registerIp);
         sb.append(", registerArea=").append(registerArea);
+        sb.append(", avatarSrc=").append(avatarSrc);
         sb.append(", lastLoginIp=").append(lastLoginIp);
         sb.append(", lastLoginArea=").append(lastLoginArea);
         sb.append(", lastLoginTime=").append(lastLoginTime);

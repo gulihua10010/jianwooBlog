@@ -49,7 +49,7 @@ public class TempArticleSaveRequest extends BaseRequestDto {
     /**
      * 访问类型, 11:密码, 10:私密, 20:公共, 21:置顶
      */
-    private String visitType;
+    private String accessType;
 
     /**
      * 密码 访问类型为-1时有效

@@ -39,11 +39,25 @@
                                        lay-verify="required|maxLength|email" lay-max="30" type="text">
                             </div>
                         </div>
-                        <div class="layui-form">
+                        <div class="layui-form-item">
                             <div class="layui-form-label">性别</div>
                             <div class="layui-input-block">
                                 <input type="radio" name="userSex" value="10" title="男" {{check10(d.data.userSex)}}>
                                 <input type="radio" name="userSex" value="20" title="女" {{check20(d.data.userSex)}}>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-form-label">头像</div>
+                            <div class="layui-input-block">
+                                <div class="layui-upload">
+                                    <button class="layui-btn" id="avatarBtn" type="button">上传图片</button>
+                                    <div class="layui-upload-list imgupload">
+                                        <img class="pre-upd-img" id="breimg" style="margin-left: 5px" width="100"
+                                             src="{{ d.data.avatarSrc }}">
+                                        <p id="demoText"></p>
+                                        <input id="avatarSrc" name="avatarSrc" style="visibility: hidden" value=""/>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <input class="layui-input" name="loginID" value="{{ d.data.loginID }}" type="hidden">

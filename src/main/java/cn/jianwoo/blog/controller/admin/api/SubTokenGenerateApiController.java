@@ -30,9 +30,9 @@ public class SubTokenGenerateApiController extends BaseController {
      * 生成token，用于验证表单重复提交<br/>
      * url:/api/admin/token/generate<br/>
      *
-     * @param param JSON 参数({@link TokenGenRequest})
+     * @param param JSON 参数({@link TokenGenRequest})<br/>
      *              pageId<br/>
-     * @return 返回响应 {@link SubTokenResponse}
+     * @return 返回响应 {@link SubTokenResponse}<br/>
      * token
      * @author gulihua
      */

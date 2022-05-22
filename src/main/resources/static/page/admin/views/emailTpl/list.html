@@ -3,7 +3,7 @@
 <div class="layui-card layadmin-header">
     <div class="layui-breadcrumb" lay-filter="breadcrumb">
         <a lay-href="">主页</a>
-        <a><cite>系统管理</cite></a>
+        <a><cite>邮件管理</cite></a>
         <a><cite>邮件模板</cite></a>
     </div>
 </div>
@@ -39,7 +39,7 @@
             <table id="emailTpl-table" lay-filter="emailTpl"></table>
             <script id="table-content-email" type="text/html">
                 <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"
-                   lay-href="/emailTpl/edit/id={{d.oid}}"><i
+                   lay-href="/emailTpl/edit/code={{d.code}}"><i
                         class="layui-icon layui-icon-form"></i>编辑</a>
                 <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
                         class="layui-icon layui-icon-delete"></i>删除</a>

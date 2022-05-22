@@ -26,7 +26,8 @@ public class ArticleApiUrlConfig extends UrlConfig {
     public static final String URL_ARTICLE_RECYCLE_RESTORE_DRAFT = "/recycle/restore/draft";
     public static final String URL_ARTICLE_RECYCLE_DELETE = "/recycle/delete";
     public static final String URL_ARTICLE_REMOVE_RECYCLE = "/remove/recycle";
-    public static final String URL_ARTICLE_INFO = "/info/{id}";
+    public static final String URL_ARTICLE_EDIT_DETAIL = "/edit/detail/{id}";
+    public static final String URL_ARTICLE_EDIT_INFO = "/edit/info/{id}";
     public static final String URL_ARTICLE_TEMP_SAVE = "/temp/save";
     public static final String URL_ARTICLE_TEMP_UPDATE = "/temp/update";
     public static final String URL_ARTICLE_LAST_TEMP_INFO = "/last/temp/info";

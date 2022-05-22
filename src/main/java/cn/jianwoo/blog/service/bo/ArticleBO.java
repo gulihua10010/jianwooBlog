@@ -1,5 +1,6 @@
 package cn.jianwoo.blog.service.bo;
 
+import cn.jianwoo.blog.enums.ArticleAccessEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -56,9 +57,9 @@ public class ArticleBO implements Serializable {
     private String imgSrc;
 
     /**
-     * 访问类型 article.visitType {@link cn.jianwoo.blog.enums.ArticleVisitEnum} [ARTICLE.VISIT_TYPE]
+     * 访问类型 article.accessType {@link ArticleAccessEnum} [ARTICLE.ACCESS_TYPE]
      */
-    private String visitType;
+    private String accessType;
 
     /**
      * 状态article.status {@link cn.jianwoo.blog.enums.ArticleStatusEnum} [ARTICLE.STATUS]

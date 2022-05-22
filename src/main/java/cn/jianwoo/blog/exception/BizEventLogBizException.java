@@ -57,7 +57,7 @@ public class BizEventLogBizException extends JwBlogException {
 
     @Override
     public BizEventLogBizException print() {
-        logger.warn("==>TagsBizException, code:" + this.code + ", msg:" + this.msg);
+        logger.warn("==>BizEventLogBizException, code:" + this.code + ", msg:" + this.msg);
         return this;
     }
 

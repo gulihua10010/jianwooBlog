@@ -42,8 +42,8 @@ public class LogApiController extends BaseController {
      * 分页查询前1000个登录日志<br/>
      * url:/api/admin/log/login/query/list<br/>
      *
-     * @param param JSON 参数({@link BasePageRequestDto})
-     * @return 返回响应 {@link LogSummaryResponse}
+     * @param param JSON 参数({@link BasePageRequestDto})<br/>
+     * @return 返回响应 {@link LogSummaryResponse}<br/>
      * code<br/>
      * count<br/>
      * data<br/>
@@ -59,30 +59,35 @@ public class LogApiController extends BaseController {
     @ApiVersion()
     @GetMapping(BizLogApiUrlConfig.URL_TAG_LOGIN_QUERY_LIST)
     public String queryLoginLogPageList(BasePageRequestDto param) {
-        super.printRequestParams(DomainUtil.toString(param));
-        PageParam pageParam = new PageParam();
-        pageParam.setPageNo(param.getPage());
-        pageParam.setPageSize(param.getLimit());
-        PageInfo<BizLogBO> pageInfo = logBizService.queryLoginLogPageList(pageParam);
-        List<LogSummaryVO> list = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(pageInfo.getList())) {
-            for (BizLogBO bizLogBO : pageInfo.getList()) {
-                LogSummaryVO vo = new LogSummaryVO();
-                vo.setLoginId(bizLogBO.getLoginId());
-                vo.setEventType(LoginEventTypeEnum.descOfValue(bizLogBO.getEventType()));
-                vo.setTriggerTime(bizLogBO.getTriggerTime());
-                vo.setTriggerIp(bizLogBO.getTriggerIp());
-                vo.setTriggerArea(bizLogBO.getTriggerArea());
-                vo.setProcessStatusStr(ProcessStatusEnum.descOfValue(bizLogBO.getProcessStatus()));
-                vo.setProcessStatus(bizLogBO.getProcessStatus());
-                vo.setFailedReason(bizLogBO.getFailedReason());
-                list.add(vo);
+        try {
+            super.printRequestParams(DomainUtil.toString(param));
+            PageParam pageParam = new PageParam();
+            pageParam.setPageNo(param.getPage());
+            pageParam.setPageSize(param.getLimit());
+            PageInfo<BizLogBO> pageInfo = logBizService.queryLoginLogPageList(pageParam);
+            List<LogSummaryVO> list = new ArrayList<>();
+            if (CollectionUtils.isNotEmpty(pageInfo.getList())) {
+                for (BizLogBO bizLogBO : pageInfo.getList()) {
+                    LogSummaryVO vo = new LogSummaryVO();
+                    vo.setLoginId(bizLogBO.getLoginId());
+                    vo.setEventType(LoginEventTypeEnum.descOfValue(bizLogBO.getEventType()));
+                    vo.setTriggerTime(bizLogBO.getTriggerTime());
+                    vo.setTriggerIp(bizLogBO.getTriggerIp());
+                    vo.setTriggerArea(bizLogBO.getTriggerArea());
+                    vo.setProcessStatusStr(ProcessStatusEnum.descOfValue(bizLogBO.getProcessStatus()));
+                    vo.setProcessStatus(bizLogBO.getProcessStatus());
+                    vo.setFailedReason(bizLogBO.getFailedReason());
+                    list.add(vo);
+                }
             }
+            LogSummaryResponse response = LogSummaryResponse.getInstance();
+            response.setData(list);
+            response.setCount(pageInfo.getTotal());
+            return super.responseToJSONString(response);
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+
         }
-        LogSummaryResponse response = LogSummaryResponse.getInstance();
-        response.setData(list);
-        response.setCount(pageInfo.getTotal());
-        return super.responseToJSONString(response);
     }
 
 
@@ -90,8 +95,8 @@ public class LogApiController extends BaseController {
      * 分页查询前1000个业务日志<br/>
      * url:/api/admin/log/biz/query/list<br/>
      *
-     * @param param JSON 参数({@link BasePageRequestDto})
-     * @return 返回响应 {@link LogSummaryResponse}
+     * @param param JSON 参数({@link BasePageRequestDto})<br/>
+     * @return 返回响应 {@link LogSummaryResponse}<br/>
      * code<br/>
      * count<br/>
      * data<br/>
@@ -107,27 +112,32 @@ public class LogApiController extends BaseController {
     @ApiVersion()
     @GetMapping(BizLogApiUrlConfig.URL_TAG_BIZ_QUERY_LIST)
     public String queryBizLogPageList(BasePageRequestDto param) {
-        super.printRequestParams(DomainUtil.toString(param));
-        PageParam pageParam = new PageParam();
-        pageParam.setPageNo(param.getPage());
-        pageParam.setPageSize(param.getLimit());
-        PageInfo<BizLogBO> pageInfo = logBizService.queryBizLogPageList(pageParam);
-        List<LogSummaryVO> list = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(pageInfo.getList())) {
-            for (BizLogBO bizLogBO : pageInfo.getList()) {
-                LogSummaryVO vo = new LogSummaryVO();
-                vo.setLoginId(bizLogBO.getLoginId());
-                vo.setEventType(BizEventTypeEnum.descOfValue(bizLogBO.getEventType()));
-                vo.setOptType(BizEventOptTypeEnum.descOfValue(bizLogBO.getOptType()));
-                vo.setTriggerTime(bizLogBO.getTriggerTime());
-                vo.setTriggerIp(bizLogBO.getTriggerIp());
-                vo.setOptEntityDesc(bizLogBO.getOptEntityDesc());
-                list.add(vo);
+        try {
+            super.printRequestParams(DomainUtil.toString(param));
+            PageParam pageParam = new PageParam();
+            pageParam.setPageNo(param.getPage());
+            pageParam.setPageSize(param.getLimit());
+            PageInfo<BizLogBO> pageInfo = logBizService.queryBizLogPageList(pageParam);
+            List<LogSummaryVO> list = new ArrayList<>();
+            if (CollectionUtils.isNotEmpty(pageInfo.getList())) {
+                for (BizLogBO bizLogBO : pageInfo.getList()) {
+                    LogSummaryVO vo = new LogSummaryVO();
+                    vo.setLoginId(bizLogBO.getLoginId());
+                    vo.setEventType(BizEventTypeEnum.descOfValue(bizLogBO.getEventType()));
+                    vo.setOptType(BizEventOptTypeEnum.descOfValue(bizLogBO.getOptType()));
+                    vo.setTriggerTime(bizLogBO.getTriggerTime());
+                    vo.setTriggerIp(bizLogBO.getTriggerIp());
+                    vo.setOptEntityDesc(bizLogBO.getOptEntityDesc());
+                    list.add(vo);
+                }
             }
+            LogSummaryResponse response = LogSummaryResponse.getInstance();
+            response.setData(list);
+            response.setCount(pageInfo.getTotal());
+            return super.responseToJSONString(response);
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+
         }
-        LogSummaryResponse response = LogSummaryResponse.getInstance();
-        response.setData(list);
-        response.setCount(pageInfo.getTotal());
-        return super.responseToJSONString(response);
     }
 }

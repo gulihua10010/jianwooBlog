@@ -57,7 +57,7 @@ public class LoginFailedEventBizException extends JwBlogException {
 
     @Override
     public LoginFailedEventBizException print() {
-        logger.warn("==>TagsBizException, code:" + this.code + ", msg:" + this.msg);
+        logger.warn("==>LoginFailedEventBizException, code:" + this.code + ", msg:" + this.msg);
         return this;
     }
 

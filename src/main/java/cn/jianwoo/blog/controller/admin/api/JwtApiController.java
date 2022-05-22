@@ -24,7 +24,7 @@ public class JwtApiController extends BaseController {
      * 验证token<br/>
      * url:/api/admin/jwt/verify/token<br/>
      *
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * @author gulihua
      */
     public String verifyToken() {

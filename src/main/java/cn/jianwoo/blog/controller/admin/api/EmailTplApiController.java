@@ -50,13 +50,13 @@ public class EmailTplApiController extends BaseController {
 
 
     /**
-     * 分页查询评论(邮件模板列表)<br/>
+     * 分页查询邮件模板(邮件模板列表)<br/>
      * url:/api/admin/email/tpl/query/list<br/>
      *
-     * @param param JSON 参数({@link EmailTplPageRequest})
-     *              title<br/>
-     *              unread<br/>
-     * @return 返回响应 {@link EmailTplSummaryResponse}
+     * @param param JSON 参数({@link EmailTplPageRequest})<br/>
+     *              code<br/>
+     *              desc<br/>
+     * @return 返回响应 {@link EmailTplSummaryResponse}<br/>
      * status<br/>
      * count<br/>
      * data<br/>
@@ -70,34 +70,38 @@ public class EmailTplApiController extends BaseController {
     @ApiVersion()
     @GetMapping(EmailTemplateApiUrlConfig.URL_EMAIL_TPL_QUERY_LIST)
     public String queryEmailTplPage(EmailTplPageRequest param) {
-        super.printRequestParams(DomainUtil.toString(param));
-        EmailTplParam emailTplParam = new EmailTplParam();
-        if (StringUtils.isNotBlank(param.getCode())) {
-            emailTplParam.setCode(param.getCode());
-        }
-        if (StringUtils.isNotBlank(param.getDesc())) {
-            emailTplParam.setDesc(param.getDesc());
-        }
-        emailTplParam.setPageNo(param.getPage());
-        emailTplParam.setPageSize(param.getLimit());
-        PageInfo<EmailTplBO> pageInfo = emailTplBizService.queryAllEmailTplPage(emailTplParam);
+        try {
+            super.printRequestParams(DomainUtil.toString(param));
+            EmailTplParam emailTplParam = new EmailTplParam();
+            if (StringUtils.isNotBlank(param.getCode())) {
+                emailTplParam.setCode(param.getCode());
+            }
+            if (StringUtils.isNotBlank(param.getDesc())) {
+                emailTplParam.setDesc(param.getDesc());
+            }
+            emailTplParam.setPageNo(param.getPage());
+            emailTplParam.setPageSize(param.getLimit());
+            PageInfo<EmailTplBO> pageInfo = emailTplBizService.queryAllEmailTplPage(emailTplParam);
 
-        EmailTplSummaryResponse response = EmailTplSummaryResponse.getInstance();
-        List<EmailTplSummaryVO> list = new ArrayList<>();
-        for (EmailTplBO emailTplBO : pageInfo.getList()) {
-            EmailTplSummaryVO vo = JwBuilder.of(EmailTplSummaryVO::new)
-                    .with(EmailTplSummaryVO::setOid, emailTplBO.getOid())
-                    .with(EmailTplSummaryVO::setCode, emailTplBO.getEmailTplCode())
-                    .with(EmailTplSummaryVO::setCreateTime, emailTplBO.getCreateTime())
-                    .with(EmailTplSummaryVO::setCreateTimeStr, DateUtil.formatDateTime(emailTplBO.getCreateTime()))
-                    .with(EmailTplSummaryVO::setDesc, emailTplBO.getDesc())
-                    .with(EmailTplSummaryVO::setSubject, emailTplBO.getSubject()).build();
-            list.add(vo);
-        }
-        response.setData(list);
+            EmailTplSummaryResponse response = EmailTplSummaryResponse.getInstance();
+            List<EmailTplSummaryVO> list = new ArrayList<>();
+            for (EmailTplBO emailTplBO : pageInfo.getList()) {
+                EmailTplSummaryVO vo = JwBuilder.of(EmailTplSummaryVO::new)
+                        .with(EmailTplSummaryVO::setCode, emailTplBO.getEmailTplCode())
+                        .with(EmailTplSummaryVO::setCreateTime, emailTplBO.getCreateTime())
+                        .with(EmailTplSummaryVO::setCreateTimeStr, DateUtil.formatDateTime(emailTplBO.getCreateTime()))
+                        .with(EmailTplSummaryVO::setDesc, emailTplBO.getDesc())
+                        .with(EmailTplSummaryVO::setSubject, emailTplBO.getSubject()).build();
+                list.add(vo);
+            }
+            response.setData(list);
 
-        response.setCount(pageInfo.getTotal());
-        return super.responseToJSONString(response);
+            response.setCount(pageInfo.getTotal());
+            return super.responseToJSONString(response);
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+
+        }
 
     }
 
@@ -106,13 +110,13 @@ public class EmailTplApiController extends BaseController {
      * 创建邮件模板<br/>
      * url:/api/admin/email/tpl/create<br/>
      *
-     * @param param JSON 参数({@link EmailTplRequest})
+     * @param param JSON 参数({@link EmailTplRequest})<br/>
      *              code<br/>
      *              desc<br/>
      *              subject<br/>
      *              content<br/>
      *              testJsonData<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -150,14 +154,14 @@ public class EmailTplApiController extends BaseController {
      * 更新邮件模板<br/>
      * url:/api/admin/email/tpl/update<br/>
      *
-     * @param param JSON 参数({@link EmailTplRequest})
+     * @param param JSON 参数({@link EmailTplRequest})<br/>
      *              oid<br/>
      *              code<br/>
      *              desc<br/>
      *              subject<br/>
      *              content<br/>
      *              testJsonData<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -170,7 +174,6 @@ public class EmailTplApiController extends BaseController {
         try {
             super.printRequestParams(param);
             EmailTplRequest request = this.convertParam(param, EmailTplRequest.class);
-            BizValidation.paramValidate(request.getOid(), "oid", "邮件模板oid不能为空!");
             BizValidation.paramValidate(request.getCode(), "code", "邮件模板编号不能为空!");
             BizValidation.paramValidate(request.getSubject(), "subject", "邮件模板主题不能为空!");
             BizValidation.paramValidate(request.getContent(), "content", "邮件模板内容不能为空!");
@@ -178,7 +181,6 @@ public class EmailTplApiController extends BaseController {
             BizValidation.paramLengthValidate(request.getDesc(), 100, "subject", "邮件模板主题不能大于100个字符!");
             BizValidation.paramLengthValidate(request.getSubject(), 500, "content", "邮件模板内容不能大于500个字符!");
             EmailTplBO bo = JwBuilder.of(EmailTplBO::new)
-                    .with(EmailTplBO::setOid, request.getOid())
                     .with(EmailTplBO::setEmailTplCode, request.getCode())
                     .with(EmailTplBO::setContent, request.getContent())
                     .with(EmailTplBO::setDesc, request.getDesc())
@@ -195,10 +197,10 @@ public class EmailTplApiController extends BaseController {
 
     /**
      * 查询邮件模板信息<br/>
-     * url:/api/admin/email/tpl/edit/{id}<br/>
+     * url:/api/admin/email/tpl/edit/{code}<br/>
      *
-     * @param id id
-     * @return 返回响应 {@link BaseResponseDto}
+     * @param code code
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * oid<br/>
      * code<br/>
@@ -211,13 +213,12 @@ public class EmailTplApiController extends BaseController {
      */
     @ApiVersion()
     @GetMapping(EmailTemplateApiUrlConfig.URL_EMAIL_TPL_EDIT)
-    public String queryEmailTplEditInfo(@PathVariable("id") String id) {
+    public String queryEmailTplEditInfo(@PathVariable("code") String code) {
         try {
-            BizValidation.paramValidate(id, "id", "邮件模板id不能为空!");
-            EmailTplBO emailTplBO = emailTplBizService.queryEmailTplByOid(id);
+            BizValidation.paramValidate(code, "code", "邮件模板编码不能为空!");
+            EmailTplBO emailTplBO = emailTplBizService.queryEmailTplByCode(code);
             EmailTplResponse response = EmailTplResponse.getInstance();
             EmailTplVO vo = JwBuilder.of(EmailTplVO::new)
-                    .with(EmailTplVO::setOid, emailTplBO.getOid())
                     .with(EmailTplVO::setCode, emailTplBO.getEmailTplCode())
                     .with(EmailTplVO::setContent, emailTplBO.getContent())
                     .with(EmailTplVO::setDesc, emailTplBO.getDesc())
@@ -237,9 +238,9 @@ public class EmailTplApiController extends BaseController {
      * 删除邮件模板<br/>
      * url:/api/admin/email/tpl/remove<br/>
      *
-     * @param param JSON 参数({@link EntityOidRequest})
+     * @param param JSON 参数({@link EntityOidRequest})<br/>
      *              entityOid
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * @author gulihua
      */
@@ -248,9 +249,9 @@ public class EmailTplApiController extends BaseController {
     public String doRemoveEmailTpl(@RequestBody String param) {
         try {
             super.printRequestParams(param);
-            EntityOidRequest request = this.convertParam(param, EntityOidRequest.class);
-            BizValidation.paramValidate(request.getEntityOid(), "entityOid", "邮件模板id不能为空!");
-            emailTplBizService.doRemoveEmailTpl(request.getEntityOid());
+            EmailTplRequest request = this.convertParam(param, EmailTplRequest.class);
+            BizValidation.paramValidate(request.getCode(), "code", "邮件模板编码不能为空!");
+            emailTplBizService.doRemoveEmailTpl(request.getCode());
         } catch (Exception e) {
             return super.exceptionToString(e);
         }
@@ -263,7 +264,7 @@ public class EmailTplApiController extends BaseController {
      * 渲染邮件模板<br/>
      * url:/api/admin/email/tpl/render<br/>
      *
-     * @param param JSON 参数({@link EmailTplRequest})
+     * @param param JSON 参数({@link EmailTplRequest})<br/>
      *              oid<br/>
      *              code<br/>
      *              desc<br/>
@@ -271,7 +272,7 @@ public class EmailTplApiController extends BaseController {
      *              contemt<br/>
      *              testJsonData<br/>
      *              createTime<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * @author gulihua
      */

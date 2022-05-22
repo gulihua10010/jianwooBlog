@@ -5,6 +5,7 @@
     <id column="OID" jdbcType="BIGINT" property="oid" />
     <result column="AUTHOR" jdbcType="VARCHAR" property="author" />
     <result column="PUSH_TIME" jdbcType="TIMESTAMP" property="pushTime" />
+    <result column="PUSH_BY" jdbcType="VARCHAR" property="pushBy" />
     <result column="TITLE" jdbcType="VARCHAR" property="title" />
     <result column="MODIFIED_TIME" jdbcType="TIMESTAMP" property="modifiedTime" />
     <result column="MENU_ID" jdbcType="INTEGER" property="menuId" />
@@ -12,7 +13,7 @@
     <result column="PRAISE_COUNT" jdbcType="BIGINT" property="praiseCount" />
     <result column="IS_COMMENT" jdbcType="CHAR" property="isComment" />
     <result column="IMG_SRC" jdbcType="VARCHAR" property="imgSrc" />
-    <result column="VISIT_TYPE" jdbcType="VARCHAR" property="visitType" />
+    <result column="ACCESS_TYPE" jdbcType="VARCHAR" property="accessType" />
     <result column="COMMENT_COUNT" jdbcType="BIGINT" property="commentCount" />
     <result column="STATUS" jdbcType="VARCHAR" property="status" />
     <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
@@ -84,9 +85,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    OID, AUTHOR, PUSH_TIME, TITLE, MODIFIED_TIME, MENU_ID, READ_COUNT, PRAISE_COUNT, 
-    IS_COMMENT, IMG_SRC, VISIT_TYPE, COMMENT_COUNT, `STATUS`, `PASSWORD`, DEL_TIME, REMOVE_RECYCLE_TIME, 
-    CREATE_TIME, UPDATE_TIME
+    OID, AUTHOR, PUSH_TIME, PUSH_BY, TITLE, MODIFIED_TIME, MENU_ID, READ_COUNT, PRAISE_COUNT, 
+    IS_COMMENT, IMG_SRC, ACCESS_TYPE, COMMENT_COUNT, `STATUS`, `PASSWORD`, DEL_TIME, 
+    REMOVE_RECYCLE_TIME, CREATE_TIME, UPDATE_TIME
   </sql>
   <sql id="Blob_Column_List">
     CONTENT, `TEXT`
@@ -142,19 +143,21 @@
   </delete>
   <insert id="insert" parameterType="cn.jianwoo.blog.entity.ArticleWithBLOBs">
     insert into article (OID, AUTHOR, PUSH_TIME, 
-      TITLE, MODIFIED_TIME, MENU_ID, 
-      READ_COUNT, PRAISE_COUNT, IS_COMMENT, 
-      IMG_SRC, VISIT_TYPE, COMMENT_COUNT, 
-      `STATUS`, `PASSWORD`, DEL_TIME, 
-      REMOVE_RECYCLE_TIME, CREATE_TIME, UPDATE_TIME, 
-      CONTENT, `TEXT`)
+      PUSH_BY, TITLE, MODIFIED_TIME, 
+      MENU_ID, READ_COUNT, PRAISE_COUNT, 
+      IS_COMMENT, IMG_SRC, ACCESS_TYPE, 
+      COMMENT_COUNT, `STATUS`, `PASSWORD`, 
+      DEL_TIME, REMOVE_RECYCLE_TIME, CREATE_TIME, 
+      UPDATE_TIME, CONTENT, `TEXT`
+      )
     values (#{oid,jdbcType=BIGINT}, #{author,jdbcType=VARCHAR}, #{pushTime,jdbcType=TIMESTAMP}, 
-      #{title,jdbcType=VARCHAR}, #{modifiedTime,jdbcType=TIMESTAMP}, #{menuId,jdbcType=INTEGER}, 
-      #{readCount,jdbcType=BIGINT}, #{praiseCount,jdbcType=BIGINT}, #{isComment,jdbcType=CHAR}, 
-      #{imgSrc,jdbcType=VARCHAR}, #{visitType,jdbcType=VARCHAR}, #{commentCount,jdbcType=BIGINT}, 
-      #{status,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{delTime,jdbcType=TIMESTAMP}, 
-      #{removeRecycleTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{content,jdbcType=LONGVARCHAR}, #{text,jdbcType=LONGVARCHAR})
+      #{pushBy,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{modifiedTime,jdbcType=TIMESTAMP}, 
+      #{menuId,jdbcType=INTEGER}, #{readCount,jdbcType=BIGINT}, #{praiseCount,jdbcType=BIGINT}, 
+      #{isComment,jdbcType=CHAR}, #{imgSrc,jdbcType=VARCHAR}, #{accessType,jdbcType=VARCHAR}, 
+      #{commentCount,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{delTime,jdbcType=TIMESTAMP}, #{removeRecycleTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR}, #{text,jdbcType=LONGVARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="cn.jianwoo.blog.entity.ArticleWithBLOBs">
     insert into article
@@ -167,6 +170,9 @@
       </if>
       <if test="pushTime != null">
         PUSH_TIME,
+      </if>
+      <if test="pushBy != null">
+        PUSH_BY,
       </if>
       <if test="title != null">
         TITLE,
@@ -189,8 +195,8 @@
       <if test="imgSrc != null">
         IMG_SRC,
       </if>
-      <if test="visitType != null">
-        VISIT_TYPE,
+      <if test="accessType != null">
+        ACCESS_TYPE,
       </if>
       <if test="commentCount != null">
         COMMENT_COUNT,
@@ -230,6 +236,9 @@
       <if test="pushTime != null">
         #{pushTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="pushBy != null">
+        #{pushBy,jdbcType=VARCHAR},
+      </if>
       <if test="title != null">
         #{title,jdbcType=VARCHAR},
       </if>
@@ -251,8 +260,8 @@
       <if test="imgSrc != null">
         #{imgSrc,jdbcType=VARCHAR},
       </if>
-      <if test="visitType != null">
-        #{visitType,jdbcType=VARCHAR},
+      <if test="accessType != null">
+        #{accessType,jdbcType=VARCHAR},
       </if>
       <if test="commentCount != null">
         #{commentCount,jdbcType=BIGINT},
@@ -301,6 +310,9 @@
       <if test="record.pushTime != null">
         PUSH_TIME = #{record.pushTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.pushBy != null">
+        PUSH_BY = #{record.pushBy,jdbcType=VARCHAR},
+      </if>
       <if test="record.title != null">
         TITLE = #{record.title,jdbcType=VARCHAR},
       </if>
@@ -322,8 +334,8 @@
       <if test="record.imgSrc != null">
         IMG_SRC = #{record.imgSrc,jdbcType=VARCHAR},
       </if>
-      <if test="record.visitType != null">
-        VISIT_TYPE = #{record.visitType,jdbcType=VARCHAR},
+      <if test="record.accessType != null">
+        ACCESS_TYPE = #{record.accessType,jdbcType=VARCHAR},
       </if>
       <if test="record.commentCount != null">
         COMMENT_COUNT = #{record.commentCount,jdbcType=BIGINT},
@@ -362,6 +374,7 @@
     set OID = #{record.oid,jdbcType=BIGINT},
       AUTHOR = #{record.author,jdbcType=VARCHAR},
       PUSH_TIME = #{record.pushTime,jdbcType=TIMESTAMP},
+      PUSH_BY = #{record.pushBy,jdbcType=VARCHAR},
       TITLE = #{record.title,jdbcType=VARCHAR},
       MODIFIED_TIME = #{record.modifiedTime,jdbcType=TIMESTAMP},
       MENU_ID = #{record.menuId,jdbcType=INTEGER},
@@ -369,7 +382,7 @@
       PRAISE_COUNT = #{record.praiseCount,jdbcType=BIGINT},
       IS_COMMENT = #{record.isComment,jdbcType=CHAR},
       IMG_SRC = #{record.imgSrc,jdbcType=VARCHAR},
-      VISIT_TYPE = #{record.visitType,jdbcType=VARCHAR},
+      ACCESS_TYPE = #{record.accessType,jdbcType=VARCHAR},
       COMMENT_COUNT = #{record.commentCount,jdbcType=BIGINT},
       `STATUS` = #{record.status,jdbcType=VARCHAR},
       `PASSWORD` = #{record.password,jdbcType=VARCHAR},
@@ -388,6 +401,7 @@
     set OID = #{record.oid,jdbcType=BIGINT},
       AUTHOR = #{record.author,jdbcType=VARCHAR},
       PUSH_TIME = #{record.pushTime,jdbcType=TIMESTAMP},
+      PUSH_BY = #{record.pushBy,jdbcType=VARCHAR},
       TITLE = #{record.title,jdbcType=VARCHAR},
       MODIFIED_TIME = #{record.modifiedTime,jdbcType=TIMESTAMP},
       MENU_ID = #{record.menuId,jdbcType=INTEGER},
@@ -395,7 +409,7 @@
       PRAISE_COUNT = #{record.praiseCount,jdbcType=BIGINT},
       IS_COMMENT = #{record.isComment,jdbcType=CHAR},
       IMG_SRC = #{record.imgSrc,jdbcType=VARCHAR},
-      VISIT_TYPE = #{record.visitType,jdbcType=VARCHAR},
+      ACCESS_TYPE = #{record.accessType,jdbcType=VARCHAR},
       COMMENT_COUNT = #{record.commentCount,jdbcType=BIGINT},
       `STATUS` = #{record.status,jdbcType=VARCHAR},
       `PASSWORD` = #{record.password,jdbcType=VARCHAR},
@@ -415,6 +429,9 @@
       </if>
       <if test="pushTime != null">
         PUSH_TIME = #{pushTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pushBy != null">
+        PUSH_BY = #{pushBy,jdbcType=VARCHAR},
       </if>
       <if test="title != null">
         TITLE = #{title,jdbcType=VARCHAR},
@@ -437,8 +454,8 @@
       <if test="imgSrc != null">
         IMG_SRC = #{imgSrc,jdbcType=VARCHAR},
       </if>
-      <if test="visitType != null">
-        VISIT_TYPE = #{visitType,jdbcType=VARCHAR},
+      <if test="accessType != null">
+        ACCESS_TYPE = #{accessType,jdbcType=VARCHAR},
       </if>
       <if test="commentCount != null">
         COMMENT_COUNT = #{commentCount,jdbcType=BIGINT},
@@ -474,6 +491,7 @@
     update article
     set AUTHOR = #{author,jdbcType=VARCHAR},
       PUSH_TIME = #{pushTime,jdbcType=TIMESTAMP},
+      PUSH_BY = #{pushBy,jdbcType=VARCHAR},
       TITLE = #{title,jdbcType=VARCHAR},
       MODIFIED_TIME = #{modifiedTime,jdbcType=TIMESTAMP},
       MENU_ID = #{menuId,jdbcType=INTEGER},
@@ -481,7 +499,7 @@
       PRAISE_COUNT = #{praiseCount,jdbcType=BIGINT},
       IS_COMMENT = #{isComment,jdbcType=CHAR},
       IMG_SRC = #{imgSrc,jdbcType=VARCHAR},
-      VISIT_TYPE = #{visitType,jdbcType=VARCHAR},
+      ACCESS_TYPE = #{accessType,jdbcType=VARCHAR},
       COMMENT_COUNT = #{commentCount,jdbcType=BIGINT},
       `STATUS` = #{status,jdbcType=VARCHAR},
       `PASSWORD` = #{password,jdbcType=VARCHAR},
@@ -497,6 +515,7 @@
     update article
     set AUTHOR = #{author,jdbcType=VARCHAR},
       PUSH_TIME = #{pushTime,jdbcType=TIMESTAMP},
+      PUSH_BY = #{pushBy,jdbcType=VARCHAR},
       TITLE = #{title,jdbcType=VARCHAR},
       MODIFIED_TIME = #{modifiedTime,jdbcType=TIMESTAMP},
       MENU_ID = #{menuId,jdbcType=INTEGER},
@@ -504,7 +523,7 @@
       PRAISE_COUNT = #{praiseCount,jdbcType=BIGINT},
       IS_COMMENT = #{isComment,jdbcType=CHAR},
       IMG_SRC = #{imgSrc,jdbcType=VARCHAR},
-      VISIT_TYPE = #{visitType,jdbcType=VARCHAR},
+      ACCESS_TYPE = #{accessType,jdbcType=VARCHAR},
       COMMENT_COUNT = #{commentCount,jdbcType=BIGINT},
       `STATUS` = #{status,jdbcType=VARCHAR},
       `PASSWORD` = #{password,jdbcType=VARCHAR},

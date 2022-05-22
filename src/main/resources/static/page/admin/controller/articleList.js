@@ -50,6 +50,7 @@ layui.define(['laytable'],function (exports) {
     //监听搜索
     form.on('submit(art-search)', function (data) {
         var field = data.field;
+        field.page = 1;
         //执行重载
         table.reload('article-table', {
             where: field
@@ -151,7 +152,7 @@ layui.define(['laytable'],function (exports) {
                                     author: field.author,
                                     tagOidList: tagsId,
                                     type: type.val(),
-                                    visitType: field.isPublic,
+                                    accessType: field.isPublic,
                                     password: field.passwContent,
                                     isComment: iscomment !== 0,
                                     subToken: field.subToken

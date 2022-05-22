@@ -26,6 +26,10 @@ public class CommentPageRequest extends BasePageRequestDto {
      * 是否已读
      */
     private Integer unread;
+    /**
+     * 文章标题
+     */
+    private String  artOid;
 
 
 }

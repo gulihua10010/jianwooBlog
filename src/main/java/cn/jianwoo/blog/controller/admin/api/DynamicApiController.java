@@ -6,17 +6,17 @@ import cn.jianwoo.blog.config.apiversion.ApiVersion;
 import cn.jianwoo.blog.config.router.admin.DynamicApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dto.request.CommentPageRequest;
-import cn.jianwoo.blog.dto.request.VisitPageRequest;
+import cn.jianwoo.blog.dto.request.AccessPageRequest;
 import cn.jianwoo.blog.dto.response.CommentSummaryResponse;
-import cn.jianwoo.blog.dto.response.VisitResponse;
+import cn.jianwoo.blog.dto.response.AccessResponse;
 import cn.jianwoo.blog.dto.response.vo.CommentSummaryVO;
-import cn.jianwoo.blog.dto.response.vo.VisitVO;
+import cn.jianwoo.blog.dto.response.vo.AccessVO;
 import cn.jianwoo.blog.service.biz.CommentBizService;
-import cn.jianwoo.blog.service.biz.VisitBizService;
+import cn.jianwoo.blog.service.biz.ArticleAccessBizService;
 import cn.jianwoo.blog.service.bo.CommentBO;
-import cn.jianwoo.blog.service.bo.VisitBO;
+import cn.jianwoo.blog.service.bo.AccessBO;
 import cn.jianwoo.blog.service.param.CommentParam;
-import cn.jianwoo.blog.service.param.VisitParam;
+import cn.jianwoo.blog.service.param.AccessParam;
 import cn.jianwoo.blog.util.DomainUtil;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -40,21 +40,21 @@ import java.util.List;
 @Slf4j
 public class DynamicApiController extends BaseController {
     @Autowired
-    private VisitBizService visitBizService;
+    private ArticleAccessBizService articleAccessBizService;
     @Autowired
     private CommentBizService commentBizService;
 
     /**
      * 查詢最近的访问列表(动态首页)<br/>
-     * url:/api/admin/dynamic/visit/query<br/>
+     * url:/api/admin/dynamic/access/query<br/>
      *
-     * @param param JSON 参数({@link VisitPageRequest})
-     * @return 返回响应 {@link VisitResponse}
+     * @param param JSON 参数({@link AccessPageRequest})<br/>
+     * @return 返回响应 {@link AccessResponse}<br/>
      * code<br/>
      * count<br/>
      * data<br/>
      * --ip<br/>
-     * --visitDate<br/>
+     * --accessDate<br/>
      * --articleTitle<br/>
      * --articleOid<br/>
      * --area<br/>
@@ -62,41 +62,46 @@ public class DynamicApiController extends BaseController {
      * @author gulihua
      */
     @ApiVersion()
-    @GetMapping(DynamicApiUrlConfig.URL_VISIT_QUERY)
-    public String queryVisitList(VisitPageRequest param) {
-        super.printRequestParams(DomainUtil.toString(param));
+    @GetMapping(DynamicApiUrlConfig.URL_ACCESS_QUERY)
+    public String queryAccessList(AccessPageRequest param) {
+        try {
+            super.printRequestParams(DomainUtil.toString(param));
 
-        VisitParam pageParam = new VisitParam();
-        pageParam.setPageNo(param.getPage());
-        pageParam.setPageSize(param.getLimit());
-        PageInfo<VisitBO> pageInfo = visitBizService.queryRecentVisitPageList(pageParam);
-        VisitResponse response = VisitResponse.getInstance();
-        if (CollectionUtils.isNotEmpty(pageInfo.getList())) {
-            List<VisitVO> list = new ArrayList<>();
-            pageInfo.getList().forEach(domain -> {
-                VisitVO vo = new VisitVO();
-                vo.setArticleOid(domain.getArticleOid());
-                vo.setArticleTitle(domain.getArticleTitle());
-                vo.setVisitIp(domain.getVisitIp());
-                vo.setVisitArea(domain.getVisitArea());
-                vo.setVisitDateStr(DateUtil.formatDateTime(domain.getVisitTime()));
-                vo.setVisitTime(domain.getVisitTime());
-                list.add(vo);
-            });
-            response.setData(list);
-            response.setCount(pageInfo.getTotal());
+            AccessParam pageParam = new AccessParam();
+            pageParam.setPageNo(param.getPage());
+            pageParam.setPageSize(param.getLimit());
+            PageInfo<AccessBO> pageInfo = articleAccessBizService.queryRecentAccessPageList(pageParam);
+            AccessResponse response = AccessResponse.getInstance();
+            if (CollectionUtils.isNotEmpty(pageInfo.getList())) {
+                List<AccessVO> list = new ArrayList<>();
+                pageInfo.getList().forEach(domain -> {
+                    AccessVO vo = new AccessVO();
+                    vo.setArticleOid(domain.getArticleOid());
+                    vo.setArticleTitle(domain.getArticleTitle());
+                    vo.setAccessIp(domain.getAccessIp());
+                    vo.setAccessArea(domain.getAccessArea());
+                    vo.setAccessDateStr(DateUtil.formatDateTime(domain.getAccessTime()));
+                    vo.setAccessTime(domain.getAccessTime());
+                    list.add(vo);
+                });
+                response.setData(list);
+                response.setCount(pageInfo.getTotal());
+            }
+            return super.responseToJSONString(response);
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+
         }
-        return super.responseToJSONString(response);
 
     }
 
 
     /**
      * 查詢最近的文章评论列表(动态首页)<br/>
-     * url:/api/admin/comment/visit/query<br/>
+     * url:/api/admin/comment/access/query<br/>
      *
-     * @param param JSON 参数({@link VisitPageRequest})
-     * @return 返回响应 {@link CommentSummaryResponse}
+     * @param param JSON 参数({@link AccessPageRequest})<br/>
+     * @return 返回响应 {@link CommentSummaryResponse}<br/>
      * code<br/>
      * count<br/>
      * data<br/>
@@ -117,35 +122,40 @@ public class DynamicApiController extends BaseController {
     @ApiVersion()
     @GetMapping(DynamicApiUrlConfig.URL_COMMENT_QUERY)
     public String queryCommPageList(CommentPageRequest param) {
-        super.printRequestParams(DomainUtil.toString(param));
+        try {
+            super.printRequestParams(DomainUtil.toString(param));
 
-        CommentParam pageParam = new CommentParam();
-        pageParam.setPageNo(param.getPage());
-        pageParam.setPageSize(param.getLimit());
-        PageInfo<CommentBO> pageInfo = commentBizService.queryAllCommentPage(pageParam);
-        CommentSummaryResponse response = CommentSummaryResponse.getInstance();
-        if (CollectionUtils.isNotEmpty(pageInfo.getList())) {
-            List<CommentSummaryVO> list = new ArrayList<>();
-            pageInfo.getList().forEach(domain -> {
-                CommentSummaryVO vo = new CommentSummaryVO();
-                vo.setArtOid(domain.getArticleOid());
-                vo.setCommentTimeStr(DateUtil.formatDateTime(domain.getCommentTime()));
-                vo.setCommentTime(domain.getCommentTime());
-                vo.setArtTitle(domain.getTitle());
-                vo.setUserName(domain.getUserName());
-                vo.setClientIp(domain.getClientIp());
-//                vo.setArea(domain.getArea());
-                String content = StringEscapeUtils.escapeHtml4(domain.getContent());//
-                if (content.length() > 50) {
-                    content = content.substring(0, 50).concat(Constants.ELLIPSIS);
-                }
-                vo.setContent(content);
-                list.add(vo);
-            });
-            response.setData(list);
-            response.setCount(pageInfo.getTotal());
+            CommentParam pageParam = new CommentParam();
+            pageParam.setPageNo(param.getPage());
+            pageParam.setPageSize(param.getLimit());
+            PageInfo<CommentBO> pageInfo = commentBizService.queryAllCommentPage(pageParam);
+            CommentSummaryResponse response = CommentSummaryResponse.getInstance();
+            if (CollectionUtils.isNotEmpty(pageInfo.getList())) {
+                List<CommentSummaryVO> list = new ArrayList<>();
+                pageInfo.getList().forEach(domain -> {
+                    CommentSummaryVO vo = new CommentSummaryVO();
+                    vo.setArtOid(domain.getArticleOid());
+                    vo.setCommentTimeStr(DateUtil.formatDateTime(domain.getCommentTime()));
+                    vo.setCommentTime(domain.getCommentTime());
+                    vo.setArtTitle(domain.getArticleTitle());
+                    vo.setUserName(domain.getUserName());
+                    vo.setClientIp(domain.getClientIp());
+                    //                vo.setArea(domain.getArea());
+                    String content = StringEscapeUtils.escapeHtml4(domain.getContent());//
+                    if (content.length() > 50) {
+                        content = content.substring(0, 50).concat(Constants.ELLIPSIS);
+                    }
+                    vo.setContent(content);
+                    list.add(vo);
+                });
+                response.setData(list);
+                response.setCount(pageInfo.getTotal());
+            }
+            return super.responseToJSONString(response);
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+
         }
-        return super.responseToJSONString(response);
 
     }
 }

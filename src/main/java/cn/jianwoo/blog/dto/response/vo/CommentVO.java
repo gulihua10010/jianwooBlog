@@ -90,7 +90,7 @@ public class CommentVO implements Serializable {
     /**
      * 头像
      */
-    private String headImgSrc;
+    private String avatarSrc;
     /**
      * ip所属地域
      */

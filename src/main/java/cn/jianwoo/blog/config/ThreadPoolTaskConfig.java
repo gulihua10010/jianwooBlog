@@ -52,4 +52,22 @@ public class ThreadPoolTaskConfig {
         executor.initialize();
         return executor;
     }
+
+
+    @Bean("jianwooAsyncTaskExecutor")
+    public ThreadPoolTaskExecutor jianwooAsyncTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(CORE_POOL_SIZE);
+        executor.setMaxPoolSize(MAX_POOL_SIZE);
+        executor.setKeepAliveSeconds(KEEP_ALIVE_TIME);
+        executor.setQueueCapacity(QUEUE_CAPACITY);
+        executor.setThreadNamePrefix(THREAD_NAME_PREFIX);
+        // 线程池对拒绝任务的处理策略 采用了CallerRunsPolicy策略，
+        // 当线程池没有处理能力的时候，该策略会直接在 execute 方法的调用线程中运行被拒绝的任务；
+        // 如果执行程序已关闭，则会丢弃该任务
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        // 初始化
+        executor.initialize();
+        return executor;
+    }
 }

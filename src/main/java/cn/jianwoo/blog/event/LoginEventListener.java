@@ -3,10 +3,16 @@ package cn.jianwoo.blog.event;
 import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.dao.base.LoginLogTransDao;
 import cn.jianwoo.blog.entity.LoginLog;
+import cn.jianwoo.blog.enums.AsyncIpEnum;
 import cn.jianwoo.blog.enums.ProcessStatusEnum;
+import cn.jianwoo.blog.enums.TaskTypeEnum;
 import cn.jianwoo.blog.exception.DaoException;
-import cn.jianwoo.blog.task.AsyncTask;
+import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.service.base.AsyncAutoTaskBaseService;
+import cn.jianwoo.blog.task.bo.TaskDataD0020BO;
 import cn.jianwoo.blog.util.DateUtil;
+import cn.jianwoo.blog.util.TransactionUtils;
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +33,11 @@ import java.util.Date;
 public class LoginEventListener implements ApplicationListener<LoginLogEvent> {
     @Autowired
     private LoginLogTransDao loginLogTransDao;
+
     @Autowired
-    private AsyncTask asyncTask;
+    private TransactionUtils transactionUtils;
+    @Autowired
+    private AsyncAutoTaskBaseService asyncAutoTaskBaseService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -60,7 +69,21 @@ public class LoginEventListener implements ApplicationListener<LoginLogEvent> {
         }
 
         //执行异步任务
-        asyncTask.execLoginIpAreaTask(loginLog.getOid());
+        TaskDataD0020BO taskDataD0020BO = new TaskDataD0020BO();
+        taskDataD0020BO.setOid(loginLog.getOid());
+        taskDataD0020BO.setIp(loginLog.getTriggerIp());
+        taskDataD0020BO.setAsyncIpType(AsyncIpEnum.LOGIN_LOG.name());
+        Long taskId = null;
+        try {
+
+            taskId = asyncAutoTaskBaseService.doCreateTask(TaskTypeEnum.D0020.getValue(), JSONObject.toJSONString(taskDataD0020BO));
+        } catch (JwBlogException e) {
+            log.error("\r\n>>LoginEventListener.onApplicationEvent exec failed, e\r\n", e);
+        }
+        if (taskId != null) {
+            transactionUtils.doTriggerTaskAfterCommit(taskId);
+        }
+
 
     }
 }

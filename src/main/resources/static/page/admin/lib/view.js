@@ -90,7 +90,7 @@ layui.define(['laytpl', 'layer'], function (exports) {
             options.headers[request.tokenName] = request.tokenName in options.headers
                 ? options.headers[request.tokenName]
                 : (layui.data(setter.tableName)[request.tokenName] || '');
-            if (options.url !== setter.verifyTokenApi)
+            if (options.url !== setter.notifyMsgApi)
             {
                 options.headers[request.refreshTokenName] = request.refreshTokenName in options.headers
                     ? options.headers[request.refreshTokenName]

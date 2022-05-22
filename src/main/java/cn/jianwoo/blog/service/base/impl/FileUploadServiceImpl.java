@@ -2,14 +2,19 @@ package cn.jianwoo.blog.service.base.impl;
 
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
+import cn.jianwoo.blog.constants.WebConfDataConfig;
 import cn.jianwoo.blog.dao.base.FileUploadTransDao;
 import cn.jianwoo.blog.entity.FileUpload;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.FileUploadBizException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.base.FileUploadService;
+import cn.jianwoo.blog.service.biz.WebconfBizService;
+import cn.jianwoo.blog.service.bo.FileUploadBO;
 import cn.jianwoo.blog.util.DateUtil;
+import cn.jianwoo.blog.util.FileUtil;
 import cn.jianwoo.blog.util.JwUtil;
+import cn.jianwoo.blog.util.QiniuUploadUtil;
 import com.alibaba.fastjson.JSONObject;
 import it.sauronsoftware.jave.AudioInfo;
 import it.sauronsoftware.jave.Encoder;
@@ -18,6 +23,7 @@ import it.sauronsoftware.jave.VideoInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -41,8 +47,14 @@ import java.util.Date;
 public class FileUploadServiceImpl implements FileUploadService {
     @Value("${file.upload.path}")
     private String uploadPath;
+    @Value("${qiniuyun.context}")
+    private String cdnContext;
     @Autowired
     private FileUploadTransDao fileUploadTransDao;
+    @Autowired
+    private WebconfBizService webconfBizService;
+    @Autowired
+    private QiniuUploadUtil qiniuUploadUtil;
     public static final String[] mediaExt = {"mp3", "wma", "wav", "cda", "ape", "ogm", "flv", "wmv", "mpg", "webm", "ogv", "asx", "mpeg", "mp4", "avi", "amv", "rmvb", "mov", "mtv", "wmv", "3gp", "amv"};
 
 
@@ -74,7 +86,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public FileUpload doUpload(MultipartFile multipartFile, String url, boolean isReName) throws JwBlogException {
+    public FileUploadBO doUpload(MultipartFile multipartFile, String url, boolean isReName) throws JwBlogException {
         if (StringUtils.isBlank(uploadPath)) {
             throw new JwBlogException(ExceptionConstants.FILE_PATH_INVAILD, "The upload path is invalid");
         }
@@ -90,9 +102,19 @@ public class FileUploadServiceImpl implements FileUploadService {
         String fileType = getFileExt(oldName);
         String uuid = JwUtil.randomUUIDWithoutDash();
         String ts = DateUtil.getNowTimestamp();
+        String yyyyMM = DateUtil.getCommDateFolder();
         String newFilename = isReName ? uuid + Constants.SEPARATE_HYPHEN + ts + Constants.FILE_POINT + fileType : oldName;
-        String filePath = uploadPath + File.separator + newFilename;
+        String filePath = uploadPath + File.separator + yyyyMM + File.separator + newFilename;
         File newFile = new File(filePath);
+        if (!newFile.getParentFile().exists()) {
+            try {
+                FileUtil.createDir(newFile.getParentFile());
+            } catch (IOException e) {
+                log.error("Director create failed, exception:\n", e);
+                throw new JwBlogException(ExceptionConstants.FILE_TRANSFER_FAILED,
+                        ExceptionConstants.FILE_TRANSFER_FAILED_DESC);
+            }
+        }
         try {
             multipartFile.transferTo(newFile);
         } catch (IOException e) {
@@ -102,7 +124,13 @@ public class FileUploadServiceImpl implements FileUploadService {
 
         }
 
+
         FileUpload fileUpload = new FileUpload();
+        String isUpload2Cdn = webconfBizService.queryWebconfByKey(WebConfDataConfig.IS_UPLOAD_TO_QINIU_CDN);
+        if (Constants.TRUE.equals(isUpload2Cdn)) {
+            String cdnUrl = qiniuUploadUtil.upload(filePath, cdnContext + File.separator + yyyyMM, newFile.getName());
+            fileUpload.setCdnUrl(cdnUrl);
+        }
         long fileSize = multipartFile.getSize();
         fileUpload.setOldFileName(oldName);
         fileUpload.setFileName(newFilename);
@@ -129,7 +157,10 @@ public class FileUploadServiceImpl implements FileUploadService {
         } catch (DaoException e) {
             throw FileUploadBizException.CREATE_FAILED_EXCEPTION.print();
         }
-        return fileUpload;
+        FileUploadBO fileUploadBO = new FileUploadBO();
+        BeanUtils.copyProperties(fileUpload, fileUploadBO);
+
+        return fileUploadBO;
     }
 
 

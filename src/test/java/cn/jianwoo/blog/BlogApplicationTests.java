@@ -1,35 +1,27 @@
 package cn.jianwoo.blog;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.CharsetUtil;
-import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
 import cn.hutool.crypto.symmetric.SymmetricCrypto;
-import cn.jianwoo.blog.base.BaseController;
-import cn.jianwoo.blog.base.BaseResponseDto;
+import cn.hutool.extra.spring.SpringUtil;
 import cn.jianwoo.blog.dao.base.EmailTemplateTransDao;
-import cn.jianwoo.blog.dao.base.TempArticleTransDao;
-import cn.jianwoo.blog.dto.request.ArticleSubmitRequest;
-import cn.jianwoo.blog.entity.extension.MenuExt;
-import cn.jianwoo.blog.exception.JwBlogException;
-import cn.jianwoo.blog.service.biz.MenuBizService;
-import cn.jianwoo.blog.util.DomainUtil;
+import cn.jianwoo.blog.enums.AsyncIpEnum;
+import cn.jianwoo.blog.service.biz.NetWorkService;
 import cn.jianwoo.blog.util.JwUtil;
-import cn.jianwoo.blog.util.JwtUtils;
 import cn.jianwoo.blog.util.NotifiyUtil;
-import com.alibaba.fastjson.JSON;
+import org.apache.commons.beanutils.MethodUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 //@RunWith(SpringJUnit4ClassRunner.class)
 @MapperScan(basePackages = {"cn.jianwoo.blog.dao.base.mapper", "cn.jianwoo.blog.dao.biz.mapper", "com.baidu.fsg.uid.worker.dao"})
@@ -105,7 +97,7 @@ class BlogApplicationTests {
 //        try {
 ////            TempArticle article=tempArticleTransDao.queryLastestTempArticle();
 //            BaseController controller = new BaseController();
-//            controller.convertParam("{\"title\":\"啊\",\"author\":\"正则\",\"articleContent\":\"<p>邓东东</p>\",\"tags\":\"40\",\"type\":\"40\",\"imgSrc\":\"\",\"visitType\":\"1\",\"password\":\"\",\"isComment\":1,\"subToken\":\"2797665c3ee240fbbe9a6ba478d4724f\",\"access_token\":\"\"}", ArticleSubmitRequest.class);
+//            controller.convertParam("{\"title\":\"啊\",\"author\":\"正则\",\"articleContent\":\"<p>邓东东</p>\",\"tags\":\"40\",\"type\":\"40\",\"imgSrc\":\"\",\"accessType\":\"1\",\"password\":\"\",\"isComment\":1,\"subToken\":\"2797665c3ee240fbbe9a6ba478d4724f\",\"access_token\":\"\"}", ArticleSubmitRequest.class);
 //
 //        } catch (Exception e) {
 //            e.printStackTrace();
@@ -156,5 +148,40 @@ class BlogApplicationTests {
         String decryptStr = aes.decryptStr((Base64.decode(Base64.decode("RmVqazZjTUxFNVVnQmpRaW04TXNuUT09"))), CharsetUtil.CHARSET_UTF_8);
         System.out.println(decryptStr);
         System.out.println(JwUtil.decrypt("RmVqazZjTUxFNVVnQmpRaW04TXNuUT09"));
+    }
+
+
+    @Autowired
+    private NetWorkService netWorkService;
+    @Test
+    void Test2()
+    {
+         execIpAreaTask(10L,"127.0.0.1", AsyncIpEnum.COMMENT);
+    }
+    private static final String IP_REX_PATTERN = "((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}";
+
+    public void execIpAreaTask(Long oid, String ip, AsyncIpEnum asyncIpEnum) {
+
+        System.out.println(">> Start async task execIpAreaTask");
+        try {
+            if (StringUtils.isNotBlank(ip)) {
+                Pattern r = Pattern.compile(IP_REX_PATTERN);
+                Matcher m = r.matcher(ip.trim());
+                if (m.matches()) {
+                    String area = netWorkService.getIpArea(ip.trim());
+                    Object o = asyncIpEnum.getClazz().newInstance();
+                    BeanUtil.setFieldValue(o, asyncIpEnum.getPrimaryKey(), oid);
+                    BeanUtil.setFieldValue(o, asyncIpEnum.getField(), area);
+                    Object svcBean = SpringUtil.getBean(asyncIpEnum.getSvcBean());
+                    MethodUtils.invokeMethod(svcBean, "doUpdateByPrimaryKeySelective", o);
+
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println(">> End async task execIpAreaTask");
+
     }
 }

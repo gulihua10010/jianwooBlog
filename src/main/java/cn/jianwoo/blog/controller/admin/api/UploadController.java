@@ -8,11 +8,13 @@ import cn.jianwoo.blog.dto.response.vo.FileUploadResVO;
 import cn.jianwoo.blog.entity.FileUpload;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.base.FileUploadService;
+import cn.jianwoo.blog.service.bo.FileUploadBO;
 import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.validation.BizValidation;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,8 +42,8 @@ public class UploadController extends BaseController {
      * url:/api/file/upload<br/>
      *
      * @param file 上传的文件
-     * @return 返回响应 {@link FileUploadResponse}
-     * file
+     * @return 返回响应 {@link FileUploadResponse}<br/>
+     * file<br/>
      * --fileName<br/>
      * --url<br/>
      * @author gulihua
@@ -56,13 +58,16 @@ public class UploadController extends BaseController {
             BizValidation.paramFileSizeValidate(file, size, String.format("上传文件支持的最大的大小为：%s, 当前为：%s", JwUtil.parseSize(size), JwUtil.parseSize(file.getSize())));
             log.info("====>>>Start Uploading files, name = {}, size = {}, Maximum limit size supported = {}.", file.getOriginalFilename(), file.getSize(), size);
             String uploadUrl = getServerIPPort() + CommApiUrlConfig.URL_RES_PREFIX;
-            FileUpload fileUpload = fileUploadService.doUpload(file, uploadUrl, true);
+            FileUploadBO fileUpload = fileUploadService.doUpload(file, uploadUrl, true);
             response = new FileUploadResponse();
             FileUploadResVO vo = new FileUploadResVO();
             vo.setFileName(fileUpload.getFileName());
             vo.setUrl(fileUpload.getUrl());
+            if (StringUtils.isNotBlank(fileUpload.getCdnUrl())) {
+                vo.setUrl(fileUpload.getCdnUrl());
+            }
             vo.setRealFileName(fileUpload.getOldFileName());
-            JSONObject mediaInfoJson=JSON.parseObject(fileUpload.getMediaInfo());
+            JSONObject mediaInfoJson = JSON.parseObject(fileUpload.getMediaInfo());
             vo.setMediaInfo(mediaInfoJson);
             response.setFile(vo);
         } catch (Exception e) {
@@ -70,7 +75,6 @@ public class UploadController extends BaseController {
         }
         return responseToJSONString(response);
     }
-
 
 
 }

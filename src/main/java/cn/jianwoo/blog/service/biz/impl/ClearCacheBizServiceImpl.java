@@ -1,5 +1,7 @@
 package cn.jianwoo.blog.service.biz.impl;
 
+import cn.jianwoo.blog.cache.CacheStore;
+import cn.jianwoo.blog.constants.CacaheKeyConstants;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.ClearCacheBizService;
 import cn.jianwoo.blog.service.bo.CacheBO;
@@ -7,6 +9,7 @@ import cn.jianwoo.blog.util.FileUtil;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -30,8 +33,12 @@ public class ClearCacheBizServiceImpl implements ClearCacheBizService {
     @Value("${dir.cache.path}")
     private String cache;
 
+
+    @Autowired
+    private CacheStore<String, String> cacheStore;
+
     @Override
-    public void clearCache(boolean isClearCache, boolean isClearLog, boolean isClearTemp) throws JwBlogException {
+    public void clearCache(boolean isClearCache, boolean isClearLog, boolean isClearTemp, boolean isCleanMemory) throws JwBlogException {
         // 当temp目录下有任务执行时，会生成lock文件
         if (isClearTemp) {
             File lockFile = new File(temp + File.separator + "lock");
@@ -50,7 +57,17 @@ public class ClearCacheBizServiceImpl implements ClearCacheBizService {
             FileUtil.deleteAllFilesIn(new File(log));
             logger.info("Delete Log folder [{}] successfully!", log);
         }
+        if (isCleanMemory) {
+            for (String key : cacheStore.keySet()) {
+                if (!key.startsWith(CacaheKeyConstants.KEY_ADMIN_PREFIX)) {
+                    cacheStore.delete(key);
+                    logger.info("Delete cache key [{}] successfully!", key);
+                }
 
+                logger.info("Delete Memory JwCacheStore [{}] successfully!");
+            }
+
+        }
     }
 
     @Override

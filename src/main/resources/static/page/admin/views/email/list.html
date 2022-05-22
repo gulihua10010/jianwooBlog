@@ -1,0 +1,71 @@
+<title>邮件模板</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>邮件管理</cite></a>
+        <a><cite>邮件列表</cite></a>
+    </div>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div>
+                    <label class="layui-form-label">模板编号</label>
+                    <div class="layui-input-inline">
+                        <input autocomplete="off" class="layui-input" name="code" id="code" placeholder="请输入"
+                               type="text">
+                    </div>
+                    <label class="layui-form-label">主题</label>
+                    <div class="layui-input-inline">
+                        <input autocomplete="off" class="layui-input" name="subject" id="subject" placeholder="请输入"
+                               type="text">
+                    </div>
+                    <div class="layui-inline" style="float: right">
+                        <input id="failed" lay-filter="email-send-failed" lay-skin="switch" lay-submit lay-text="发送失败|全部"
+                               name="failed" id="failed" title="发送失败" type="checkbox"
+                               value="91">
+                    </div>
+                    <div class="layui-inline" style="float: right;">
+                        <input id="exception" lay-filter="email-exception" lay-skin="switch" lay-submit lay-text="异常邮件|全部"
+                               name="exception" id="exception" title="异常邮件" type="checkbox"
+                               value="-1">
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn search-btn" data-type="reload" lay-filter="email-search"
+                                lay-submit>
+                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <div style="padding-bottom: 10px;">
+                <button class="layui-btn layuiadmin-btn-email" data-type="reSend">重发</button>
+            </div>
+            <table id="email-table" lay-filter="email"></table>
+            <script id="table-content-email" type="text/html">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"
+                   lay-href="/email/view/id={{d.oid}}"><i
+                        class="layui-icon layui-icon-form"></i>查看</a>
+                {{#  if(d.processStatus === '91'){ }}
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="resend"><i
+                        class="layui-icon layui-icon-release"></i>重发</a>
+                {{#  } }}
+            </script>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use('email', layui.factory('email')).use(['admin', 'email'], function () {
+        var $ = layui.jquery
+            , form = layui.form
+            , element = layui.element;
+        element.render();
+        form.render();
+    })
+</script>

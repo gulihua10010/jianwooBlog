@@ -245,6 +245,216 @@ public class CommentExample {
             return (Criteria) this;
         }
 
+        public Criteria andArticleTitleIsNull() {
+            addCriterion("ARTICLE_TITLE is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleTitleIsNotNull() {
+            addCriterion("ARTICLE_TITLE is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleTitleEqualTo(String value) {
+            addCriterion("ARTICLE_TITLE =", value, "articleTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleTitleNotEqualTo(String value) {
+            addCriterion("ARTICLE_TITLE <>", value, "articleTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleTitleGreaterThan(String value) {
+            addCriterion("ARTICLE_TITLE >", value, "articleTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleTitleGreaterThanOrEqualTo(String value) {
+            addCriterion("ARTICLE_TITLE >=", value, "articleTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleTitleLessThan(String value) {
+            addCriterion("ARTICLE_TITLE <", value, "articleTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleTitleLessThanOrEqualTo(String value) {
+            addCriterion("ARTICLE_TITLE <=", value, "articleTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleTitleLike(String value) {
+            addCriterion("ARTICLE_TITLE like", value, "articleTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleTitleNotLike(String value) {
+            addCriterion("ARTICLE_TITLE not like", value, "articleTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleTitleIn(List<String> values) {
+            addCriterion("ARTICLE_TITLE in", values, "articleTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleTitleNotIn(List<String> values) {
+            addCriterion("ARTICLE_TITLE not in", values, "articleTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleTitleBetween(String value1, String value2) {
+            addCriterion("ARTICLE_TITLE between", value1, value2, "articleTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleTitleNotBetween(String value1, String value2) {
+            addCriterion("ARTICLE_TITLE not between", value1, value2, "articleTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleAuthorIsNull() {
+            addCriterion("ARTICLE_AUTHOR is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleAuthorIsNotNull() {
+            addCriterion("ARTICLE_AUTHOR is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleAuthorEqualTo(String value) {
+            addCriterion("ARTICLE_AUTHOR =", value, "articleAuthor");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleAuthorNotEqualTo(String value) {
+            addCriterion("ARTICLE_AUTHOR <>", value, "articleAuthor");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleAuthorGreaterThan(String value) {
+            addCriterion("ARTICLE_AUTHOR >", value, "articleAuthor");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleAuthorGreaterThanOrEqualTo(String value) {
+            addCriterion("ARTICLE_AUTHOR >=", value, "articleAuthor");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleAuthorLessThan(String value) {
+            addCriterion("ARTICLE_AUTHOR <", value, "articleAuthor");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleAuthorLessThanOrEqualTo(String value) {
+            addCriterion("ARTICLE_AUTHOR <=", value, "articleAuthor");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleAuthorLike(String value) {
+            addCriterion("ARTICLE_AUTHOR like", value, "articleAuthor");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleAuthorNotLike(String value) {
+            addCriterion("ARTICLE_AUTHOR not like", value, "articleAuthor");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleAuthorIn(List<String> values) {
+            addCriterion("ARTICLE_AUTHOR in", values, "articleAuthor");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleAuthorNotIn(List<String> values) {
+            addCriterion("ARTICLE_AUTHOR not in", values, "articleAuthor");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleAuthorBetween(String value1, String value2) {
+            addCriterion("ARTICLE_AUTHOR between", value1, value2, "articleAuthor");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleAuthorNotBetween(String value1, String value2) {
+            addCriterion("ARTICLE_AUTHOR not between", value1, value2, "articleAuthor");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticlePushByIsNull() {
+            addCriterion("ARTICLE_PUSH_BY is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticlePushByIsNotNull() {
+            addCriterion("ARTICLE_PUSH_BY is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticlePushByEqualTo(String value) {
+            addCriterion("ARTICLE_PUSH_BY =", value, "articlePushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticlePushByNotEqualTo(String value) {
+            addCriterion("ARTICLE_PUSH_BY <>", value, "articlePushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticlePushByGreaterThan(String value) {
+            addCriterion("ARTICLE_PUSH_BY >", value, "articlePushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticlePushByGreaterThanOrEqualTo(String value) {
+            addCriterion("ARTICLE_PUSH_BY >=", value, "articlePushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticlePushByLessThan(String value) {
+            addCriterion("ARTICLE_PUSH_BY <", value, "articlePushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticlePushByLessThanOrEqualTo(String value) {
+            addCriterion("ARTICLE_PUSH_BY <=", value, "articlePushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticlePushByLike(String value) {
+            addCriterion("ARTICLE_PUSH_BY like", value, "articlePushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticlePushByNotLike(String value) {
+            addCriterion("ARTICLE_PUSH_BY not like", value, "articlePushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticlePushByIn(List<String> values) {
+            addCriterion("ARTICLE_PUSH_BY in", values, "articlePushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticlePushByNotIn(List<String> values) {
+            addCriterion("ARTICLE_PUSH_BY not in", values, "articlePushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticlePushByBetween(String value1, String value2) {
+            addCriterion("ARTICLE_PUSH_BY between", value1, value2, "articlePushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticlePushByNotBetween(String value1, String value2) {
+            addCriterion("ARTICLE_PUSH_BY not between", value1, value2, "articlePushBy");
+            return (Criteria) this;
+        }
+
         public Criteria andUserNameIsNull() {
             addCriterion("USER_NAME is null");
             return (Criteria) this;
@@ -915,73 +1125,73 @@ public class CommentExample {
             return (Criteria) this;
         }
 
-        public Criteria andHeadImgSrcIsNull() {
-            addCriterion("HEAD_IMG_SRC is null");
+        public Criteria andAvatarSrcIsNull() {
+            addCriterion("AVATAR_SRC is null");
             return (Criteria) this;
         }
 
-        public Criteria andHeadImgSrcIsNotNull() {
-            addCriterion("HEAD_IMG_SRC is not null");
+        public Criteria andAvatarSrcIsNotNull() {
+            addCriterion("AVATAR_SRC is not null");
             return (Criteria) this;
         }
 
-        public Criteria andHeadImgSrcEqualTo(String value) {
-            addCriterion("HEAD_IMG_SRC =", value, "headImgSrc");
+        public Criteria andAvatarSrcEqualTo(String value) {
+            addCriterion("AVATAR_SRC =", value, "avatarSrc");
             return (Criteria) this;
         }
 
-        public Criteria andHeadImgSrcNotEqualTo(String value) {
-            addCriterion("HEAD_IMG_SRC <>", value, "headImgSrc");
+        public Criteria andAvatarSrcNotEqualTo(String value) {
+            addCriterion("AVATAR_SRC <>", value, "avatarSrc");
             return (Criteria) this;
         }
 
-        public Criteria andHeadImgSrcGreaterThan(String value) {
-            addCriterion("HEAD_IMG_SRC >", value, "headImgSrc");
+        public Criteria andAvatarSrcGreaterThan(String value) {
+            addCriterion("AVATAR_SRC >", value, "avatarSrc");
             return (Criteria) this;
         }
 
-        public Criteria andHeadImgSrcGreaterThanOrEqualTo(String value) {
-            addCriterion("HEAD_IMG_SRC >=", value, "headImgSrc");
+        public Criteria andAvatarSrcGreaterThanOrEqualTo(String value) {
+            addCriterion("AVATAR_SRC >=", value, "avatarSrc");
             return (Criteria) this;
         }
 
-        public Criteria andHeadImgSrcLessThan(String value) {
-            addCriterion("HEAD_IMG_SRC <", value, "headImgSrc");
+        public Criteria andAvatarSrcLessThan(String value) {
+            addCriterion("AVATAR_SRC <", value, "avatarSrc");
             return (Criteria) this;
         }
 
-        public Criteria andHeadImgSrcLessThanOrEqualTo(String value) {
-            addCriterion("HEAD_IMG_SRC <=", value, "headImgSrc");
+        public Criteria andAvatarSrcLessThanOrEqualTo(String value) {
+            addCriterion("AVATAR_SRC <=", value, "avatarSrc");
             return (Criteria) this;
         }
 
-        public Criteria andHeadImgSrcLike(String value) {
-            addCriterion("HEAD_IMG_SRC like", value, "headImgSrc");
+        public Criteria andAvatarSrcLike(String value) {
+            addCriterion("AVATAR_SRC like", value, "avatarSrc");
             return (Criteria) this;
         }
 
-        public Criteria andHeadImgSrcNotLike(String value) {
-            addCriterion("HEAD_IMG_SRC not like", value, "headImgSrc");
+        public Criteria andAvatarSrcNotLike(String value) {
+            addCriterion("AVATAR_SRC not like", value, "avatarSrc");
             return (Criteria) this;
         }
 
-        public Criteria andHeadImgSrcIn(List<String> values) {
-            addCriterion("HEAD_IMG_SRC in", values, "headImgSrc");
+        public Criteria andAvatarSrcIn(List<String> values) {
+            addCriterion("AVATAR_SRC in", values, "avatarSrc");
             return (Criteria) this;
         }
 
-        public Criteria andHeadImgSrcNotIn(List<String> values) {
-            addCriterion("HEAD_IMG_SRC not in", values, "headImgSrc");
+        public Criteria andAvatarSrcNotIn(List<String> values) {
+            addCriterion("AVATAR_SRC not in", values, "avatarSrc");
             return (Criteria) this;
         }
 
-        public Criteria andHeadImgSrcBetween(String value1, String value2) {
-            addCriterion("HEAD_IMG_SRC between", value1, value2, "headImgSrc");
+        public Criteria andAvatarSrcBetween(String value1, String value2) {
+            addCriterion("AVATAR_SRC between", value1, value2, "avatarSrc");
             return (Criteria) this;
         }
 
-        public Criteria andHeadImgSrcNotBetween(String value1, String value2) {
-            addCriterion("HEAD_IMG_SRC not between", value1, value2, "headImgSrc");
+        public Criteria andAvatarSrcNotBetween(String value1, String value2) {
+            addCriterion("AVATAR_SRC not between", value1, value2, "avatarSrc");
             return (Criteria) this;
         }
 
@@ -1125,6 +1335,76 @@ public class CommentExample {
             return (Criteria) this;
         }
 
+        public Criteria andIsDeleteIsNull() {
+            addCriterion("IS_DELETE is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDeleteIsNotNull() {
+            addCriterion("IS_DELETE is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDeleteEqualTo(Boolean value) {
+            addCriterion("IS_DELETE =", value, "isDelete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDeleteNotEqualTo(Boolean value) {
+            addCriterion("IS_DELETE <>", value, "isDelete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDeleteGreaterThan(Boolean value) {
+            addCriterion("IS_DELETE >", value, "isDelete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDeleteGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("IS_DELETE >=", value, "isDelete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDeleteLessThan(Boolean value) {
+            addCriterion("IS_DELETE <", value, "isDelete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDeleteLessThanOrEqualTo(Boolean value) {
+            addCriterion("IS_DELETE <=", value, "isDelete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDeleteLike(Boolean value) {
+            addCriterion("IS_DELETE like", value, "isDelete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDeleteNotLike(Boolean value) {
+            addCriterion("IS_DELETE not like", value, "isDelete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDeleteIn(List<Boolean> values) {
+            addCriterion("IS_DELETE in", values, "isDelete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDeleteNotIn(List<Boolean> values) {
+            addCriterion("IS_DELETE not in", values, "isDelete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDeleteBetween(Boolean value1, Boolean value2) {
+            addCriterion("IS_DELETE between", value1, value2, "isDelete");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDeleteNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("IS_DELETE not between", value1, value2, "isDelete");
+            return (Criteria) this;
+        }
+
         public Criteria andCreateTimeIsNull() {
             addCriterion("CREATE_TIME is null");
             return (Criteria) this;
@@ -1245,6 +1525,21 @@ public class CommentExample {
             return (Criteria) this;
         }
 
+        public Criteria andArticleTitleLikeInsensitive(String value) {
+            addCriterion("upper(ARTICLE_TITLE) like", value.toUpperCase(), "articleTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticleAuthorLikeInsensitive(String value) {
+            addCriterion("upper(ARTICLE_AUTHOR) like", value.toUpperCase(), "articleAuthor");
+            return (Criteria) this;
+        }
+
+        public Criteria andArticlePushByLikeInsensitive(String value) {
+            addCriterion("upper(ARTICLE_PUSH_BY) like", value.toUpperCase(), "articlePushBy");
+            return (Criteria) this;
+        }
+
         public Criteria andUserNameLikeInsensitive(String value) {
             addCriterion("upper(USER_NAME) like", value.toUpperCase(), "userName");
             return (Criteria) this;
@@ -1280,8 +1575,8 @@ public class CommentExample {
             return (Criteria) this;
         }
 
-        public Criteria andHeadImgSrcLikeInsensitive(String value) {
-            addCriterion("upper(HEAD_IMG_SRC) like", value.toUpperCase(), "headImgSrc");
+        public Criteria andAvatarSrcLikeInsensitive(String value) {
+            addCriterion("upper(AVATAR_SRC) like", value.toUpperCase(), "avatarSrc");
             return (Criteria) this;
         }
 

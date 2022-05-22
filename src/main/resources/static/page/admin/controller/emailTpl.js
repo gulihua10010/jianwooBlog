@@ -30,6 +30,8 @@ layui.define(['laytable', 'form'], function (exports) {
     //监听搜索
     form.on('submit(emailtpl-search)', function (data) {
         var field = data.field;
+        field.page = 1;
+
         //执行重载
         table.reload('emailTpl-table', {
             where: field
@@ -46,7 +48,7 @@ layui.define(['laytable', 'form'], function (exports) {
                 ajaxPost(
                     "/api/admin/email/tpl/remove",
                     1,
-                    JSON.stringify({entityOid: data.oid}),
+                    JSON.stringify({code: data.code}),
                     "移除成功",
                     function () {
                         obj.del();

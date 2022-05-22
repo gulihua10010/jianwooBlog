@@ -12,9 +12,9 @@ layui-verify 验证✔
 
 tags✔
 
-个人信息
+个人信息✔
 
-忘记密码
+忘记密码✔
 
 LAYUI PRO✔
 
@@ -37,8 +37,8 @@ admin查询优化(从缓存中查询)✔
 api版本✔
 comment✔,menu✔ 分组✔ --> lambda (menu排序已完成lambda，分组维持原逻辑)
 menu 递归删除(维持原逻辑，先删除子菜单，再删除主菜单)✔
-webConf add INTEAGE
-七牛云 image
+webConf add INTEAGE✔
+七牛云 image✔
 php api 接口
 admin 进入loading...✔
 domain域名
@@ -56,5 +56,22 @@ layer.msg 位置上方、居中 ✔
 table服务端的排序✔
 登录3次错误：验证码，6次错误（冻结5，10，20分钟），用户可以通过邮件授权码解冻
 密码不能和之前相同✔
-passport 和后端分离
-可以邮箱登录
+passport 和后端分离✔
+可以邮箱登录✔
+公告(富文本)✔
+消息✔
+前端ip攻击控制✔
+刷新缓存✔
+visit->access✔
+菜单缓存取✔
+TITLE 加入access表✔
+article visit 字段 -> access✔
+全局评论配置✔
+网站配置 数字验证✔
+email add 'valid' field✔
+通知邮件查询页面,重发✔
+头像✔
+异步任务✔
+评论标题更新✔
+ip area --> 异步任务✔
+sping 异常邮件✔

@@ -33,6 +33,14 @@ public class PageParam implements Serializable {
      */
     private String sortOrder;
 
+    public PageParam() {
+    }
+
+    public PageParam(Integer pageNo, Integer pageSize) {
+        this.pageNo = pageNo;
+        this.pageSize = pageSize;
+    }
+
     public String getSortField() {
         return this.sortField;
     }

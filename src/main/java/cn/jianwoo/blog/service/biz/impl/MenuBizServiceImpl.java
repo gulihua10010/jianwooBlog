@@ -1,6 +1,8 @@
 package cn.jianwoo.blog.service.biz.impl;
 
 import cn.jianwoo.blog.builder.JwBuilder;
+import cn.jianwoo.blog.cache.CacheStore;
+import cn.jianwoo.blog.constants.CacaheKeyConstants;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.dao.base.ArticleTransDao;
@@ -29,6 +31,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -50,13 +53,21 @@ public class MenuBizServiceImpl implements MenuBizService {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired
+    private CacheStore<String, Object> cacheStore;
+
     private static final Long TOP_LEVEL_MENU_OID = 0L;
 
     @Override
     public List<MenuBO> queryAdminMenuList() throws JwBlogException {
-
+        String cacheKey = CacaheKeyConstants.ADMIN_MENU_KEY;
+        if (cacheStore.hasKey(cacheKey)){
+            return (List<MenuBO>) cacheStore.get(cacheKey).orElse(new ArrayList<MenuBO>());
+        }
         List<Menu> menus = menuTransDao.queryEffectiveMenuByType(MenuTypeEnum.BACKEND.getValue());
-        return queryMenuWithLevel(menus);
+        List<MenuBO> allMenus =  queryMenuWithLevel(menus);
+        cacheStore.put(cacheKey, allMenus);
+        return allMenus;
     }
 
 
@@ -426,7 +437,7 @@ public class MenuBizServiceImpl implements MenuBizService {
         BizEventLogEvent event = new BizEventLogEvent(this, SecurityContextHolder.getContext());
         event.setBizEventTypeEnum(BizEventTypeEnum.MENU);
         event.setBizEventOptTypeEnum(optTypeEnum);
-        event.setOid(oid);
+        event.setOptEntityId(oid != null ? String.valueOf(oid) : null);
         event.setDesc(desc);
         applicationContext.publishEvent(event);
     }

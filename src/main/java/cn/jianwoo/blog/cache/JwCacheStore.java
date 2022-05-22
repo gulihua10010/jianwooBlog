@@ -1,16 +1,21 @@
 package cn.jianwoo.blog.cache;
 
+import cn.jianwoo.blog.util.DateUtil;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author GuLihua
  * @Description
  * @date 2021-01-24 1:03
  */
+@Slf4j
 public class JwCacheStore<K, V> extends AbstractCacheStore<K, V> {
-    private final ConcurrentHashMap<K, CacheWrapper<V>> cacheContainer = new ConcurrentHashMap<>();
+    private final ConcurrentMap<K, CacheWrapper<V>> cacheContainer = new ConcurrentHashMap<>();
 
     public JwCacheStore() {
     }
@@ -32,7 +37,17 @@ public class JwCacheStore<K, V> extends AbstractCacheStore<K, V> {
 
     @Override
     public boolean hasKey(K key) {
-        return cacheContainer.containsKey(key);
+        boolean isContain = cacheContainer.containsKey(key);
+        if (isContain) {
+            if (getInternal(key).get().getIsSetExpire() && null != getInternal(key).get().getExpireAt() && getInternal(key).get().getExpireAt().before(DateUtil.getNow())) {
+                log.warn("Cache key: [{}] has been expired, create date: [{}], expire date [{}] ",
+                        key, DateUtil.getStandardFormat(getInternal(key).get().getCreateAt()), DateUtil.getStandardFormat(getInternal(key).get().getExpireAt()));
+                delete(key);
+                return false;
+            }
+
+        }
+        return isContain;
     }
 
     @Override

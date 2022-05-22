@@ -35,6 +35,13 @@ public class ArticleQueryDaoImpl implements ArticleQueryDao {
         return articleMapper.selectByExample(example);
     }
 
+    @Override
+    public List<Article> queryArticleByStatusAndAccessType(List<String> statusList, List<String> accessTypeList) {
+        ArticleExample example = new ArticleExample();
+        example.createCriteria().andStatusIn(statusList).andAccessTypeIn(accessTypeList);
+        return articleMapper.selectByExample(example);
+    }
+
 
     @Override
     public List<Article> queryArticleByType(Integer typeId) {

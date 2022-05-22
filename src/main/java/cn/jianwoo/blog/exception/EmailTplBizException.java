@@ -18,6 +18,8 @@ public class EmailTplBizException extends JwBlogException {
             "The email template[%s] does not exist.");
     public static final EmailTplBizException NOT_EXIST_EXCEPTION_CN = new EmailTplBizException(ExceptionConstants.BIZ_NOT_EXIST,
             "邮件模板[%s]不存在!");
+    public static final EmailTplBizException NOT_USED_EXCEPTION_CN = new EmailTplBizException(ExceptionConstants.BIZ_NOT_EXIST,
+            "邮件模板[%s]是不使用的!");
     public static final EmailTplBizException CREATE_FAILED_EXCEPTION = new EmailTplBizException(
             ExceptionConstants.BIZ_CREATE_FAIL, "The email template[%s] creation is failed.");
     public static final EmailTplBizException MODIFY_FAILED_EXCEPTION = new EmailTplBizException(
@@ -65,7 +67,7 @@ public class EmailTplBizException extends JwBlogException {
 
     @Override
     public EmailTplBizException print() {
-        logger.warn("==>TagsBizException, code:" + this.code + ", msg:" + this.msg);
+        logger.warn("==>EmailTplBizException, code:" + this.code + ", msg:" + this.msg);
         return this;
     }
 

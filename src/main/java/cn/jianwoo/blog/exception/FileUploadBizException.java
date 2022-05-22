@@ -60,7 +60,7 @@ public class FileUploadBizException extends JwBlogException {
 
     @Override
     public FileUploadBizException print() {
-        logger.warn("==>WebconfBizException, code:" + this.code + ", msg:" + this.msg);
+        logger.warn("==>FileUploadBizException, code:" + this.code + ", msg:" + this.msg);
         return this;
     }
 

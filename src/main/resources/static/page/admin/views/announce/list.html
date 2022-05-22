@@ -1,0 +1,70 @@
+<title>公告列表</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>系统管理</cite></a>
+        <a><cite>公告列表</cite></a>
+    </div>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">标题</label>
+                    <div class="layui-input-inline">
+                        <input autocomplete="off" class="layui-input" name="title" id="title" placeholder="请输入"
+                               type="text">
+                    </div>
+
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn search-btn" data-type="reload" lay-filter="announce-search"
+                            lay-submit>
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
+                <div class="layui-inline" style="position:absolute!important;right:20px;">
+                    <input id="unread" lay-filter="announce-void" lay-skin="switch" lay-submit lay-text="有效|全部"
+                           name="status" title="有效" type="checkbox"
+                           value="00">
+                </div>
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <div style="padding-bottom: 10px;">
+                <button class="layui-btn layuiadmin-btn-add"  lay-href="/announce/create" data-type="createAnnounce">创建公告</button>
+                <button class="layui-btn layui-btn-danger layuiadmin-btn-announce" data-type="batchDel">删除</button>
+                <button class="layui-btn layuiadmin-btn-announce" data-type="batchVoid">作废</button>
+                <button class="layui-btn layuiadmin-btn-announce" data-type="batchRevert">恢复</button>
+            </div>
+            <table id="announce-table" lay-filter="announce"></table>
+            <script id="table-content-announce" type="text/html">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"
+                   lay-href="/announce/edit/id={{d.oid}}"><i
+                        class="layui-icon layui-icon-form"></i>编辑</a>
+                {{#  if(d.status === '00'){ }}
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="void"><i
+                        class="layui-icon layui-icon-form"></i>作废</a>
+                {{#  } }}
+                {{#  if(d.status === '91'){ }}
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="revert"><i
+                        class="layui-icon layui-icon-form"></i>恢复</a>
+                {{#  } }}
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
+                        class="layui-icon layui-icon-delete"></i>删除</a>
+            </script>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use('announce', layui.factory('announce')).use(['admin', 'announce'], function () {
+        var $ = layui.jquery
+            , form = layui.form
+            , element = layui.element;
+            element.render();
+            form.render();
+    })
+</script>

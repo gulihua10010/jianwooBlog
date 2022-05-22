@@ -10,6 +10,8 @@ public class Article implements Serializable {
 
     private Date pushTime;
 
+    private String pushBy;
+
     private String title;
 
     private Date modifiedTime;
@@ -24,7 +26,7 @@ public class Article implements Serializable {
 
     private String imgSrc;
 
-    private String visitType;
+    private String accessType;
 
     private Long commentCount;
 
@@ -64,6 +66,14 @@ public class Article implements Serializable {
 
     public void setPushTime(Date pushTime) {
         this.pushTime = pushTime;
+    }
+
+    public String getPushBy() {
+        return pushBy;
+    }
+
+    public void setPushBy(String pushBy) {
+        this.pushBy = pushBy == null ? null : pushBy.trim();
     }
 
     public String getTitle() {
@@ -122,12 +132,12 @@ public class Article implements Serializable {
         this.imgSrc = imgSrc == null ? null : imgSrc.trim();
     }
 
-    public String getVisitType() {
-        return visitType;
+    public String getAccessType() {
+        return accessType;
     }
 
-    public void setVisitType(String visitType) {
-        this.visitType = visitType == null ? null : visitType.trim();
+    public void setAccessType(String accessType) {
+        this.accessType = accessType == null ? null : accessType.trim();
     }
 
     public Long getCommentCount() {
@@ -195,6 +205,7 @@ public class Article implements Serializable {
         sb.append(", oid=").append(oid);
         sb.append(", author=").append(author);
         sb.append(", pushTime=").append(pushTime);
+        sb.append(", pushBy=").append(pushBy);
         sb.append(", title=").append(title);
         sb.append(", modifiedTime=").append(modifiedTime);
         sb.append(", menuId=").append(menuId);
@@ -202,7 +213,7 @@ public class Article implements Serializable {
         sb.append(", praiseCount=").append(praiseCount);
         sb.append(", isComment=").append(isComment);
         sb.append(", imgSrc=").append(imgSrc);
-        sb.append(", visitType=").append(visitType);
+        sb.append(", accessType=").append(accessType);
         sb.append(", commentCount=").append(commentCount);
         sb.append(", status=").append(status);
         sb.append(", password=").append(password);

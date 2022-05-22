@@ -3,6 +3,7 @@ package cn.jianwoo.blog.service.biz;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.bo.CommentBO;
 import cn.jianwoo.blog.service.param.CommentParam;
+import cn.jianwoo.blog.service.param.PageParam;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
@@ -64,8 +65,6 @@ public interface CommentBizService {
     List<CommentBO> queryCommentsByArtOid(Long artOid);
 
 
-
-
     /**
      * 评论添加赞
      *
@@ -89,10 +88,11 @@ public interface CommentBizService {
      * 通过oid删除评论
      *
      * @param oid 主键[COMMENTS.OID]
+     * @param ip  ip地址
      * @return
      * @author gulihua
      */
-    void doDelCommentById(Long oid) throws JwBlogException;
+    void doDelCommentById(Long oid, String ip) throws JwBlogException;
 
 
     /**
@@ -119,10 +119,11 @@ public interface CommentBizService {
      * 通过oid list删除评论
      *
      * @param oidList 主键list[COMMENTS.OID]
+     * @param ip  ip地址
      * @return
      * @author gulihua
      */
-    void doDelCommentByListOid(List<Long> oidList) throws JwBlogException;
+    void doDelCommentByListOid(List<Long> oidList, String ip) throws JwBlogException;
 
 
     /**
@@ -153,5 +154,49 @@ public interface CommentBizService {
      * @author gulihua
      */
     void doUpdateReadByOidList(List<Long> oidList) throws JwBlogException;
+
+
+    /**
+     * 通过文章oid分页请求评论
+     *
+     * @param artOid 文章oid [ARTICLE.ARTICLE_OID]
+     * @return
+     * @author gulihua
+     */
+    PageInfo<CommentBO> queryCommentsMainPageByArtOid(String artOid, PageParam param);
+
+
+    /**
+     * 评论添加赞
+     *
+     * @param commOid 评论主键 (OID)
+     * @param ip      IP地址
+     * @return
+     * @author gulihua
+     */
+    void doAddPraise(String commOid, String ip) throws JwBlogException;
+
+
+    /**
+     * 通过oid删除评论
+     *
+     * @param oid 主键[COMMENTS.OID]
+     * @param ip  IP地址
+     * @return
+     * @author gulihua
+     */
+    void doDelCommentByIdInMain(Long oid, String ip) throws JwBlogException;
+
+
+
+
+    /**
+     * 更新评论
+     *
+     * @param bo 评论
+     * @return
+     * @author gulihua
+     */
+    void doUpdateComment(CommentBO bo) throws JwBlogException;
 
 }

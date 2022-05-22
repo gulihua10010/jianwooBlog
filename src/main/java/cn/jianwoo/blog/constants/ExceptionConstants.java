@@ -19,7 +19,16 @@ public final class ExceptionConstants {
     public static final String BIZ_STATUS_INCORRECT = "200006";
     public static final String BIZ_PASSWORD_INCORRECT = "200007";
     public static final String BIZ_PAGE_TIMEOUT = "200008";
+    public static final String BIZ_OPERATION_FAILED = "200009";
+    public static final String BIZ_NOT_MATCH = "200010";
 
+    public static final String BIZ_OPERATION_PASSWORD_VERIFY = "200011";
+
+
+    public static final String BIZ_ACCESS_REFUSED = "900000";
+
+
+    public static final String BIZ_ACCESS_FREQUENTLY = "700001";
     public static final String VALIDATION_FAILED_NULL = "300001";
     public static final String VALIDATION_FAILED_EMPTY = "300002";
     public static final String VALIDATION_FAILED_LIST_EMPTY = "300003";
@@ -34,6 +43,7 @@ public final class ExceptionConstants {
     public static final String VALIDATOR_NUMBER = "300012";
     public static final String VALIDATOR_NUMBER_DESC = "字段[%s]的值不是数字类型!";
     public static final String VALIDATION_FAILED = "300000";
+    public static final String VALIDATION_FAILED_DATE = "300014";
 
     public static final String ADMIN_PASSWORD_NOT_CORRECT = "400001";
     public static final String ARTICLE_STATUS_NOT_MATCH = "400002";
@@ -65,6 +75,8 @@ public final class ExceptionConstants {
     public static final String LOGIN_CAPTCHA_AUTH_INVALID = "400010";
     public static final String LOGIN_CAPTCHA_AUTH_INVALID_DESC = "验证码验证失败，请刷新页面重试！";
     public static final String UNAUTHORIZED_DESC = "接口鉴权失败，未经授权的操作!";
+    public static final String ACCESS_REFUSED_DESC = "拒绝访问!";
+    public static final String ACCESS_FREQUENTLY_DESC = "访问频繁, 请稍后再试!";
     public static final String LOGOUT_FAILED_MSG_1 = "退出登录失败, 用户ID secret为空!";
     public static final String LOGOUT_FAILED_MSG_2 = "退出登录失败, 用户未登录!";
     public static final String LOGOUT_FAILED_MSG_3 = "退出登录失败, token解析失败!";
@@ -74,6 +86,8 @@ public final class ExceptionConstants {
 
     public static final String USER_BLOCK = "账号已被冻结! 请1小时后重试!";
 
+    public static final String FILE_NOT_EXIST = "300017";
+    public static final String FILE_NOT_EXIST_DESC = "文件/目录[%s]不存在!";
     private ExceptionConstants() {
     }
 

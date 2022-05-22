@@ -61,7 +61,7 @@ public class PassportApiController extends BaseController {
      * url:/api/passport/captcha/init<br/>
      * <p>
      *
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * challenge
      * gt
      * newCaptcha
@@ -71,33 +71,38 @@ public class PassportApiController extends BaseController {
     @ApiVersion()
     @PostMapping(PassportApiUrlConfig.URL_PASSPORT_CAPTCHA_INIT)
     public String startCaptcha() {
-        GeetestLibUtil gtSdk = new GeetestLibUtil(GeetestConfig.getGeetestId(), GeetestConfig.getGeetestKey(),
-                GeetestConfig.getNewFailBack());
+        try {
+            GeetestLibUtil gtSdk = new GeetestLibUtil(GeetestConfig.getGeetestId(), GeetestConfig.getGeetestKey(),
+                    GeetestConfig.getNewFailBack());
 
 
-        String userid = "jianwoo";
+            String userid = "jianwoo";
 
-        //自定义参数,可选择添加
-        HashMap<String, String> param = new HashMap<String, String>();
-        param.put("user_id", userid); //网站用户id
-        param.put("client_type", "web"); //web:电脑上的浏览器；h5:手机上的浏览器，包括移动应用内完全内置的web_view；native：通过原生SDK植入APP应用的方式
-        param.put("ip_address", "127.0.0.1"); //传输用户请求验证时所携带的IP
-        String guid = request.getParameter(Constants.GUID);
+            //自定义参数,可选择添加
+            HashMap<String, String> param = new HashMap<String, String>();
+            param.put("user_id", userid); //网站用户id
+            param.put("client_type", "web"); //web:电脑上的浏览器；h5:手机上的浏览器，包括移动应用内完全内置的web_view；native：通过原生SDK植入APP应用的方式
+            param.put("ip_address", "127.0.0.1"); //传输用户请求验证时所携带的IP
+            String guid = request.getParameter(Constants.GUID);
 
-        //进行验证预处理
-        boolean isGtServiceSucc = gtSdk.preProcess(param);
+            //进行验证预处理
+            boolean isGtServiceSucc = gtSdk.preProcess(param);
 
 //        //将服务器状态设置到session中
 //        request.getSession().setAttribute(gtSdk.gtServerStatusSessionKey, isGtServiceSucc);
 //        //将userid设置到session中
 //        request.getSession().setAttribute("userid", userid);
-        String statusKey = MessageFormat.format(CacaheKeyConstants.GT_SERVER_STATUS, guid);
-        String userKey = MessageFormat.format(CacaheKeyConstants.GT_SERVER_USER, guid);
-        cacheStore.put(statusKey, isGtServiceSucc ? Constants.YES : Constants.NO);
-        cacheStore.put(userKey, userKey);
-        GeetestResponse resStr = gtSdk.getResponse();
-        logger.info("==>> LoginController.startCaptcha, call sdk res :{}", resStr);
-        return super.responseToJSONString(resStr);
+            String statusKey = MessageFormat.format(CacaheKeyConstants.GT_SERVER_STATUS, guid);
+            String userKey = MessageFormat.format(CacaheKeyConstants.GT_SERVER_USER, guid);
+            cacheStore.put(statusKey, isGtServiceSucc ? Constants.YES : Constants.NO);
+            cacheStore.put(userKey, userKey);
+            GeetestResponse resStr = gtSdk.getResponse();
+            logger.info("==>> LoginController.startCaptcha, call sdk res :{}", resStr);
+            return super.responseToJSONString(resStr);
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+
+        }
 
     }
 
@@ -110,65 +115,70 @@ public class PassportApiController extends BaseController {
      * geetest_validate<br/>
      * geetest_seccode<br/>
      *
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * token
      * @author gulihua
      */
     @ApiVersion()
     @PostMapping(PassportApiUrlConfig.URL_PASSPORT_CAPTCHA_VERIFY)
     public String verifyLogin() {
-        GeetestLibUtil gtSdk = new GeetestLibUtil(GeetestConfig.getGeetestId(), GeetestConfig.getGeetestKey(),
-                GeetestConfig.getNewFailBack());
+        try {
+            GeetestLibUtil gtSdk = new GeetestLibUtil(GeetestConfig.getGeetestId(), GeetestConfig.getGeetestKey(),
+                    GeetestConfig.getNewFailBack());
 
-        String challenge = request.getParameter(GeetestLibUtil.fn_geetest_challenge);
-        String validate = request.getParameter(GeetestLibUtil.fn_geetest_validate);
-        String seccode = request.getParameter(GeetestLibUtil.fn_geetest_seccode);
-        String type = request.getParameter(GeetestLibUtil.fn_geetest_type);
-        String guid = request.getParameter(Constants.GUID);
+            String challenge = request.getParameter(GeetestLibUtil.fn_geetest_challenge);
+            String validate = request.getParameter(GeetestLibUtil.fn_geetest_validate);
+            String seccode = request.getParameter(GeetestLibUtil.fn_geetest_seccode);
+            String type = request.getParameter(GeetestLibUtil.fn_geetest_type);
+            String guid = request.getParameter(Constants.GUID);
 
-        //从session中获取gt-server状态
+            //从session中获取gt-server状态
 //        Boolean isGtServiceSucc = (Boolean) request.getSession().getAttribute(gtSdk.gtServerStatusSessionKey);
-        String statusKey = MessageFormat.format(CacaheKeyConstants.GT_SERVER_STATUS, guid);
-        String userKey = MessageFormat.format(CacaheKeyConstants.GT_SERVER_USER, guid);
-        String isGtServiceSucc = cacheStore.get(statusKey).orElse(null);
-        String userid = cacheStore.get(userKey).orElse(null);
+            String statusKey = MessageFormat.format(CacaheKeyConstants.GT_SERVER_STATUS, guid);
+            String userKey = MessageFormat.format(CacaheKeyConstants.GT_SERVER_USER, guid);
+            String isGtServiceSucc = cacheStore.get(statusKey).orElse(null);
+            String userid = cacheStore.get(userKey).orElse(null);
 
-        if (StringUtils.isBlank(isGtServiceSucc)) {
-            isGtServiceSucc = Constants.NO;
-        }
+            if (StringUtils.isBlank(isGtServiceSucc)) {
+                isGtServiceSucc = Constants.NO;
+            }
 
-        //从session中获取userid
+            //从session中获取userid
 //        String userid = (String) request.getSession().getAttribute("userid");
 
-        //自定义参数,可选择添加
-        HashMap<String, String> param = new HashMap<String, String>();
-        param.put("user_id", userid); //网站用户id
-        param.put("client_type", "web"); //web:电脑上的浏览器；h5:手机上的浏览器，包括移动应用内完全内置的web_view；native：通过原生SDK植入APP应用的方式
-        param.put("ip_address", "127.0.0.1"); //传输用户请求验证时所携带的IP
+            //自定义参数,可选择添加
+            HashMap<String, String> param = new HashMap<String, String>();
+            param.put("user_id", userid); //网站用户id
+            param.put("client_type", "web"); //web:电脑上的浏览器；h5:手机上的浏览器，包括移动应用内完全内置的web_view；native：通过原生SDK植入APP应用的方式
+            param.put("ip_address", "127.0.0.1"); //传输用户请求验证时所携带的IP
 
-        boolean gtResult = false;
+            boolean gtResult = false;
 
-        if (Constants.YES.equals(isGtServiceSucc)) {
-            //gt-server正常，向gt-server进行二次验证
+            if (Constants.YES.equals(isGtServiceSucc)) {
+                //gt-server正常，向gt-server进行二次验证
 
-            gtResult = gtSdk.enhencedValidateRequest(challenge, validate, seccode, param);
+                gtResult = gtSdk.enhencedValidateRequest(challenge, validate, seccode, param);
 
-        } else {
-            // gt-server非正常情况下，进行failback模式验证
-            gtResult = gtSdk.failbackValidateRequest(challenge, validate, seccode);
-        }
+            } else {
+                // gt-server非正常情况下，进行failback模式验证
+                gtResult = gtSdk.failbackValidateRequest(challenge, validate, seccode);
+            }
 
 
-        if (gtResult) {
-            // 验证成功
-            String token = JwUtil.randomUUIDWithoutDash();
-            String cacheKey = MessageFormat.format(GtCaptchaEnum.getKey(type), guid);
-            cacheStore.put(cacheKey, token, 10, TimeUnit.MINUTES);
-//            request.getSession().setAttribute(LOGIN_CAPTCHA_AUTH, token);
-            return super.responseToJSONString(new CaptchaTokenResponse(token));
-        } else {
-            return super.responseToJSONString(BaseResponseDto.SYSTEM_ERROR);
+            if (gtResult) {
+                // 验证成功
+                String token = JwUtil.randomUUIDWithoutDash();
+                String cacheKey = MessageFormat.format(GtCaptchaEnum.getKey(type), guid);
+                cacheStore.put(cacheKey, token, 10, TimeUnit.MINUTES);
+    //            request.getSession().setAttribute(LOGIN_CAPTCHA_AUTH, token);
+                return super.responseToJSONString(new CaptchaTokenResponse(token));
+            } else {
+                return super.responseToJSONString(BaseResponseDto.SYSTEM_ERROR);
 
+
+            }
+        } catch (Exception e) {
+            return super.exceptionToString(e);
 
         }
 
@@ -178,10 +188,10 @@ public class PassportApiController extends BaseController {
      * 用户授权登录<br/>
      * url:/api/passport/login/auth<br/>
      *
-     * @param param JSON 参数({@link UserRequest})
+     * @param param JSON 参数({@link UserRequest})<br/>
      *              username<br/>
      *              password<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * token
      * @author gulihua
      */
@@ -230,7 +240,7 @@ public class PassportApiController extends BaseController {
      * @param param JSON 参数({@link EmailSendRequest})<br/>
      *              loginId<br/>
      *              email<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * token
      * @author gulihua
      */
@@ -259,7 +269,7 @@ public class PassportApiController extends BaseController {
      * @param param JSON 参数({@link ForgetPasswordRequest})<br/>
      *              loginID<br/>
      *              captchaCode<br/>
-     * @return 返回响应 {@link ForgetPwdResponse}
+     * @return 返回响应 {@link ForgetPwdResponse}<br/>
      * flagSuccess<br/>
      * reason<br/>
      * loginIdEncrypt<br/>
@@ -311,7 +321,7 @@ public class PassportApiController extends BaseController {
      *              newPasswordEncrypt<br/>
      *              captchaCodeEncrypt<br/>
      *              captcha_token<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status<br/>
      * @author gulihua
      */

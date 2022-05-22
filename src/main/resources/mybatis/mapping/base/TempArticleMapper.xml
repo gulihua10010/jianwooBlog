@@ -8,7 +8,7 @@
     <result column="MENU_OID" jdbcType="INTEGER" property="menuOid" />
     <result column="IS_COMMENT" jdbcType="CHAR" property="isComment" />
     <result column="IMG_SRC" jdbcType="VARCHAR" property="imgSrc" />
-    <result column="VISIT_TYPE" jdbcType="VARCHAR" property="visitType" />
+    <result column="ACCESS_TYPE" jdbcType="VARCHAR" property="accessType" />
     <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
     <result column="OLD_ARTICLE_OID" jdbcType="BIGINT" property="oldArticleOid" />
     <result column="TAGS" jdbcType="VARCHAR" property="tags" />
@@ -80,7 +80,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    OID, AUTHOR, TITLE, MENU_OID, IS_COMMENT, IMG_SRC, VISIT_TYPE, `PASSWORD`, OLD_ARTICLE_OID, 
+    OID, AUTHOR, TITLE, MENU_OID, IS_COMMENT, IMG_SRC, ACCESS_TYPE, `PASSWORD`, OLD_ARTICLE_OID, 
     TAGS, PAGE_TYPE, `STATUS`, RESTORE_ARTICLE_OID, CREATE_TIME, UPDATE_TIME
   </sql>
   <sql id="Blob_Column_List">
@@ -137,13 +137,13 @@
   </delete>
   <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.TempArticle" useGeneratedKeys="true">
     insert into temp_article (AUTHOR, TITLE, MENU_OID, 
-      IS_COMMENT, IMG_SRC, VISIT_TYPE, 
+      IS_COMMENT, IMG_SRC, ACCESS_TYPE, 
       `PASSWORD`, OLD_ARTICLE_OID, TAGS, 
       PAGE_TYPE, `STATUS`, RESTORE_ARTICLE_OID, 
       CREATE_TIME, UPDATE_TIME, CONTENT
       )
     values (#{author,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{menuOid,jdbcType=INTEGER}, 
-      #{isComment,jdbcType=CHAR}, #{imgSrc,jdbcType=VARCHAR}, #{visitType,jdbcType=VARCHAR}, 
+      #{isComment,jdbcType=CHAR}, #{imgSrc,jdbcType=VARCHAR}, #{accessType,jdbcType=VARCHAR}, 
       #{password,jdbcType=VARCHAR}, #{oldArticleOid,jdbcType=BIGINT}, #{tags,jdbcType=VARCHAR}, 
       #{pageType,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{restoreArticleOid,jdbcType=BIGINT}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR}
@@ -167,8 +167,8 @@
       <if test="imgSrc != null">
         IMG_SRC,
       </if>
-      <if test="visitType != null">
-        VISIT_TYPE,
+      <if test="accessType != null">
+        ACCESS_TYPE,
       </if>
       <if test="password != null">
         `PASSWORD`,
@@ -214,8 +214,8 @@
       <if test="imgSrc != null">
         #{imgSrc,jdbcType=VARCHAR},
       </if>
-      <if test="visitType != null">
-        #{visitType,jdbcType=VARCHAR},
+      <if test="accessType != null">
+        #{accessType,jdbcType=VARCHAR},
       </if>
       <if test="password != null">
         #{password,jdbcType=VARCHAR},
@@ -273,8 +273,8 @@
       <if test="record.imgSrc != null">
         IMG_SRC = #{record.imgSrc,jdbcType=VARCHAR},
       </if>
-      <if test="record.visitType != null">
-        VISIT_TYPE = #{record.visitType,jdbcType=VARCHAR},
+      <if test="record.accessType != null">
+        ACCESS_TYPE = #{record.accessType,jdbcType=VARCHAR},
       </if>
       <if test="record.password != null">
         `PASSWORD` = #{record.password,jdbcType=VARCHAR},
@@ -316,7 +316,7 @@
       MENU_OID = #{record.menuOid,jdbcType=INTEGER},
       IS_COMMENT = #{record.isComment,jdbcType=CHAR},
       IMG_SRC = #{record.imgSrc,jdbcType=VARCHAR},
-      VISIT_TYPE = #{record.visitType,jdbcType=VARCHAR},
+      ACCESS_TYPE = #{record.accessType,jdbcType=VARCHAR},
       `PASSWORD` = #{record.password,jdbcType=VARCHAR},
       OLD_ARTICLE_OID = #{record.oldArticleOid,jdbcType=BIGINT},
       TAGS = #{record.tags,jdbcType=VARCHAR},
@@ -338,7 +338,7 @@
       MENU_OID = #{record.menuOid,jdbcType=INTEGER},
       IS_COMMENT = #{record.isComment,jdbcType=CHAR},
       IMG_SRC = #{record.imgSrc,jdbcType=VARCHAR},
-      VISIT_TYPE = #{record.visitType,jdbcType=VARCHAR},
+      ACCESS_TYPE = #{record.accessType,jdbcType=VARCHAR},
       `PASSWORD` = #{record.password,jdbcType=VARCHAR},
       OLD_ARTICLE_OID = #{record.oldArticleOid,jdbcType=BIGINT},
       TAGS = #{record.tags,jdbcType=VARCHAR},
@@ -369,8 +369,8 @@
       <if test="imgSrc != null">
         IMG_SRC = #{imgSrc,jdbcType=VARCHAR},
       </if>
-      <if test="visitType != null">
-        VISIT_TYPE = #{visitType,jdbcType=VARCHAR},
+      <if test="accessType != null">
+        ACCESS_TYPE = #{accessType,jdbcType=VARCHAR},
       </if>
       <if test="password != null">
         `PASSWORD` = #{password,jdbcType=VARCHAR},
@@ -409,7 +409,7 @@
       MENU_OID = #{menuOid,jdbcType=INTEGER},
       IS_COMMENT = #{isComment,jdbcType=CHAR},
       IMG_SRC = #{imgSrc,jdbcType=VARCHAR},
-      VISIT_TYPE = #{visitType,jdbcType=VARCHAR},
+      ACCESS_TYPE = #{accessType,jdbcType=VARCHAR},
       `PASSWORD` = #{password,jdbcType=VARCHAR},
       OLD_ARTICLE_OID = #{oldArticleOid,jdbcType=BIGINT},
       TAGS = #{tags,jdbcType=VARCHAR},
@@ -428,7 +428,7 @@
       MENU_OID = #{menuOid,jdbcType=INTEGER},
       IS_COMMENT = #{isComment,jdbcType=CHAR},
       IMG_SRC = #{imgSrc,jdbcType=VARCHAR},
-      VISIT_TYPE = #{visitType,jdbcType=VARCHAR},
+      ACCESS_TYPE = #{accessType,jdbcType=VARCHAR},
       `PASSWORD` = #{password,jdbcType=VARCHAR},
       OLD_ARTICLE_OID = #{oldArticleOid,jdbcType=BIGINT},
       TAGS = #{tags,jdbcType=VARCHAR},

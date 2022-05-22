@@ -26,4 +26,15 @@ public interface AdminQueryDao {
      * @author gulihua
      */
     Admin queryAdminByUsername(String username);
+
+
+    /**
+     * 通过邮箱查询<br>
+     * 结果为null时抛出<br>
+     *
+     * @param email 邮箱
+     * @return
+     * @author gulihua
+     */
+    Admin queryAdminByEmail(String email) throws DaoException;
 }

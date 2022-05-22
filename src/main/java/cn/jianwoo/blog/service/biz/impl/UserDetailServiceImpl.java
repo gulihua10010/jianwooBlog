@@ -1,11 +1,11 @@
 package cn.jianwoo.blog.service.biz.impl;
 
 import cn.jianwoo.blog.constants.Constants;
-import cn.jianwoo.blog.dao.base.AdminTransDao;
 import cn.jianwoo.blog.entity.Admin;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.security.token.AuthUserTokenBO;
 import cn.jianwoo.blog.service.base.AdminBaseService;
+import cn.jianwoo.blog.util.JwUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -38,11 +38,17 @@ public class UserDetailServiceImpl implements UserDetailsService {
         // 判断用户是否存在
         Admin admin = null;
         try {
-            admin = adminBaseService.queryAdminByLoginId(name);
+            if (JwUtil.isEmail(name)) {
+                admin = adminBaseService.queryAdminByEmail(name);
+            } else {
+
+                admin = adminBaseService.queryAdminByLoginId(name);
+            }
         } catch (JwBlogException e) {
             log.error("user {} does not exist.", name);
-            throw new UsernameNotFoundException("用户名不存在");
+            throw new UsernameNotFoundException("用户名或者邮箱不存在");
         }
+
         authorities.add(new SimpleGrantedAuthority(Constants.ROLE_PREFIX + Constants.ADMIN.toUpperCase(Locale.ROOT)));
         // 这里直接注入角色，因为JWT已经验证了用户合法性，所以principal和credentials直接为null即可
         log.info("==>>UserDetailServiceImpl.loadUserByUsername end... ");

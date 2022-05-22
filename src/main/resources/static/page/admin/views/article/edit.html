@@ -37,6 +37,108 @@
     .tags-id, .choosetags > .choosed > span > span {
         display: none
     }
+    .media-body {
+        padding: 10px;
+    }
+
+.show-comm {
+    -webkit-animation: comm .5s ;
+    -moz-animation: comm .5s ;
+    animation: comm .5s ;
+
+}
+
+    @-webkit-keyframes comm {
+        0% {
+            background-color: rgba(230, 247, 255, .1)
+        }
+        50% {
+            background-color: rgba(230, 247, 255, .5)
+
+        }
+        100% {
+            background-color: rgba(230, 247, 255, .7)
+
+        }
+    }
+
+    @-moz-keyframes comm {
+        0% {
+            background-color: rgba(230, 247, 255, .1)
+        }
+        50% {
+            background-color: rgba(230, 247, 255, .5)
+
+        }
+        100% {
+            background-color: rgba(230, 247, 255, .7)
+
+
+        }
+    }
+
+    @keyframes comm {
+        0% {
+            background-color: rgba(230, 247, 255, .1)
+        }
+        50% {
+            background-color: rgba(230, 247, 255, .5)
+
+        }
+        100% {
+            background-color: rgba(230, 247, 255, .7)
+
+
+        }
+    }
+
+
+
+
+
+
+    .hidd-comm-backgroud {
+        -webkit-animation: hidd-comm .5s ;
+        -moz-animation: hidd-comm .5s ;
+        animation: hidd-comm .5s ;
+
+    }
+
+    @-webkit-keyframes hidd-comm {
+        0% {
+            background-color: rgba(230, 247, 255, .7)
+        }
+        50% {
+            background-color: rgba(230, 247, 255, .5)
+        }
+        100% {
+            background-color: rgba(230, 247, 255, .1)
+        }
+    }
+
+    @-moz-keyframes hidd-comm {
+        0% {
+            background-color: rgba(230, 247, 255, .7)
+        }
+        50% {
+            background-color: rgba(230, 247, 255, .5)
+        }
+        100% {
+            background-color: rgba(230, 247, 255, .1)
+        }
+    }
+
+    @keyframes hidd-comm {
+        0% {
+            background-color: rgba(230, 247, 255, .7)
+        }
+        50% {
+            background-color: rgba(230, 247, 255, .5)
+        }
+        100% {
+            background-color: rgba(230, 247, 255, .1)
+        }
+    }
 </style>
 
 <div class="layui-card layadmin-header">
@@ -50,7 +152,7 @@
     <link rel="stylesheet" href="{{ layui.setter.base }}style/jw_admin.css?v={{ layui.admin.v }}-1" media="all">
 </script>
 <div class="layui-fluid layui-form" id="layuiadmin-form-comment" lay-filter="layuiadmin-form-comment">
-    <script type="text/html" template lay-url="/api/admin/article/info/{{ layui.router().search.id }}"
+    <script type="text/html" template lay-url="/api/admin/article/edit/detail/{{ layui.router().search.id }}"
             lay-done="doEdit(d);">
         <div class="layui-row layui-col-space15">
             <div class="layui-col-md9 art-left">
@@ -234,16 +336,16 @@
                             <div class="separation-line"></div>
                             <a><i class="iconfont">&#xe606;</i> 公开度：
                                 <span id="published-public">
-                            {{#  if(d.data.visitType === '11'){ }}
+                            {{#  if(d.data.accessType === '11'){ }}
                                 密码
                             {{#  } }}
-                            {{# if(d.data.visitType === '10'){ }}
+                            {{# if(d.data.accessType === '10'){ }}
                                 私密
                             {{#  } }}
-                            {{# if(d.data.visitType === '21'){ }}
+                            {{# if(d.data.accessType === '21'){ }}
                                 置顶
                             {{#  } }}
-                            {{# if(d.data.visitType === '20'){ }}
+                            {{# if(d.data.accessType === '20'){ }}
                                 公开
                             {{#  } }}
                             </span></a>&nbsp;
@@ -251,30 +353,30 @@
                             <form class="layui-form" lay-filter="component-form-element" method="post">
                                 <div class="layui-form-item" id="ispublic-form">
                                     <div class="layui-input-block">
-                                        <input {{# if(d.data.visitType== 20 || d.data.visitType== 21){ }} checked {{# }
+                                        <input {{# if(d.data.accessType== 20 || d.data.accessType== 21){ }} checked {{# }
                                                }}
                                                class="ispublic-radio" id="public" lay-filter="public"
                                                name="isPublic" title="公开"
                                                type="radio" value="20">
                                         <span id="hometop1"><input id="hometop" lay-skin="primary" title="将文章置于首页顶端"
                                                                    type="checkbox"
-                                                                   {{# if(d.data.visitType== 21){ }} checked {{# } }}
+                                                                   {{# if(d.data.accessType== 21){ }} checked {{# } }}
                                                                    value="21" name="hometop"></span><br>
                                         <input class="ispublic-radio" id="passw" lay-filter="passw" name="isPublic"
-                                               title="密码保护" {{# if(d.data.visitType== 11){ }} checked {{# } }}
+                                               title="密码保护" {{# if(d.data.accessType== 11){ }} checked {{# } }}
                                                type="radio"
                                                value="11">
                                         <input autocomplete="off" class="layui-input wd80p" id="passw-content"
-                                               {{# if(d.data.visitType !=11){ }} style="display: none" {{# } }}
+                                               {{# if(d.data.accessType !=11){ }} style="display: none" {{# } }}
                                                value="{{d.data.password}}"
                                                placeholder="密码"
                                                type="password">
                                         <input autocomplete="off" class="layui-input wd80p" id="passw-content-confirm"
                                                placeholder="确认密码"
-                                               {{# if(d.data.visitType !=11){ }} style="display: none" {{# } }}
+                                               {{# if(d.data.accessType !=11){ }} style="display: none" {{# } }}
                                                type="password"><br>
                                         <input class="ispublic-radio" id="secret" lay-filter="secret" name="isPublic"
-                                               title="私密" {{# if(d.data.visitType== 10){ }} checked {{# } }}
+                                               title="私密" {{# if(d.data.accessType== 10){ }} checked {{# } }}
                                                type="radio" value="10">
 
                                     </div>
@@ -345,9 +447,9 @@
     <div class="comment-content ">
         {{# layui.each(d, function(index, comm){ }}
         <div class="comment-list">
-            <div class="media-body">
+            <div class="media-body" id="comm-{{comm.oid}}">
                 <a href="javascript:" class="media-left" style="float: left;">
-                    <img src="{{ comm.headImgSrc }}" height="46px"
+                    <img src="{{ comm.avatarSrc }}" height="46px"
                          width="46px">
                 </a>
                 <div class="pad-btm">
@@ -369,9 +471,9 @@
             <div class="comment-content-reply">
                 {{# layui.each(comm.replyList, function(index, rep){ }}
                 <div>
-                    <div class="media-body">
+                    <div class="media-body" id="comm-{{comm.oid}}">
                         <a href="javascript:" class="media-left" style="float: left;">
-                            <img src="{{rep.headImgSrc}}" height="46px"
+                            <img src="{{rep.avatarSrc}}" height="46px"
                                  width="46px">
                         </a>
                         <div class="pad-btm">
@@ -484,9 +586,21 @@
                     if (d.data.status === "91") {
                         $('button').hide();
                     }
+
+                    if (layui.router().search.c)
+                    {
+                         var t = setTimeout(function () {
+                            $('#'+cid).addClass('hidd-comm-backgroud')
+
+                    }, 500);
+                        var cid=layui.router().search.c;
+                        document.getElementById(cid).scrollIntoView()
+                        $('#'+cid).addClass('show-comm')
+                    }
+
+
+
                 });
-
-
                 if (d.data.tempArticle && d.data.tempArticle.oid) {
                     alertAsk('系统存在之前未完成的临时文章，是否恢复?', function () {
                         var tmpData = d.data.tempArticle;
@@ -496,20 +610,20 @@
                         $('select[name=typeId]').val(tmpData.menuOid);
                         $('input[name=imgsrc]').val(tmpData.imgSrc);
                         var publicStr = "公开"
-                        if (tmpData.visitType === "11") {
+                        if (tmpData.accessType === "11") {
                             publicStr = "密码";
-                        } else if (tmpData.visitType === "10") {
+                        } else if (tmpData.accessType === "10") {
                             publicStr = "私密";
-                        } else if (tmpData.visitType === "21") {
+                        } else if (tmpData.accessType === "21") {
                             publicStr = "置顶";
                         }
                         $('#published-public').text(publicStr)
-                        $('input[name=isPublic][value="' + tmpData.visitType + '"]').attr("checked", true);
-                        if (tmpData.visitType === "21") {
+                        $('input[name=isPublic][value="' + tmpData.accessType + '"]').attr("checked", true);
+                        if (tmpData.accessType === "21") {
                             $('input[name=isPublic][value="20"]').attr("checked", true);
                             $('input[name=hometop]').attr("checked", true);
                         }
-                        if (tmpData.visitType === "11") {
+                        if (tmpData.accessType === "11") {
                             $('#passw-content').val(tmpData.password)
                             $('#hometop1').hide();
                             $('#passw-content').show();
@@ -601,7 +715,7 @@
                             tags: tagsId,
                             menuOid: typeId,
                             imgSrc: imgsrc,
-                            visitType: publishTemp,
+                            accessType: publishTemp,
                             password: passw,
                             isComment: iscomment !== 0,
                             subToken: subToken,
@@ -609,6 +723,9 @@
 
                         }));
                 }
+
+
+
 
 
             })

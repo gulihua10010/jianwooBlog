@@ -25,7 +25,7 @@ import cn.jianwoo.blog.dto.response.vo.ArticleVO;
 import cn.jianwoo.blog.dto.response.vo.TagsVO;
 import cn.jianwoo.blog.dto.response.vo.TempArticleVO;
 import cn.jianwoo.blog.enums.ArticleStatusEnum;
-import cn.jianwoo.blog.enums.ArticleVisitEnum;
+import cn.jianwoo.blog.enums.ArticleAccessEnum;
 import cn.jianwoo.blog.enums.PageIdEnum;
 import cn.jianwoo.blog.enums.TempArticleStatusEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
@@ -75,17 +75,17 @@ public class ArticleApiController extends BaseController {
      * 文章STATUS 为 1 <br/>
      * url:/api/admin/article/published<br/>
      *
-     * @param param JSON 参数({@link ArticleSubmitRequest})
+     * @param param JSON 参数({@link ArticleSubmitRequest})<br/>
      *              title<br/>
      *              author<br/>
      *              articleContent<br/>
      *              tags<br/>
      *              type<br/>
      *              imgSrc<br/>
-     *              visitType
+     *              accessType
      *              password<br/>
      *              isComment<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -102,14 +102,14 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(request.getArticleContent(), "articleContent", "文章内容不能为空!");
             BizValidation.paramValidate(JwUtil.clearHtmlWithoutMedia(request.getArticleContent()), "articleContent", "文章内容不能为空!");
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
-            BizValidation.paramValidate(request.getVisitType(), "visitType", "文章访问类型不能为空!");
+            BizValidation.paramValidate(request.getAccessType(), "accessType", "文章访问类型不能为空!");
             BizValidation.paramValidate(request.getType(), "type", "文章类型不能为空!");
             BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
             BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
-            BizValidation.paramRangeValidate(request.getVisitType(), "visitType", "文章访问类型必须在[10,11,20,21]中!",
-                    ArticleVisitEnum.PUBLIC.getValue(), ArticleVisitEnum.PASSWORD.getValue(),
-                    ArticleVisitEnum.PRIVATE.getValue(), ArticleVisitEnum.TOP.getValue());
-            if (ArticleVisitEnum.PASSWORD.getValue().equals(request.getVisitType())) {
+            BizValidation.paramRangeValidate(request.getAccessType(), "accessType", "文章访问类型必须在[10,11,20,21]中!",
+                    ArticleAccessEnum.PUBLIC.getValue(), ArticleAccessEnum.PASSWORD.getValue(),
+                    ArticleAccessEnum.PRIVATE.getValue(), ArticleAccessEnum.TOP.getValue());
+            if (ArticleAccessEnum.PASSWORD.getValue().equals(request.getAccessType())) {
                 BizValidation.paramValidate(request.getPassword(), "password", "文章密码不能为空!");
             }
             ArticleBO articleBO = JwBuilder.of(ArticleBO::new)
@@ -118,7 +118,7 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleBO::setAuthor, request.getAuthor())
                     .with(ArticleBO::setMenuId, request.getType())
                     .with(ArticleBO::setIsComment, request.getIsComment())
-                    .with(ArticleBO::setVisitType, request.getVisitType())
+                    .with(ArticleBO::setAccessType, request.getAccessType())
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTagOidList, request.getTagOidList())
@@ -138,17 +138,17 @@ public class ArticleApiController extends BaseController {
      * <p>
      * url:/api/admin/article/save/draft<br/>
      *
-     * @param param JSON 参数({@link ArticleSubmitRequest})
+     * @param param JSON 参数({@link ArticleSubmitRequest})<br/>
      *              title<br/>
      *              author<br/>
      *              articleContent<br/>
      *              tags<br/>
      *              type<br/>
      *              imgSrc<br/>
-     *              visitType
+     *              accessType
      *              password<br/>
      *              isComment<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -172,7 +172,7 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleBO::setAuthor, request.getAuthor())
                     .with(ArticleBO::setMenuId, request.getType())
                     .with(ArticleBO::setIsComment, request.getIsComment())
-                    .with(ArticleBO::setVisitType, request.getVisitType())
+                    .with(ArticleBO::setAccessType, request.getAccessType())
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTagOidList, request.getTagOidList())
@@ -191,17 +191,17 @@ public class ArticleApiController extends BaseController {
      * 文章STATUS 为 -1 <br/>
      * url:/api/admin/article/save/recycle<br/>
      *
-     * @param param JSON 参数({@link ArticleSubmitRequest})
+     * @param param JSON 参数({@link ArticleSubmitRequest})<br/>
      *              title<br/>
      *              author<br/>
      *              articleContent<br/>
      *              tags<br/>
      *              type<br/>
      *              imgSrc<br/>
-     *              visitType
+     *              accessType
      *              password<br/>
      *              isComment<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -225,7 +225,7 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleBO::setAuthor, request.getAuthor())
                     .with(ArticleBO::setMenuId, request.getType())
                     .with(ArticleBO::setIsComment, request.getIsComment())
-                    .with(ArticleBO::setVisitType, request.getVisitType())
+                    .with(ArticleBO::setAccessType, request.getAccessType())
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTagOidList, request.getTagOidList())
@@ -244,17 +244,17 @@ public class ArticleApiController extends BaseController {
      * 文章STATUS 为 1 <br/>
      * url:/api/admin/article/update<br/>
      *
-     * @param param JSON 参数({@link ArticleSubmitRequest})
+     * @param param JSON 参数({@link ArticleSubmitRequest})<br/>
      *              title<br/>
      *              author<br/>
      *              articleContent<br/>
      *              tags<br/>
      *              type<br/>
      *              imgSrc<br/>
-     *              visitType
+     *              accessType
      *              password<br/>
      *              isComment<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -272,14 +272,14 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(request.getArticleContent(), "articleContent", "文章内容不能为空!");
             BizValidation.paramValidate(JwUtil.clearHtmlWithoutMedia(request.getArticleContent()), "articleContent", "文章内容不能为空!");
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
-            BizValidation.paramValidate(request.getVisitType(), "visitType", "文章访问类型不能为空!");
+            BizValidation.paramValidate(request.getAccessType(), "accessType", "文章访问类型不能为空!");
             BizValidation.paramValidate(request.getType(), "type", "文章类型不能为空!");
             BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
             BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
-            BizValidation.paramRangeValidate(request.getVisitType(), "visitType", "文章访问类型必须在[10,11,20,21]中!",
-                    ArticleVisitEnum.PUBLIC.getValue(), ArticleVisitEnum.PASSWORD.getValue(),
-                    ArticleVisitEnum.PRIVATE.getValue(), ArticleVisitEnum.TOP.getValue());
-            if (ArticleVisitEnum.PASSWORD.getValue().equals(request.getVisitType())) {
+            BizValidation.paramRangeValidate(request.getAccessType(), "accessType", "文章访问类型必须在[10,11,20,21]中!",
+                    ArticleAccessEnum.PUBLIC.getValue(), ArticleAccessEnum.PASSWORD.getValue(),
+                    ArticleAccessEnum.PRIVATE.getValue(), ArticleAccessEnum.TOP.getValue());
+            if (ArticleAccessEnum.PASSWORD.getValue().equals(request.getAccessType())) {
                 BizValidation.paramValidate(request.getPassword(), "password", "文章密码不能为空!");
             }
             ArticleBO articleBO = JwBuilder.of(ArticleBO::new)
@@ -289,7 +289,7 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleBO::setAuthor, request.getAuthor())
                     .with(ArticleBO::setMenuId, request.getType())
                     .with(ArticleBO::setIsComment, request.getIsComment())
-                    .with(ArticleBO::setVisitType, request.getVisitType())
+                    .with(ArticleBO::setAccessType, request.getAccessType())
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTagOidList, request.getTagOidList())
@@ -310,9 +310,9 @@ public class ArticleApiController extends BaseController {
      * 文章STATUS 为 0 --> 1 <br/>
      * url:/api/admin/article/draft/status/publish<br/>
      *
-     * @param param JSON 参数({@link EntityOidRequest})
+     * @param param JSON 参数({@link EntityOidRequest})<br/>
      *              entityOid<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -336,17 +336,17 @@ public class ArticleApiController extends BaseController {
      * 文章信息(不包括文章内容)进行更新(文章列表页面)<br/>
      * url:/api/admin/article/info/update<br/>
      *
-     * @param param JSON 参数({@link ArticleSubmitRequest})
+     * @param param JSON 参数({@link ArticleSubmitRequest})<br/>
      *              title<br/>
      *              author<br/>
      *              articleContent<br/>
      *              tags<br/>
      *              type<br/>
      *              imgSrc<br/>
-     *              visitType
+     *              accessType
      *              password<br/>
      *              isComment<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -362,14 +362,14 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(request.getArtOid(), "artOid", "文章id不能为空!");
             BizValidation.paramValidate(request.getTitle(), "title", "标题不能为空!");
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
-            BizValidation.paramValidate(request.getVisitType(), "visitType", "文章访问类型不能为空!");
+            BizValidation.paramValidate(request.getAccessType(), "accessType", "文章访问类型不能为空!");
 //            BizValidation.paramValidate(request.getType(), "type", "文章类型不能为空!");
             BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
             BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
-            BizValidation.paramRangeValidate(request.getVisitType(), "visitType", "文章访问类型必须在[10,11,20,21]中!",
-                    ArticleVisitEnum.PUBLIC.getValue(), ArticleVisitEnum.PASSWORD.getValue(),
-                    ArticleVisitEnum.PRIVATE.getValue(), ArticleVisitEnum.TOP.getValue());
-            if (ArticleVisitEnum.PASSWORD.getValue().equals(request.getVisitType())) {
+            BizValidation.paramRangeValidate(request.getAccessType(), "accessType", "文章访问类型必须在[10,11,20,21]中!",
+                    ArticleAccessEnum.PUBLIC.getValue(), ArticleAccessEnum.PASSWORD.getValue(),
+                    ArticleAccessEnum.PRIVATE.getValue(), ArticleAccessEnum.TOP.getValue());
+            if (ArticleAccessEnum.PASSWORD.getValue().equals(request.getAccessType())) {
                 BizValidation.paramValidate(request.getPassword(), "password", "文章密码不能为空!");
             }
             ArticleBO articleBO = JwBuilder.of(ArticleBO::new)
@@ -378,7 +378,7 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleBO::setAuthor, request.getAuthor())
                     .with(ArticleBO::setMenuId, request.getType())
                     .with(ArticleBO::setIsComment, request.getIsComment())
-                    .with(ArticleBO::setVisitType, request.getVisitType())
+                    .with(ArticleBO::setAccessType, request.getAccessType())
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTagOidList, request.getTagOidList()).build();
@@ -397,17 +397,17 @@ public class ArticleApiController extends BaseController {
      * 文章STATUS 为 0 <br/>
      * url:/api/admin/article/draft/save<br/>
      *
-     * @param param JSON 参数({@link ArticleSubmitRequest})
+     * @param param JSON 参数({@link ArticleSubmitRequest})<br/>
      *              title<br/>
      *              author<br/>
      *              articleContent<br/>
      *              tags<br/>
      *              type<br/>
      *              imgSrc<br/>
-     *              visitType
+     *              accessType
      *              password<br/>
      *              isComment<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -433,7 +433,7 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleBO::setAuthor, request.getAuthor())
                     .with(ArticleBO::setMenuId, request.getType())
                     .with(ArticleBO::setIsComment, request.getIsComment())
-                    .with(ArticleBO::setVisitType, request.getVisitType())
+                    .with(ArticleBO::setAccessType, request.getAccessType())
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTagOidList, request.getTagOidList())
@@ -453,17 +453,17 @@ public class ArticleApiController extends BaseController {
      * 文章STATUS 为 0/1 --> -1 <br/>
      * url:/api/admin/article/save/remove/recycle<br/>
      *
-     * @param param JSON 参数({@link ArticleSubmitRequest})
+     * @param param JSON 参数({@link ArticleSubmitRequest})<br/>
      *              title<br/>
      *              author<br/>
      *              articleContent<br/>
      *              tags<br/>
      *              type<br/>
      *              imgSrc<br/>
-     *              visitType
+     *              accessType
      *              password<br/>
      *              isComment<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -488,7 +488,7 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleBO::setAuthor, request.getAuthor())
                     .with(ArticleBO::setMenuId, request.getType())
                     .with(ArticleBO::setIsComment, request.getIsComment())
-                    .with(ArticleBO::setVisitType, request.getVisitType())
+                    .with(ArticleBO::setAccessType, request.getAccessType())
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTagOidList, request.getTagOidList())
@@ -507,17 +507,17 @@ public class ArticleApiController extends BaseController {
      * 文章STATUS 为 0 --> 1 <br/>
      * url:/api/admin/article/draft/publish<br/>
      *
-     * @param param JSON 参数({@link ArticleSubmitRequest})
+     * @param param JSON 参数({@link ArticleSubmitRequest})<br/>
      *              title<br/>
      *              author<br/>
      *              articleContent<br/>
      *              tags<br/>
      *              type<br/>
      *              imgSrc<br/>
-     *              visitType
+     *              accessType
      *              password<br/>
      *              isComment<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -535,14 +535,14 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(request.getArticleContent(), "articleContent", "文章内容不能为空!");
             BizValidation.paramValidate(JwUtil.clearHtmlWithoutMedia(request.getArticleContent()), "articleContent", "文章内容不能为空!");
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
-            BizValidation.paramValidate(request.getVisitType(), "visitType", "文章访问类型不能为空!");
+            BizValidation.paramValidate(request.getAccessType(), "accessType", "文章访问类型不能为空!");
             BizValidation.paramValidate(request.getType(), "type", "文章类型不能为空!");
             BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
             BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
-            BizValidation.paramRangeValidate(request.getVisitType(), "visitType", "文章访问类型必须在[10,11,20,21]中!",
-                    ArticleVisitEnum.PUBLIC.getValue(), ArticleVisitEnum.PASSWORD.getValue(),
-                    ArticleVisitEnum.PRIVATE.getValue(), ArticleVisitEnum.TOP.getValue());
-            if (ArticleVisitEnum.PASSWORD.getValue().equals(request.getVisitType())) {
+            BizValidation.paramRangeValidate(request.getAccessType(), "accessType", "文章访问类型必须在[10,11,20,21]中!",
+                    ArticleAccessEnum.PUBLIC.getValue(), ArticleAccessEnum.PASSWORD.getValue(),
+                    ArticleAccessEnum.PRIVATE.getValue(), ArticleAccessEnum.TOP.getValue());
+            if (ArticleAccessEnum.PASSWORD.getValue().equals(request.getAccessType())) {
                 BizValidation.paramValidate(request.getPassword(), "password", "文章密码不能为空!");
             }
             ArticleBO articleBO = JwBuilder.of(ArticleBO::new)
@@ -552,7 +552,7 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleBO::setAuthor, request.getAuthor())
                     .with(ArticleBO::setMenuId, request.getType())
                     .with(ArticleBO::setIsComment, request.getIsComment())
-                    .with(ArticleBO::setVisitType, request.getVisitType())
+                    .with(ArticleBO::setAccessType, request.getAccessType())
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTagOidList, request.getTagOidList())
@@ -570,11 +570,11 @@ public class ArticleApiController extends BaseController {
      * 分页查询有效的文章集合(STATUS = 00/90)(文章列表页面)<br/>
      * url:/api/admin/article/effective/list<br/>
      *
-     * @param param JSON 参数({@link ArticlePageRequest})
+     * @param param JSON 参数({@link ArticlePageRequest})<br/>
      *              title<br/>
      *              text<br/>
      *              status<br/>
-     * @return 返回响应 {@link ArticleSummaryResponse}
+     * @return 返回响应 {@link ArticleSummaryResponse}<br/>
      * code<br/>
      * count<br/>
      * data<br/>
@@ -591,48 +591,53 @@ public class ArticleApiController extends BaseController {
     @ApiVersion()
     @GetMapping(ArticleApiUrlConfig.URL_ARTICLE_EFFECTIVE_LIST)
     public String queryEffectiveArticlePage(ArticlePageRequest param) {
-        super.printRequestParams(DomainUtil.toString(param));
-        ArticleParam artParam = new ArticleParam();
-        if (StringUtils.isNotBlank(param.getTitle())) {
-            artParam.setTitle(param.getTitle().trim());
-        }
-        if (StringUtils.isNotBlank(param.getText())) {
-            artParam.setText(param.getText().trim());
-        }
-        if (StringUtils.isNotBlank(param.getStatus())) {
-            List<String> statusList = new ArrayList<>();
-            if (ArticleStatusEnum.ALL.getValue().equals(param.getStatus())) {
-                statusList.add(ArticleStatusEnum.PUBLISHED.getValue());
-                statusList.add(ArticleStatusEnum.DRAFT.getValue());
-            } else {
-                statusList.add(param.getStatus());
+        try {
+            super.printRequestParams(DomainUtil.toString(param));
+            ArticleParam artParam = new ArticleParam();
+            if (StringUtils.isNotBlank(param.getTitle())) {
+                artParam.setTitle(param.getTitle().trim());
             }
-            artParam.setStatusParams(statusList);
-        }
-        artParam.setPageNo(param.getPage());
-        artParam.setPageSize(param.getLimit());
-        artParam.processSortField(param.getSortField(), param.getSortOrder());
+            if (StringUtils.isNotBlank(param.getText())) {
+                artParam.setText(param.getText().trim());
+            }
+            if (StringUtils.isNotBlank(param.getStatus())) {
+                List<String> statusList = new ArrayList<>();
+                if (ArticleStatusEnum.ALL.getValue().equals(param.getStatus())) {
+                    statusList.add(ArticleStatusEnum.PUBLISHED.getValue());
+                    statusList.add(ArticleStatusEnum.DRAFT.getValue());
+                } else {
+                    statusList.add(param.getStatus());
+                }
+                artParam.setStatusParams(statusList);
+            }
+            artParam.setPageNo(param.getPage());
+            artParam.setPageSize(param.getLimit());
+            artParam.processSortField(param.getSortField(), param.getSortOrder());
 
 
-        PageInfo<ArticleBO> pageInfo = articleBizService.queryEffectiveArticleList(artParam);
-        List<ArticleSummaryVO> list = new ArrayList<>();
-        ArticleSummaryResponse response = ArticleSummaryResponse.getInstance();
-        for (ArticleBO articleBO : pageInfo.getList()) {
-            ArticleSummaryVO vo = new ArticleSummaryVO();
-            vo.setAuthor(articleBO.getAuthor());
-            vo.setOid(articleBO.getOid());
-            vo.setTitle(articleBO.getTitle());
-            vo.setType(articleBO.getTypeName());
-            vo.setStatus(articleBO.getStatus());
-            vo.setPublishTimeStr(DateUtil.formatDateTime(articleBO.getPushTime()));
-            vo.setPublishTime(articleBO.getPushTime());
-            vo.setModifiedTimeStr(DateUtil.formatDateTime(articleBO.getModifiedTime()));
-            vo.setModifiedTime(articleBO.getModifiedTime());
-            list.add(vo);
+            PageInfo<ArticleBO> pageInfo = articleBizService.queryEffectiveArticleList(artParam);
+            List<ArticleSummaryVO> list = new ArrayList<>();
+            ArticleSummaryResponse response = ArticleSummaryResponse.getInstance();
+            for (ArticleBO articleBO : pageInfo.getList()) {
+                ArticleSummaryVO vo = new ArticleSummaryVO();
+                vo.setAuthor(articleBO.getAuthor());
+                vo.setOid(articleBO.getOid());
+                vo.setTitle(articleBO.getTitle());
+                vo.setType(articleBO.getTypeName());
+                vo.setStatus(articleBO.getStatus());
+                vo.setPublishTimeStr(DateUtil.formatDateTime(articleBO.getPushTime()));
+                vo.setPublishTime(articleBO.getPushTime());
+                vo.setModifiedTimeStr(DateUtil.formatDateTime(articleBO.getModifiedTime()));
+                vo.setModifiedTime(articleBO.getModifiedTime());
+                list.add(vo);
+            }
+            response.setData(list);
+            response.setCount(pageInfo.getTotal());
+            return super.responseToJSONString(response);
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+
         }
-        response.setData(list);
-        response.setCount(pageInfo.getTotal());
-        return super.responseToJSONString(response);
 
     }
 
@@ -641,11 +646,11 @@ public class ArticleApiController extends BaseController {
      * 分页查询回收站文章集合(STATUS = 91)(文章列表页面)<br/>
      * url:/api/admin/article/recycle/list<br/>
      *
-     * @param param JSON 参数({@link ArticlePageRequest})
+     * @param param JSON 参数({@link ArticlePageRequest})<br/>
      *              title<br/>
      *              text<br/>
      *              status<br/>
-     * @return 返回响应 {@link ArticleSummaryResponse}
+     * @return 返回响应 {@link ArticleSummaryResponse}<br/>
      * code<br/>
      * count<br/>
      * data<br/>
@@ -662,35 +667,40 @@ public class ArticleApiController extends BaseController {
     @ApiVersion()
     @GetMapping(ArticleApiUrlConfig.URL_ARTICLE_RECYCLE_LIST)
     public String queryRecycleBinArticlePage(ArticlePageRequest param) {
-        super.printRequestParams(DomainUtil.toString(param));
-        ArticleParam artParam = new ArticleParam();
-        if (StringUtils.isNotBlank(param.getTitle())) {
-            artParam.setTitle(param.getTitle().trim());
+        try {
+            super.printRequestParams(DomainUtil.toString(param));
+            ArticleParam artParam = new ArticleParam();
+            if (StringUtils.isNotBlank(param.getTitle())) {
+                artParam.setTitle(param.getTitle().trim());
+            }
+            if (StringUtils.isNotBlank(param.getText())) {
+                artParam.setText(param.getText().trim());
+            }
+            artParam.setPageNo(param.getPage());
+            artParam.setPageSize(param.getLimit());
+            artParam.processSortField(param.getSortField(), param.getSortOrder());
+            PageInfo<ArticleBO> pageInfo = articleBizService.queryRecycleBinArticleList(artParam);
+            List<ArticleSummaryVO> list = new ArrayList<>();
+            ArticleSummaryResponse response = ArticleSummaryResponse.getInstance();
+            for (ArticleBO articleBO : pageInfo.getList()) {
+                ArticleSummaryVO vo = new ArticleSummaryVO();
+                vo.setAuthor(articleBO.getAuthor());
+                vo.setOid(articleBO.getOid());
+                vo.setTitle(articleBO.getTitle());
+                vo.setType(articleBO.getTypeName());
+                vo.setStatus(articleBO.getStatus());
+                vo.setRemoveRecycleTime(articleBO.getRemoveRecycleTime());
+                vo.setModifiedTimeStr(DateUtil.formatDateTime(articleBO.getModifiedTime()));
+                vo.setModifiedTime(articleBO.getModifiedTime());
+                list.add(vo);
+            }
+            response.setData(list);
+            response.setCount(pageInfo.getTotal());
+            return super.responseToJSONString(response);
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+
         }
-        if (StringUtils.isNotBlank(param.getText())) {
-            artParam.setText(param.getText().trim());
-        }
-        artParam.setPageNo(param.getPage());
-        artParam.setPageSize(param.getLimit());
-        artParam.processSortField(param.getSortField(), param.getSortOrder());
-        PageInfo<ArticleBO> pageInfo = articleBizService.queryRecycleBinArticleList(artParam);
-        List<ArticleSummaryVO> list = new ArrayList<>();
-        ArticleSummaryResponse response = ArticleSummaryResponse.getInstance();
-        for (ArticleBO articleBO : pageInfo.getList()) {
-            ArticleSummaryVO vo = new ArticleSummaryVO();
-            vo.setAuthor(articleBO.getAuthor());
-            vo.setOid(articleBO.getOid());
-            vo.setTitle(articleBO.getTitle());
-            vo.setType(articleBO.getTypeName());
-            vo.setStatus(articleBO.getStatus());
-            vo.setRemoveRecycleTime(articleBO.getRemoveRecycleTime());
-            vo.setModifiedTimeStr(DateUtil.formatDateTime(articleBO.getModifiedTime()));
-            vo.setModifiedTime(articleBO.getModifiedTime());
-            list.add(vo);
-        }
-        response.setData(list);
-        response.setCount(pageInfo.getTotal());
-        return super.responseToJSONString(response);
 
     }
 
@@ -699,9 +709,9 @@ public class ArticleApiController extends BaseController {
      * 文章STATUS 为 0/1 --> -1 <br/>
      * url:/api/admin/article/remove/recycle/list<br/>
      *
-     * @param param JSON 参数({@link EntityOidListRequest})
+     * @param param JSON 参数({@link EntityOidListRequest})<br/>
      *              entityOidList<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -725,9 +735,9 @@ public class ArticleApiController extends BaseController {
      * 文章STATUS 为 0/1 --> -1 <br/>
      * url:/api/admin/article/remove/recycle<br/>
      *
-     * @param param JSON 参数({@link EntityOidRequest})
+     * @param param JSON 参数({@link EntityOidRequest})<br/>
      *              entityOid<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -751,9 +761,9 @@ public class ArticleApiController extends BaseController {
      * 文章STATUS 为 -1 --> 0 <br/>
      * url:/api/admin/article/recycle/restore/draft/list<br/>
      *
-     * @param param JSON 参数({@link EntityOidListRequest})
+     * @param param JSON 参数({@link EntityOidListRequest})<br/>
      *              entityOidList<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -776,9 +786,9 @@ public class ArticleApiController extends BaseController {
      * 把回收站文章集合删除(回收站列表页面)<br/>
      * url:/api/admin/article/delete/recycle/list<br/>
      *
-     * @param param JSON 参数({@link EntityOidListRequest})
+     * @param param JSON 参数({@link EntityOidListRequest})<br/>
      *              entityOidList<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -802,9 +812,9 @@ public class ArticleApiController extends BaseController {
      * 文章STATUS 为 -1 --> 0 <br/>
      * url:/api/admin/article/recycle/restore/draft<br/>
      *
-     * @param param JSON 参数({@link EntityOidRequest})
+     * @param param JSON 参数({@link EntityOidRequest})<br/>
      *              entityOid<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -827,9 +837,9 @@ public class ArticleApiController extends BaseController {
      * 把回收站文章删除(回收站列表页面)<br/>
      * url:/api/admin/article/recycle/delete<br/>
      *
-     * @param param JSON 参数({@link EntityOidRequest})
+     * @param param JSON 参数({@link EntityOidRequest})<br/>
      *              entityOid<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -849,10 +859,10 @@ public class ArticleApiController extends BaseController {
     }
 
     /**
-     * 获取文章信息<br/>
-     * url:/api/admin/article/info/{id}<br/>
+     * 获取文章明细<br/>
+     * url:/api/admin/article/edit/detail/{id}<br/>
      *
-     * @return 返回响应 {@link ArticleInfoResponse}
+     * @return 返回响应 {@link ArticleInfoResponse}<br/>
      * status<br/>
      * data<br/>
      * --id<br/>
@@ -862,11 +872,13 @@ public class ArticleApiController extends BaseController {
      * --menuOid<br/>
      * --imgSrc<br/>
      * --status<br/>
-     * --visitType<br/>
+     * --accessType<br/>
      * --password<br/>
      * --isComment<br/>
      * --artTagsList<br/>
-     * --tagsList<br/>
+     * ----id<br/>
+     * ----name<br/>
+     * --allTagsList<br/>
      * ----id<br/>
      * ----name<br/>
      * --menuList<br/>
@@ -880,7 +892,7 @@ public class ArticleApiController extends BaseController {
      * ----content<br/>
      * ----menuOid<br/>
      * ----imgSrc<br/>
-     * ----visitType<br/>
+     * ----accessType<br/>
      * ----password<br/>
      * ----isComment<br/>
      * ----artTagsList<br/>
@@ -889,12 +901,12 @@ public class ArticleApiController extends BaseController {
      * @author gulihua
      */
     @ApiVersion()
-    @GetMapping(ArticleApiUrlConfig.URL_ARTICLE_INFO)
-    public String queryArticleInfo(@PathVariable("id") String  id) {
+    @GetMapping(ArticleApiUrlConfig.URL_ARTICLE_EDIT_DETAIL)
+    public String queryArticleEditDetail(@PathVariable("id") String  id) {
         ArticleInfoResponse response = ArticleInfoResponse.getInstance();
         try {
             BizValidation.paramValidate(id, "id", "文章id不能为空!");
-            ArticleBO articleBO = articleBizService.queryArticleEditInfo(id);
+            ArticleBO articleBO = articleBizService.queryArticleEditDetail(id);
             if (articleBO != null) {
                 ArticleVO articleVO = new ArticleVO();
                 BeanUtils.copyProperties(articleBO, articleVO);
@@ -947,7 +959,87 @@ public class ArticleApiController extends BaseController {
 
             }
         } catch (Exception e) {
-            log.error(">> AdminPageController.articleEdit exec failed, exception: \n", e);
+            log.error(">> AdminPageController.queryArticleDetail exec failed, exception: \n", e);
+            log.error(">> Article {} cannot be found", id);
+            return super.exceptionToString(e);
+        }
+        return super.responseToJSONString(response);
+
+    }
+
+
+    /**
+     * 获取文章基础信息<br/>
+     * url:/api/admin/article/edit/info/{id}<br/>
+     *
+     * @return 返回响应 {@link ArticleInfoResponse}<br/>
+     * status<br/>
+     * data<br/>
+     * --id<br/>
+     * --title<br/>
+     * --author<br/>
+     * --menuOid<br/>
+     * --status<br/>
+     * --accessType<br/>
+     * --password<br/>
+     * --isComment<br/>
+     * --artTagsList<br/>
+     * ----id<br/>
+     * ----name<br/>
+     * --allTagsList<br/>
+     * ----id<br/>
+     * ----name<br/>
+     * --menuList<br/>
+     * ----id<br/>
+     * ----name<br/>
+     *
+     * @author gulihua
+     */
+    @ApiVersion()
+    @GetMapping(ArticleApiUrlConfig.URL_ARTICLE_EDIT_INFO)
+    public String queryArticleInfo(@PathVariable("id") String  id) {
+        ArticleInfoResponse response = ArticleInfoResponse.getInstance();
+        try {
+            BizValidation.paramValidate(id, "id", "文章id不能为空!");
+            ArticleBO articleBO = articleBizService.queryArticleEditInfo(id);
+            if (articleBO != null) {
+                ArticleVO articleVO = new ArticleVO();
+                BeanUtils.copyProperties(articleBO, articleVO);
+                articleVO.setId(articleBO.getOid());
+                articleVO.setMenuOid(articleBO.getMenuId());
+                if (CollectionUtils.isNotEmpty(articleBO.getArtTagsList())) {
+                    List<TagsVO> tagsVOS = new ArrayList<>(articleBO.getArtTagsList().size());
+                    articleBO.getArtTagsList().forEach(o -> {
+                        TagsVO tagsVO = new TagsVO();
+                        BeanUtils.copyProperties(o, tagsVO);
+                        tagsVOS.add(tagsVO);
+                    });
+                    articleVO.setArtTagsList(tagsVOS);
+                }
+                if (CollectionUtils.isNotEmpty(articleBO.getAllTagsList())) {
+                    List<TagsVO> tagsVOS = new ArrayList<>(articleBO.getAllTagsList().size());
+                    articleBO.getAllTagsList().forEach(o -> {
+                        TagsVO tagsVO = new TagsVO();
+                        BeanUtils.copyProperties(o, tagsVO);
+                        tagsVOS.add(tagsVO);
+                    });
+                    articleVO.setAllTagsList(tagsVOS);
+                }
+                if (CollectionUtils.isNotEmpty(articleBO.getMenuList())) {
+                    List<ArticleMenuVO> menuVOList = new ArrayList<>(articleBO.getMenuList().size());
+                    articleBO.getMenuList().forEach(o -> {
+                        ArticleMenuVO menuVO = new ArticleMenuVO();
+                        BeanUtils.copyProperties(o, menuVO);
+                        menuVOList.add(menuVO);
+                    });
+                    articleVO.setMenuList(menuVOList);
+                }
+
+                response.setData(articleVO);
+
+            }
+        } catch (Exception e) {
+            log.error(">> AdminPageController.queryArticleInfo exec failed, exception: \n", e);
             log.error(">> Article {} cannot be found", id);
             return super.exceptionToString(e);
         }
@@ -959,19 +1051,19 @@ public class ArticleApiController extends BaseController {
      * 临时文章保存<br/>
      * url:/api/admin/article/temp/save<br/>
      *
-     * @param param JSON 参数({@link TempArticleSaveRequest})
+     * @param param JSON 参数({@link TempArticleSaveRequest})<br/>
      *              title<br/>
      *              author<br/>
      *              articleContent<br/>
      *              tags<br/>
      *              menuOid<br/>
      *              imgSrc<br/>
-     *              visitType
+     *              accessType<br/>
      *              password<br/>
      *              isComment<br/>
      *              oldArticleOid<br/>
      *              pageType<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -990,7 +1082,7 @@ public class ArticleApiController extends BaseController {
                     .with(TempArticleBO::setAuthor, request.getAuthor())
                     .with(TempArticleBO::setMenuOid, request.getMenuOid())
                     .with(TempArticleBO::setIsComment, request.getIsComment())
-                    .with(TempArticleBO::setVisitType, request.getVisitType())
+                    .with(TempArticleBO::setAccessType, request.getAccessType())
                     .with(TempArticleBO::setImgSrc, request.getImgSrc())
                     .with(TempArticleBO::setPassword, request.getPassword())
                     .with(TempArticleBO::setOldArticleOid, request.getOldArticleOid())
@@ -1019,19 +1111,19 @@ public class ArticleApiController extends BaseController {
      * 临时文章保存<br/>
      * url:/api/admin/article/temp/update<br/>
      *
-     * @param param JSON 参数({@link TempArticleSaveRequest})
+     * @param param JSON 参数({@link TempArticleSaveRequest})<br/>
      *              title<br/>
      *              author<br/>
      *              articleContent<br/>
      *              tags<br/>
      *              menuOid<br/>
      *              imgSrc<br/>
-     *              visitType
+     *              accessType
      *              password<br/>
      *              isComment<br/>
      *              oldArticleOid<br/>
      *              pageType<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -1051,7 +1143,7 @@ public class ArticleApiController extends BaseController {
                     .with(TempArticleBO::setAuthor, request.getAuthor())
                     .with(TempArticleBO::setMenuOid, request.getMenuOid())
                     .with(TempArticleBO::setIsComment, request.getIsComment())
-                    .with(TempArticleBO::setVisitType, request.getVisitType())
+                    .with(TempArticleBO::setAccessType, request.getAccessType())
                     .with(TempArticleBO::setImgSrc, request.getImgSrc())
                     .with(TempArticleBO::setPassword, request.getPassword())
                     .with(TempArticleBO::setOldArticleOid, request.getOldArticleOid())
@@ -1079,10 +1171,10 @@ public class ArticleApiController extends BaseController {
      * 获取文章信息<br/>
      * url:/api/admin/article/last/temp/info<br/>
      *
-     * @param param JSON 参数({@link TempArticleQueryRequest})
+     * @param param JSON 参数({@link TempArticleQueryRequest})<br/>
      *              editArtOid<br/>
      *              page<br/>
-     * @return 返回响应 {@link TempArticleInfoResponse}
+     * @return 返回响应 {@link TempArticleInfoResponse}<br/>
      * status<br/>
      * data<br/>
      * --oid<br/>
@@ -1091,7 +1183,7 @@ public class ArticleApiController extends BaseController {
      * --content<br/>
      * --menuOid<br/>
      * --imgSrc<br/>
-     * --visitType<br/>
+     * --accessType<br/>
      * --password<br/>
      * --isComment<br/>
      * --artTagsList<br/>
@@ -1119,7 +1211,7 @@ public class ArticleApiController extends BaseController {
                         .with(TempArticleVO::setImgSrc, article.getImgSrc())
                         .with(TempArticleVO::setIsComment, article.getIsComment())
                         .with(TempArticleVO::setPassword, article.getPassword())
-                        .with(TempArticleVO::setVisitType, article.getVisitType())
+                        .with(TempArticleVO::setAccessType, article.getAccessType())
                         .with(TempArticleVO::setStatus, article.getStatus())
                         .build();
 
@@ -1155,9 +1247,9 @@ public class ArticleApiController extends BaseController {
      * 临时文章状态更新为恢复<br/>
      * url:/api/admin/article/temp/update/restore<br/>
      *
-     * @param param JSON 参数({@link EntityOidRequest})
+     * @param param JSON 参数({@link EntityOidRequest})<br/>
      *              entityOid<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
@@ -1183,9 +1275,9 @@ public class ArticleApiController extends BaseController {
      * 临时文章状态更新为作废<br/>
      * url:/api/admin/article/temp/update/void<br/>
      *
-     * @param param JSON 参数({@link EntityOidRequest})
+     * @param param JSON 参数({@link EntityOidRequest})<br/>
      *              entityOid<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua

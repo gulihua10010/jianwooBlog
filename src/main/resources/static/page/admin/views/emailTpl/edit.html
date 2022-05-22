@@ -6,7 +6,7 @@
 <div class="layui-card layadmin-header">
     <div class="layui-breadcrumb" lay-filter="breadcrumb">
         <a lay-href="">主页</a>
-        <a><cite>系统管理</cite></a>
+        <a><cite>邮件管理</cite></a>
         <a><cite>邮件模板编辑</cite></a>
     </div>
 </div>
@@ -16,13 +16,13 @@
             <div class="layui-card-body">
                 <div class="layui-form" id="layuiadmin-form-emailTpl"
                      lay-filter="layuiadmin-form-emailTpl">
-                    <script type="text/html" template lay-url="/api/admin/email/tpl/edit/{{ layui.router().search.id }}"
+                    <script type="text/html" template lay-url="/api/admin/email/tpl/edit/{{ layui.router().search.code }}"
                             lay-done="doEdit(d);">
                         <div class="layui-form-item">
                             <label class="layui-form-label">邮件模板编号</label>
                             <div class="layui-input-block">
                                 <input class="layui-input" name="code" value="{{d.data.code}}" type="text"
-                                       lay-verify="required|maxLength" lay-max="20">
+                                       lay-verify="required|maxLength" lay-max="20" disabled>
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -43,7 +43,7 @@
                             <label class="layui-form-label">邮件模板内容</label>
                             <div class="layui-input-block">
                             <textarea class="layui-input" style="height: 200px;resize:none;padding-top: 5px;" id="content"
-                                      name="content" value="{{ d.data.content }}"
+                                      name="content"
                             >{{ d.data.content }}</textarea>
                             </div>
                         </div>
@@ -52,7 +52,6 @@
                             <div class="layui-input-block">
                             <textarea class="layui-input" style="height: 200px;resize:none;padding-top: 5px;"
                                       name="testJsonData" id="testJsonData"
-                                      value="{{ d.data.testJsonData }}"
                             >{{ d.data.testJsonData }}</textarea>
                             </div>
                         </div>
@@ -70,9 +69,6 @@
                                        type="text">
                             </div>
                         </div>
-                        <input class="layui-input" disabled name="oid"
-                               value="{{d.data.oid}}"
-                               type="hidden">
                     </script>
 
                     <script type="text/html" template lay-url="/api/admin/token/generate"

@@ -4,6 +4,9 @@
   <resultMap id="BaseResultMap" type="cn.jianwoo.blog.entity.Comment">
     <id column="OID" jdbcType="BIGINT" property="oid" />
     <result column="ARTICLE_OID" jdbcType="BIGINT" property="articleOid" />
+    <result column="ARTICLE_TITLE" jdbcType="VARCHAR" property="articleTitle" />
+    <result column="ARTICLE_AUTHOR" jdbcType="VARCHAR" property="articleAuthor" />
+    <result column="ARTICLE_PUSH_BY" jdbcType="VARCHAR" property="articlePushBy" />
     <result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
     <result column="CLIENT_IP" jdbcType="VARCHAR" property="clientIp" />
     <result column="USER_AREA" jdbcType="VARCHAR" property="userArea" />
@@ -14,9 +17,10 @@
     <result column="CONTACT_WECHAT" jdbcType="VARCHAR" property="contactWechat" />
     <result column="CONTACT_WEIBO" jdbcType="VARCHAR" property="contactWeibo" />
     <result column="CONTACT_TEL" jdbcType="VARCHAR" property="contactTel" />
-    <result column="HEAD_IMG_SRC" jdbcType="VARCHAR" property="headImgSrc" />
+    <result column="AVATAR_SRC" jdbcType="VARCHAR" property="avatarSrc" />
     <result column="ART_DEL_STAUTS" jdbcType="VARCHAR" property="artDelStauts" />
     <result column="READ_STATUS" jdbcType="VARCHAR" property="readStatus" />
+    <result column="IS_DELETE" jdbcType="CHAR" property="isDelete" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
     <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -82,9 +86,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    OID, ARTICLE_OID, USER_NAME, CLIENT_IP, USER_AREA, COMMENT_TIME, PARENT_OID, PRAISE_COUNT, 
-    CONTACT_QQ, CONTACT_WECHAT, CONTACT_WEIBO, CONTACT_TEL, HEAD_IMG_SRC, ART_DEL_STAUTS, 
-    READ_STATUS, CREATE_TIME, UPDATE_TIME
+    OID, ARTICLE_OID, ARTICLE_TITLE, ARTICLE_AUTHOR, ARTICLE_PUSH_BY, USER_NAME, CLIENT_IP, 
+    USER_AREA, COMMENT_TIME, PARENT_OID, PRAISE_COUNT, CONTACT_QQ, CONTACT_WECHAT, CONTACT_WEIBO, 
+    CONTACT_TEL, AVATAR_SRC, ART_DEL_STAUTS, READ_STATUS, IS_DELETE, CREATE_TIME, UPDATE_TIME
   </sql>
   <sql id="Blob_Column_List">
     CONTENT
@@ -139,24 +143,37 @@
     </if>
   </delete>
   <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.Comment" useGeneratedKeys="true">
-    insert into comments (ARTICLE_OID, USER_NAME, CLIENT_IP, 
+    insert into comments (ARTICLE_OID, ARTICLE_TITLE, ARTICLE_AUTHOR, 
+      ARTICLE_PUSH_BY, USER_NAME, CLIENT_IP, 
       USER_AREA, COMMENT_TIME, PARENT_OID, 
       PRAISE_COUNT, CONTACT_QQ, CONTACT_WECHAT, 
-      CONTACT_WEIBO, CONTACT_TEL, HEAD_IMG_SRC, 
-      ART_DEL_STAUTS, READ_STATUS, CREATE_TIME, 
-      UPDATE_TIME, CONTENT)
-    values (#{articleOid,jdbcType=BIGINT}, #{userName,jdbcType=VARCHAR}, #{clientIp,jdbcType=VARCHAR}, 
+      CONTACT_WEIBO, CONTACT_TEL, AVATAR_SRC, 
+      ART_DEL_STAUTS, READ_STATUS, IS_DELETE, 
+      CREATE_TIME, UPDATE_TIME, CONTENT
+      )
+    values (#{articleOid,jdbcType=BIGINT}, #{articleTitle,jdbcType=VARCHAR}, #{articleAuthor,jdbcType=VARCHAR}, 
+      #{articlePushBy,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{clientIp,jdbcType=VARCHAR}, 
       #{userArea,jdbcType=VARCHAR}, #{commentTime,jdbcType=TIMESTAMP}, #{parentOid,jdbcType=BIGINT}, 
       #{praiseCount,jdbcType=BIGINT}, #{contactQq,jdbcType=VARCHAR}, #{contactWechat,jdbcType=VARCHAR}, 
-      #{contactWeibo,jdbcType=VARCHAR}, #{contactTel,jdbcType=VARCHAR}, #{headImgSrc,jdbcType=VARCHAR}, 
-      #{artDelStauts,jdbcType=VARCHAR}, #{readStatus,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR})
+      #{contactWeibo,jdbcType=VARCHAR}, #{contactTel,jdbcType=VARCHAR}, #{avatarSrc,jdbcType=VARCHAR}, 
+      #{artDelStauts,jdbcType=VARCHAR}, #{readStatus,jdbcType=VARCHAR}, #{isDelete,jdbcType=CHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.Comment" useGeneratedKeys="true">
     insert into comments
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="articleOid != null">
         ARTICLE_OID,
+      </if>
+      <if test="articleTitle != null">
+        ARTICLE_TITLE,
+      </if>
+      <if test="articleAuthor != null">
+        ARTICLE_AUTHOR,
+      </if>
+      <if test="articlePushBy != null">
+        ARTICLE_PUSH_BY,
       </if>
       <if test="userName != null">
         USER_NAME,
@@ -188,14 +205,17 @@
       <if test="contactTel != null">
         CONTACT_TEL,
       </if>
-      <if test="headImgSrc != null">
-        HEAD_IMG_SRC,
+      <if test="avatarSrc != null">
+        AVATAR_SRC,
       </if>
       <if test="artDelStauts != null">
         ART_DEL_STAUTS,
       </if>
       <if test="readStatus != null">
         READ_STATUS,
+      </if>
+      <if test="isDelete != null">
+        IS_DELETE,
       </if>
       <if test="createTime != null">
         CREATE_TIME,
@@ -210,6 +230,15 @@
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="articleOid != null">
         #{articleOid,jdbcType=BIGINT},
+      </if>
+      <if test="articleTitle != null">
+        #{articleTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="articleAuthor != null">
+        #{articleAuthor,jdbcType=VARCHAR},
+      </if>
+      <if test="articlePushBy != null">
+        #{articlePushBy,jdbcType=VARCHAR},
       </if>
       <if test="userName != null">
         #{userName,jdbcType=VARCHAR},
@@ -241,14 +270,17 @@
       <if test="contactTel != null">
         #{contactTel,jdbcType=VARCHAR},
       </if>
-      <if test="headImgSrc != null">
-        #{headImgSrc,jdbcType=VARCHAR},
+      <if test="avatarSrc != null">
+        #{avatarSrc,jdbcType=VARCHAR},
       </if>
       <if test="artDelStauts != null">
         #{artDelStauts,jdbcType=VARCHAR},
       </if>
       <if test="readStatus != null">
         #{readStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=CHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -275,6 +307,15 @@
       </if>
       <if test="record.articleOid != null">
         ARTICLE_OID = #{record.articleOid,jdbcType=BIGINT},
+      </if>
+      <if test="record.articleTitle != null">
+        ARTICLE_TITLE = #{record.articleTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="record.articleAuthor != null">
+        ARTICLE_AUTHOR = #{record.articleAuthor,jdbcType=VARCHAR},
+      </if>
+      <if test="record.articlePushBy != null">
+        ARTICLE_PUSH_BY = #{record.articlePushBy,jdbcType=VARCHAR},
       </if>
       <if test="record.userName != null">
         USER_NAME = #{record.userName,jdbcType=VARCHAR},
@@ -306,14 +347,17 @@
       <if test="record.contactTel != null">
         CONTACT_TEL = #{record.contactTel,jdbcType=VARCHAR},
       </if>
-      <if test="record.headImgSrc != null">
-        HEAD_IMG_SRC = #{record.headImgSrc,jdbcType=VARCHAR},
+      <if test="record.avatarSrc != null">
+        AVATAR_SRC = #{record.avatarSrc,jdbcType=VARCHAR},
       </if>
       <if test="record.artDelStauts != null">
         ART_DEL_STAUTS = #{record.artDelStauts,jdbcType=VARCHAR},
       </if>
       <if test="record.readStatus != null">
         READ_STATUS = #{record.readStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isDelete != null">
+        IS_DELETE = #{record.isDelete,jdbcType=CHAR},
       </if>
       <if test="record.createTime != null">
         CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
@@ -333,6 +377,9 @@
     update comments
     set OID = #{record.oid,jdbcType=BIGINT},
       ARTICLE_OID = #{record.articleOid,jdbcType=BIGINT},
+      ARTICLE_TITLE = #{record.articleTitle,jdbcType=VARCHAR},
+      ARTICLE_AUTHOR = #{record.articleAuthor,jdbcType=VARCHAR},
+      ARTICLE_PUSH_BY = #{record.articlePushBy,jdbcType=VARCHAR},
       USER_NAME = #{record.userName,jdbcType=VARCHAR},
       CLIENT_IP = #{record.clientIp,jdbcType=VARCHAR},
       USER_AREA = #{record.userArea,jdbcType=VARCHAR},
@@ -343,9 +390,10 @@
       CONTACT_WECHAT = #{record.contactWechat,jdbcType=VARCHAR},
       CONTACT_WEIBO = #{record.contactWeibo,jdbcType=VARCHAR},
       CONTACT_TEL = #{record.contactTel,jdbcType=VARCHAR},
-      HEAD_IMG_SRC = #{record.headImgSrc,jdbcType=VARCHAR},
+      AVATAR_SRC = #{record.avatarSrc,jdbcType=VARCHAR},
       ART_DEL_STAUTS = #{record.artDelStauts,jdbcType=VARCHAR},
       READ_STATUS = #{record.readStatus,jdbcType=VARCHAR},
+      IS_DELETE = #{record.isDelete,jdbcType=CHAR},
       CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP},
       CONTENT = #{record.content,jdbcType=LONGVARCHAR}
@@ -357,6 +405,9 @@
     update comments
     set OID = #{record.oid,jdbcType=BIGINT},
       ARTICLE_OID = #{record.articleOid,jdbcType=BIGINT},
+      ARTICLE_TITLE = #{record.articleTitle,jdbcType=VARCHAR},
+      ARTICLE_AUTHOR = #{record.articleAuthor,jdbcType=VARCHAR},
+      ARTICLE_PUSH_BY = #{record.articlePushBy,jdbcType=VARCHAR},
       USER_NAME = #{record.userName,jdbcType=VARCHAR},
       CLIENT_IP = #{record.clientIp,jdbcType=VARCHAR},
       USER_AREA = #{record.userArea,jdbcType=VARCHAR},
@@ -367,9 +418,10 @@
       CONTACT_WECHAT = #{record.contactWechat,jdbcType=VARCHAR},
       CONTACT_WEIBO = #{record.contactWeibo,jdbcType=VARCHAR},
       CONTACT_TEL = #{record.contactTel,jdbcType=VARCHAR},
-      HEAD_IMG_SRC = #{record.headImgSrc,jdbcType=VARCHAR},
+      AVATAR_SRC = #{record.avatarSrc,jdbcType=VARCHAR},
       ART_DEL_STAUTS = #{record.artDelStauts,jdbcType=VARCHAR},
       READ_STATUS = #{record.readStatus,jdbcType=VARCHAR},
+      IS_DELETE = #{record.isDelete,jdbcType=CHAR},
       CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -381,6 +433,15 @@
     <set>
       <if test="articleOid != null">
         ARTICLE_OID = #{articleOid,jdbcType=BIGINT},
+      </if>
+      <if test="articleTitle != null">
+        ARTICLE_TITLE = #{articleTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="articleAuthor != null">
+        ARTICLE_AUTHOR = #{articleAuthor,jdbcType=VARCHAR},
+      </if>
+      <if test="articlePushBy != null">
+        ARTICLE_PUSH_BY = #{articlePushBy,jdbcType=VARCHAR},
       </if>
       <if test="userName != null">
         USER_NAME = #{userName,jdbcType=VARCHAR},
@@ -412,14 +473,17 @@
       <if test="contactTel != null">
         CONTACT_TEL = #{contactTel,jdbcType=VARCHAR},
       </if>
-      <if test="headImgSrc != null">
-        HEAD_IMG_SRC = #{headImgSrc,jdbcType=VARCHAR},
+      <if test="avatarSrc != null">
+        AVATAR_SRC = #{avatarSrc,jdbcType=VARCHAR},
       </if>
       <if test="artDelStauts != null">
         ART_DEL_STAUTS = #{artDelStauts,jdbcType=VARCHAR},
       </if>
       <if test="readStatus != null">
         READ_STATUS = #{readStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        IS_DELETE = #{isDelete,jdbcType=CHAR},
       </if>
       <if test="createTime != null">
         CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
@@ -436,6 +500,9 @@
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.jianwoo.blog.entity.Comment">
     update comments
     set ARTICLE_OID = #{articleOid,jdbcType=BIGINT},
+      ARTICLE_TITLE = #{articleTitle,jdbcType=VARCHAR},
+      ARTICLE_AUTHOR = #{articleAuthor,jdbcType=VARCHAR},
+      ARTICLE_PUSH_BY = #{articlePushBy,jdbcType=VARCHAR},
       USER_NAME = #{userName,jdbcType=VARCHAR},
       CLIENT_IP = #{clientIp,jdbcType=VARCHAR},
       USER_AREA = #{userArea,jdbcType=VARCHAR},
@@ -446,9 +513,10 @@
       CONTACT_WECHAT = #{contactWechat,jdbcType=VARCHAR},
       CONTACT_WEIBO = #{contactWeibo,jdbcType=VARCHAR},
       CONTACT_TEL = #{contactTel,jdbcType=VARCHAR},
-      HEAD_IMG_SRC = #{headImgSrc,jdbcType=VARCHAR},
+      AVATAR_SRC = #{avatarSrc,jdbcType=VARCHAR},
       ART_DEL_STAUTS = #{artDelStauts,jdbcType=VARCHAR},
       READ_STATUS = #{readStatus,jdbcType=VARCHAR},
+      IS_DELETE = #{isDelete,jdbcType=CHAR},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
       CONTENT = #{content,jdbcType=LONGVARCHAR}
@@ -457,6 +525,9 @@
   <update id="updateByPrimaryKey" parameterType="cn.jianwoo.blog.entity.Comment">
     update comments
     set ARTICLE_OID = #{articleOid,jdbcType=BIGINT},
+      ARTICLE_TITLE = #{articleTitle,jdbcType=VARCHAR},
+      ARTICLE_AUTHOR = #{articleAuthor,jdbcType=VARCHAR},
+      ARTICLE_PUSH_BY = #{articlePushBy,jdbcType=VARCHAR},
       USER_NAME = #{userName,jdbcType=VARCHAR},
       CLIENT_IP = #{clientIp,jdbcType=VARCHAR},
       USER_AREA = #{userArea,jdbcType=VARCHAR},
@@ -467,9 +538,10 @@
       CONTACT_WECHAT = #{contactWechat,jdbcType=VARCHAR},
       CONTACT_WEIBO = #{contactWeibo,jdbcType=VARCHAR},
       CONTACT_TEL = #{contactTel,jdbcType=VARCHAR},
-      HEAD_IMG_SRC = #{headImgSrc,jdbcType=VARCHAR},
+      AVATAR_SRC = #{avatarSrc,jdbcType=VARCHAR},
       ART_DEL_STAUTS = #{artDelStauts,jdbcType=VARCHAR},
       READ_STATUS = #{readStatus,jdbcType=VARCHAR},
+      IS_DELETE = #{isDelete,jdbcType=CHAR},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
     where OID = #{oid,jdbcType=BIGINT}

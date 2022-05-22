@@ -59,6 +59,10 @@ public class BizEventLogEvent extends ApplicationEvent {
 
     private String ip;
 
+    /**
+     * 操作表的主键
+     */
+    private String optEntityId;
 
     public BizEventLogEvent(Object source, String username) {
         super(source);
@@ -75,6 +79,13 @@ public class BizEventLogEvent extends ApplicationEvent {
     public BizEventLogEvent(Object source, SecurityContext context) {
         super(source);
         this.context = context;
+    }
+
+    public BizEventLogEvent(Object source, SecurityContext context, String username, String ip) {
+        super(source);
+        this.context = context;
+        this.username = username;
+        this.ip = ip;
     }
 
 
@@ -185,5 +196,13 @@ public class BizEventLogEvent extends ApplicationEvent {
 
     public void setBizEventOptTypeEnum(BizEventOptTypeEnum bizEventOptTypeEnum) {
         this.bizEventOptTypeEnum = bizEventOptTypeEnum;
+    }
+
+    public String getOptEntityId() {
+        return this.optEntityId;
+    }
+
+    public void setOptEntityId(String optEntityId) {
+        this.optEntityId = optEntityId;
     }
 }

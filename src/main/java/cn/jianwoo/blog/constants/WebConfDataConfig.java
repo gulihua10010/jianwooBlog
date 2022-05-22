@@ -33,5 +33,12 @@ public final class WebConfDataConfig {
     public static final String EMAIL_STMT_TIMEOUT = "EMAIL_STMT_TIMEOUT";
     public static final String EMAIL_CONNECTION_TIMEOUT = "EMAIL_CONNECTION_TIMEOUT";
     public static final String MAX_LOGIN_FAILED_TIMES = "MAX_LOGIN_FAILED_TIMES";
+    public static final String COMMENT_ON_FREQUENCY = "COMMENT_ON_FREQUENCY";
+    public static final String IP_ACCESS_TRAFFIC_CTRL = "IP_ACCESS_TRAFFIC_CTRL";
+
+    public static final String GLOBAL_COMMENT_ALLOW = "GLOBAL_COMMENT_ALLOW";
+
+    public static final String IS_UPLOAD_TO_QINIU_CDN = "IS_UPLOAD_TO_QINIU_CDN";
+    public static final String EXCEPTION_EMAIL_NOTIFY = "EXCEPTION_EMAIL_NOTIFY";
 
 }

@@ -36,6 +36,13 @@ public enum BizEventTypeEnum {
      * 邮件模板
      */
     EMAIL_TPL("60", "邮件模板"),
+
+
+    /**
+     * 公告
+     */
+    ANNOUNCEMENT_TPL("70", "公告"),
+
     ;
 
     /**

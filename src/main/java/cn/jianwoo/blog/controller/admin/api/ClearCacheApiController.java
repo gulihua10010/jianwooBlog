@@ -37,22 +37,24 @@ public class ClearCacheApiController extends BaseController {
      * 清除缓存(清除缓存页面)<br/>
      * url:/api/admin/cache/clear<br/>
      *
-     * @param param JSON 参数({@link ClearCacheRequest})
+     * @param param JSON 参数({@link ClearCacheRequest})<br/>
      *              temp<br/>
      *              log<br/>
      *              cache<br/>
-     * @return 返回响应 {@link BaseResponseDto}
+     *              memory<br/>
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
      * @author gulihua
      */
     @ApiVersion()
-    @PostMapping(ClearCacheApiUrlConfig.URL_COMMENT_ADD)
+    @PostMapping(ClearCacheApiUrlConfig.URL_CACHE_CLEAR)
     public String clear(@RequestBody String param) {
         try {
             super.printRequestParams(param);
             ClearCacheRequest request = this.convertParam(param, ClearCacheRequest.class);
-            clearCacheBizService.clearCache(request.getCache(), request.getLog(), request.getTemp());
+
+            clearCacheBizService.clearCache(request.getCache(), request.getLog(), request.getTemp(), request.getMemory());
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
         }
@@ -61,8 +63,8 @@ public class ClearCacheApiController extends BaseController {
     }
 
     /**
-     * 获取前台首页菜单<br/>
-     * url:/api/admin/webconf/info<br/>
+     * 获取缓存信息<br/>
+     * url:/api/admin/cache/info<br/>
      *
      * @return 返回响应 {@link WebconfResponse}
      * status<br/>
@@ -73,7 +75,7 @@ public class ClearCacheApiController extends BaseController {
      * @author gulihua
      */
     @ApiVersion()
-    @GetMapping(ClearCacheApiUrlConfig.URL_COMMENT_INFO)
+    @GetMapping(ClearCacheApiUrlConfig.URL_CACHE_INFO)
     public String getWebConfig() {
         CacheResponse response = CacheResponse.getInstance();
         try {

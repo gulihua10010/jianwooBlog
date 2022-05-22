@@ -9,11 +9,14 @@ layui.define(['form'], function (exports) {
         var data = [];
         $('.web-form').each(function (i) {
             var key = $(this).attr('name');
+            var type = $(this).data('key');
+            if (type === 'INPUT_CHECKBOX') {
+                field[key] = $('input[name=' + key + ']').is(':checked');
+            }
             if (field[key] === undefined) {
                 return;
             }
 
-            var type = $(this).data('key');
             var validateType = $(this).attr('data-validateType');
             var validateValue = $(this).attr('data-validateValue');
             var valueType = $(this).attr('data-valueType');
@@ -31,8 +34,10 @@ layui.define(['form'], function (exports) {
                 value: field[key]
             };
             if (type === 'INPUT_CHECKBOX') {
-                o.value = field[key] === '1' ? 'true' : 'false';
-                oldValue = oldValue === 'true' ? 'true' : 'false';
+                // o.value = field[key] === '1' ? 'true' : 'false';
+                o.value = o.value.toString();
+                oldValue = oldValue.toLowerCase()  === 'true' ? 'true' : 'false';
+
             }
 
             if (valueType === 'F') {
@@ -99,8 +104,9 @@ layui.define(['form'], function (exports) {
         var temp = field.temp === '1' ? 1 : 0;
         var log = field.log === '1' ? 1 : 0;
         var cache = field.cache === '1' ? 1 : 0;
+        var memory = field.memory === '1' ? 1 : 0;
 
-        if (!temp && !log && !cache) {
+        if (!temp && !log && !cache && !memory) {
             alertFail('提示', '你未选择操作的项！');
             return false;
         }
@@ -110,7 +116,8 @@ layui.define(['form'], function (exports) {
             JSON.stringify({
                 temp: temp,
                 cache: cache,
-                log: log
+                log: log,
+                memory: memory,
             }),
             "清除成功",
             function () {

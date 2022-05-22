@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class EmailTemplate implements Serializable {
-    private Long oid;
-
     private String emailTplCode;
 
     private String desc;
@@ -14,6 +12,8 @@ public class EmailTemplate implements Serializable {
 
     private String testJsonData;
 
+    private Boolean statusUsed;
+
     private Date createTime;
 
     private Date updateTime;
@@ -21,14 +21,6 @@ public class EmailTemplate implements Serializable {
     private String content;
 
     private static final long serialVersionUID = 1L;
-
-    public Long getOid() {
-        return oid;
-    }
-
-    public void setOid(Long oid) {
-        this.oid = oid;
-    }
 
     public String getEmailTplCode() {
         return emailTplCode;
@@ -62,6 +54,14 @@ public class EmailTemplate implements Serializable {
         this.testJsonData = testJsonData == null ? null : testJsonData.trim();
     }
 
+    public Boolean getStatusUsed() {
+        return statusUsed;
+    }
+
+    public void setStatusUsed(Boolean statusUsed) {
+        this.statusUsed = statusUsed;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -92,11 +92,11 @@ public class EmailTemplate implements Serializable {
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
-        sb.append(", oid=").append(oid);
         sb.append(", emailTplCode=").append(emailTplCode);
         sb.append(", desc=").append(desc);
         sb.append(", subject=").append(subject);
         sb.append(", testJsonData=").append(testJsonData);
+        sb.append(", statusUsed=").append(statusUsed);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", content=").append(content);

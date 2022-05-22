@@ -12,7 +12,8 @@ public class BaseResponseDto implements Serializable {
     private static final String SUCCESS_REQ_MSG = "SUCCESS";
     public static final BaseResponseDto SUCCESS = new BaseResponseDto(SUCCESS_REQ_CODE, SUCCESS_REQ_MSG);
     private static final String FAIL_REQ_CODE = "999999";
-    private static final String FAIL_REQ_MSG = "SYSTEM ERROR";
+//    private static final String FAIL_REQ_MSG = "SYSTEM ERROR";
+    private static final String FAIL_REQ_MSG = "服务异常!";
     public static final BaseResponseDto SYSTEM_ERROR = new BaseResponseDto(FAIL_REQ_CODE, FAIL_REQ_MSG);
     private String status;
     private String msg;

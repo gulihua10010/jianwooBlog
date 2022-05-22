@@ -24,10 +24,6 @@ public class EmailTplSummaryVO implements Serializable {
     private static final long serialVersionUID = 2152295702147130157L;
 
     /**
-     * 主键
-     */
-    private Long oid;
-    /**
      * 邮件模板编号
      */
     private String code;

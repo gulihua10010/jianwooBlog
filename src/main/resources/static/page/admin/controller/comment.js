@@ -46,7 +46,8 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
 
     //监听搜索
     form.on('submit(contcomm-search)', function (data) {
-        var field = data.field;
+        var field = data.field
+        field.page = 1;
         //执行重载
         table.reload('comment-table', {
             where: field
@@ -62,7 +63,10 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
     form.on('switch(comment-unread)', function (data) {
         var isChecked = data.elem.checked
         table.reload('comment-table', {
-            where: {unread: isChecked ? 1 : 0}
+            where: {
+                unread: isChecked ? 1 : 0,
+                title: $('#title').val(),
+            }
         });
 
     });
@@ -153,7 +157,7 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
                         form.render(null, 'LAY-popup-comment-reply');
                         form.on('submit(JW-comment-reply-submit)', function (formData) {
                             var field = formData.field; //获取提交的字段
-                            var headImgUrl = "/static/comm/img/headimg/" + Math.ceil(Math.random() * 10) + ".jpg";
+                            var avatarSrc = "/static/comm/img/avatar/" + Math.ceil(Math.random() * 10) + ".jpg";
 
                             //提交 Ajax 成功后，静态更新表格中的数据
                             ajaxPost(
@@ -164,7 +168,7 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
                                     parentOid: data.oid,
                                     username: username,
                                     artOid: data.artOid,
-                                    headImgUrl: headImgUrl,
+                                    avatarSrc: avatarSrc,
                                     subToken: field.subToken
                                 }),
                                 "回复成功",
@@ -285,7 +289,7 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
                     form.render(null, 'LAY-popup-art-comment-reply');
                     form.on('submit(JW-comment-reply-submit)', function (formData) {
                         var field = formData.field;
-                        var headImgUrl = "/static/comm/img/headimg/" + Math.ceil(Math.random() * 10) + ".jpg";
+                        var avatarSrc = "/static/comm/img/avatar/" + Math.ceil(Math.random() * 10) + ".jpg";
                         ajaxPost(
                             "/api/admin/comment/reply",
                             1,
@@ -294,7 +298,7 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
                                 parentOid: poid,
                                 username: username,
                                 artOid: artOid,
-                                headImgUrl: headImgUrl,
+                                avatarSrc: avatarSrc,
                                 subToken: field.subToken
                             }),
                             "回复成功",
@@ -313,7 +317,7 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
     $('.art-comment').on('click', '.comment-btn', function () {
         var username = '博主';
         var qq = '00000000';
-        var headImgUrl = "/static/comm/img/headimg/" + Math.ceil(Math.random() * 10) + ".jpg";
+        var avatarSrc = "/static/comm/img/avatar/" + Math.ceil(Math.random() * 10) + ".jpg";
         var commentext = $('#comm-content').val();
         var replyId = 0;
         if (isEmpty(commentext)) {
@@ -330,7 +334,7 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
                 contactQq: qq,
                 artOid: artOid,
                 parentOid: replyId,
-                headImgUrl: headImgUrl,
+                avatarSrc: avatarSrc,
                 subToken: commToken
             }),
             "评论成功",

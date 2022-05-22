@@ -84,6 +84,12 @@ public enum PageIdEnum {
     EMAIL_TPL_CREATE("ET10"),
     EMAIL_TPL_UPDATE("ET11"),
 
+    /**
+     * 公告
+     */
+    ANNOUNCEMENT_CREATE("AN10"),
+    ANNOUNCEMENT_UPDATE("AN11"),
+
 
 
     ;

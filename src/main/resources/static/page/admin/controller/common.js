@@ -11,7 +11,8 @@ layui.extend({
     , laytable: "{/}" + layui.setter.base + 'lib/extend/laytable'
     , layupload: "{/}" + layui.setter.base + 'lib/extend/layupload'
     , base64: '../admin/lib/extend/base64'
-}).define(["form", "base64"], function (exports) {
+    , notice: '../admin/lib/extend/notice'
+}).define(["form", "base64", "notice"], function (exports) {
     var $ = layui.$
         , layer = layui.layer
         , laytpl = layui.laytpl
@@ -20,9 +21,22 @@ layui.extend({
         , admin = layui.admin
         , form = layui.form
         , base64 = layui.base64
+        , notice = layui.notice
     ;
-
-
+    // 初始化配置，同一样式只需要配置一次，非必须初始化，有默认配置
+    notice.options = {
+        closeButton: true,//显示关闭按钮
+        debug: false,//启用debug
+        positionClass: "toast-top-right",//弹出的位置,
+        showDuration: "300",//显示的时间
+        hideDuration: "1000",//消失的时间
+        timeOut: "5000",//停留的时间
+        extendedTimeOut: "1000",//控制时间
+        showEasing: "swing",//显示时的动画缓冲方式
+        hideEasing: "linear",//消失时的动画缓冲方式
+        iconClass: 'toast-info', // 自定义图标，有内置，如不需要则传空 支持layui内置图标/自定义iconfont类名
+        onclick: true, // 点击关闭回调
+    };
     //公共业务的逻辑处理可以写在此处，切换任何页面都会执行
 
     ajaxPost = function (url, version, data, msg, success, failed) {
@@ -292,7 +306,24 @@ layui.extend({
                 return '两次密码不一致';
             }
         },
-
+        dateFmt: function (value, item) {
+            if (isEmpty(value)) {
+                return false;
+            }
+            var patt = /^(\d{4})[-\/](\d{1}|0\d{1}|1[0-2])([-\/](\d{1}|0\d{1}|[1-2][0-9]|3[0-1]))*$/;
+            if (!patt.test(value)) {
+                return '日期格式不正确';
+            }
+        },
+        dateTimeFmt: function (value, item) {
+            if (isEmpty(value)) {
+                return false;
+            }
+            var patt = /^(\d{4})[-\/](\d{1}|0\d{1}|1[0-2])([-\/](\d{1}|0\d{1}|[1-2][0-9]|3[0-1]))*\s(\d{1}|[0-1]\d{1}|2[0-3])[:]([0-5]\d{1})[:]([0-5]\d{1})$/;
+            if (!patt.test(value)) {
+                return '日期时间格式不正确';
+            }
+        },
 
     })
 
@@ -345,21 +376,39 @@ layui.extend({
 
     }
 
-
-    adminVerifyJwt = function () {
+    timerMsgNotify = function () {
         view.loading($('body')); //loading
-        admin.req({
-            url: setter.verifyTokenApi
-            , type: 'get'
-            , dataType: 'json'
-            , async: false
-            , success: function (data) {
+        ajaxPost(
+            setter.notifyMsgApi,
+            1,
+            JSON.stringify({limit: 10}),
+            "",
+            function (res) {
+                if (res.data.length > 0) {
+                    for (var i = 0; i < res.data.length; i++) {
+                        notice.msg(res.data[i].content, "", {
+                            link: res.data[i].link,
+                            oid: res.data[i].oid,
+                            onclick: function () {
+                                window.open(this.link);
+                                ajaxPost(
+                                    "/api/admin/msg/read",
+                                    1,
+                                    JSON.stringify({entityOid: this.oid}),
+                                    "",
+                                    function () {
+                                    }
+                                );
+                            }
+                        });
+                    }
+                }
+
                 view.removeLoad();
             }
-            , error: function (e, code) {
-                console.log(code)
-            }
-        });
+        );
+
+
     }
 
     guid = function () {

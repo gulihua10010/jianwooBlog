@@ -4,6 +4,7 @@
     <resultMap id="BaseResultMap" type="cn.jianwoo.blog.entity.Comment">
         <id column="OID" jdbcType="BIGINT" property="oid"/>
         <result column="ARTICLE_OID" jdbcType="BIGINT" property="articleOid"/>
+        <result column="ARTICLE_TITLE" jdbcType="VARCHAR" property="articleTitle" />
         <result column="USER_NAME" jdbcType="VARCHAR" property="userName"/>
         <result column="CLIENT_IP" jdbcType="VARCHAR" property="clientIp"/>
         <result column="USER_AREA" jdbcType="VARCHAR" property="userArea"/>
@@ -14,19 +15,19 @@
         <result column="CONTACT_WECHAT" jdbcType="VARCHAR" property="contactWechat"/>
         <result column="CONTACT_WEIBO" jdbcType="VARCHAR" property="contactWeibo"/>
         <result column="CONTACT_TEL" jdbcType="VARCHAR" property="contactTel"/>
-        <result column="HEAD_IMG_SRC" jdbcType="VARCHAR" property="headImgSrc"/>
+        <result column="AVATAR_SRC" jdbcType="VARCHAR" property="avatarSrc"/>
         <result column="ART_DEL_STAUTS" jdbcType="VARCHAR" property="artDelStauts"/>
         <result column="READ_STATUS" jdbcType="VARCHAR" property="readStatus"/>
         <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
     <resultMap id="ResultMapWithExt" extends="BaseResultMap" type="cn.jianwoo.blog.entity.extension.CommentExt">
-        <result column="TITLE" property="title" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        <result column="ARTICLE_TITLE" property="articleTitle" jdbcType="VARCHAR" javaType="java.lang.String"/>
         <result column="REPLY_TO" property="parentUserName" jdbcType="VARCHAR" javaType="java.lang.String"/>
     </resultMap>
     <sql id="Base_Column_List">
         OID, ARTICLE_OID, USER_NAME, CLIENT_IP, USER_AREA, COMMENT_TIME, PARENT_OID, PRAISE_COUNT,
-    CONTACT_QQ, CONTACT_WECHAT, CONTACT_WEIBO, CONTACT_TEL, HEAD_IMG_SRC, ART_DEL_STAUTS,
+    CONTACT_QQ, CONTACT_WECHAT, CONTACT_WEIBO, CONTACT_TEL, AVATAR_SRC, ART_DEL_STAUTS,
     READ_STATUS, CREATE_TIME, UPDATE_TIME
     </sql>
     <sql id="Blob_Column_List">
@@ -35,7 +36,7 @@
     <sql id="Ext_Column_List">
         C.OID, C.ARTICLE_OID, C.USER_NAME, C.CLIENT_IP, C.USER_AREA, C.COMMENT_TIME,
         C.PARENT_OID, C.PRAISE_COUNT, C.CONTACT_QQ, C.CONTACT_WECHAT, C.CONTACT_WEIBO,
-        C.CONTACT_TEL, C.HEAD_IMG_SRC, C.ART_DEL_STAUTS, C.READ_STATUS, C.CREATE_TIME, C.UPDATE_TIME,
+        C.CONTACT_TEL, C.AVATAR_SRC, C.ART_DEL_STAUTS, C.READ_STATUS, C.CREATE_TIME, C.UPDATE_TIME,
         C.CONTENT
     </sql>
     <select id="selectLastComment" resultMap="BaseResultMap">
@@ -51,10 +52,10 @@
         SELECT
         <include refid="Ext_Column_List"/>
         ,
-        A.TITLE
+        C.ARTICLE_TITLE
         FROM
         COMMENTS C
-        INNER JOIN ARTICLE A ON A.OID = C.ARTICLE_OID
+        WHERE IS_DELETE = '0'
         ORDER BY
         C.UPDATE_TIME DESC
         LIMIT #{limit,jdbcType=INTEGER}
@@ -66,6 +67,7 @@
             COMMENTS
         WHERE
               ART_DEL_STAUTS != -1
+          AND IS_DELETE = '0'
           AND IS_READ = 0
     </select>
 
@@ -73,26 +75,27 @@
         select count(1)
         from
             comments
-        where
-            ARTICLE_OID = #{articleOid,jdbcType=BIGINT}
+        WHERE IS_DELETE = '0'
+            AND ARTICLE_OID = #{articleOid,jdbcType=BIGINT}
     </select>
 
     <select id="countAllComments" resultType="int">
         select count(1)
         from
             comments
+             WHERE IS_DELETE = '0'
     </select>
 
     <select id="selectCommentsExtByArticleOid" parameterType="java.lang.Long" resultMap="ResultMapWithExt">
         SELECT
         <include refid="Ext_Column_List"/>
         ,
-        A.TITLE
+        C.ARTICLE_TITLE
         FROM
         COMMENTS C
-        INNER JOIN ARTICLE A ON A.OID = C.ARTICLE_OID
         WHERE
         C.ARTICLE_OID = #{articleOid,jdbcType=BIGINT}
+        AND C.IS_DELETE = '0'
         ORDER BY
         C.UPDATE_TIME DESC
     </select>
@@ -105,7 +108,7 @@
         C.COMMENT_TIME,
         C.CONTENT,
         C.ARTICLE_OID,
-        A.TITLE,
+        C.ARTICLE_TITLE,
         IF (
         P. USER_NAME IS NULL,
         '文章',
@@ -114,19 +117,19 @@
         FROM
         COMMENTS C
         LEFT JOIN COMMENTS P ON C.PARENT_OID = P.OID
-        INNER JOIN ARTICLE A ON A.OID = C.ARTICLE_OID
         <where>
             <if test="title != null">
-                A.TITLE LIKE CONCAT('%',#{title,jdbcType=VARCHAR},'%')
+                C.ARTICLE_TITLE LIKE CONCAT('%',#{title,jdbcType=VARCHAR},'%')
             </if>
             <if test="readStatus != null">
-                C.READ_STATUS = #{readStatus}
+                AND  C.READ_STATUS = #{readStatus}
             </if>
+            AND C.IS_DELETE = '0'
         </where>
 
         <if test="orderByClause == null">
             ORDER BY
-            A.TITLE ASC,
+            C.ARTICLE_TITLE ASC,
             C.UPDATE_TIME DESC
         </if>
         <if test="orderByClause != null">
@@ -137,10 +140,10 @@
         SELECT
         <include refid="Ext_Column_List"/>
         ,
-        A.TITLE
+        C.ARTICLE_TITLE
         FROM COMMENTS C
-        INNER JOIN ARTICLE A ON A.OID = C.ARTICLE_OID
         WHERE C.OID = #{oid,jdbcType=BIGINT}
+        AND IS_DELETE = '0';
     </select>
 
     <update id="updateCommentPraiseCnt">
@@ -149,7 +152,8 @@
             PRAISE_COUNT = PRAISE_COUNT + 1,
             UPDATE_TIME = NOW()
         WHERE
-            OID = #{oid,jdbcType=BIGINT};
+            OID = #{oid,jdbcType=BIGINT}
+            AND IS_DELETE = '0';
 
     </update>
 

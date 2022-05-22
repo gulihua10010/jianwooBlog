@@ -44,6 +44,8 @@ layui.define(['laytable', 'form'], function (exports) {
     //监听搜索
     form.on('submit(art-search)', function (data) {
         var field = data.field;
+        field.page = 1;
+
         //执行重载
         table.reload('article-table', {
             where: field

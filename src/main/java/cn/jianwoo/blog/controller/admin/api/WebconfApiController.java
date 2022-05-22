@@ -12,11 +12,11 @@ import cn.jianwoo.blog.dto.response.vo.WebconfGroupVO;
 import cn.jianwoo.blog.dto.response.vo.WebconfVO;
 import cn.jianwoo.blog.enums.ValidateTypeEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.service.biz.EmailBizService;
 import cn.jianwoo.blog.service.biz.WebconfBizService;
 import cn.jianwoo.blog.service.bo.WebconfBO;
 import cn.jianwoo.blog.service.bo.WebconfResBO;
 import cn.jianwoo.blog.util.CopyBeanUtil;
-import cn.jianwoo.blog.util.NotifiyUtil;
 import cn.jianwoo.blog.validation.BizValidation;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
@@ -45,14 +45,14 @@ public class WebconfApiController extends BaseController {
     @Autowired
     private WebconfBizService webconfBizService;
     @Autowired
-    private NotifiyUtil notifiyUtil;
+    private EmailBizService emailBizService;
 
 
     /**
      * 文章配置更新(文章配置页面)<br/>
      * url:/api/admin/webconf/update<br/>
      *
-     * @param param JSON 参数({@link WebconfRequest})
+     * @param param JSON 参数({@link WebconfRequest})<br/>
      *              list<br/>
      *              --key<br/>
      *              --desc<br/>
@@ -144,7 +144,7 @@ public class WebconfApiController extends BaseController {
      * 获取前台首页菜单<br/>
      * url:/api/admin/webconf/info<br/>
      *
-     * @return 返回响应 {@link WebconfResponse}
+     * @return 返回响应 {@link WebconfResponse}<br/>
      * status<br/>
      * data<br/>
      * --key<br/>
@@ -191,7 +191,7 @@ public class WebconfApiController extends BaseController {
      * 邮件测试<br/>
      * url:/api/admin/webconf/email/test<br/>
      *
-     * @return 返回响应 {@link BaseResponseDto}
+     * @return 返回响应 {@link BaseResponseDto}<br/>
      * @author gulihua
      */
     @ApiVersion()
@@ -203,7 +203,7 @@ public class WebconfApiController extends BaseController {
             EmailTestRequest request = this.convertParam(param, EmailTestRequest.class);
             BizValidation.paramValidate(request.getEmailTo(), "emailTo", "收件人不能为空!");
 
-            notifiyUtil.sendEmail(request.getEmailTo(), "邮件测试", "<hr>邮件测试</hr><br>这是测试的内容。");
+            emailBizService.doSendEmail(request.getEmailTo(), null, null, "邮件测试", "<hr>邮件测试</hr><br>这是测试的内容。");
 
         } catch (Exception e) {
             return super.exceptionToString(e);

@@ -1,7 +1,10 @@
 package cn.jianwoo.blog.validation;
 
+import cn.hutool.core.util.ReUtil;
+import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.exception.ValidationException;
+import cn.jianwoo.blog.util.DateUtil;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -10,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -21,6 +25,14 @@ import java.util.regex.Pattern;
 public class BizValidation {
     private static final Logger logger = LoggerFactory.getLogger(BizValidation.class);
 
+    /**
+     * 验证字符串是否为空
+     *
+     * @param paramValue 字符串值
+     * @param paramName  字段名
+     * @return
+     * @author gulihua
+     */
     public static void paramValidate(String paramValue, String paramName) throws ValidationException {
         if (StringUtils.isBlank(paramValue)) {
             throw ValidationException.VALIDATOR_PARAM_IS_NULL
@@ -30,7 +42,14 @@ public class BizValidation {
 
     }
 
-
+    /**
+     * 验证List是否为空
+     *
+     * @param paramValue List值
+     * @param paramName  字段名
+     * @return
+     * @author gulihua
+     */
     public static void paramValidate(List paramValue, String paramName) throws ValidationException {
         if (CollectionUtils.isEmpty(paramValue)) {
             throw ValidationException.VALIDATOR_PARAM_IS_NULL
@@ -40,7 +59,14 @@ public class BizValidation {
 
     }
 
-
+    /**
+     * 验证数组是否为空
+     *
+     * @param paramValue 数组值
+     * @param paramName  字段名
+     * @return
+     * @author gulihua
+     */
     public static void paramValidate(Object[] paramValue, String paramName) throws ValidationException {
         if (null == paramValue || paramName.length() == 0) {
             throw ValidationException.VALIDATOR_ARRAY_PARAM_IS_EMPTY
@@ -50,7 +76,14 @@ public class BizValidation {
 
     }
 
-
+    /**
+     * 验证对象是否为空
+     *
+     * @param paramValue 对象值
+     * @param paramName  字段名
+     * @return
+     * @author gulihua
+     */
     public static void paramValidate(Object paramValue, String paramName) throws ValidationException {
         if (null == paramValue) {
             throw ValidationException.VALIDATOR_PARAM_IS_NULL
@@ -60,7 +93,15 @@ public class BizValidation {
 
     }
 
-
+    /**
+     * 验证字符串是否为空
+     *
+     * @param paramValue 字符串值
+     * @param paramName  字段名
+     * @param msg        错误提示消息
+     * @return
+     * @author gulihua
+     */
     public static void paramValidate(String paramValue, String paramName, String msg) throws ValidationException {
         if (StringUtils.isBlank(paramValue)) {
             logger.error("Parameter verified failed, the value is empty in the parameter: {}", paramName);
@@ -70,7 +111,15 @@ public class BizValidation {
 
     }
 
-
+    /**
+     * 验证List是否为空
+     *
+     * @param paramValue List值
+     * @param paramName  字段名
+     * @param msg        错误提示消息
+     * @return
+     * @author gulihua
+     */
     public static void paramValidate(List paramValue, String paramName, String msg) throws ValidationException {
         if (CollectionUtils.isEmpty(paramValue)) {
             logger.error("Page parameter verified failed, the list is empty in the parameter: {}", paramName);
@@ -79,7 +128,15 @@ public class BizValidation {
 
     }
 
-
+    /**
+     * 验证字符串是否为空
+     *
+     * @param paramValue 字符串值
+     * @param paramName  字段名
+     * @param msg        错误提示消息
+     * @return
+     * @author gulihua
+     */
     public static void paramValidate(Object[] paramValue, String paramName, String msg) throws ValidationException {
         if (null == paramValue || paramValue.length == 0) {
             logger.error("Parameter verified failed, the array is empty in the parameter: {}", paramName);
@@ -89,6 +146,16 @@ public class BizValidation {
 
     }
 
+    /**
+     * (最大长度验证)验证字符串是否小于最大长度
+     *
+     * @param paramValue 字符串值
+     * @param length     最大长度
+     * @param paramName  字段名
+     * @param msg        错误提示消息
+     * @return
+     * @author gulihua
+     */
     public static void paramLengthValidate(String paramValue, Integer length, String paramName, String msg) throws ValidationException {
         if (null != paramValue && paramValue.length() > length) {
             logger.error("Parameter verified failed, the length({}) of parameter '{}' is greater than {}. ", paramValue.length(), paramName, length);
@@ -97,6 +164,44 @@ public class BizValidation {
         }
 
     }
+
+    /**
+     * 验证日期是否在指定范围内
+     *
+     * @param paramValue 字符串值
+     * @param format     日期格式
+     * @param rangeFrom  日期开始
+     * @param rangeTo    日期几位数
+     * @param paramName  字段名
+     * @param msg        错误提示消息
+     * @return
+     * @author gulihua
+     */
+    public static void paramDateRangeValidate(String paramValue, String format, Date rangeFrom, Date rangeTo, String paramName, String msg) throws ValidationException {
+        if (null != paramValue) {
+            Date date = DateUtil.parse(paramValue, format);
+            if ((null != rangeFrom && date.before(rangeFrom)) || (null != rangeTo && date.after(rangeTo))) {
+                logger.error("Parameter verified failed, the value [{}] of parameter '{}' is not in range {} ~ {}. ",
+                        paramValue, paramName, DateUtil.format(rangeTo, "yyyy-MM-dd"),
+                        DateUtil.format(rangeFrom, "yyyy-MM-dd"));
+                throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_DATE, msg, paramName);
+
+            }
+
+        }
+
+    }
+
+    /**
+     * (最小长度验证)验证字符串是否大于最小长度
+     *
+     * @param paramValue 字符串值
+     * @param length     最大长度
+     * @param paramName  字段名
+     * @param msg        错误提示消息
+     * @return
+     * @author gulihua
+     */
     public static void paramMinLengthValidate(String paramValue, Integer length, String paramName, String msg) throws ValidationException {
         if (null != paramValue && paramValue.length() < length) {
             logger.error("Parameter verified failed, the length({}) of parameter '{}' is letter than {}. ", paramValue.length(), paramName, length);
@@ -106,6 +211,16 @@ public class BizValidation {
 
     }
 
+    /**
+     * (最小数字验证)验证数字是否大于最小数字
+     *
+     * @param paramValue 字符串值
+     * @param min        最小数字
+     * @param paramName  字段名
+     * @param msg        错误提示消息
+     * @return
+     * @author gulihua
+     */
     public static void paramNumberMinValidate(String paramValue, String min, String paramName, String msg) throws ValidationException {
         BigDecimal v;
         try {
@@ -131,6 +246,16 @@ public class BizValidation {
 
     }
 
+    /**
+     * (最大数字验证)验证数字是否小于最大数字
+     *
+     * @param paramValue 字符串值
+     * @param max        最大数字
+     * @param paramName  字段名
+     * @param msg        错误提示消息
+     * @return
+     * @author gulihua
+     */
     public static void paramNumberMaxValidate(String paramValue, String max, String paramName, String msg) throws ValidationException {
         BigDecimal v;
         try {
@@ -156,6 +281,16 @@ public class BizValidation {
 
     }
 
+    /**
+     * 字符串正则验证
+     *
+     * @param paramValue 字符串值
+     * @param regex      正则表达式
+     * @param paramName  字段名
+     * @param msg        错误提示消息
+     * @return
+     * @author gulihua
+     */
     public static void paramRegexValidate(String paramValue, String regex, String paramName, String msg) throws ValidationException {
         if (StringUtils.isNotBlank(paramValue) && !Pattern.matches(regex, paramValue)) {
             logger.error("Parameter verified failed, the regular expression is {}, but field[{}] value is {}. ", regex, paramName, paramValue);
@@ -165,6 +300,15 @@ public class BizValidation {
 
     }
 
+    /**
+     * 数字格式验证(验证字符串是否为数字)
+     *
+     * @param paramValue 数字的字符串值
+     * @param paramName  字段名
+     * @param msg        错误提示消息
+     * @return
+     * @author gulihua
+     */
     public static void paramNumberValidate(String paramValue, String paramName, String msg) throws ValidationException {
         if (StringUtils.isNotBlank(paramValue)) {
             try {
@@ -178,6 +322,15 @@ public class BizValidation {
     }
 
 
+    /**
+     * 验证对象是否为空
+     *
+     * @param paramValue 对象值
+     * @param paramName  字段名
+     * @param msg        错误提示消息
+     * @return
+     * @author gulihua
+     */
     public static void paramValidate(Object paramValue, String paramName, String msg) throws ValidationException {
         if (null == paramValue) {
             logger.error("Parameter verified failed, the value is empty in the parameter: {}", paramName);
@@ -188,6 +341,53 @@ public class BizValidation {
     }
 
 
+    /**
+     * 验证日期格式
+     *
+     * @param paramValue 对象值
+     * @param paramName  字段名
+     * @param msg        错误提示消息
+     * @return
+     * @author gulihua
+     */
+    public static void paramDateValidate(String paramValue, String paramName, String msg) throws ValidationException {
+        if (StringUtils.isNotBlank(paramValue) && !ReUtil.isMatch(Constants.DATE_REGEX, StringUtils.trim(paramValue))) {
+            logger.error("Parameter verified failed, the date format [yyyy-MM-dd] does not match with param({}) value: {}", paramName, paramValue);
+            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_DATE, msg, paramName);
+
+        }
+
+    }
+
+
+    /**
+     * 验证日期时间格式
+     *
+     * @param paramValue 对象值
+     * @param paramName  字段名
+     * @param msg        错误提示消息
+     * @return
+     * @author gulihua
+     */
+    public static void paramDateTimeValidate(String paramValue, String paramName, String msg) throws ValidationException {
+        if (StringUtils.isNotBlank(paramValue) && !ReUtil.isMatch(Constants.DATETIME_REGEX, StringUtils.trim(paramValue))) {
+            logger.error("Parameter verified failed, the date format [yyyy-MM-dd HH:mm:ss] does not match with param({}) value: {}", paramName, paramValue);
+            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_DATE, msg, paramName);
+
+        }
+
+    }
+
+    /**
+     * 验证对象是否在数组范围内
+     *
+     * @param paramValue 对象值
+     * @param paramName  字段名
+     * @param msg        错误提示消息
+     * @param values     数组范围
+     * @return
+     * @author gulihua
+     */
     public static void paramRangeValidate(Object paramValue, String paramName, String msg, Object... values)
             throws ValidationException {
         boolean valid = false;
@@ -208,7 +408,15 @@ public class BizValidation {
 
     }
 
-
+    /**
+     * 验证List内容是否为空
+     *
+     * @param paramValue 字符串 List值
+     * @param paramName  字段名
+     * @param msg        错误提示消息
+     * @return
+     * @author gulihua
+     */
     public static void paramValidateListContent(List<String> paramValue, String paramName, String msg) throws ValidationException {
         if (!CollectionUtils.isEmpty(paramValue)) {
             for (String s : paramValue) {
@@ -222,6 +430,15 @@ public class BizValidation {
 
     }
 
+    /**
+     * 验证文件最大的长度
+     *
+     * @param fileObj 文件对象
+     * @param maxSize 最大长度
+     * @param msg     错误提示消息
+     * @return
+     * @author gulihua
+     */
     public static void paramFileSizeValidate(MultipartFile fileObj, Long maxSize, String msg) throws ValidationException {
         if (null != fileObj) {
             if (fileObj.getSize() > maxSize) {

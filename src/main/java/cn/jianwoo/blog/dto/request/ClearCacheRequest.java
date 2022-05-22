@@ -29,6 +29,10 @@ public class ClearCacheRequest extends BaseRequestDto {
      * 缓存目录
      */
     private Boolean cache;
+    /**
+     * 内存缓存:jwCacheStore
+     */
+    private Boolean memory;
 
 
 

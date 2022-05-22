@@ -103,5 +103,10 @@ public class ArticleBizDaoImpl implements ArticleBizDao {
         }
     }
 
+    @Override
+    public List<ArticleExt> queryArticleListMain(ArticleQuery param, boolean isPrivate) {
+        return articleBizMapper.selectArticleListMain(param, isPrivate);
+    }
+
 
 }

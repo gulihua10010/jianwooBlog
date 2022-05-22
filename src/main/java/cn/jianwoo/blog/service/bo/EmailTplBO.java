@@ -21,10 +21,6 @@ public class EmailTplBO implements Serializable {
     private static final long serialVersionUID = -7982293393643864915L;
 
     /**
-     * 主键OID
-     */
-    private Long oid;
-    /**
      * 邮件模板编号
      */
     private String emailTplCode;

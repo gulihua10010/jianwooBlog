@@ -1,5 +1,6 @@
 package cn.jianwoo.blog.service.biz;
 
+import cn.jianwoo.blog.enums.ArtRecmdTypeEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.bo.ArticleBO;
 import cn.jianwoo.blog.service.param.ArticleParam;
@@ -28,7 +29,6 @@ public interface ArticleBizService {
      * @author gulihua
      */
     void doUpdateArticleInfo(ArticleBO article) throws JwBlogException;
-
 
 
     /**
@@ -203,10 +203,11 @@ public interface ArticleBizService {
      * 文章添加赞
      *
      * @param artOid 文章主键 (OID)
+     * @param ip     IP地址
      * @return
      * @author gulihua
      */
-    void doAddPraise(Long artOid) throws JwBlogException;
+    void doAddPraise(String artOid, String ip) throws JwBlogException;
 
 
     /**
@@ -260,11 +261,63 @@ public interface ArticleBizService {
 
 
     /**
-     * 查询文章编辑信息
+     * 查询文章编辑明细
+     *
+     * @param oid 文章oid
+     * @return ArticleBO
+     * @author gulihua
+     */
+    ArticleBO queryArticleEditDetail(String oid) throws JwBlogException;
+
+    /**
+     * 查询文章编辑基本
      *
      * @param oid 文章oid
      * @return ArticleBO
      * @author gulihua
      */
     ArticleBO queryArticleEditInfo(String oid) throws JwBlogException;
+
+
+
+    /**
+     * 博客首页文章列表分页查询
+     *
+     * @param param     参数
+     * @param currentIp 当前IP地址
+     * @return
+     * @author gulihua
+     */
+    PageInfo<ArticleBO> queryMainArticleList(ArticleParam param, String currentIp) throws JwBlogException;
+
+
+    /**
+     * 查询文章详细信息
+     *
+     * @param oid       文章oid
+     * @param currentIp 当前IP地址
+     * @return ArticleBO
+     * @author gulihua
+     */
+    ArticleBO queryArticleMainDetail(String oid, String currentIp) throws JwBlogException;
+
+    /**
+     * 查询博客首页推荐文章
+     *
+     * @param type 类型{@link ArtRecmdTypeEnum}
+     * @return
+     * @author gulihua
+     */
+    List<ArticleBO> queryRecommendArticleList(String type);
+
+    /**
+     * 验证密码获取文章详细信息
+     *
+     * @param oid       文章oid
+     * @param password 文章密码
+     * @param currentIp 当前IP地址
+     * @return ArticleBO
+     * @author gulihua
+     */
+    ArticleBO queryArticleMainDetail(String oid, String password, String currentIp) throws JwBlogException;
 }

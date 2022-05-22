@@ -107,6 +107,8 @@ layui.define(['layer', 'form', 'element', 'layupload', 'tinymce'], function (exp
                     , offset: '400px'
                 });
                 $('#imgsrc').val(res.file.url);
+            } else {
+                alertFail("上传失败", res.msg)
             }
             //上传成功
         }
@@ -227,7 +229,7 @@ layui.define(['layer', 'form', 'element', 'layupload', 'tinymce'], function (exp
                     tagOidList: tags,
                     type: field.typeId,
                     imgSrc: field.imgsrc,
-                    visitType: published,
+                    accessType: published,
                     password: password,
                     isComment: iscomment !== 0,
                     tempArtOid: tempArtOid,
@@ -250,7 +252,7 @@ layui.define(['layer', 'form', 'element', 'layupload', 'tinymce'], function (exp
                     tagOidList: tags,
                     type: field.typeId,
                     imgSrc: field.imgsrc,
-                    visitType: published,
+                    accessType: published,
                     password: password,
                     isComment: iscomment !== 0,
                     tempArtOid: tempArtOid,
@@ -272,7 +274,7 @@ layui.define(['layer', 'form', 'element', 'layupload', 'tinymce'], function (exp
                     tagOidList: tags,
                     type: field.typeId,
                     imgSrc: field.imgsrc,
-                    visitType: published,
+                    accessType: published,
                     password: password,
                     isComment: iscomment !== 0,
                     tempArtOid: tempArtOid,
@@ -296,7 +298,7 @@ layui.define(['layer', 'form', 'element', 'layupload', 'tinymce'], function (exp
                         tagOidList: tags,
                         type: field.typeId,
                         imgSrc: field.imgsrc,
-                        visitType: published,
+                        accessType: published,
                         password: password,
                         isComment: iscomment !== 0,
                         tempArtOid: tempArtOid,

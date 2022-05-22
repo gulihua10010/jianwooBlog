@@ -3,15 +3,27 @@ package cn.jianwoo.blog.util;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.ReUtil;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
 import cn.hutool.crypto.symmetric.SymmetricCrypto;
+import cn.hutool.extra.template.Template;
+import cn.hutool.extra.template.TemplateConfig;
+import cn.hutool.extra.template.TemplateEngine;
+import cn.hutool.extra.template.TemplateUtil;
 import cn.jianwoo.blog.constants.Constants;
+import cn.jianwoo.blog.constants.ExceptionConstants;
+import cn.jianwoo.blog.exception.EmailTplBizException;
+import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.service.bo.FrequencyBO;
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.ResourceUtils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -27,6 +39,7 @@ public class JwUtil {
 
     private final static ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("application");
     public static String base64Security = RESOURCE_BUNDLE.getString("aes.secret");
+    public static String avatarSrc = RESOURCE_BUNDLE.getString("user.profile.avatar");
 
     public JwUtil() {
     }
@@ -209,5 +222,121 @@ public class JwUtil {
         String num = "0123456789";
         return RandomUtil.randomString(word.concat(wordUpper).concat(num), len);
     }
+
+    /**
+     * 解析频率表达式<br>
+     * 10 Time(s) 1 Minutes(s)<br>
+     * 数字1:次数,*代表不限<br>
+     * 数字2:时间<br>
+     * 后面是时间单位,支持[\'Second(s)\',\'Minutes(s)\',\'Hour(s)\']
+     *
+     * @param express 频率表达式
+     * @return FrequencyBO
+     * @author gulihua
+     */
+    public static FrequencyBO parseFrequency(String express) {
+        if (StringUtils.isBlank(express)) {
+            return new FrequencyBO(true);
+        }
+        String[] exprArr = express.trim().split(" ");
+
+        if (exprArr.length != 4) {
+            log.error("The Frequency express [{}] parse failed.", express);
+            return new FrequencyBO(true);
+        }
+        if ("*".equals(exprArr[0].trim())) {
+            return new FrequencyBO(true);
+        }
+        try {
+            return new FrequencyBO(exprArr[0], exprArr[2], exprArr[3]);
+        } catch (Exception e) {
+            log.error("The Frequency express [{}] parse failed.", express);
+            log.error("e:\r\n", e);
+            return new FrequencyBO(true);
+        }
+
+
+    }
+
+    /**
+     * 生成7位随机用户ID
+     *
+     * @return
+     * @author gulihua
+     */
+    public static String generateUserId() {
+        String word = "abcdefghijklmnopqrstuvwxyz";
+        String num = "0123456789";
+        String prefix = Constants.USER_PREFIX;
+        String suffix = RandomUtil.randomString(word.concat(num), 7);
+        return prefix.concat(suffix);
+    }
+
+    /**
+     * 根据ip生成用户名(.替换成_)<br>
+     * 例如:127.0.0.1==> 127_0_0_1
+     *
+     * @param %param name% %param description%
+     * @return
+     * @author gulihua
+     */
+    public static String generateUsername(String ip) {
+        if (StringUtils.isBlank(ip)) {
+            return null;
+        }
+        String prefix = Constants.USER_PREFIX;
+        String suffix = ip.replace(".", "_");
+        return prefix.concat(suffix);
+    }
+
+    /***
+     * 随机获取用户头像<br>
+     * path: src/main/resources/static/comm/img/avatar
+     * @return
+     * @throws JwBlogException
+     */
+    public static String fetchUserAvatar() throws JwBlogException {
+        int index = RandomUtil.randomInt(0, 10);
+        //文件路径,此处static前不能加/，否则解析不到
+        try {
+            //此处的static前不能加/！！！ 　　
+            File file = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + avatarSrc);
+            File[] imgs = file.listFiles();
+            return avatarSrc + File.separator + imgs[index].getName();
+        } catch (FileNotFoundException e) {
+            log.error("Fetch User Avatar failed, e", e);
+            throw new JwBlogException(ExceptionConstants.FILE_NOT_EXIST, ExceptionConstants.FILE_NOT_EXIST_DESC, ResourceUtils.CLASSPATH_URL_PREFIX + avatarSrc).print();
+        }
+    }
+
+
+    /**
+     * 正则匹配字符串是否是邮箱格式的字符串
+     *
+     * @param %param name% %param description%
+     * @return
+     * @author gulihua
+     */
+    public static boolean isEmail(String email) {
+        return ReUtil.isMatch(Constants.EMAIL_REGEX, email);
+
+    }
+
+
+    public static String doRenderTpl(String content, String param) throws JwBlogException {
+        try {
+            //自动根据用户引入的模板引擎库的jar来自动选择使用的引擎
+            //TemplateConfig为模板引擎的选项，可选内容有字符编码、模板路径、模板加载方式等，默认通过模板字符串渲染
+            TemplateEngine engine = TemplateUtil.createEngine(new TemplateConfig());
+
+            //假设我们引入的是Beetl引擎，则：
+            Template template = engine.getTemplate(content);
+            return template.render(JSON.parseObject(param));
+        } catch (Exception e) {
+            log.error(">>Render Email Template Failed, e:\r\n", e);
+            throw EmailTplBizException.TPL_RENDER_FAILED_CN.print();
+        }
+    }
+
 
 }

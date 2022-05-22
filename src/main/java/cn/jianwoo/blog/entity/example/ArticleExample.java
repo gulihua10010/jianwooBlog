@@ -315,6 +315,76 @@ public class ArticleExample {
             return (Criteria) this;
         }
 
+        public Criteria andPushByIsNull() {
+            addCriterion("PUSH_BY is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushByIsNotNull() {
+            addCriterion("PUSH_BY is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushByEqualTo(String value) {
+            addCriterion("PUSH_BY =", value, "pushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushByNotEqualTo(String value) {
+            addCriterion("PUSH_BY <>", value, "pushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushByGreaterThan(String value) {
+            addCriterion("PUSH_BY >", value, "pushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushByGreaterThanOrEqualTo(String value) {
+            addCriterion("PUSH_BY >=", value, "pushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushByLessThan(String value) {
+            addCriterion("PUSH_BY <", value, "pushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushByLessThanOrEqualTo(String value) {
+            addCriterion("PUSH_BY <=", value, "pushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushByLike(String value) {
+            addCriterion("PUSH_BY like", value, "pushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushByNotLike(String value) {
+            addCriterion("PUSH_BY not like", value, "pushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushByIn(List<String> values) {
+            addCriterion("PUSH_BY in", values, "pushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushByNotIn(List<String> values) {
+            addCriterion("PUSH_BY not in", values, "pushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushByBetween(String value1, String value2) {
+            addCriterion("PUSH_BY between", value1, value2, "pushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushByNotBetween(String value1, String value2) {
+            addCriterion("PUSH_BY not between", value1, value2, "pushBy");
+            return (Criteria) this;
+        }
+
         public Criteria andTitleIsNull() {
             addCriterion("TITLE is null");
             return (Criteria) this;
@@ -765,73 +835,73 @@ public class ArticleExample {
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeIsNull() {
-            addCriterion("VISIT_TYPE is null");
+        public Criteria andAccessTypeIsNull() {
+            addCriterion("ACCESS_TYPE is null");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeIsNotNull() {
-            addCriterion("VISIT_TYPE is not null");
+        public Criteria andAccessTypeIsNotNull() {
+            addCriterion("ACCESS_TYPE is not null");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeEqualTo(String value) {
-            addCriterion("VISIT_TYPE =", value, "visitType");
+        public Criteria andAccessTypeEqualTo(String value) {
+            addCriterion("ACCESS_TYPE =", value, "accessType");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeNotEqualTo(String value) {
-            addCriterion("VISIT_TYPE <>", value, "visitType");
+        public Criteria andAccessTypeNotEqualTo(String value) {
+            addCriterion("ACCESS_TYPE <>", value, "accessType");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeGreaterThan(String value) {
-            addCriterion("VISIT_TYPE >", value, "visitType");
+        public Criteria andAccessTypeGreaterThan(String value) {
+            addCriterion("ACCESS_TYPE >", value, "accessType");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeGreaterThanOrEqualTo(String value) {
-            addCriterion("VISIT_TYPE >=", value, "visitType");
+        public Criteria andAccessTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("ACCESS_TYPE >=", value, "accessType");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeLessThan(String value) {
-            addCriterion("VISIT_TYPE <", value, "visitType");
+        public Criteria andAccessTypeLessThan(String value) {
+            addCriterion("ACCESS_TYPE <", value, "accessType");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeLessThanOrEqualTo(String value) {
-            addCriterion("VISIT_TYPE <=", value, "visitType");
+        public Criteria andAccessTypeLessThanOrEqualTo(String value) {
+            addCriterion("ACCESS_TYPE <=", value, "accessType");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeLike(String value) {
-            addCriterion("VISIT_TYPE like", value, "visitType");
+        public Criteria andAccessTypeLike(String value) {
+            addCriterion("ACCESS_TYPE like", value, "accessType");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeNotLike(String value) {
-            addCriterion("VISIT_TYPE not like", value, "visitType");
+        public Criteria andAccessTypeNotLike(String value) {
+            addCriterion("ACCESS_TYPE not like", value, "accessType");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeIn(List<String> values) {
-            addCriterion("VISIT_TYPE in", values, "visitType");
+        public Criteria andAccessTypeIn(List<String> values) {
+            addCriterion("ACCESS_TYPE in", values, "accessType");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeNotIn(List<String> values) {
-            addCriterion("VISIT_TYPE not in", values, "visitType");
+        public Criteria andAccessTypeNotIn(List<String> values) {
+            addCriterion("ACCESS_TYPE not in", values, "accessType");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeBetween(String value1, String value2) {
-            addCriterion("VISIT_TYPE between", value1, value2, "visitType");
+        public Criteria andAccessTypeBetween(String value1, String value2) {
+            addCriterion("ACCESS_TYPE between", value1, value2, "accessType");
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeNotBetween(String value1, String value2) {
-            addCriterion("VISIT_TYPE not between", value1, value2, "visitType");
+        public Criteria andAccessTypeNotBetween(String value1, String value2) {
+            addCriterion("ACCESS_TYPE not between", value1, value2, "accessType");
             return (Criteria) this;
         }
 
@@ -1280,6 +1350,11 @@ public class ArticleExample {
             return (Criteria) this;
         }
 
+        public Criteria andPushByLikeInsensitive(String value) {
+            addCriterion("upper(PUSH_BY) like", value.toUpperCase(), "pushBy");
+            return (Criteria) this;
+        }
+
         public Criteria andTitleLikeInsensitive(String value) {
             addCriterion("upper(TITLE) like", value.toUpperCase(), "title");
             return (Criteria) this;
@@ -1290,8 +1365,8 @@ public class ArticleExample {
             return (Criteria) this;
         }
 
-        public Criteria andVisitTypeLikeInsensitive(String value) {
-            addCriterion("upper(VISIT_TYPE) like", value.toUpperCase(), "visitType");
+        public Criteria andAccessTypeLikeInsensitive(String value) {
+            addCriterion("upper(ACCESS_TYPE) like", value.toUpperCase(), "accessType");
             return (Criteria) this;
         }
 

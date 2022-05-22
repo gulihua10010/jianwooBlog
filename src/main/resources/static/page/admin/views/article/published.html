@@ -303,20 +303,20 @@
                     $('select[name=typeId]').val(d.data.menuOid);
                     $('input[name=imgsrc]').val(d.data.imgSrc);
                     var publicStr = "公开"
-                    if (d.data.visitType === "11") {
+                    if (d.data.accessType === "11") {
                         publicStr = "密码";
-                    } else if (d.data.visitType === "10") {
+                    } else if (d.data.accessType === "10") {
                         publicStr = "私密";
-                    } else if (d.data.visitType === "21") {
+                    } else if (d.data.accessType === "21") {
                         publicStr = "置顶";
                     }
                     $('#published-public').text(publicStr)
-                    $('input[name=isPublic][value="' + d.data.visitType + '"]').attr("checked", true);
-                    if (d.data.visitType === "21") {
+                    $('input[name=isPublic][value="' + d.data.accessType + '"]').attr("checked", true);
+                    if (d.data.accessType === "21") {
                         $('input[name=isPublic][value="20"]').attr("checked", true);
                         $('input[name=hometop]').attr("checked", true);
                     }
-                    if (d.data.visitType === "11") {
+                    if (d.data.accessType === "11") {
                         $('#passw-content').val(d.data.password)
                         $('#hometop1').hide();
                         $('#passw-content').show();
@@ -405,7 +405,7 @@
                         tags: tagsId,
                         menuOid: typeId,
                         imgSrc: imgsrc,
-                        visitType: publishTemp,
+                        accessType: publishTemp,
                         password: passw,
                         isComment: iscomment !== 0,
                         subToken: subToken,

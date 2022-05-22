@@ -19,8 +19,8 @@ public class EmailTemplateQueryDaoImpl implements EmailTemplateQueryDao {
     EmailTemplateMapper emailTemplateMapper;
 
     @Override
-    public EmailTemplate queryEmailTemplateByPrimaryKey(Long oid) throws DaoException {
-        EmailTemplate record = emailTemplateMapper.selectByPrimaryKey(oid);
+    public EmailTemplate queryEmailTemplateByPrimaryKey(String code) throws DaoException {
+        EmailTemplate record = emailTemplateMapper.selectByPrimaryKey(code);
         if (null == record) {
             throw DaoException.DAO_SELECTONE_IS_NULL.print();
         }
@@ -28,9 +28,10 @@ public class EmailTemplateQueryDaoImpl implements EmailTemplateQueryDao {
     }
 
     @Override
-    public List<EmailTemplate> queryAllEmailTplList(EmailTplQuery query) {
+    public List<EmailTemplate> queryAllEffectiveEmailTplList(EmailTplQuery query) {
         EmailTemplateExample example = new EmailTemplateExample();
         EmailTemplateExample.Criteria criteria = example.createCriteria();
+        criteria.andStatusUsedEqualTo(true);
         if (StringUtils.isNotBlank(query.getCode())) {
             criteria.andEmailTplCodeLike(query.getCode());
         }

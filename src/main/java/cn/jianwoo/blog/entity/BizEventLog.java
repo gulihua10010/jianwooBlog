@@ -14,7 +14,7 @@ public class BizEventLog implements Serializable {
 
     private String optType;
 
-    private String optEntityOid;
+    private String optEntityId;
 
     private String optEntityDesc;
 
@@ -72,12 +72,12 @@ public class BizEventLog implements Serializable {
         this.optType = optType == null ? null : optType.trim();
     }
 
-    public String getOptEntityOid() {
-        return optEntityOid;
+    public String getOptEntityId() {
+        return optEntityId;
     }
 
-    public void setOptEntityOid(String optEntityOid) {
-        this.optEntityOid = optEntityOid == null ? null : optEntityOid.trim();
+    public void setOptEntityId(String optEntityId) {
+        this.optEntityId = optEntityId == null ? null : optEntityId.trim();
     }
 
     public String getOptEntityDesc() {
@@ -147,7 +147,7 @@ public class BizEventLog implements Serializable {
         sb.append(", userName=").append(userName);
         sb.append(", eventType=").append(eventType);
         sb.append(", optType=").append(optType);
-        sb.append(", optEntityOid=").append(optEntityOid);
+        sb.append(", optEntityId=").append(optEntityId);
         sb.append(", optEntityDesc=").append(optEntityDesc);
         sb.append(", triggerTime=").append(triggerTime);
         sb.append(", triggerIp=").append(triggerIp);

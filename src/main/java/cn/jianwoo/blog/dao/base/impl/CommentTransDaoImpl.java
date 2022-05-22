@@ -1,5 +1,6 @@
 package cn.jianwoo.blog.dao.base.impl;
 
+import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.dao.base.CommentTransDao;
 import cn.jianwoo.blog.dao.base.mapper.CommentMapper;
 import cn.jianwoo.blog.entity.Comment;
@@ -50,8 +51,16 @@ public class CommentTransDaoImpl extends CommentQueryDaoImpl implements CommentT
 
     @Override
     public void doDeleteByPrimaryKey(Long oid) throws DaoException {
-        int delRlt = commentMapper.deleteByPrimaryKey(oid);
-        if (1 != delRlt) {
+//        int delRlt = commentMapper.deleteByPrimaryKey(oid);
+//        if (1 != delRlt) {
+//            throw DaoException.DAO_DELETE_RESULT_0.print();
+//        }
+        Comment record = JwBuilder.of(Comment::new)
+                .with(Comment::setOid, oid)
+                .with(Comment::setIsDelete, true)
+                .build();
+        int updRlt = commentMapper.updateByPrimaryKeySelective(record);
+        if (1 != updRlt) {
             throw DaoException.DAO_DELETE_RESULT_0.print();
         }
     }

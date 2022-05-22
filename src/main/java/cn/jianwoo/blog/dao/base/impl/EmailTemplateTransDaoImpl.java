@@ -45,8 +45,8 @@ public class EmailTemplateTransDaoImpl extends EmailTemplateQueryDaoImpl impleme
     }
 
     @Override
-    public void doDeleteByPrimaryKey(Long oid) throws DaoException {
-        int delRlt = emailTemplateMapper.deleteByPrimaryKey(oid);
+    public void doDeleteByPrimaryKey(String code) throws DaoException {
+        int delRlt = emailTemplateMapper.deleteByPrimaryKey(code);
         if (1 != delRlt) {
             throw DaoException.DAO_DELETE_RESULT_0.print();
         }

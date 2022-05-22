@@ -3,7 +3,7 @@ package cn.jianwoo.blog.filter;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.cache.CacheStore;
-import cn.jianwoo.blog.config.router.admin.JwtApiUrlConfig;
+import cn.jianwoo.blog.config.router.admin.MsgApiUrlConfig;
 import cn.jianwoo.blog.constants.CacaheKeyConstants;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
@@ -158,7 +158,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 // 2. (签发时间+((token过期时间-token签发时间) / 3 * 2)) < 当前时间 < token过期时间 刷新token并返回给前端
                 // 3. tokne过期时间 < 当前时间 跳转登录，重新登录获取token
                 // 验证token时间有效性
-                if (!isVerifyToken(request)) {
+                if (!isReceiveMsgNotofy(request)) {
                     if (Objects.equals(oid, refresgOid) && refreshExpiredDate.getTime() > currentTimeMillis) {
                         if ((issuedAt + ((expirationTime - issuedAt) / 3 * 2)) < currentTimeMillis
                                 && currentTimeMillis < expirationTime) {
@@ -218,8 +218,8 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     }
 
     // 是否是验证token的api:/api/admin/jwt/verify/token
-    private boolean isVerifyToken(HttpServletRequest request) {
+    private boolean isReceiveMsgNotofy(HttpServletRequest request) {
         String path = request.getServletPath();
-        return pathMatcher.match(JwtApiUrlConfig.URL_PREFIX.concat(JwtApiUrlConfig.URL_JWT_VERIFY_TOKEN), path);
+        return pathMatcher.match(MsgApiUrlConfig.URL_PREFIX.concat(MsgApiUrlConfig.URL_MSG_TIMER_NEWEST_QUERY_LIST), path);
     }
 }
