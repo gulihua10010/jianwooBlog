@@ -595,6 +595,76 @@ public class MenuExample {
             return (Criteria) this;
         }
 
+        public Criteria andFlagCategoryIsNull() {
+            addCriterion("FLAG_CATEGORY is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagCategoryIsNotNull() {
+            addCriterion("FLAG_CATEGORY is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagCategoryEqualTo(Boolean value) {
+            addCriterion("FLAG_CATEGORY =", value, "flagCategory");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagCategoryNotEqualTo(Boolean value) {
+            addCriterion("FLAG_CATEGORY <>", value, "flagCategory");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagCategoryGreaterThan(Boolean value) {
+            addCriterion("FLAG_CATEGORY >", value, "flagCategory");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagCategoryGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("FLAG_CATEGORY >=", value, "flagCategory");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagCategoryLessThan(Boolean value) {
+            addCriterion("FLAG_CATEGORY <", value, "flagCategory");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagCategoryLessThanOrEqualTo(Boolean value) {
+            addCriterion("FLAG_CATEGORY <=", value, "flagCategory");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagCategoryLike(Boolean value) {
+            addCriterion("FLAG_CATEGORY like", value, "flagCategory");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagCategoryNotLike(Boolean value) {
+            addCriterion("FLAG_CATEGORY not like", value, "flagCategory");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagCategoryIn(List<Boolean> values) {
+            addCriterion("FLAG_CATEGORY in", values, "flagCategory");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagCategoryNotIn(List<Boolean> values) {
+            addCriterion("FLAG_CATEGORY not in", values, "flagCategory");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagCategoryBetween(Boolean value1, Boolean value2) {
+            addCriterion("FLAG_CATEGORY between", value1, value2, "flagCategory");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagCategoryNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("FLAG_CATEGORY not between", value1, value2, "flagCategory");
+            return (Criteria) this;
+        }
+
         public Criteria andValidIsNull() {
             addCriterion("`VALID` is null");
             return (Criteria) this;

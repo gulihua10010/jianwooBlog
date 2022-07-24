@@ -2,6 +2,7 @@ package cn.jianwoo.blog.dao.biz.mapper;
 
 import cn.jianwoo.blog.entity.Comment;
 import cn.jianwoo.blog.entity.extension.CommentExt;
+import cn.jianwoo.blog.entity.query.CommentPageQuery;
 import cn.jianwoo.blog.entity.query.CommentQuery;
 
 import java.util.List;
@@ -54,14 +55,44 @@ public interface CommentBizMapper {
 
 
     /**
-     * 通过文章oid获取评论（带文章标题）
+     * 通过文章oid分页获取评论（带文章标题）(首页评论)
+     *
+     * @param query 查询参数
+     * @return List<CommentExt>
+     * @author gulihua
+     */
+    List<CommentExt> selectCommentsPageListByArticleOid(CommentPageQuery query);
+
+
+    /**
+     * 通过文章oid查询总记录数(首页评论)
+     *
+     * @param query 查询参数
+     * @return Integer
+     * @author gulihua
+     */
+    Long selectCommentsCountByArticleOid(CommentPageQuery query);
+
+
+    /**
+     * 通过文章oid查询根评论记录数(首页评论)
+     *
+     * @param query 查询参数
+     * @return Integer
+     * @author gulihua
+     */
+    Long selectCommentsRootCountByArticleOid(CommentPageQuery query);
+
+
+
+    /**
+     * 通过文章oid获取评论（带文章标题）(后台管理页面)
      *
      * @param artOid 文章oid
      * @return List<CommentExt>
      * @author gulihua
      */
     List<CommentExt> selectCommentsExtByArticleOid(Long artOid);
-
 
     /**
      * 获取所有评论（带文章标题）
@@ -91,4 +122,22 @@ public interface CommentBizMapper {
      */
     int updateCommentPraiseCnt(Long oid);
 
+
+    /**
+     * 更新评论回复数量
+     *
+     * @param oid 主键
+     * @return
+     * @author gulihua
+     */
+    int updateCommentReplyCnt(Long oid);
+
+    /**
+     * 更新评论回复总数量
+     *
+     * @param oid 主键
+     * @return
+     * @author gulihua
+     */
+    int updateCommentTotalReplyCnt(Long oid);
 }

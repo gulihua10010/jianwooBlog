@@ -1,6 +1,5 @@
 package cn.jianwoo.blog.service.bo;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class CommentBO implements Serializable {
     private static final long serialVersionUID = 2157217103012138770L;
 
@@ -33,9 +31,20 @@ public class CommentBO implements Serializable {
     private Long articleOid;
 
     /**
+     * 用户ID
+     */
+    private String userId;
+
+    /**
      * 用户名
      */
     private String userName;
+
+    /**
+     * 用户昵称
+     */
+    private String userNick;
+
 
     /**
      * IP地址
@@ -83,6 +92,12 @@ public class CommentBO implements Serializable {
     private String contactTel;
 
     /**
+     * 评论用户的邮箱
+     */
+    private String contactEmail;
+
+
+    /**
      * 头像路径
      */
     private String avatarSrc;
@@ -115,5 +130,47 @@ public class CommentBO implements Serializable {
      * 回复list
      */
     private List<CommentBO> replyComments;
+
+    /**
+     * 楼数
+     */
+    private Long floorNumber;
+
+    /**
+     * 是否已经赞过
+     */
+    private Boolean isPraise;
+
+    /**
+     * 回复记录数
+     */
+    private Long replyCount;
+
+
+    /**
+     * 回复的父评论的用户ID
+     */
+    private String replyToUserId;
+
+    /**
+     * 回复的父评论的用户名
+     */
+    private String replyToUserName;
+
+    /**
+     * 回复的父评论的用户昵称
+     */
+    private String replyToUserNick;
+
+    /**
+     * 是否可以编辑
+     */
+    private Boolean flagEdit;
+
+    /**
+     * 评论是否删除
+     */
+    private Boolean isDelete;
+
 
 }

@@ -1,7 +1,6 @@
 package cn.jianwoo.blog.dto.request;
 
 import cn.jianwoo.blog.base.BaseRequestDto;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@AllArgsConstructor
 public class ClearCacheRequest extends BaseRequestDto {
     private static final long serialVersionUID = -7558874574721985156L;
     /**

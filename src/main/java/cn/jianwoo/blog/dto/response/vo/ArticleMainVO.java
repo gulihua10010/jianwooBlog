@@ -1,8 +1,8 @@
 package cn.jianwoo.blog.dto.response.vo;
 
 import cn.jianwoo.blog.config.LongToStringSerializerConfig;
+import cn.jianwoo.blog.util.DateUtil;
 import com.alibaba.fastjson.annotation.JSONField;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class ArticleMainVO implements Serializable {
     private static final long serialVersionUID = -6622957226309536544L;
     /**
@@ -37,13 +36,31 @@ public class ArticleMainVO implements Serializable {
     private String author;
 
     /**
+     * 文章发布时间
+     */
+    private Date publishTime;
+    /**
+     * 文章发布时间 yyyy-MM-dd HH:mm:ss格式
+     */
+    private String publishTimeStr;
+
+    /**
+     * 文章最后修改时间
+     */
+    private Date modifiedTime;
+    /**
+     * 文章最后修改时间 yyyy-MM-dd HH:mm:ss格式
+     */
+    private String modifiedTimeStr;
+
+    /**
      * 文章内容
      */
     private String content;
     /**
-     * 菜单主键
+     * 类别id
      */
-    private Integer menuOid;
+    private Integer categoryOid;
 
     /**
      * 文章权限
@@ -54,6 +71,16 @@ public class ArticleMainVO implements Serializable {
      * 文章类型
      */
     private String category;
+
+    /**
+     * 上级文章类型
+     */
+    private String parentCategory;
+
+    /**
+     * 上级类别id
+     */
+    private Integer parentCategoryOid;
 
     /**
      * 缩略图
@@ -79,5 +106,36 @@ public class ArticleMainVO implements Serializable {
      */
     private List<TagsVO> tags;
 
+    /**
+     * 是否评论
+     */
+    private Boolean isComment;
 
+    /**
+     * 是否原创
+     */
+    private Boolean flagOriginal;
+
+    /**
+     * 转载源链接
+     */
+    private String originalUrl;
+
+    /**
+     * 当前IP是否已经赞过
+     */
+    private Boolean isPraise;
+
+    /**
+     * 文章是否是锁的状态(需要密码才能访问)
+     */
+    private Boolean isLock;
+
+    public String getPublishTimeDesc() {
+        return DateUtil.optimizeTimeDesc(this.getPublishTime());
+    }
+
+    public String getModifiedTimeStr() {
+        return DateUtil.optimizeTimeDesc(this.getModifiedTime());
+    }
 }

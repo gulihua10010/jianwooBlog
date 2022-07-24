@@ -5,6 +5,8 @@
     <id column="OID" jdbcType="BIGINT" property="oid" />
     <result column="TAGS_OID" jdbcType="INTEGER" property="tagsOid" />
     <result column="ARTICLE_OID" jdbcType="BIGINT" property="articleOid" />
+    <result column="ART_FLAG_ACTIVITY" jdbcType="VARCHAR" property="artFlagActivity" />
+    <result column="ART_FLAG_PRIVATE" jdbcType="VARCHAR" property="artFlagPrivate" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
     <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -67,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    OID, TAGS_OID, ARTICLE_OID, CREATE_TIME, UPDATE_TIME
+    OID, TAGS_OID, ARTICLE_OID, ART_FLAG_ACTIVITY, ART_FLAG_PRIVATE, CREATE_TIME, UPDATE_TIME
   </sql>
   <select id="selectByExample" parameterType="cn.jianwoo.blog.entity.example.ArticleTagsExample" resultMap="BaseResultMap">
     select
@@ -101,10 +103,12 @@
     </if>
   </delete>
   <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.ArticleTags" useGeneratedKeys="true">
-    insert into article_tags (TAGS_OID, ARTICLE_OID, CREATE_TIME, 
-      UPDATE_TIME)
-    values (#{tagsOid,jdbcType=INTEGER}, #{articleOid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+    insert into article_tags (TAGS_OID, ARTICLE_OID, ART_FLAG_ACTIVITY, 
+      ART_FLAG_PRIVATE, CREATE_TIME, UPDATE_TIME
+      )
+    values (#{tagsOid,jdbcType=INTEGER}, #{articleOid,jdbcType=BIGINT}, #{artFlagActivity,jdbcType=VARCHAR}, 
+      #{artFlagPrivate,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.ArticleTags" useGeneratedKeys="true">
     insert into article_tags
@@ -114,6 +118,12 @@
       </if>
       <if test="articleOid != null">
         ARTICLE_OID,
+      </if>
+      <if test="artFlagActivity != null">
+        ART_FLAG_ACTIVITY,
+      </if>
+      <if test="artFlagPrivate != null">
+        ART_FLAG_PRIVATE,
       </if>
       <if test="createTime != null">
         CREATE_TIME,
@@ -128,6 +138,12 @@
       </if>
       <if test="articleOid != null">
         #{articleOid,jdbcType=BIGINT},
+      </if>
+      <if test="artFlagActivity != null">
+        #{artFlagActivity,jdbcType=VARCHAR},
+      </if>
+      <if test="artFlagPrivate != null">
+        #{artFlagPrivate,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -155,6 +171,12 @@
       <if test="record.articleOid != null">
         ARTICLE_OID = #{record.articleOid,jdbcType=BIGINT},
       </if>
+      <if test="record.artFlagActivity != null">
+        ART_FLAG_ACTIVITY = #{record.artFlagActivity,jdbcType=VARCHAR},
+      </if>
+      <if test="record.artFlagPrivate != null">
+        ART_FLAG_PRIVATE = #{record.artFlagPrivate,jdbcType=VARCHAR},
+      </if>
       <if test="record.createTime != null">
         CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
@@ -171,6 +193,8 @@
     set OID = #{record.oid,jdbcType=BIGINT},
       TAGS_OID = #{record.tagsOid,jdbcType=INTEGER},
       ARTICLE_OID = #{record.articleOid,jdbcType=BIGINT},
+      ART_FLAG_ACTIVITY = #{record.artFlagActivity,jdbcType=VARCHAR},
+      ART_FLAG_PRIVATE = #{record.artFlagPrivate,jdbcType=VARCHAR},
       CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -186,6 +210,12 @@
       <if test="articleOid != null">
         ARTICLE_OID = #{articleOid,jdbcType=BIGINT},
       </if>
+      <if test="artFlagActivity != null">
+        ART_FLAG_ACTIVITY = #{artFlagActivity,jdbcType=VARCHAR},
+      </if>
+      <if test="artFlagPrivate != null">
+        ART_FLAG_PRIVATE = #{artFlagPrivate,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null">
         CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -199,6 +229,8 @@
     update article_tags
     set TAGS_OID = #{tagsOid,jdbcType=INTEGER},
       ARTICLE_OID = #{articleOid,jdbcType=BIGINT},
+      ART_FLAG_ACTIVITY = #{artFlagActivity,jdbcType=VARCHAR},
+      ART_FLAG_PRIVATE = #{artFlagPrivate,jdbcType=VARCHAR},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
     where OID = #{oid,jdbcType=BIGINT}

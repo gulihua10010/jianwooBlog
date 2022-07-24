@@ -1,7 +1,8 @@
 package cn.jianwoo.blog.service.bo;
 
+import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.enums.ArticleAccessEnum;
-import lombok.AllArgsConstructor;
+import cn.jianwoo.blog.enums.TopPlaceEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class ArticleBO implements Serializable {
     private static final long serialVersionUID = 1L;
     /**
@@ -37,19 +37,39 @@ public class ArticleBO implements Serializable {
     private String content;
 
     /**
-     * 类别id article.typeId [ARTICLE.MENU_ID]
+     * 文章类别id article.categoryId [ARTICLE.CATEGORY_ID]
      */
-    private Integer menuId;
+    private Integer categoryId;
 
     /**
      * 类别名称
      */
-    private String typeName;
+    private String categoryName;
+
+    /**
+     * 上级文章类型
+     */
+    private String parentCategory;
+    /**
+     * 上级类别id
+     */
+    private Integer parentCategoryId;
 
     /**
      * 是否评论 article.isComment [ARTICLE.IS_COMMENT]
      */
     private Boolean isComment;
+
+    /**
+     * 是否原创 article.flagOriginal [ARTICLE.FLAG_ORIGINAL]
+     */
+    private Boolean flagOriginal;
+
+
+    /**
+     * 转载源链接 article.originalUrl [ARTICLE.ORIGINAL_URL]
+     */
+    private String originalUrl;
 
     /**
      * 图片 article.imgSrc [ARTICLE.IMG_SRC]
@@ -121,9 +141,9 @@ public class ArticleBO implements Serializable {
     private List<TagsBO> allTagsList;
 
     /**
-     * 菜单列表
+     * 文章类别列表
      */
-    private List<ArticleMenuBO> menuList;
+    private List<ArticleCategoryBO> categoryList;
     /**
      * 菜单名字
      */
@@ -140,6 +160,43 @@ public class ArticleBO implements Serializable {
      */
     private Date removeRecycleTime;
 
+    /**
+     * 当前IP是否已经赞过
+     */
+    private Boolean isPraise;
 
+    /**
+     * 是否置顶
+     */
+    private Boolean flagTop;
 
+    /**
+     * 置顶状态,00:未置顶,50:置顶{@link cn.jianwoo.blog.enums.TopPlaceEnum}
+     */
+    private String topPlaceStatus;
+
+    /**
+     * 总楼数
+     */
+    private Long totalCommentFloors;
+
+    /**
+     * 文章是否是锁的状态(需要密码才能访问)
+     */
+    private Boolean isLock;
+
+    public void setCategoryId(Integer categoryId) {
+        if (!Constants.CATEGORY_NULL.equals(categoryId)) {
+            this.categoryId = categoryId;
+        }
+    }
+
+    public void setFlagTop(Boolean flagTop) {
+        if (flagTop == null) {
+            this.flagTop = false;
+        } else {
+            this.flagTop = flagTop;
+        }
+        this.topPlaceStatus = this.flagTop ? TopPlaceEnum.TOP.getValue() : TopPlaceEnum.NOT_TOP.getValue();
+    }
 }

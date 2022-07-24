@@ -9,14 +9,23 @@ import cn.jianwoo.blog.entity.ArticleWithBLOBs;
  */
 public class ArticleExt extends ArticleWithBLOBs {
     private static final long serialVersionUID = 7533112279053614145L;
-    private String typeName;
 
-    public String getTypeName() {
-        return typeName;
+    private String pushDateStr;
+    private Integer count;
+
+    public String getPushDateStr() {
+        return this.pushDateStr;
     }
 
+    public void setPushDateStr(String pushDateStr) {
+        this.pushDateStr = pushDateStr;
+    }
 
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
+    public Integer getCount() {
+        return this.count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 }

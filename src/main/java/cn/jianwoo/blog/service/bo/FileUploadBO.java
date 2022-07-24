@@ -1,6 +1,5 @@
 package cn.jianwoo.blog.service.bo;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -16,7 +15,6 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class FileUploadBO implements Serializable {
 
     /**

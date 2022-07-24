@@ -1,7 +1,6 @@
 package cn.jianwoo.blog.dto.request;
 
 import cn.jianwoo.blog.base.BasePageRequestDto;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@AllArgsConstructor
 public class CommentReplyRequest extends BasePageRequestDto {
     private static final long serialVersionUID = 5162232950590602831L;
     /**
@@ -43,4 +41,8 @@ public class CommentReplyRequest extends BasePageRequestDto {
      */
     private String userName;
 
+    /**
+     * 用户昵称
+     */
+    private String userNick;
 }

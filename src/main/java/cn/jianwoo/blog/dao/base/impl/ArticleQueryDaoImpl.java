@@ -44,9 +44,9 @@ public class ArticleQueryDaoImpl implements ArticleQueryDao {
 
 
     @Override
-    public List<Article> queryArticleByType(Integer typeId) {
+    public List<Article> queryArticleByCategory(Integer categoryId) {
         ArticleExample example = new ArticleExample();
-        example.createCriteria().andMenuIdEqualTo(typeId);
+        example.createCriteria().andCategoryIdEqualTo(categoryId);
         return articleMapper.selectByExample(example);
     }
 

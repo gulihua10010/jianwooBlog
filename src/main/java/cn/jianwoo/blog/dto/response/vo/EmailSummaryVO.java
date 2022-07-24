@@ -2,7 +2,6 @@ package cn.jianwoo.blog.dto.response.vo;
 
 import cn.jianwoo.blog.util.DateUtil;
 import com.alibaba.fastjson.JSONArray;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class EmailSummaryVO implements Serializable {
 
     private static final long serialVersionUID = 2152295702147130157L;

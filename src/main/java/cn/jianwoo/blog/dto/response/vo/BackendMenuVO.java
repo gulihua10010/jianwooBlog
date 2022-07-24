@@ -1,6 +1,5 @@
 package cn.jianwoo.blog.dto.response.vo;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -16,9 +15,12 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
-@AllArgsConstructor
 public class BackendMenuVO implements Serializable {
     private static final long serialVersionUID = 8924273232106445568L;
+    /**
+     * 菜单名
+     */
+    private String name;
     /**
      * 菜单文本(MENU.TEXT)
      */
@@ -30,6 +32,6 @@ public class BackendMenuVO implements Serializable {
     /**
      * 子菜单列表
      */
-    private List<BackendSubMenuVO> list;
+    private List<BackendSubMenuVO> subList;
 
 }

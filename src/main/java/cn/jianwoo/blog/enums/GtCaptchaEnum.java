@@ -1,17 +1,17 @@
 package cn.jianwoo.blog.enums;
 
-import cn.jianwoo.blog.constants.CacaheKeyConstants;
+import cn.jianwoo.blog.constants.CacheKeyConstants;
 
 public enum GtCaptchaEnum {
 
     /**
      * 登录//default
      */
-    LOGIN(CacaheKeyConstants.LOGIN_CAPTCHA_AUTH, "login"),
+    LOGIN(CacheKeyConstants.LOGIN_CAPTCHA_AUTH, "login"),
     /**
      * 忘记密码
      */
-    FORGET_PASSWORD(CacaheKeyConstants.FORGET_CAPTCHA_AUTH, "forget_pwd"),
+    FORGET_PASSWORD(CacheKeyConstants.FORGET_CAPTCHA_AUTH, "forget_pwd"),
 
     ;
 

@@ -81,6 +81,12 @@
                         </div>
                     </div>
                     <div class="layui-form-item">
+                        <label class="layui-form-label">评论用户昵称</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" disabled name="userNick" value="{{d.data.userNick}}" type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
                         <label class="layui-form-label">评论者头像</label>
                         <div class="layui-input-block">
                             <img class="layui-upload-img" id="avatarSrc" style="margin-left: 5px" src="{{d.data.avatarSrc}}"
@@ -174,7 +180,7 @@
                 </a>
                 <div class="pad-btm">
                     <p class="fontColor">
-                        <a href="javascript:">{{ comm.userName }}</a>
+                        <a href="javascript:">{{ comm.userNick }}</a>
                         <span style="float: right">
                                             <button class="layui-btn layui-btn-sm reply"
                                                     data-id="{{ comm.oid}}">回复</button>
@@ -198,8 +204,8 @@
                         </a>
                         <div class="pad-btm">
                             <p class="fontColor">
-                                <a href="javascript:">{{rep.userName}}</a>
-                                <a href="javascript:">回复 @{{rep.parentUserName}}</a>
+                                <a href="javascript:">{{rep.userNick}}</a>
+                                <a href="javascript:">回复 @{{rep.replyToUserNick}}</a>
                                 <span style="float: right">
                                                         <button class="layui-btn layui-btn-sm reply"
                                                                 data-id="{{ rep.oid}}">回复</button>

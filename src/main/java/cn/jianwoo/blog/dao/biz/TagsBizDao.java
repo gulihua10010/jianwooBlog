@@ -21,4 +21,14 @@ public interface TagsBizDao {
      * @author gulihua
      */
     Integer countAllTags();
+
+
+    /**
+     * 获取所有标签
+     *
+     * @param isContainPrivate 是否包含私密文章
+     * @return
+     * @author gulihua
+     */
+    List<ArticleTagsExt> queryAllTags(boolean isContainPrivate);
 }

@@ -13,4 +13,13 @@ public interface IpBlackListTransDao extends IpBlackListQueryDao {
     void doUpdateByPrimaryKeySelective(IpBlackList record) throws DaoException;
 
     void doDeleteByPrimaryKey(Long oid) throws DaoException;
+
+    /**
+     * 通过IP从黑名单移除
+     *
+     * @param ip IP
+     * @return
+     * @author gulihua
+     */
+    void doDeleteByIp(String ip) throws DaoException;
 }

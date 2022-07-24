@@ -72,7 +72,7 @@ public class EmailBizServiceImpl implements EmailBizService {
             updEmail.setProcDesc(Constants.SUCCESS);
             emailTransDao.doUpdateByPrimaryKeySelective(updEmail);
         } catch (Exception e) {
-            log.error(">>Start Send Email failed, e\r\n", e);
+//            log.error(">>Start Send Email failed, e\r\n", e);
             updEmail.setProcStatus(EmailSendStatusEnum.FAILED.getValue());
             updEmail.setProcDesc(e.getMessage());
             try {

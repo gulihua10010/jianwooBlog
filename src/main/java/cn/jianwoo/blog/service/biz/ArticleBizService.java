@@ -3,6 +3,7 @@ package cn.jianwoo.blog.service.biz;
 import cn.jianwoo.blog.enums.ArtRecmdTypeEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.bo.ArticleBO;
+import cn.jianwoo.blog.service.bo.MonthPublishBO;
 import cn.jianwoo.blog.service.param.ArticleParam;
 import com.github.pagehelper.PageInfo;
 
@@ -34,14 +35,15 @@ public interface ArticleBizService {
     /**
      * * 更新文章
      *
-     * @param article 文章
+     * @param article    文章
+     * @param prevStatus 前置状态(可以是多个状态)
      * @return
      * @author gulihua
      */
-    void doUpdateArticle(ArticleBO article) throws JwBlogException;
+    void doUpdateArticle(ArticleBO article, String... prevStatus) throws JwBlogException;
 
     /**
-     * 把文章移动到回收站 status = -1
+     * 把文章移动到回收站 status = 91
      *
      * @param oid 标题 article.oid [ARTICLE.OID]
      * @return
@@ -61,7 +63,7 @@ public interface ArticleBizService {
 
 
     /**
-     * 把文章移动到草稿 status = 0
+     * 把文章移动到草稿 status = 00
      *
      * @param id 标题 article.oid [ARTICLE.OID]
      * @return
@@ -71,7 +73,7 @@ public interface ArticleBizService {
 
 
     /**
-     * 把文章发布 status = 1
+     * 把文章发布 status = 90
      *
      * @param id 标题 article.oid [ARTICLE.OID]
      * @return
@@ -80,7 +82,7 @@ public interface ArticleBizService {
     void doPublishedArticle(Long id) throws JwBlogException;
 
     /**
-     * 获取有效文章数量 (status = 0 or status = 1)
+     * 获取有效文章数量 (status = 00 or status = 90)
      *
      * @return
      * @author gulihua
@@ -88,7 +90,7 @@ public interface ArticleBizService {
     Integer countWithEffectiveArts();
 
     /**
-     * 获取已发布文章数量 (status = 1)
+     * 获取已发布文章数量 (status = 90)
      *
      * @return
      * @author gulihua
@@ -96,7 +98,7 @@ public interface ArticleBizService {
     Integer countWithPublishArts();
 
     /**
-     * 获取草稿文章数量 (status = 0)
+     * 获取草稿文章数量 (status = 00)
      *
      * @return
      * @author gulihua
@@ -105,7 +107,7 @@ public interface ArticleBizService {
 
 
     /**
-     * 获取最近n条已发布文章 (status = 1) (通过MODIFIED_DATE desc排序)
+     * 获取最近n条已发布文章 (status = 90) (通过MODIFIED_DATE desc排序)
      *
      * @param n n条
      * @return
@@ -115,7 +117,7 @@ public interface ArticleBizService {
 
 
     /**
-     * 获取最近n条草稿文章 (status = 0) (通过MODIFIED_DATE desc排序)
+     * 获取最近n条草稿文章 (status = 00) (通过MODIFIED_DATE desc排序)
      *
      * @return
      * @author gulihua
@@ -124,7 +126,7 @@ public interface ArticleBizService {
 
 
     /**
-     * 获取回收站文章 (status = -1)
+     * 获取回收站文章 (status = 91)
      *
      * @return
      * @author gulihua
@@ -133,7 +135,7 @@ public interface ArticleBizService {
 
 
     /**
-     * 获取草稿文章 (status = -1)
+     * 获取草稿文章 (status = 00)
      *
      * @return
      * @author gulihua
@@ -142,7 +144,7 @@ public interface ArticleBizService {
 
 
     /**
-     * 从回收站恢复文章 (status = -1 -> status = 1)
+     * 从回收站恢复文章 (status = 91 -> status = 00)
      *
      * @return
      * @author gulihua
@@ -151,7 +153,7 @@ public interface ArticleBizService {
 
 
     /**
-     * 获取已发布的文章 (status = 1)
+     * 获取已发布的文章 (status = 90)
      *
      * @return
      * @throws JwBlogException
@@ -231,7 +233,7 @@ public interface ArticleBizService {
 
 
     /**
-     * 把文章列表移动进回收站
+     * 把文章列表移动进回收站(status = 00/90 -> status = 91)
      *
      * @param oidList 文章oid集合
      * @return
@@ -241,7 +243,7 @@ public interface ArticleBizService {
 
 
     /**
-     * 把文章列表从回收站恢复至草稿
+     * 把文章列表从回收站恢复至草稿(status = 91 -> status = 00)
      *
      * @param oidList 文章oid集合
      * @return
@@ -251,7 +253,7 @@ public interface ArticleBizService {
 
 
     /**
-     * 把文章列表从回收站删除
+     * 把文章列表从回收站删除(status = 91 -> status = 99)
      *
      * @param oidList 文章oid集合
      * @return
@@ -279,7 +281,6 @@ public interface ArticleBizService {
     ArticleBO queryArticleEditInfo(String oid) throws JwBlogException;
 
 
-
     /**
      * 博客首页文章列表分页查询
      *
@@ -299,7 +300,7 @@ public interface ArticleBizService {
      * @return ArticleBO
      * @author gulihua
      */
-    ArticleBO queryArticleMainDetail(String oid, String currentIp) throws JwBlogException;
+    ArticleBO queryArticleMainDetail(Long oid, String currentIp) throws JwBlogException;
 
     /**
      * 查询博客首页推荐文章
@@ -314,10 +315,31 @@ public interface ArticleBizService {
      * 验证密码获取文章详细信息
      *
      * @param oid       文章oid
-     * @param password 文章密码
+     * @param password  文章密码
      * @param currentIp 当前IP地址
      * @return ArticleBO
      * @author gulihua
      */
     ArticleBO queryArticleMainDetail(String oid, String password, String currentIp) throws JwBlogException;
+
+
+    /**
+     * 根据月份查询当月发布的文章日期和当日发布的数量
+     *
+     * @param month     指定月份(yyyy-MM)
+     * @param currentIp 当前IP地址
+     * @return
+     * @author gulihua
+     */
+    List<MonthPublishBO> queryMonthDatePublishList(String month, String currentIp) throws JwBlogException;
+
+
+    /**
+     * 获取文章详情页面的推荐文章列表
+     *
+     * @param oid 文章oid
+     * @return ArticleBO
+     * @author gulihua
+     */
+    List<ArticleBO> queryDetailRecommendArticle(Long oid) throws JwBlogException;
 }

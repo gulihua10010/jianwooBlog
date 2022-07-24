@@ -6,7 +6,6 @@ import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.util.DateUtil;
 import cn.jianwoo.blog.util.DomainUtil;
 import com.alibaba.fastjson.annotation.JSONField;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -22,7 +21,6 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class ArticleSummaryVO implements Serializable {
     private static final long serialVersionUID = -8183712030536923735L;
     private static final String TEMPLATE = "<span class=\"console-author\">%s</span> 在 " +
@@ -69,7 +67,7 @@ public class ArticleSummaryVO implements Serializable {
     /**
      * 文章类型
      */
-    private String type;
+    private String category;
     /**
      * 文章状态 (00:草稿, 90:已发布, 91:回收站 )
      */

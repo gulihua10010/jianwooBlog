@@ -1,6 +1,7 @@
 package cn.jianwoo.blog.controller.admin.api;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ReUtil;
 import cn.jianwoo.blog.annotation.PageId;
 import cn.jianwoo.blog.annotation.SubToken;
 import cn.jianwoo.blog.base.BaseController;
@@ -9,6 +10,7 @@ import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.config.apiversion.ApiVersion;
 import cn.jianwoo.blog.config.router.admin.ArticleApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
+import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.dto.request.ArticlePageRequest;
 import cn.jianwoo.blog.dto.request.ArticleSubmitRequest;
 import cn.jianwoo.blog.dto.request.EntityOidListRequest;
@@ -19,7 +21,7 @@ import cn.jianwoo.blog.dto.request.TempArticleStatusRequest;
 import cn.jianwoo.blog.dto.response.ArticleInfoResponse;
 import cn.jianwoo.blog.dto.response.ArticleSummaryResponse;
 import cn.jianwoo.blog.dto.response.TempArticleInfoResponse;
-import cn.jianwoo.blog.dto.response.vo.ArticleMenuVO;
+import cn.jianwoo.blog.dto.response.vo.ArticleCategoryVO;
 import cn.jianwoo.blog.dto.response.vo.ArticleSummaryVO;
 import cn.jianwoo.blog.dto.response.vo.ArticleVO;
 import cn.jianwoo.blog.dto.response.vo.TagsVO;
@@ -29,6 +31,7 @@ import cn.jianwoo.blog.enums.ArticleAccessEnum;
 import cn.jianwoo.blog.enums.PageIdEnum;
 import cn.jianwoo.blog.enums.TempArticleStatusEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.exception.ValidationException;
 import cn.jianwoo.blog.service.biz.ArticleBizService;
 import cn.jianwoo.blog.service.biz.TempArticleBizService;
 import cn.jianwoo.blog.service.bo.ArticleBO;
@@ -72,7 +75,7 @@ public class ArticleApiController extends BaseController {
 
     /**
      * 文章提交(文章发布页面)<br/>
-     * 文章STATUS 为 1 <br/>
+     * 文章STATUS 为 90 <br/>
      * url:/api/admin/article/published<br/>
      *
      * @param param JSON 参数({@link ArticleSubmitRequest})<br/>
@@ -80,11 +83,14 @@ public class ArticleApiController extends BaseController {
      *              author<br/>
      *              articleContent<br/>
      *              tags<br/>
-     *              type<br/>
+     *              category<br/>
      *              imgSrc<br/>
      *              accessType
      *              password<br/>
      *              isComment<br/>
+     *              flagOriginal<br/>
+     *              originalUrl<br/>
+     *              topPlaceFlag<br/>
      * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
@@ -103,7 +109,7 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(JwUtil.clearHtmlWithoutMedia(request.getArticleContent()), "articleContent", "文章内容不能为空!");
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
             BizValidation.paramValidate(request.getAccessType(), "accessType", "文章访问类型不能为空!");
-            BizValidation.paramValidate(request.getType(), "type", "文章类型不能为空!");
+            BizValidation.paramCategoryValidate(request.getCategoryId(), "categoryId", "文章类型不能为空!");
             BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
             BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
             BizValidation.paramRangeValidate(request.getAccessType(), "accessType", "文章访问类型必须在[10,11,20,21]中!",
@@ -112,17 +118,25 @@ public class ArticleApiController extends BaseController {
             if (ArticleAccessEnum.PASSWORD.getValue().equals(request.getAccessType())) {
                 BizValidation.paramValidate(request.getPassword(), "password", "文章密码不能为空!");
             }
+            if (null != request.getFlagOriginal() && !request.getFlagOriginal()) {
+                BizValidation.paramValidate(request.getOriginalUrl(), "originalUrl", "非原创时转载源链接不能为空!");
+                BizValidation.paramLengthValidate(request.getOriginalUrl(), Constants.URL_LENGTH, "originalUrl", "URL不能大于100个字符!");
+                BizValidation.paramRegexValidate(request.getOriginalUrl(), Constants.URL_REGEX, "originalUrl", "URL格式不正确!");
+            }
             ArticleBO articleBO = JwBuilder.of(ArticleBO::new)
                     .with(ArticleBO::setTitle, request.getTitle())
                     .with(ArticleBO::setContent, request.getArticleContent())
                     .with(ArticleBO::setAuthor, request.getAuthor())
-                    .with(ArticleBO::setMenuId, request.getType())
+                    .with(ArticleBO::setCategoryId, request.getCategoryId())
                     .with(ArticleBO::setIsComment, request.getIsComment())
                     .with(ArticleBO::setAccessType, request.getAccessType())
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTagOidList, request.getTagOidList())
                     .with(ArticleBO::setTempArtOid, request.getTempArtOid())
+                    .with(ArticleBO::setFlagTop, request.getTopPlaceFlag())
+                    .with(ArticleBO::setFlagOriginal, request.getFlagOriginal())
+                    .with(ArticleBO::setOriginalUrl, request.getOriginalUrl())
                     .with(ArticleBO::setStatus, ArticleStatusEnum.PUBLISHED.getValue()).build();
             articleBizService.doCreateArticle(articleBO);
         } catch (JwBlogException e) {
@@ -134,7 +148,7 @@ public class ArticleApiController extends BaseController {
 
     /**
      * 文章提交保存至草稿(文章发布页面)<br/>
-     * 文章STATUS 为 0 <br/>
+     * 文章STATUS 为 00 <br/>
      * <p>
      * url:/api/admin/article/save/draft<br/>
      *
@@ -143,11 +157,14 @@ public class ArticleApiController extends BaseController {
      *              author<br/>
      *              articleContent<br/>
      *              tags<br/>
-     *              type<br/>
+     *              category<br/>
      *              imgSrc<br/>
      *              accessType
      *              password<br/>
      *              isComment<br/>
+     *              flagOriginal<br/>
+     *              originalUrl<br/>
+     *              topPlaceFlag<br/>
      * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
@@ -166,17 +183,24 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
             BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
             BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
+
+            if (null != request.getFlagOriginal() && !request.getFlagOriginal() && StringUtils.isNotBlank(request.getOriginalUrl())) {
+                BizValidation.paramLengthValidate(request.getOriginalUrl(), Constants.URL_LENGTH, "originalUrl", "URL不能大于100个字符!");
+            }
             ArticleBO articleBO = JwBuilder.of(ArticleBO::new)
                     .with(ArticleBO::setTitle, request.getTitle())
                     .with(ArticleBO::setContent, request.getArticleContent())
                     .with(ArticleBO::setAuthor, request.getAuthor())
-                    .with(ArticleBO::setMenuId, request.getType())
+                    .with(ArticleBO::setCategoryId, request.getCategoryId())
                     .with(ArticleBO::setIsComment, request.getIsComment())
                     .with(ArticleBO::setAccessType, request.getAccessType())
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTagOidList, request.getTagOidList())
                     .with(ArticleBO::setTempArtOid, request.getTempArtOid())
+                    .with(ArticleBO::setFlagTop, request.getTopPlaceFlag())
+                    .with(ArticleBO::setFlagOriginal, request.getFlagOriginal())
+                    .with(ArticleBO::setOriginalUrl, request.getOriginalUrl())
                     .with(ArticleBO::setStatus, ArticleStatusEnum.DRAFT.getValue()).build();
             articleBizService.doCreateArticle(articleBO);
         } catch (JwBlogException e) {
@@ -188,7 +212,7 @@ public class ArticleApiController extends BaseController {
 
     /**
      * 文章提交保存至回收站(文章发布页面)<br/>
-     * 文章STATUS 为 -1 <br/>
+     * 文章STATUS 为 91 <br/>
      * url:/api/admin/article/save/recycle<br/>
      *
      * @param param JSON 参数({@link ArticleSubmitRequest})<br/>
@@ -196,11 +220,14 @@ public class ArticleApiController extends BaseController {
      *              author<br/>
      *              articleContent<br/>
      *              tags<br/>
-     *              type<br/>
+     *              category<br/>
      *              imgSrc<br/>
      *              accessType
      *              password<br/>
      *              isComment<br/>
+     *              flagOriginal<br/>
+     *              originalUrl<br/>
+     *              topPlaceFlag<br/>
      * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
@@ -219,17 +246,24 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
             BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
             BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
+
+            if (null != request.getFlagOriginal() && !request.getFlagOriginal() && StringUtils.isNotBlank(request.getOriginalUrl())) {
+                BizValidation.paramLengthValidate(request.getOriginalUrl(), Constants.URL_LENGTH, "originalUrl", "URL不能大于100个字符!");
+            }
             ArticleBO articleBO = JwBuilder.of(ArticleBO::new)
                     .with(ArticleBO::setTitle, request.getTitle())
                     .with(ArticleBO::setContent, request.getArticleContent())
                     .with(ArticleBO::setAuthor, request.getAuthor())
-                    .with(ArticleBO::setMenuId, request.getType())
+                    .with(ArticleBO::setCategoryId, request.getCategoryId())
                     .with(ArticleBO::setIsComment, request.getIsComment())
                     .with(ArticleBO::setAccessType, request.getAccessType())
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTagOidList, request.getTagOidList())
                     .with(ArticleBO::setTempArtOid, request.getTempArtOid())
+                    .with(ArticleBO::setFlagTop, request.getTopPlaceFlag())
+                    .with(ArticleBO::setFlagOriginal, request.getFlagOriginal())
+                    .with(ArticleBO::setOriginalUrl, request.getOriginalUrl())
                     .with(ArticleBO::setStatus, ArticleStatusEnum.RECYCLE.getValue()).build();
             articleBizService.doCreateArticle(articleBO);
         } catch (JwBlogException e) {
@@ -241,7 +275,7 @@ public class ArticleApiController extends BaseController {
 
     /**
      * 已提交的文章进行更新(文章编辑页面)<br/>
-     * 文章STATUS 为 1 <br/>
+     * 文章STATUS 为 90 <br/>
      * url:/api/admin/article/update<br/>
      *
      * @param param JSON 参数({@link ArticleSubmitRequest})<br/>
@@ -249,11 +283,14 @@ public class ArticleApiController extends BaseController {
      *              author<br/>
      *              articleContent<br/>
      *              tags<br/>
-     *              type<br/>
+     *              category<br/>
      *              imgSrc<br/>
      *              accessType
      *              password<br/>
      *              isComment<br/>
+     *              flagOriginal<br/>
+     *              originalUrl<br/>
+     *              topPlaceFlag<br/>
      * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
@@ -273,7 +310,7 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(JwUtil.clearHtmlWithoutMedia(request.getArticleContent()), "articleContent", "文章内容不能为空!");
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
             BizValidation.paramValidate(request.getAccessType(), "accessType", "文章访问类型不能为空!");
-            BizValidation.paramValidate(request.getType(), "type", "文章类型不能为空!");
+            BizValidation.paramCategoryValidate(request.getCategoryId(), "categoryId", "文章类型不能为空!");
             BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
             BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
             BizValidation.paramRangeValidate(request.getAccessType(), "accessType", "文章访问类型必须在[10,11,20,21]中!",
@@ -282,21 +319,29 @@ public class ArticleApiController extends BaseController {
             if (ArticleAccessEnum.PASSWORD.getValue().equals(request.getAccessType())) {
                 BizValidation.paramValidate(request.getPassword(), "password", "文章密码不能为空!");
             }
+            if (null != request.getFlagOriginal() && !request.getFlagOriginal()) {
+                BizValidation.paramValidate(request.getOriginalUrl(), "originalUrl", "非原创时转载源链接不能为空!");
+                BizValidation.paramLengthValidate(request.getOriginalUrl(), Constants.URL_LENGTH, "originalUrl", "URL不能大于100个字符!");
+                BizValidation.paramRegexValidate(request.getOriginalUrl(), Constants.URL_REGEX, "originalUrl", "URL格式不正确!");
+            }
             ArticleBO articleBO = JwBuilder.of(ArticleBO::new)
                     .with(ArticleBO::setOid, request.getArtOid())
                     .with(ArticleBO::setTitle, request.getTitle())
                     .with(ArticleBO::setContent, request.getArticleContent())
                     .with(ArticleBO::setAuthor, request.getAuthor())
-                    .with(ArticleBO::setMenuId, request.getType())
+                    .with(ArticleBO::setCategoryId, request.getCategoryId())
                     .with(ArticleBO::setIsComment, request.getIsComment())
                     .with(ArticleBO::setAccessType, request.getAccessType())
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTagOidList, request.getTagOidList())
                     .with(ArticleBO::setTempArtOid, request.getTempArtOid())
+                    .with(ArticleBO::setFlagTop, request.getTopPlaceFlag())
+                    .with(ArticleBO::setFlagOriginal, request.getFlagOriginal())
+                    .with(ArticleBO::setOriginalUrl, request.getOriginalUrl())
                     .with(ArticleBO::setStatus, ArticleStatusEnum.PUBLISHED.getValue()).build();
 
-            articleBizService.doUpdateArticle(articleBO);
+            articleBizService.doUpdateArticle(articleBO, ArticleStatusEnum.PUBLISHED.getValue());
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
         }
@@ -307,7 +352,7 @@ public class ArticleApiController extends BaseController {
 
     /**
      * 文章草稿更新至发布状态(文章列表页面)<br/>
-     * 文章STATUS 为 0 --> 1 <br/>
+     * 文章STATUS 为 00 --> 90 <br/>
      * url:/api/admin/article/draft/status/publish<br/>
      *
      * @param param JSON 参数({@link EntityOidRequest})<br/>
@@ -341,11 +386,15 @@ public class ArticleApiController extends BaseController {
      *              author<br/>
      *              articleContent<br/>
      *              tags<br/>
-     *              type<br/>
+     *              category<br/>
      *              imgSrc<br/>
      *              accessType
      *              password<br/>
      *              isComment<br/>
+     *              flagOriginal<br/>
+     *              originalUrl<br/>
+     *              status<br/>
+     *              topPlaceFlag<br/>
      * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
@@ -372,15 +421,28 @@ public class ArticleApiController extends BaseController {
             if (ArticleAccessEnum.PASSWORD.getValue().equals(request.getAccessType())) {
                 BizValidation.paramValidate(request.getPassword(), "password", "文章密码不能为空!");
             }
+            if (ArticleStatusEnum.PUBLISHED.getValue().equals(request.getStatus())) {
+                BizValidation.paramCategoryValidate(request.getCategoryId(), "categoryId", "文章类型不能为空!");
+                if (null != request.getFlagOriginal() && !request.getFlagOriginal()) {
+                    BizValidation.paramValidate(request.getOriginalUrl(), "originalUrl", "非原创时转载源链接不能为空!");
+                    BizValidation.paramRegexValidate(request.getOriginalUrl(), Constants.URL_REGEX, "originalUrl", "URL格式不正确!");
+                }
+            }
+            if (null != request.getFlagOriginal() && !request.getFlagOriginal() && StringUtils.isNotBlank(request.getOriginalUrl())) {
+                BizValidation.paramLengthValidate(request.getOriginalUrl(), Constants.URL_LENGTH, "originalUrl", "URL不能大于100个字符!");
+            }
             ArticleBO articleBO = JwBuilder.of(ArticleBO::new)
                     .with(ArticleBO::setOid, request.getArtOid())
                     .with(ArticleBO::setTitle, request.getTitle())
                     .with(ArticleBO::setAuthor, request.getAuthor())
-                    .with(ArticleBO::setMenuId, request.getType())
+                    .with(ArticleBO::setCategoryId, request.getCategoryId())
                     .with(ArticleBO::setIsComment, request.getIsComment())
                     .with(ArticleBO::setAccessType, request.getAccessType())
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
+                    .with(ArticleBO::setFlagTop, request.getTopPlaceFlag())
+                    .with(ArticleBO::setFlagOriginal, request.getFlagOriginal())
+                    .with(ArticleBO::setOriginalUrl, request.getOriginalUrl())
                     .with(ArticleBO::setTagOidList, request.getTagOidList()).build();
 
 
@@ -394,7 +456,7 @@ public class ArticleApiController extends BaseController {
 
     /**
      * 已保存的文章草稿进行更新(文章编辑页面)<br/>
-     * 文章STATUS 为 0 <br/>
+     * 文章STATUS 为 00 <br/>
      * url:/api/admin/article/draft/save<br/>
      *
      * @param param JSON 参数({@link ArticleSubmitRequest})<br/>
@@ -402,11 +464,14 @@ public class ArticleApiController extends BaseController {
      *              author<br/>
      *              articleContent<br/>
      *              tags<br/>
-     *              type<br/>
+     *              category<br/>
      *              imgSrc<br/>
      *              accessType
      *              password<br/>
      *              isComment<br/>
+     *              flagOriginal<br/>
+     *              originalUrl<br/>
+     *              topPlaceFlag<br/>
      * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
@@ -426,21 +491,28 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
             BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
             BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
+            if (null != request.getFlagOriginal() && !request.getFlagOriginal() && StringUtils.isNotBlank(request.getOriginalUrl())) {
+                BizValidation.paramLengthValidate(request.getOriginalUrl(), Constants.URL_LENGTH, "originalUrl", "URL不能大于100个字符!");
+            }
+
             ArticleBO articleBO = JwBuilder.of(ArticleBO::new)
                     .with(ArticleBO::setOid, request.getArtOid())
                     .with(ArticleBO::setTitle, request.getTitle())
                     .with(ArticleBO::setContent, request.getArticleContent())
                     .with(ArticleBO::setAuthor, request.getAuthor())
-                    .with(ArticleBO::setMenuId, request.getType())
+                    .with(ArticleBO::setCategoryId, request.getCategoryId())
                     .with(ArticleBO::setIsComment, request.getIsComment())
                     .with(ArticleBO::setAccessType, request.getAccessType())
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTagOidList, request.getTagOidList())
                     .with(ArticleBO::setTempArtOid, request.getTempArtOid())
+                    .with(ArticleBO::setFlagTop, request.getTopPlaceFlag())
+                    .with(ArticleBO::setFlagOriginal, request.getFlagOriginal())
+                    .with(ArticleBO::setOriginalUrl, request.getOriginalUrl())
                     .with(ArticleBO::setStatus, ArticleStatusEnum.DRAFT.getValue()).build();
 
-            articleBizService.doUpdateArticle(articleBO);
+            articleBizService.doUpdateArticle(articleBO, ArticleStatusEnum.DRAFT.getValue());
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
         }
@@ -450,7 +522,7 @@ public class ArticleApiController extends BaseController {
 
     /**
      * 把文章更新并且移动到回收站里(文章编辑页面)<br/>
-     * 文章STATUS 为 0/1 --> -1 <br/>
+     * 文章STATUS 为 00/90 --> 91 <br/>
      * url:/api/admin/article/save/remove/recycle<br/>
      *
      * @param param JSON 参数({@link ArticleSubmitRequest})<br/>
@@ -458,11 +530,14 @@ public class ArticleApiController extends BaseController {
      *              author<br/>
      *              articleContent<br/>
      *              tags<br/>
-     *              type<br/>
+     *              category<br/>
      *              imgSrc<br/>
      *              accessType
      *              password<br/>
      *              isComment<br/>
+     *              flagOriginal<br/>
+     *              originalUrl<br/>
+     *              topPlaceFlag<br/>
      * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
@@ -481,20 +556,26 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
             BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
             BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
+            if (null != request.getFlagOriginal() && !request.getFlagOriginal() && StringUtils.isNotBlank(request.getOriginalUrl())) {
+                BizValidation.paramLengthValidate(request.getOriginalUrl(), Constants.URL_LENGTH, "originalUrl", "URL不能大于100个字符!");
+            }
             ArticleBO articleBO = JwBuilder.of(ArticleBO::new)
                     .with(ArticleBO::setOid, request.getArtOid())
                     .with(ArticleBO::setTitle, request.getTitle())
                     .with(ArticleBO::setContent, request.getArticleContent())
                     .with(ArticleBO::setAuthor, request.getAuthor())
-                    .with(ArticleBO::setMenuId, request.getType())
+                    .with(ArticleBO::setCategoryId, request.getCategoryId())
                     .with(ArticleBO::setIsComment, request.getIsComment())
                     .with(ArticleBO::setAccessType, request.getAccessType())
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTagOidList, request.getTagOidList())
                     .with(ArticleBO::setTempArtOid, request.getTempArtOid())
+                    .with(ArticleBO::setFlagTop, request.getTopPlaceFlag())
+                    .with(ArticleBO::setFlagOriginal, request.getFlagOriginal())
+                    .with(ArticleBO::setOriginalUrl, request.getOriginalUrl())
                     .with(ArticleBO::setStatus, ArticleStatusEnum.RECYCLE.getValue()).build();
-            articleBizService.doUpdateArticle(articleBO);
+            articleBizService.doUpdateArticle(articleBO, ArticleStatusEnum.DRAFT.getValue(), ArticleStatusEnum.PUBLISHED.getValue());
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
         }
@@ -504,7 +585,7 @@ public class ArticleApiController extends BaseController {
 
     /**
      * 把文章草稿更新并且发布(文章编辑页面)<br/>
-     * 文章STATUS 为 0 --> 1 <br/>
+     * 文章STATUS 为 00 --> 90 <br/>
      * url:/api/admin/article/draft/publish<br/>
      *
      * @param param JSON 参数({@link ArticleSubmitRequest})<br/>
@@ -512,11 +593,14 @@ public class ArticleApiController extends BaseController {
      *              author<br/>
      *              articleContent<br/>
      *              tags<br/>
-     *              type<br/>
+     *              category<br/>
      *              imgSrc<br/>
      *              accessType
      *              password<br/>
      *              isComment<br/>
+     *              flagOriginal<br/>
+     *              originalUrl<br/>
+     *              topPlaceFlag<br/>
      * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * msg
@@ -536,7 +620,7 @@ public class ArticleApiController extends BaseController {
             BizValidation.paramValidate(JwUtil.clearHtmlWithoutMedia(request.getArticleContent()), "articleContent", "文章内容不能为空!");
             BizValidation.paramValidate(request.getAuthor(), "author", "作者不能为空!");
             BizValidation.paramValidate(request.getAccessType(), "accessType", "文章访问类型不能为空!");
-            BizValidation.paramValidate(request.getType(), "type", "文章类型不能为空!");
+            BizValidation.paramCategoryValidate(request.getCategoryId(), "categoryId", "文章类型不能为空!");
             BizValidation.paramLengthValidate(request.getTitle(), Constants.TITLE_LENGTH, "title", "文章标题不能大于50个字符!");
             BizValidation.paramLengthValidate(request.getAuthor(), Constants.AUTHOR_LENGTH, "author", "文章作者不能大于10个字符!");
             BizValidation.paramRangeValidate(request.getAccessType(), "accessType", "文章访问类型必须在[10,11,20,21]中!",
@@ -545,20 +629,28 @@ public class ArticleApiController extends BaseController {
             if (ArticleAccessEnum.PASSWORD.getValue().equals(request.getAccessType())) {
                 BizValidation.paramValidate(request.getPassword(), "password", "文章密码不能为空!");
             }
+            if (null != request.getFlagOriginal() && !request.getFlagOriginal()) {
+                BizValidation.paramValidate(request.getOriginalUrl(), "originalUrl", "非原创时转载源链接不能为空!");
+                BizValidation.paramLengthValidate(request.getOriginalUrl(), Constants.URL_LENGTH, "originalUrl", "URL不能大于100个字符!");
+                BizValidation.paramRegexValidate(request.getOriginalUrl(), Constants.URL_REGEX, "originalUrl", "URL格式不正确!");
+            }
             ArticleBO articleBO = JwBuilder.of(ArticleBO::new)
                     .with(ArticleBO::setOid, request.getArtOid())
                     .with(ArticleBO::setTitle, request.getTitle())
                     .with(ArticleBO::setContent, request.getArticleContent())
                     .with(ArticleBO::setAuthor, request.getAuthor())
-                    .with(ArticleBO::setMenuId, request.getType())
+                    .with(ArticleBO::setCategoryId, request.getCategoryId())
                     .with(ArticleBO::setIsComment, request.getIsComment())
                     .with(ArticleBO::setAccessType, request.getAccessType())
                     .with(ArticleBO::setImgSrc, request.getImgSrc())
                     .with(ArticleBO::setPassword, request.getPassword())
                     .with(ArticleBO::setTagOidList, request.getTagOidList())
                     .with(ArticleBO::setTempArtOid, request.getTempArtOid())
+                    .with(ArticleBO::setFlagTop, request.getTopPlaceFlag())
+                    .with(ArticleBO::setFlagOriginal, request.getFlagOriginal())
+                    .with(ArticleBO::setOriginalUrl, request.getOriginalUrl())
                     .with(ArticleBO::setStatus, ArticleStatusEnum.PUBLISHED.getValue()).build();
-            articleBizService.doUpdateArticle(articleBO);
+            articleBizService.doUpdateArticle(articleBO, ArticleStatusEnum.DRAFT.getValue());
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
         }
@@ -574,6 +666,8 @@ public class ArticleApiController extends BaseController {
      *              title<br/>
      *              text<br/>
      *              status<br/>
+     *              publishDateStart<br/>
+     *              publishDateEnd<br/>
      * @return 返回响应 {@link ArticleSummaryResponse}<br/>
      * code<br/>
      * count<br/>
@@ -583,7 +677,7 @@ public class ArticleApiController extends BaseController {
      * --publishDate<br/>
      * --modifiedDate<br/>
      * --author<br/>
-     * --type<br/>
+     * --category<br/>
      * --status<br/>
      * --desc<br/>
      * @author gulihua
@@ -610,6 +704,17 @@ public class ArticleApiController extends BaseController {
                 }
                 artParam.setStatusParams(statusList);
             }
+
+            if (StringUtils.isNotBlank(param.getPublishDateStart())) {
+                if (validateDate(param.getPublishDateStart())) {
+                    artParam.setPublishDateStart(param.getPublishDateStart());
+                }
+            }
+            if (StringUtils.isNotBlank(param.getPublishDateEnd())) {
+                if (validateDate(param.getPublishDateEnd())) {
+                    artParam.setPublishDateEnd(param.getPublishDateEnd());
+                }
+            }
             artParam.setPageNo(param.getPage());
             artParam.setPageSize(param.getLimit());
             artParam.processSortField(param.getSortField(), param.getSortOrder());
@@ -623,7 +728,7 @@ public class ArticleApiController extends BaseController {
                 vo.setAuthor(articleBO.getAuthor());
                 vo.setOid(articleBO.getOid());
                 vo.setTitle(articleBO.getTitle());
-                vo.setType(articleBO.getTypeName());
+                vo.setCategory(articleBO.getCategoryName());
                 vo.setStatus(articleBO.getStatus());
                 vo.setPublishTimeStr(DateUtil.formatDateTime(articleBO.getPushTime()));
                 vo.setPublishTime(articleBO.getPushTime());
@@ -659,7 +764,7 @@ public class ArticleApiController extends BaseController {
      * --publishDate<br/>
      * --modifiedDate<br/>
      * --author<br/>
-     * --type<br/>
+     * --category<br/>
      * --status<br/>
      * --desc<br/>
      * @author gulihua
@@ -687,7 +792,7 @@ public class ArticleApiController extends BaseController {
                 vo.setAuthor(articleBO.getAuthor());
                 vo.setOid(articleBO.getOid());
                 vo.setTitle(articleBO.getTitle());
-                vo.setType(articleBO.getTypeName());
+                vo.setCategory(articleBO.getCategoryName());
                 vo.setStatus(articleBO.getStatus());
                 vo.setRemoveRecycleTime(articleBO.getRemoveRecycleTime());
                 vo.setModifiedTimeStr(DateUtil.formatDateTime(articleBO.getModifiedTime()));
@@ -706,7 +811,7 @@ public class ArticleApiController extends BaseController {
 
     /**
      * 把文章集合移动至回收站(文章列表页面)<br/>
-     * 文章STATUS 为 0/1 --> -1 <br/>
+     * 文章STATUS 为 00/90 --> 91 <br/>
      * url:/api/admin/article/remove/recycle/list<br/>
      *
      * @param param JSON 参数({@link EntityOidListRequest})<br/>
@@ -732,7 +837,7 @@ public class ArticleApiController extends BaseController {
 
     /**
      * 把文章移动至回收站(文章列表页面)<br/>
-     * 文章STATUS 为 0/1 --> -1 <br/>
+     * 文章STATUS 为 00/90 --> 91 <br/>
      * url:/api/admin/article/remove/recycle<br/>
      *
      * @param param JSON 参数({@link EntityOidRequest})<br/>
@@ -758,7 +863,7 @@ public class ArticleApiController extends BaseController {
 
     /**
      * 把回收站文章集合恢复至草稿状态(回收站列表页面)<br/>
-     * 文章STATUS 为 -1 --> 0 <br/>
+     * 文章STATUS 为 91 --> 00 <br/>
      * url:/api/admin/article/recycle/restore/draft/list<br/>
      *
      * @param param JSON 参数({@link EntityOidListRequest})<br/>
@@ -809,7 +914,7 @@ public class ArticleApiController extends BaseController {
 
     /**
      * 把回收站文章恢复至草稿状态(回收站列表页面)<br/>
-     * 文章STATUS 为 -1 --> 0 <br/>
+     * 文章STATUS 为 91 --> 00 <br/>
      * url:/api/admin/article/recycle/restore/draft<br/>
      *
      * @param param JSON 参数({@link EntityOidRequest})<br/>
@@ -869,40 +974,43 @@ public class ArticleApiController extends BaseController {
      * --title<br/>
      * --author<br/>
      * --content<br/>
-     * --menuOid<br/>
+     * --categoryId<br/>
      * --imgSrc<br/>
      * --status<br/>
      * --accessType<br/>
      * --password<br/>
      * --isComment<br/>
+     * --flagOriginal<br/>
+     * --originalUrl<br/>
+     * --topPlaceFlag<br/>
      * --artTagsList<br/>
      * ----id<br/>
      * ----name<br/>
      * --allTagsList<br/>
      * ----id<br/>
      * ----name<br/>
-     * --menuList<br/>
+     * --categoryList<br/>
      * ----id<br/>
      * ----name<br/>
-     * --menuName<br/>
+     * --categoryName<br/>
      * --tempArticle
      * ----oid<br/>
      * ----title<br/>
      * ----author<br/>
      * ----content<br/>
-     * ----menuOid<br/>
+     * ----categoryId<br/>
      * ----imgSrc<br/>
      * ----accessType<br/>
      * ----password<br/>
      * ----isComment<br/>
+     * ----topPlaceFlag<br/>
      * ----artTagsList<br/>
      * ------id<br/>
-     *
      * @author gulihua
      */
     @ApiVersion()
     @GetMapping(ArticleApiUrlConfig.URL_ARTICLE_EDIT_DETAIL)
-    public String queryArticleEditDetail(@PathVariable("id") String  id) {
+    public String queryArticleEditDetail(@PathVariable("id") String id) {
         ArticleInfoResponse response = ArticleInfoResponse.getInstance();
         try {
             BizValidation.paramValidate(id, "id", "文章id不能为空!");
@@ -911,7 +1019,8 @@ public class ArticleApiController extends BaseController {
                 ArticleVO articleVO = new ArticleVO();
                 BeanUtils.copyProperties(articleBO, articleVO);
                 articleVO.setId(articleBO.getOid());
-                articleVO.setMenuOid(articleBO.getMenuId());
+                articleVO.setCategoryId(articleBO.getCategoryId());
+                articleVO.setTopPlaceFlag(articleBO.getFlagTop());
                 if (CollectionUtils.isNotEmpty(articleBO.getArtTagsList())) {
                     List<TagsVO> tagsVOS = new ArrayList<>(articleBO.getArtTagsList().size());
                     articleBO.getArtTagsList().forEach(o -> {
@@ -930,18 +1039,19 @@ public class ArticleApiController extends BaseController {
                     });
                     articleVO.setAllTagsList(tagsVOS);
                 }
-                if (CollectionUtils.isNotEmpty(articleBO.getMenuList())) {
-                    List<ArticleMenuVO> menuVOList = new ArrayList<>(articleBO.getMenuList().size());
-                    articleBO.getMenuList().forEach(o -> {
-                        ArticleMenuVO menuVO = new ArticleMenuVO();
-                        BeanUtils.copyProperties(o, menuVO);
-                        menuVOList.add(menuVO);
+                if (CollectionUtils.isNotEmpty(articleBO.getCategoryList())) {
+                    List<ArticleCategoryVO> categoryVOList = new ArrayList<>(articleBO.getCategoryList().size());
+                    articleBO.getCategoryList().forEach(o -> {
+                        ArticleCategoryVO categoryVO = new ArticleCategoryVO();
+                        BeanUtils.copyProperties(o, categoryVO);
+                        categoryVOList.add(categoryVO);
                     });
-                    articleVO.setMenuList(menuVOList);
+                    articleVO.setCategoryList(categoryVOList);
                 }
                 if (null != articleBO.getTempArticle()) {
-                    TempArticleVO tempArticleInfoBO = new TempArticleVO();
-                    BeanUtils.copyProperties(articleBO.getTempArticle(), tempArticleInfoBO);
+                    TempArticleVO tempArticleInfoVO = new TempArticleVO();
+                    BeanUtils.copyProperties(articleBO.getTempArticle(), tempArticleInfoVO);
+                    tempArticleInfoVO.setTopPlaceFlag(articleBO.getTempArticle().getFlagTop());
                     if (CollectionUtils.isNotEmpty(articleBO.getTempArticle().getArtTagsList())) {
                         List<TagsVO> tagsVOS = new ArrayList<>(articleBO.getTempArticle()
                                 .getArtTagsList().size());
@@ -950,9 +1060,9 @@ public class ArticleApiController extends BaseController {
                             BeanUtils.copyProperties(o, tagsVO);
                             tagsVOS.add(tagsVO);
                         });
-                        tempArticleInfoBO.setArtTagsList(tagsVOS);
+                        tempArticleInfoVO.setArtTagsList(tagsVOS);
                     }
-                    articleVO.setTempArticle(tempArticleInfoBO);
+                    articleVO.setTempArticle(tempArticleInfoVO);
                 }
 
                 response.setData(articleVO);
@@ -978,26 +1088,28 @@ public class ArticleApiController extends BaseController {
      * --id<br/>
      * --title<br/>
      * --author<br/>
-     * --menuOid<br/>
+     * --categoryId<br/>
      * --status<br/>
      * --accessType<br/>
      * --password<br/>
      * --isComment<br/>
+     * --flagOriginal<br/>
+     * --originalUrl<br/>
+     * --topPlaceFlag<br/>
      * --artTagsList<br/>
      * ----id<br/>
      * ----name<br/>
      * --allTagsList<br/>
      * ----id<br/>
      * ----name<br/>
-     * --menuList<br/>
+     * --categoryList<br/>
      * ----id<br/>
      * ----name<br/>
-     *
      * @author gulihua
      */
     @ApiVersion()
     @GetMapping(ArticleApiUrlConfig.URL_ARTICLE_EDIT_INFO)
-    public String queryArticleInfo(@PathVariable("id") String  id) {
+    public String queryArticleInfo(@PathVariable("id") String id) {
         ArticleInfoResponse response = ArticleInfoResponse.getInstance();
         try {
             BizValidation.paramValidate(id, "id", "文章id不能为空!");
@@ -1006,7 +1118,8 @@ public class ArticleApiController extends BaseController {
                 ArticleVO articleVO = new ArticleVO();
                 BeanUtils.copyProperties(articleBO, articleVO);
                 articleVO.setId(articleBO.getOid());
-                articleVO.setMenuOid(articleBO.getMenuId());
+                articleVO.setCategoryId(articleBO.getCategoryId());
+                articleVO.setTopPlaceFlag(articleBO.getFlagTop());
                 if (CollectionUtils.isNotEmpty(articleBO.getArtTagsList())) {
                     List<TagsVO> tagsVOS = new ArrayList<>(articleBO.getArtTagsList().size());
                     articleBO.getArtTagsList().forEach(o -> {
@@ -1025,14 +1138,14 @@ public class ArticleApiController extends BaseController {
                     });
                     articleVO.setAllTagsList(tagsVOS);
                 }
-                if (CollectionUtils.isNotEmpty(articleBO.getMenuList())) {
-                    List<ArticleMenuVO> menuVOList = new ArrayList<>(articleBO.getMenuList().size());
-                    articleBO.getMenuList().forEach(o -> {
-                        ArticleMenuVO menuVO = new ArticleMenuVO();
-                        BeanUtils.copyProperties(o, menuVO);
-                        menuVOList.add(menuVO);
+                if (CollectionUtils.isNotEmpty(articleBO.getCategoryList())) {
+                    List<ArticleCategoryVO> categoryVOList = new ArrayList<>(articleBO.getCategoryList().size());
+                    articleBO.getCategoryList().forEach(o -> {
+                        ArticleCategoryVO categoryVO = new ArticleCategoryVO();
+                        BeanUtils.copyProperties(o, categoryVO);
+                        categoryVOList.add(categoryVO);
                     });
-                    articleVO.setMenuList(menuVOList);
+                    articleVO.setCategoryList(categoryVOList);
                 }
 
                 response.setData(articleVO);
@@ -1056,12 +1169,15 @@ public class ArticleApiController extends BaseController {
      *              author<br/>
      *              articleContent<br/>
      *              tags<br/>
-     *              menuOid<br/>
+     *              categoryId<br/>
      *              imgSrc<br/>
      *              accessType<br/>
      *              password<br/>
      *              isComment<br/>
      *              oldArticleOid<br/>
+     *              topPlaceFlag<br/>
+     *              flagOriginal<br/>
+     *              originalUrl<br/>
      *              pageType<br/>
      * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
@@ -1080,13 +1196,16 @@ public class ArticleApiController extends BaseController {
                     .with(TempArticleBO::setTitle, request.getTitle())
                     .with(TempArticleBO::setContent, request.getArticleContent())
                     .with(TempArticleBO::setAuthor, request.getAuthor())
-                    .with(TempArticleBO::setMenuOid, request.getMenuOid())
+                    .with(TempArticleBO::setCategoryId, request.getCategoryId())
                     .with(TempArticleBO::setIsComment, request.getIsComment())
                     .with(TempArticleBO::setAccessType, request.getAccessType())
                     .with(TempArticleBO::setImgSrc, request.getImgSrc())
                     .with(TempArticleBO::setPassword, request.getPassword())
                     .with(TempArticleBO::setOldArticleOid, request.getOldArticleOid())
+                    .with(TempArticleBO::setFlagTop, request.getTopPlaceFlag())
                     .with(TempArticleBO::setPageType, request.getPageType())
+                    .with(TempArticleBO::setFlagOriginal, request.getFlagOriginal())
+                    .with(TempArticleBO::setOriginalUrl, request.getOriginalUrl())
                     .build();
             if (CollectionUtils.isNotEmpty(request.getTags())) {
                 List<TagsBO> list = new ArrayList<>();
@@ -1116,12 +1235,15 @@ public class ArticleApiController extends BaseController {
      *              author<br/>
      *              articleContent<br/>
      *              tags<br/>
-     *              menuOid<br/>
+     *              categoryId<br/>
      *              imgSrc<br/>
-     *              accessType
+     *              accessType<br/>
      *              password<br/>
      *              isComment<br/>
      *              oldArticleOid<br/>
+     *              topPlaceFlag<br/>
+     *              flagOriginal<br/>
+     *              originalUrl<br/>
      *              pageType<br/>
      * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
@@ -1141,13 +1263,16 @@ public class ArticleApiController extends BaseController {
                     .with(TempArticleBO::setTitle, request.getTitle())
                     .with(TempArticleBO::setContent, request.getArticleContent())
                     .with(TempArticleBO::setAuthor, request.getAuthor())
-                    .with(TempArticleBO::setMenuOid, request.getMenuOid())
+                    .with(TempArticleBO::setCategoryId, request.getCategoryId())
                     .with(TempArticleBO::setIsComment, request.getIsComment())
                     .with(TempArticleBO::setAccessType, request.getAccessType())
                     .with(TempArticleBO::setImgSrc, request.getImgSrc())
                     .with(TempArticleBO::setPassword, request.getPassword())
                     .with(TempArticleBO::setOldArticleOid, request.getOldArticleOid())
+                    .with(TempArticleBO::setFlagTop, request.getTopPlaceFlag())
                     .with(TempArticleBO::setPageType, request.getPageType())
+                    .with(TempArticleBO::setFlagOriginal, request.getFlagOriginal())
+                    .with(TempArticleBO::setOriginalUrl, request.getOriginalUrl())
                     .build();
             if (CollectionUtils.isNotEmpty(request.getTags())) {
                 List<TagsBO> list = new ArrayList<>();
@@ -1168,7 +1293,7 @@ public class ArticleApiController extends BaseController {
     }
 
     /**
-     * 获取文章信息<br/>
+     * 获取临时文章信息<br/>
      * url:/api/admin/article/last/temp/info<br/>
      *
      * @param param JSON 参数({@link TempArticleQueryRequest})<br/>
@@ -1181,11 +1306,14 @@ public class ArticleApiController extends BaseController {
      * --title<br/>
      * --author<br/>
      * --content<br/>
-     * --menuOid<br/>
+     * --categoryId<br/>
      * --imgSrc<br/>
      * --accessType<br/>
      * --password<br/>
      * --isComment<br/>
+     * --topPlaceFlag<br/>
+     * --flagOriginal<br/>
+     * --originalUrl<br/>
      * --artTagsList<br/>
      * ----id<br/>
      * ----name<br/>
@@ -1207,12 +1335,15 @@ public class ArticleApiController extends BaseController {
                         .with(TempArticleVO::setTitle, StringEscapeUtils.escapeHtml4(article.getTitle()))
                         .with(TempArticleVO::setAuthor, StringEscapeUtils.escapeHtml4(article.getAuthor()))
                         .with(TempArticleVO::setContent, article.getContent())
-                        .with(TempArticleVO::setMenuOid, article.getMenuOid())
+                        .with(TempArticleVO::setCategoryId, article.getCategoryId())
                         .with(TempArticleVO::setImgSrc, article.getImgSrc())
                         .with(TempArticleVO::setIsComment, article.getIsComment())
                         .with(TempArticleVO::setPassword, article.getPassword())
                         .with(TempArticleVO::setAccessType, article.getAccessType())
+                        .with(TempArticleVO::setTopPlaceFlag, article.getFlagTop())
                         .with(TempArticleVO::setStatus, article.getStatus())
+                        .with(TempArticleVO::setFlagOriginal, article.getFlagOriginal())
+                        .with(TempArticleVO::setOriginalUrl, article.getOriginalUrl())
                         .build();
 
 
@@ -1295,5 +1426,9 @@ public class ArticleApiController extends BaseController {
         }
 
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
+    }
+
+    private boolean validateDate(String date) {
+        return ReUtil.isMatch(Constants.DATE_REGEX, StringUtils.trim(date));
     }
 }

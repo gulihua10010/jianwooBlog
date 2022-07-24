@@ -16,7 +16,7 @@ import cn.jianwoo.blog.dto.response.BackendMenuResponse;
 import cn.jianwoo.blog.dto.response.HomeMenuResponse;
 import cn.jianwoo.blog.dto.response.MenuInfoResponse;
 import cn.jianwoo.blog.dto.response.MenuValidateResponse;
-import cn.jianwoo.blog.dto.response.vo.ArticleMenuVO;
+import cn.jianwoo.blog.dto.response.vo.ArticleCategoryVO;
 import cn.jianwoo.blog.dto.response.vo.BackendMenuVO;
 import cn.jianwoo.blog.dto.response.vo.BackendSubMenuVO;
 import cn.jianwoo.blog.dto.response.vo.HomeMenuVO;
@@ -26,6 +26,7 @@ import cn.jianwoo.blog.entity.Menu;
 import cn.jianwoo.blog.enums.MenuTypeEnum;
 import cn.jianwoo.blog.enums.PageIdEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.exception.MenuBizException;
 import cn.jianwoo.blog.service.biz.MenuBizService;
 import cn.jianwoo.blog.service.bo.MenuBO;
 import cn.jianwoo.blog.service.bo.MenuValidateBO;
@@ -115,12 +116,17 @@ public class MenuApiController extends BaseController {
             BizValidation.paramLengthValidate(request.getName(), Constants.MENU_LENGTH, "name", "菜单名字不能大于10个字符!");
             BizValidation.paramLengthValidate(request.getText(), Constants.MENU_LENGTH, "text", "菜单文本不能大于10个字符!");
             BizValidation.paramRegexValidate(request.getName(), Constants.MENU_NAME_REGEX, "name", "菜单文本必须是字母、数字、符号\\'_#$@\\'，不能包含其他特殊字符!");
+            if (!request.getFlagCategory()) {
+                BizValidation.paramValidate(request.getUrl(), "url", "当菜单不是文章类别时url不能为空!");
+                BizValidation.paramRegexValidate(request.getUrl(), Constants.URL_REGEX, "url", "URL格式不正确!");
+            }
             MenuBO menuBO = JwBuilder.of(MenuBO::new)
                     .with(MenuBO::setName, request.getName())
                     .with(MenuBO::setType, MenuTypeEnum.FRONTEND.getValue())
                     .with(MenuBO::setParentOid, request.getParentOid())
                     .with(MenuBO::setText, request.getText())
                     .with(MenuBO::setIcon, request.getIcon())
+                    .with(MenuBO::setFlagCategory, request.getFlagCategory())
                     .with(MenuBO::setUrl, request.getUrl()).build();
             menuBizService.doCreateMenu(menuBO);
         } catch (JwBlogException e) {
@@ -161,12 +167,25 @@ public class MenuApiController extends BaseController {
             BizValidation.paramLengthValidate(request.getName(), Constants.MENU_LENGTH, "name", "菜单名字不能大于10个字符!");
             BizValidation.paramLengthValidate(request.getText(), Constants.MENU_LENGTH, "text", "菜单文本不能大于10个字符!");
             BizValidation.paramRegexValidate(request.getName(), Constants.MENU_NAME_REGEX, "name", "菜单文本必须是字母、数字、符号\\'_#$@\\'，不能包含其他特殊字符!");
+            if (!request.getFlagCategory()) {
+                BizValidation.paramValidate(request.getUrl(), "url", "当菜单不是文章类别时url不能为空!");
+                BizValidation.paramRegexValidate(request.getUrl(), Constants.URL_REGEX, "url", "URL格式不正确!");
+            }
+            if (!request.getFlagCategory()|| !request.getValid()) {
+                MenuValidateBO bo = menuBizService.doValidateArticleExistsInMenu(request.getOid());
+                if (Constants.NO.equals(bo.getIsSuccess())){
+                    throw MenuBizException.MENU_DEL_ARTICLE_EXITS.format(request.getName()).print();
+
+                }
+
+            }
             MenuBO menuBO = JwBuilder.of(MenuBO::new)
                     .with(MenuBO::setOid, request.getOid())
                     .with(MenuBO::setName, request.getName())
                     .with(MenuBO::setText, request.getText())
                     .with(MenuBO::setIcon, request.getIcon())
                     .with(MenuBO::setValid, request.getValid())
+                    .with(MenuBO::setFlagCategory, request.getFlagCategory())
                     .with(MenuBO::setUrl, request.getUrl()).build();
             menuBizService.doUpdateMenu(menuBO);
         } catch (JwBlogException e) {
@@ -277,7 +296,7 @@ public class MenuApiController extends BaseController {
      * data<br/>
      * --title<br/>
      * --icon<br/>
-     * --list<br/>
+     * --subList<br/>
      * ----name<br/>
      * ----title<br/>
      * ----jump<br/>
@@ -285,7 +304,7 @@ public class MenuApiController extends BaseController {
      */
     @ApiVersion()
     @GetMapping(MenuApiUrlConfig.URL_MENU_BACKEND_INFO_LIST)
-    public String queryBackendInfoList() {
+    public String queryBackendMenuList() {
         BackendMenuResponse response = BackendMenuResponse.getInstance();
         List<BackendMenuVO> list = new ArrayList<>();
         try {
@@ -295,6 +314,7 @@ public class MenuApiController extends BaseController {
                 BackendMenuVO vo = new BackendMenuVO();
                 vo.setIcon(menuBO.getIcon());
                 vo.setTitle(menuBO.getText());
+                vo.setName(menuBO.getName());
                 if (CollectionUtils.isNotEmpty(menuBO.getSubMenuList())) {
                     for (MenuBO subMenu : menuBO.getSubMenuList()) {
                         BackendSubMenuVO subMenuVO = JwBuilder.of(BackendSubMenuVO::new)
@@ -305,7 +325,7 @@ public class MenuApiController extends BaseController {
                         subMenuVOList.add(subMenuVO);
                     }
                 }
-                vo.setList(subMenuVOList);
+                vo.setSubList(subMenuVOList);
                 list.add(vo);
             }
 
@@ -318,8 +338,8 @@ public class MenuApiController extends BaseController {
     }
 
     /**
-     * 获取前台菜单(文章类别)<br/>
-     * url:/api/admin/menu/article/type/list<br/>
+     * 获取前台文章类别(文章类别)<br/>
+     * url:/api/admin/menu/article/category/list<br/>
      *
      * @return 返回响应 {@link ArticleMenuResponse}<br/>
      * status<br/>
@@ -329,17 +349,17 @@ public class MenuApiController extends BaseController {
      * @author gulihua
      */
     @ApiVersion()
-    @GetMapping(MenuApiUrlConfig.URL_MENU_ARTICLE_TYPE_LIST)
+    @GetMapping(MenuApiUrlConfig.URL_MENU_ARTICLE_CATEGORY_LIST)
     public String queryArticleTypeMenuList() {
         try {
             ArticleMenuResponse response = ArticleMenuResponse.getInstance();
-            List<ArticleMenuVO> list = new ArrayList<>();
-            List<Menu> menuList = menuBizService.querySubMenuOrderedList(MenuTypeEnum.FRONTEND.getValue());
-            if (CollectionUtils.isNotEmpty(menuList)) {
-                for (Menu menu : menuList) {
-                    ArticleMenuVO vo = JwBuilder.of(ArticleMenuVO::new)
-                            .with(ArticleMenuVO::setId, menu.getOid())
-                            .with(ArticleMenuVO::setName, StringEscapeUtils.escapeHtml4(menu.getText())).build();
+            List<ArticleCategoryVO> list = new ArrayList<>();
+            List<Menu> categoryList = menuBizService.querySubMenuCategoryList();
+            if (CollectionUtils.isNotEmpty(categoryList)) {
+                for (Menu category : categoryList) {
+                    ArticleCategoryVO vo = JwBuilder.of(ArticleCategoryVO::new)
+                            .with(ArticleCategoryVO::setId, category.getOid())
+                            .with(ArticleCategoryVO::setName, StringEscapeUtils.escapeHtml4(category.getText())).build();
                     list.add(vo);
                 }
             }

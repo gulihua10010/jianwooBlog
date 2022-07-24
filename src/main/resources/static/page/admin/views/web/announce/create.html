@@ -1,0 +1,94 @@
+<title>创建公告</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>网站管理</cite></a>
+        <a><cite>创建公告</cite></a>
+    </div>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <div class="layui-form" id="layuiadmin-form-announce"
+                     lay-filter="layuiadmin-form-announce">
+                    <script type="text/html" template  lay-done="doView(d);">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">标题</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" name="title" type="text"
+                                       lay-verify="required|maxLength" lay-max="50">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">内容</label>
+                            <div class="layui-input-block">
+                            <textarea class="layui-input" style="height: 200px;resize:none;padding-top: 5px;"
+                                      name="content" id="announce-content"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">过期日期</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="expiationTime" id="expiationTime" lay-verify="dateTimeFmt" placeholder="yyyy-MM-dd HH:mm:ss" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </script>
+
+                    <script type="text/html" template lay-url="/api/admin/request/token/generate"
+                            lay-data="{pageId: 'AN10'}" lay-type="post"  lay-done="doUpdateToken(d);">
+                        <input type="hidden" name="subToken" id="subToken" value="{{d.token}}">
+                    </script>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"></label>
+                        <div class="layui-input-block">
+                            <input class="layui-btn submit" id="submit"
+                                   lay-filter="submit-announce-create" lay-submit
+                                   style="float: right" type="button" value="确认">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+<script>
+
+    doView = function (d) {
+        layui.use('announce', layui.factory('announce')).use(['admin', 'form', 'announce', 'laydate'], function () {
+            var $ = layui.jquery
+                , form = layui.form
+                , element = layui.element
+                , announce = layui.announce
+                , laydate = layui.laydate;
+
+            //日期
+            laydate.render({
+                elem: '#expiationTime'
+                ,type: 'datetime'
+            });
+            element.render();
+            form.render();
+
+            var edit = announce.getEdit(function () {
+
+            }, function (opt, edit) {
+
+            });
+
+
+        })
+    }
+    doUpdateToken =function (d)
+    {
+
+    }
+
+
+</script>

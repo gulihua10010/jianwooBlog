@@ -48,7 +48,7 @@ layui.define(['laytable', 'form'], function (exports) {
         }else if (d.code === '-1') {
             return '';
         }
-        return '<a href="/admin#/emailTpl/edit/code=' + d.code + '">' + d.code + '</a>';
+        return '<a href="/admin#/email/emailTpl/edit/code=' + d.code + '">' + d.code + '</a>';
 
     }
 

@@ -52,6 +52,9 @@ public class ExceptionAOPHandler {
 
     @AfterThrowing(value = "servicePointCut()", throwing = "e")
     public void sendExceptionByMail(JoinPoint joinPoint, Exception e) {
+        if (e instanceof JwBlogException) {
+            return;
+        }
         String name = joinPoint.getSignature().getName();
         List<Object> args = new ArrayList<>();
         if (joinPoint.getArgs() != null) {

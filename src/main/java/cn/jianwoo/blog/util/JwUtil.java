@@ -339,4 +339,12 @@ public class JwUtil {
     }
 
 
+    public static String format(String v) {
+        if (StringUtils.isBlank(v)) {
+            return Constants.BLANK;
+        }
+        return v.trim();
+    }
+
+
 }

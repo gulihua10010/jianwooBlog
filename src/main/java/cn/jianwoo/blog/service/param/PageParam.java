@@ -9,9 +9,12 @@ import java.io.Serializable;
  */
 public class PageParam implements Serializable {
     private static final long serialVersionUID = -7420890785386799408L;
-    private static final Integer DEFAULT_PAGE_NO = 1;
-    private static final Integer DEFAULT_PAGE_SIZE = 10;
-
+    public static final Integer DEFAULT_PAGE_NO = 1;
+    private static final Integer DEFAULT_PAGE_SIZE = 20;
+    /**
+     * 最大每页记录数(100).
+     */
+    public static final Integer MAX_PAGE_SIZE = 100;
 
     /**
      * 页码
@@ -68,7 +71,8 @@ public class PageParam implements Serializable {
 
 
     public Integer getPageSize() {
-        return pageSize;
+        return (null != pageSize && pageSize > 0) ? pageSize > MAX_PAGE_SIZE ? MAX_PAGE_SIZE : pageSize
+                : DEFAULT_PAGE_SIZE;
     }
 
 

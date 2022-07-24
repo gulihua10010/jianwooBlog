@@ -23,4 +23,13 @@ public interface UserProfileQueryDao {
      * @author gulihua
      */
     UserProfile queryOneUserProfileByIp(String ip);
+
+    /**
+     * 通过userId获取
+     *
+     * @param userId 用户ID
+     * @return
+     * @author gulihua
+     */
+    UserProfile queryUserProfileByUserId(String userId);
 }

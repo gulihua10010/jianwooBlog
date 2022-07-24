@@ -1,6 +1,5 @@
 package cn.jianwoo.blog.dto.response.vo;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,6 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class CommentVO implements Serializable {
 
     private static final long serialVersionUID = 2152295702147130154L;
@@ -30,10 +28,22 @@ public class CommentVO implements Serializable {
      * 文章标题
      */
     private String artTitle;
+
+
+    /**
+     * 用户ID
+     */
+    private String userId;
+
     /**
      * 用户名
      */
     private String userName;
+
+    /**
+     * 用户昵称
+     */
+    private String userNick;
 
     /**
      * 评论日期

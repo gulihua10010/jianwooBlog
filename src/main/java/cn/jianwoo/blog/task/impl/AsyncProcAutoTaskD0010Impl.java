@@ -1,5 +1,6 @@
 package cn.jianwoo.blog.task.impl;
 
+import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.TaskConstants;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.notify.NotifyMsgService;
@@ -31,7 +32,8 @@ public class AsyncProcAutoTaskD0010Impl implements AsyncAutoTaskService {
 
         // read parameter taskData
         TaskDataD0010BO data = JSON.parseObject(taskData, TaskDataD0010BO.class);
-        emailNotifyService.doSend(data.getEmailTplCode(), data.getParam(), data.getRecipient());
+        String[] recipients = data.getRecipient().split(Constants.COMMA_SEPARATOR);
+        emailNotifyService.doSend(data.getEmailTplCode(), data.getParam(), recipients);
         return returnSuccessJsonResult();
     }
 

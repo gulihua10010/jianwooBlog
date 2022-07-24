@@ -1,7 +1,6 @@
 package cn.jianwoo.blog.service.bo;
 
 import cn.jianwoo.blog.enums.FreqTimeunitEnum;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -18,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class FrequencyBO implements Serializable {
 
     /**

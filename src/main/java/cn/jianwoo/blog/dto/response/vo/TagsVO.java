@@ -1,6 +1,5 @@
 package cn.jianwoo.blog.dto.response.vo;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,6 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class TagsVO implements Serializable {
     private static final long serialVersionUID = -6622957226309536544L;
     /**
@@ -26,5 +24,9 @@ public class TagsVO implements Serializable {
      * 标签名
      */
     private String name;
+    /**
+     * 文章数量
+     */
+    private Integer count;
 
 }

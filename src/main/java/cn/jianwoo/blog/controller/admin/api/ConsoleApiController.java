@@ -167,7 +167,7 @@ public class ConsoleApiController extends BaseController {
                     vo.setCommentTimeStr(DateUtil.formatDateTime(domain.getCommentTime()));
                     vo.setCommentTime(domain.getCommentTime());
                     vo.setArtTitle(domain.getArticleTitle());
-                    vo.setUserName(domain.getUserName());
+                    vo.setUserNick(domain.getUserNick());
                     vo.setClientIp(domain.getClientIp());
                     vo.setTemplateName(templateName);
                     String content = StringEscapeUtils.escapeHtml4(domain.getContent());

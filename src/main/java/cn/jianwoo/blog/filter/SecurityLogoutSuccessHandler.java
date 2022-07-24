@@ -2,7 +2,7 @@ package cn.jianwoo.blog.filter;
 
 import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.cache.CacheStore;
-import cn.jianwoo.blog.constants.CacaheKeyConstants;
+import cn.jianwoo.blog.constants.CacheKeyConstants;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.enums.LoginEventTypeEnum;
@@ -66,10 +66,10 @@ public class SecurityLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler 
 
         }
         Long uid = Long.parseLong(decryptStr);
-        String loginIdCacheKey = MessageFormat.format(CacaheKeyConstants.LOGIN_USER_STATUS, uid);
+        String loginIdCacheKey = MessageFormat.format(CacheKeyConstants.LOGIN_USER_STATUS, uid);
         boolean isLogin = (Boolean) jwCacheStore.get(loginIdCacheKey).orElse(false);
 
-        String loginIDNameKey = MessageFormat.format(CacaheKeyConstants.ADMIN_OID_NAME_KEY, uid);
+        String loginIDNameKey = MessageFormat.format(CacheKeyConstants.ADMIN_OID_NAME_KEY, uid);
         String name = (String) jwCacheStore.get(loginIDNameKey).orElse(null);
         LoginLogEvent event = new LoginLogEvent(this, name, request);
 
@@ -90,11 +90,11 @@ public class SecurityLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler 
         response.getWriter().write(processSuccessMsg(Constants.SUCCESS_LOGOUT));
 
         //把token存放缓存，置以失效
-        String invalidTokenKey = MessageFormat.format(CacaheKeyConstants.INVALID_TOKEN, accessToken);
+        String invalidTokenKey = MessageFormat.format(CacheKeyConstants.INVALID_TOKEN, accessToken);
         jwCacheStore.put(invalidTokenKey, accessToken);
 
         log.info("logout successfully: [id = {}]", uid);
-        String accessCacheKey = MessageFormat.format(CacaheKeyConstants.TOKEN_ACCESS_CACHE, uid);
+        String accessCacheKey = MessageFormat.format(CacheKeyConstants.TOKEN_ACCESS_CACHE, uid);
         jwCacheStore.delete(accessCacheKey);
         if (StringUtils.isNotBlank(name)) {
             event.setEventTypeEnum(LoginEventTypeEnum.LOGOUT);

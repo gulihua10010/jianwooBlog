@@ -1,7 +1,8 @@
 package cn.jianwoo.blog.service.bo;
 
+import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.enums.ArticleAccessEnum;
-import lombok.AllArgsConstructor;
+import cn.jianwoo.blog.enums.TopPlaceEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class TempArticleBO implements Serializable {
     private static final long serialVersionUID = 1L;
     /**
@@ -36,9 +36,9 @@ public class TempArticleBO implements Serializable {
     private String content;
 
     /**
-     * 类别id article.typeId [ARTICLE.MENU_ID]
+     * 类别id article.categoryId [ARTICLE.CATEGORY_ID]
      */
-    private Integer menuOid;
+    private Integer categoryId;
 
     /**
      * 是否评论 article.isComment [ARTICLE.IS_COMMENT]
@@ -85,5 +85,44 @@ public class TempArticleBO implements Serializable {
      * 恢复的文章的oid
      */
     private Long restoreArticleOid;
+
+
+    /**
+     * 是否置顶
+     */
+    private Boolean flagTop;
+
+    /**
+     * 置顶状态,00:未置顶,50:置顶{@link cn.jianwoo.blog.enums.TopPlaceEnum}
+     */
+    private String topPlaceStatus;
+
+
+    /**
+     * 是否原创
+     */
+    private Boolean flagOriginal;
+
+
+    /**
+     * 转载源链接
+     */
+    private String originalUrl;
+
+    public void setCategoryId(Integer categoryId) {
+        if (!Constants.CATEGORY_NULL.equals(categoryId)) {
+            this.categoryId = categoryId;
+        }
+    }
+
+
+    public void setFlagTop(Boolean flagTop) {
+        if (flagTop == null) {
+            this.flagTop = false;
+        } else {
+            this.flagTop = flagTop;
+        }
+        this.topPlaceStatus = this.flagTop ? TopPlaceEnum.TOP.getValue() : TopPlaceEnum.NOT_TOP.getValue();
+    }
 
 }

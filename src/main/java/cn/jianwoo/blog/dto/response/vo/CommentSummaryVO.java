@@ -1,10 +1,11 @@
 package cn.jianwoo.blog.dto.response.vo;
 
+import cn.jianwoo.blog.config.LongToStringSerializerConfig;
 import cn.jianwoo.blog.config.router.admin.CommAdminPageUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.util.DateUtil;
 import cn.jianwoo.blog.util.DomainUtil;
-import lombok.AllArgsConstructor;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,6 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class CommentSummaryVO implements Serializable {
 
     private static final long serialVersionUID = 2152295702147130154L;
@@ -39,9 +39,9 @@ public class CommentSummaryVO implements Serializable {
      */
     private String artTitle;
     /**
-     * 用户名
+     * 用户昵称
      */
-    private String userName;
+    private String userNick;
 
     /**
      * 评论日期
@@ -70,6 +70,7 @@ public class CommentSummaryVO implements Serializable {
     /**
      * 文章oid
      */
+    @JSONField(serializeUsing = LongToStringSerializerConfig.class)
     private Long artOid;
     /**
      * IP地址
@@ -80,6 +81,14 @@ public class CommentSummaryVO implements Serializable {
      */
     private String userArea;
     /**
+     * 评论文章是否删除
+     */
+    private String artDelStatus;
+    /**
+     * 评论是否删除
+     */
+    private String isDelete;
+    /**
      * 显示描述
      */
     private String desc = Constants.BLANK;
@@ -88,11 +97,11 @@ public class CommentSummaryVO implements Serializable {
     public String getDesc() {
         if ("DYNAMIC_TEMPLATE".equals(templateName)) {
             desc = String.format(DYNAMIC_TEMPLATE, DomainUtil.format(this.userArea, Constants.UNKNOW),
-                    DomainUtil.format(this.clientIp, Constants.UNKNOW), DomainUtil.format(this.userName, Constants.ANAONYMOUS),
+                    DomainUtil.format(this.clientIp, Constants.UNKNOW), DomainUtil.format(this.userNick, Constants.ANAONYMOUS),
                     DateUtil.optimizeTimeDesc(this.commentTime), CommAdminPageUrlConfig.URL_PREFIX + CommAdminPageUrlConfig.URL_ARTICLE_EDIT.replace("{id}", String.valueOf(this.artOid)),
                     this.artTitle, this.content);
         } else if ("CONSOLE_TEMPLATE".equals(templateName)) {
-            desc = String.format(CONSOLE_TEMPLATE, DomainUtil.format(this.userName, Constants.ANAONYMOUS),
+            desc = String.format(CONSOLE_TEMPLATE, DomainUtil.format(this.userNick, Constants.ANAONYMOUS),
                     DateUtil.optimizeTimeDesc(this.commentTime), CommAdminPageUrlConfig.URL_PREFIX + CommAdminPageUrlConfig.URL_ARTICLE_EDIT.replace("{id}", String.valueOf(this.artOid)),
                     this.artTitle, this.content);
         }

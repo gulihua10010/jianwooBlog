@@ -324,6 +324,24 @@ layui.extend({
                 return '日期时间格式不正确';
             }
         },
+        urlFmt: function (value, item) {
+            if (isEmpty(value)) {
+                return false;
+            }
+            var patt = /^http(s?):\/\/(([\w-]+\.)+[\w-]+|((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3})(:\d{1,5})?(\/.*)?$/;
+            if (!patt.test(value)) {
+                return '链接格式不正确';
+            }
+        },
+        ipv4Fmt: function (value, item) {
+            if (isEmpty(value)) {
+                return false;
+            }
+            var patt = /^(((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3},)+$/;
+            if (!patt.test(value+",")) {
+                return 'Ipv4格式不正确';
+            }
+        },
 
     })
 

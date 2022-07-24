@@ -58,10 +58,10 @@ layui.define(['laytable', 'form'], function (exports) {
             '/api/admin/article/save/draft',
             1,
             {
+                requestId: field.subToken,
                 title: title,
                 author: author,
                 articleContent: articleContent,
-                subToken: field.subToken
             },
             "保存成功",
             function () {

@@ -3,6 +3,8 @@ package cn.jianwoo.blog.aspect;
 import cn.jianwoo.blog.annotation.PageId;
 import cn.jianwoo.blog.annotation.SubToken;
 import cn.jianwoo.blog.base.BaseResponseDto;
+import cn.jianwoo.blog.cache.CacheStore;
+import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.exception.FormDuplicateSubmitException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.util.ProcessTokenUtil;
@@ -14,13 +16,13 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author gulihua
@@ -31,10 +33,14 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 @Slf4j
 public class AvoidDuplicateSubmissionAspect {
-    public static final String SUB_TOKEN = "subToken";
+    public static final String REQUEST_ID = "requestId";
     public static final String PAGE_ID = "PAGE_ID";
     public static final String OPEN = "_OPEN";
 
+    @Autowired
+    private ProcessTokenUtil processTokenUtil;
+    @Autowired
+    private CacheStore<String, String> cacheStore;
 
     @Pointcut("@annotation(subToken)")
     public void doToken(SubToken subToken) {
@@ -46,30 +52,23 @@ public class AvoidDuplicateSubmissionAspect {
     public Object validateToken(ProceedingJoinPoint joinPoint, SubToken subToken, PageId pageId) throws Throwable {
         log.info("===>> AvoidDuplicateSubmissionAspect validateToken method: {}", joinPoint.getSignature().getName());
 
-        String clinetToken = getClientToken(joinPoint);
+        String clientToken = getClientToken(joinPoint);
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = servletRequestAttributes.getRequest();
         String page = PAGE_ID;
         if (pageId != null) {
             page = pageId.value().getValue();
         }
-        String key = ProcessTokenUtil.getSubTokenKey(request, page);
         if (null != subToken) {
             if (subToken.validateToken()) {
-                boolean isDuplicate = isRepeatSubmit(clinetToken, request, page);
+                boolean isDuplicate = isRepeatSubmit(clientToken, request, page);
                 if (isDuplicate) {
-                    request.getSession().removeAttribute(key);
                     return processException(FormDuplicateSubmitException.FORM_DUPLICATE_SUBMIT_EXCEPTION);
                 }
-                request.getSession().removeAttribute(key);
             }
         }
-        request.getSession().removeAttribute(page);
         String responseDto = (String) joinPoint.proceed();
-        BaseResponseDto dto = JSON.parseObject(responseDto, BaseResponseDto.class);
-        if (!dto.isSuccess()) {
-            request.getSession().setAttribute(key, clinetToken);
-        }
+
         return responseDto;
     }
 
@@ -79,22 +78,14 @@ public class AvoidDuplicateSubmissionAspect {
     }
 
 
-    private boolean isRepeatSubmit(String clinetToken, HttpServletRequest request, String pageId) {
-        String key = ProcessTokenUtil.getSubTokenKey(request, pageId);
-        String serverToken = (String) request.getSession().getAttribute(
-                key);
-        if (serverToken == null) {
-            return true;
-        }
-        log.info("serverToken: {}", serverToken);
-        log.info("clinetToken: {}", clinetToken);
+    private boolean isRepeatSubmit(String clientToken, HttpServletRequest request, String pageId) {
+        String key = processTokenUtil.getSubTokenKey(request, pageId);
+        key = key.concat(Constants.SEPARATE_HYPHEN).concat(clientToken);
 
-        if (clinetToken == null) {
+        if (cacheStore.hasKey(key)) {
             return true;
         }
-        if (!serverToken.equals(clinetToken)) {
-            return true;
-        }
+        cacheStore.put(key, Constants.TRUE, 2, TimeUnit.HOURS);
         return false;
     }
 
@@ -104,14 +95,12 @@ public class AvoidDuplicateSubmissionAspect {
             for (Object o : joinPoint.getArgs()) {
                 if (o instanceof String) {
                     String paramStr = (String) o;
-                    if (!paramStr.contains(SUB_TOKEN)) {
+                    if (!paramStr.contains(REQUEST_ID)) {
                         continue;
                     }
-//                    System.out.println("paramStr");
-//                    System.out.println(paramStr);
                     JSONObject parameter = JSON.parseObject(paramStr);
                     if (null != parameter) {
-                        clinetToken = (String) parameter.get(SUB_TOKEN);
+                        clinetToken = (String) parameter.get(REQUEST_ID);
                         break;
                     }
                 }

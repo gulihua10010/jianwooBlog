@@ -100,11 +100,14 @@
 <!--                        <table tableName="ARTICLE" domainObjectName="Article">-->
 <!--                            <property name="useActualColumnNames" value="false"/>-->
 <!--                            <columnOverride column="IS_COMMENT" javaType="Boolean"/>-->
+<!--                            <columnOverride column="FLAG_ORIGINAL" javaType="Boolean"/>-->
 <!--                        </table>-->
-        <!--        <table tableName="ARTICLE_TAGS" domainObjectName="ArticleTags">-->
-        <!--            <property name="useActualColumnNames" value="false"/>-->
-        <!--            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
-        <!--        </table>-->
+<!--                <table tableName="ARTICLE_TAGS" domainObjectName="ArticleTags">-->
+<!--                    <property name="useActualColumnNames" value="false"/>-->
+<!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+<!--                    <columnOverride column="ART_FLAG_ACTIVITY" javaType="Boolean"/>-->
+<!--                    <columnOverride column="ART_FLAG_PRIVATE" javaType="Boolean"/>-->
+<!--                </table>-->
 <!--        <table tableName="COMMENTS" domainObjectName="Comment">-->
 <!--            <property name="useActualColumnNames" value="false"/>-->
 <!--            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
@@ -128,11 +131,12 @@
         <!--        <table tableName="WEBCONF" domainObjectName="Webconf">-->
         <!--            <property name="useActualColumnNames" value="false"/>-->
         <!--        </table>-->
-        <!--                <table tableName="MENU" domainObjectName="Menu">-->
-        <!--                    <property name="useActualColumnNames" value="false"/>-->
-        <!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
-        <!--                    <columnOverride column="VALID" javaType="Boolean"/>-->
-        <!--                </table>-->
+<!--                        <table tableName="MENU" domainObjectName="Menu">-->
+<!--                            <property name="useActualColumnNames" value="false"/>-->
+<!--                            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+<!--                            <columnOverride column="VALID" javaType="Boolean"/>-->
+<!--                            <columnOverride column="FLAG_CATEGORY" javaType="Boolean"/>-->
+<!--                        </table>-->
 <!--                <table tableName="file_upload" domainObjectName="FileUpload">-->
 <!--                    <property name="useActualColumnNames" value="false"/>-->
 <!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
@@ -168,6 +172,7 @@
 <!--                                            <property name="useActualColumnNames" value="false"/>-->
 <!--                                            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
 <!--                                            <columnOverride column="IS_COMMENT" javaType="Boolean"/>-->
+<!--                                            <columnOverride column="FLAG_ORIGINAL" javaType="Boolean"/>-->
 <!--                                        </table>-->
         <!--                                <table tableName="LOGIN_LOG" domainObjectName="LoginLog">-->
         <!--                                    <property name="useActualColumnNames" value="false"/>-->
@@ -203,11 +208,11 @@
 <!--                                <property name="useActualColumnNames" value="false"/>-->
 <!--                                <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
 <!--                           </table>-->
-<!--                <table tableName="COMMENTS" domainObjectName="Comment">-->
-<!--                    <property name="useActualColumnNames" value="false"/>-->
-<!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
-<!--                                <columnOverride column="IS_DELETE" javaType="Boolean"/>-->
-<!--                </table>-->
+                <table tableName="COMMENTS" domainObjectName="Comment">
+                    <property name="useActualColumnNames" value="false"/>
+                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>
+                                <columnOverride column="IS_DELETE" javaType="Boolean"/>
+                </table>
 <!--        <table tableName="ANNOUNCEMENT_MSG" domainObjectName="AnnouncementMsg">-->
 <!--            <property name="useActualColumnNames" value="false"/>-->
 <!--            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->

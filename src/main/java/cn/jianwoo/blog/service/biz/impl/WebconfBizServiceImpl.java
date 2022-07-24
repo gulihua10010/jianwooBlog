@@ -2,7 +2,7 @@ package cn.jianwoo.blog.service.biz.impl;
 
 import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.cache.CacheStore;
-import cn.jianwoo.blog.constants.CacaheKeyConstants;
+import cn.jianwoo.blog.constants.CacheKeyConstants;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dao.base.WebconfTransDao;
 import cn.jianwoo.blog.dao.biz.WebconfBizDao;
@@ -171,7 +171,7 @@ public class WebconfBizServiceImpl implements WebconfBizService {
                     if (null == o.getValue()) {
                         o.setValue(Constants.BLANK);
                     }
-                    String cacheKey = MessageFormat.format(CacaheKeyConstants.WEBCONF_KEY, webconf.getKey());
+                    String cacheKey = MessageFormat.format(CacheKeyConstants.WEBCONF_KEY, webconf.getKey());
                     cacheStore.put(cacheKey, o.getValue(), 2, TimeUnit.HOURS);
                     registerBizEvent(webconf.getKey(), BizEventOptTypeEnum.UPDATE);
                 } catch (DaoException e) {
@@ -187,7 +187,7 @@ public class WebconfBizServiceImpl implements WebconfBizService {
     @Override
     public String queryWebconfByKey(String key) throws JwBlogException {
         if (StringUtils.isBlank(key)) return null;
-        String cacheKey = MessageFormat.format(CacaheKeyConstants.WEBCONF_KEY, key);
+        String cacheKey = MessageFormat.format(CacheKeyConstants.WEBCONF_KEY, key);
         if (cacheStore.hasKey(cacheKey)) {
             //理论上永远不会为null，因为key存在，且value不能为null
             return  (String) cacheStore.get(cacheKey).orElse(null);
@@ -214,7 +214,7 @@ public class WebconfBizServiceImpl implements WebconfBizService {
     public Map<String, String> queryWebconfByType(String cfgType) throws JwBlogException {
         Map<String, String> confMap = new HashMap<>();
         if (StringUtils.isBlank(cfgType)) return confMap;
-        String cacheKey = MessageFormat.format(CacaheKeyConstants.WEBCONF_TYPE, cfgType);
+        String cacheKey = MessageFormat.format(CacheKeyConstants.WEBCONF_TYPE, cfgType);
         if (cacheStore.hasKey(cacheKey)) {
             //理论上永远不会为null，因为key存在，且value不能为null
             return  (Map<String, String>) cacheStore.get(cacheKey).orElse(confMap);

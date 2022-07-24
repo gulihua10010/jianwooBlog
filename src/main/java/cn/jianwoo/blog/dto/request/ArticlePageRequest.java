@@ -1,7 +1,6 @@
 package cn.jianwoo.blog.dto.request;
 
 import cn.jianwoo.blog.base.BasePageRequestDto;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -16,7 +15,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@AllArgsConstructor
 public class ArticlePageRequest extends BasePageRequestDto {
     private static final long serialVersionUID = 5162232950590602831L;
     /**
@@ -27,20 +25,47 @@ public class ArticlePageRequest extends BasePageRequestDto {
      * 文章内容
      */
     private String text;
+
+    /**
+     * 关键词
+     */
+    private String keywords;
     /**
      * 文章状态(00:草稿, 90:已发布, 91:回收站 )
      */
     private String status;
+    /**
+     * 发布时间(yyyy-MM-dd)
+     */
+    private String publishDate;
 
     /**
-     * 标签
+     * 标签集合
      */
     private List<Integer> tags;
 
     /**
-     * 类型
+     * 标签
      */
-    private Integer category;
+    private Integer tag;
+
+    /**
+     * 类型1
+     */
+    private Integer category1;
+    /**
+     * 类型2
+     */
+    private Integer category2;
+
+    /**
+     * 发布时间的开始时间
+     */
+    private String publishDateStart;
+    /**
+     * 发布时间的结束时间
+     */
+    private String publishDateEnd;
 
 
 }

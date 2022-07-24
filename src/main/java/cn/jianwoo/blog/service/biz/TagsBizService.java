@@ -87,5 +87,13 @@ public interface TagsBizService {
      */
     TagsBO queryTagsByOid(String oid) throws JwBlogException;
 
+    /**
+     * 查询所有标签
+     * @param currentIp 当前IP地址
+     * @return
+     * @author gulihua
+     */
+    List<TagsBO> queryMainAllTags(String currentIp) throws JwBlogException;
+
 
 }

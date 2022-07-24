@@ -7,7 +7,7 @@ public enum ArticleDelStatusEnum {
      */
     NOT_REMOVE("00"),
     /**
-     * 已删除(回收站)
+     * 已删除(回收站:STATUS=91 / 删除:STATUS=99)
      */
     REMOVE("91"),
 

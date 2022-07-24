@@ -1,21 +1,25 @@
 package cn.jianwoo.blog.controller.admin.api;
 
+import cn.jianwoo.blog.annotation.IpLimit;
 import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.cache.CacheStore;
 import cn.jianwoo.blog.config.GeetestConfig;
 import cn.jianwoo.blog.config.apiversion.ApiVersion;
 import cn.jianwoo.blog.config.router.admin.PassportApiUrlConfig;
-import cn.jianwoo.blog.constants.CacaheKeyConstants;
+import cn.jianwoo.blog.constants.CacheKeyConstants;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.constants.WebConfDataConfig;
+import cn.jianwoo.blog.dto.request.CaptchaCfgRequest;
 import cn.jianwoo.blog.dto.request.EmailSendRequest;
 import cn.jianwoo.blog.dto.request.ForgetPasswordRequest;
 import cn.jianwoo.blog.dto.request.UserRequest;
+import cn.jianwoo.blog.dto.response.CaptchaCfgResponse;
 import cn.jianwoo.blog.dto.response.CaptchaTokenResponse;
 import cn.jianwoo.blog.dto.response.ForgetPwdResponse;
 import cn.jianwoo.blog.dto.response.GeetestResponse;
+import cn.jianwoo.blog.enums.CaptchaTypeEnum;
 import cn.jianwoo.blog.enums.GtCaptchaEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.security.token.AuthToken;
@@ -92,8 +96,8 @@ public class PassportApiController extends BaseController {
 //        request.getSession().setAttribute(gtSdk.gtServerStatusSessionKey, isGtServiceSucc);
 //        //将userid设置到session中
 //        request.getSession().setAttribute("userid", userid);
-            String statusKey = MessageFormat.format(CacaheKeyConstants.GT_SERVER_STATUS, guid);
-            String userKey = MessageFormat.format(CacaheKeyConstants.GT_SERVER_USER, guid);
+            String statusKey = MessageFormat.format(CacheKeyConstants.GT_SERVER_STATUS, guid);
+            String userKey = MessageFormat.format(CacheKeyConstants.GT_SERVER_USER, guid);
             cacheStore.put(statusKey, isGtServiceSucc ? Constants.YES : Constants.NO);
             cacheStore.put(userKey, userKey);
             GeetestResponse resStr = gtSdk.getResponse();
@@ -134,8 +138,8 @@ public class PassportApiController extends BaseController {
 
             //从session中获取gt-server状态
 //        Boolean isGtServiceSucc = (Boolean) request.getSession().getAttribute(gtSdk.gtServerStatusSessionKey);
-            String statusKey = MessageFormat.format(CacaheKeyConstants.GT_SERVER_STATUS, guid);
-            String userKey = MessageFormat.format(CacaheKeyConstants.GT_SERVER_USER, guid);
+            String statusKey = MessageFormat.format(CacheKeyConstants.GT_SERVER_STATUS, guid);
+            String userKey = MessageFormat.format(CacheKeyConstants.GT_SERVER_USER, guid);
             String isGtServiceSucc = cacheStore.get(statusKey).orElse(null);
             String userid = cacheStore.get(userKey).orElse(null);
 
@@ -170,7 +174,7 @@ public class PassportApiController extends BaseController {
                 String token = JwUtil.randomUUIDWithoutDash();
                 String cacheKey = MessageFormat.format(GtCaptchaEnum.getKey(type), guid);
                 cacheStore.put(cacheKey, token, 10, TimeUnit.MINUTES);
-    //            request.getSession().setAttribute(LOGIN_CAPTCHA_AUTH, token);
+                //            request.getSession().setAttribute(LOGIN_CAPTCHA_AUTH, token);
                 return super.responseToJSONString(new CaptchaTokenResponse(token));
             } else {
                 return super.responseToJSONString(BaseResponseDto.SYSTEM_ERROR);
@@ -207,7 +211,7 @@ public class PassportApiController extends BaseController {
             String isNeed = webconfBizService.queryWebconfByKey(WebConfDataConfig.IS_LOGIN_NEED_CAPTCHA);
 
             if (Constants.TRUE.equals(isNeed)) {
-                String tokenStore = cacheStore.get(CacaheKeyConstants.LOGIN_CAPTCHA_AUTH).orElse(null);
+                String tokenStore = cacheStore.get(CacheKeyConstants.LOGIN_CAPTCHA_AUTH).orElse(null);
 //                String tokenSession = (String) request.getSession().getAttribute(LOGIN_CAPTCHA_AUTH);
                 String tokenSession = requestParam.getAccess_token();
                 boolean isCaptcha = null != tokenSession && tokenSession.equals(tokenStore);
@@ -220,8 +224,8 @@ public class PassportApiController extends BaseController {
 
             AuthToken authToken = adminBizService.authLogin(requestParam.getUsername(), requestParam.getClientIp());
             if (Constants.TRUE.equals(isNeed)) {
-                cacheStore.delete(CacaheKeyConstants.LOGIN_CAPTCHA_AUTH);
-                request.getSession().removeAttribute(CacaheKeyConstants.LOGIN_CAPTCHA_AUTH);
+                cacheStore.delete(CacheKeyConstants.LOGIN_CAPTCHA_AUTH);
+                request.getSession().removeAttribute(CacheKeyConstants.LOGIN_CAPTCHA_AUTH);
             }
 
             request.getSession().setAttribute(LOGIN_SESSION, authToken.getAccessToken());
@@ -289,7 +293,7 @@ public class PassportApiController extends BaseController {
             if (Constants.TRUE.equals(isNeed)) {
                 String accessToken = request.getCaptcha_token();
                 String guid = request.getGuid();
-                String cacheKey = MessageFormat.format(CacaheKeyConstants.FORGET_CAPTCHA_AUTH, guid);
+                String cacheKey = MessageFormat.format(CacheKeyConstants.FORGET_CAPTCHA_AUTH, guid);
                 String tokenStore = cacheStore.get(cacheKey).orElse(null);
                 boolean isCaptcha = null != accessToken && accessToken.equals(tokenStore);
                 if (!isCaptcha) {
@@ -342,6 +346,42 @@ public class PassportApiController extends BaseController {
             return super.exceptionToString(e);
         }
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
+    }
+
+
+    /**
+     * 查询网站是否需要验证码<br/>
+     * url:/api/passport/fetch/captcha<br/>
+     *
+     * @param param JSON 参数({@link CaptchaCfgRequest})<br/>
+     *              type
+     * @return 返回响应 {@link CaptchaCfgResponse}<br/>
+     * status<br/>
+     * flag<br/>
+     * @author gulihua
+     */
+    @PostMapping(PassportApiUrlConfig.URL_FETCH_CAPTCHA)
+    @ApiVersion()
+    @IpLimit(key = "getWebConfig")
+    public String getWebConfig(@RequestBody String param) {
+        CaptchaCfgResponse response = CaptchaCfgResponse.getInstance();
+        try {
+            super.printRequestParams(param);
+            CaptchaCfgRequest request = this.convertParam(param, CaptchaCfgRequest.class);
+            BizValidation.paramValidate(request.getType(), "type", "验证码类型不能为空!");
+            if (CaptchaTypeEnum.LOGIN.getValue().equals(request.getType())) {
+                response.setFlag(webconfBizService.queryWebconfByKey(WebConfDataConfig.IS_LOGIN_NEED_CAPTCHA));
+            } else if (CaptchaTypeEnum.FORGET_PASSWORD.getValue().equals(request.getType())) {
+                response.setFlag(webconfBizService.queryWebconfByKey(WebConfDataConfig.IS_FORGET_NEED_CAPTCHA));
+            }
+
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+
+        }
+
+        return super.responseToJSONString(response);
+
     }
 
 

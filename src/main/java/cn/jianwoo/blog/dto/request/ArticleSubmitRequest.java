@@ -1,7 +1,6 @@
 package cn.jianwoo.blog.dto.request;
 
 import cn.jianwoo.blog.base.BaseRequestDto;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -16,7 +15,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@AllArgsConstructor
 public class ArticleSubmitRequest extends BaseRequestDto {
     private static final long serialVersionUID = 4249657870459225102L;
 
@@ -41,9 +39,9 @@ public class ArticleSubmitRequest extends BaseRequestDto {
     private List<Integer> tagOidList;
 
     /**
-     * 文章类别
+     * 文章类别ID
      */
-    private Integer type;
+    private Integer categoryId;
 
     /**
      * 文章缩略图
@@ -74,4 +72,27 @@ public class ArticleSubmitRequest extends BaseRequestDto {
      * 临时文章oid主键
      */
     private Long tempArtOid;
+
+    /**
+     * 文章状态
+     */
+    private String status;
+
+
+    /**
+     * 是否置顶
+     */
+    private Boolean topPlaceFlag;
+
+
+    /**
+     * 是否原创
+     */
+    private Boolean flagOriginal;
+
+
+    /**
+     * 转载源链接
+     */
+    private String originalUrl;
 }

@@ -4,6 +4,8 @@ import cn.jianwoo.blog.entity.Article;
 import cn.jianwoo.blog.entity.extension.ArticleExt;
 import cn.jianwoo.blog.entity.query.ArticleQuery;
 import cn.jianwoo.blog.exception.DaoException;
+import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.service.bo.ArticleBO;
 
 import java.util.List;
 import java.util.Map;
@@ -109,14 +111,53 @@ public interface ArticleBizDao {
     void doRestoreFromRecycle(Article record) throws DaoException;
 
 
-
     /**
      * 分页获取首页文章列表
      *
-     * @param param 参数
+     * @param param     参数
      * @param isPrivate 是否博主私有ip
      * @return
      * @author gulihua
      */
     List<ArticleExt> queryArticleListMain(ArticleQuery param, boolean isPrivate);
+
+
+    /**
+     * 获取某月的文章列表
+     *
+     * @param param     参数
+     * @param isPrivate 是否博主私有ip
+     * @return
+     * @author gulihua
+     */
+    List<ArticleExt> queryMonthDatePublishList(ArticleQuery param, boolean isPrivate);
+
+    /**
+     * 获取某月的文章数量
+     *
+     * @param param     参数
+     * @param isPrivate 是否博主私有ip
+     * @return
+     * @author gulihua
+     */
+    Integer queryMonthDatePublishCount(ArticleQuery param, boolean isPrivate);
+
+    /**
+     * 根据文章OID获取推荐文章列表
+     *
+     * @param oid 文章oid
+     * @return ArticleExt
+     * @author gulihua
+     */
+    List<ArticleExt> queryRecommendArticleByArtOid(Long oid);
+
+
+    /**
+     * 根据文章类别ID获取推荐文章列表
+     *
+     * @param categoryOid 类别id
+     * @return ArticleExt
+     * @author gulihua
+     */
+    List<ArticleExt> queryRecommendArticleByCategoryOid(Integer categoryOid);
 }

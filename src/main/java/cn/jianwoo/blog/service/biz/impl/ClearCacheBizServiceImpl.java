@@ -1,7 +1,7 @@
 package cn.jianwoo.blog.service.biz.impl;
 
 import cn.jianwoo.blog.cache.CacheStore;
-import cn.jianwoo.blog.constants.CacaheKeyConstants;
+import cn.jianwoo.blog.constants.CacheKeyConstants;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.ClearCacheBizService;
 import cn.jianwoo.blog.service.bo.CacheBO;
@@ -59,7 +59,7 @@ public class ClearCacheBizServiceImpl implements ClearCacheBizService {
         }
         if (isCleanMemory) {
             for (String key : cacheStore.keySet()) {
-                if (!key.startsWith(CacaheKeyConstants.KEY_ADMIN_PREFIX)) {
+                if (!key.startsWith(CacheKeyConstants.KEY_ADMIN_PREFIX)) {
                     cacheStore.delete(key);
                     logger.info("Delete cache key [{}] successfully!", key);
                 }

@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+
 /**
  * @author GuLihua
  * @Description
@@ -38,5 +40,17 @@ public class EmailNotifyServiceImpl implements NotifyMsgService {
         String content = emailTplBizService.doRenderEmailTpl(emailTemplate.getContent(), param.toJSONString());
 
         emailBizService.doSendEmail(recipient, emailTplCode, param.toJSONString(), emailTemplate.getSubject(), content);
+    }
+
+    @Override
+    public void doSend(String emailTplCode, JSONObject param, String... recipient) throws JwBlogException {
+        EmailTemplate emailTemplate = emailTemplateTransDao.queryEmailTplByCode(emailTplCode);
+        if (null == emailTemplate) {
+            log.warn("Email Template is not set for code {}", emailTplCode);
+            return;
+        }
+        String content = emailTplBizService.doRenderEmailTpl(emailTemplate.getContent(), param.toJSONString());
+
+        emailBizService.doSendEmail(Arrays.asList(recipient), emailTplCode, param.toJSONString(), emailTemplate.getSubject(), content);
     }
 }

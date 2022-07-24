@@ -1,0 +1,52 @@
+<title>黑名单列表</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>网站管理</cite></a>
+        <a><cite>黑名单列表</cite></a>
+    </div>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div>
+                    <label class="layui-form-label">IP</label>
+                    <div class="layui-input-inline">
+                        <input autocomplete="off" class="layui-input" name="ip" id="ip" placeholder="请输入"
+                               type="text">
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn search-btn" data-type="reload" lay-filter="black-search"
+                                lay-submit>
+                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <div style="padding-bottom: 10px;">
+                <button class="layui-btn layuiadmin-btn-black" data-type="add">添加黑名单</button>
+                <button class="layui-btn  layui-btn-danger layuiadmin-btn-black" data-type="removeList">批量移出黑名单</button>
+            </div>
+            <table id="black-table" lay-filter="black"></table>
+            <script id="table-content-black" type="text/html">
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="remove"><i
+                        class="layui-icon layui-icon-delete"></i>移除</a>
+            </script>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use('blackIp', layui.factory('blackIp')).use(['admin', 'blackIp'], function () {
+        var $ = layui.jquery
+            , form = layui.form
+            , element = layui.element;
+        element.render();
+        form.render();
+    })
+</script>

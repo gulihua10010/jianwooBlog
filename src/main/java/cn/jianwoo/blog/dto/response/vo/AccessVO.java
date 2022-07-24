@@ -4,7 +4,6 @@ import cn.jianwoo.blog.config.router.admin.CommAdminPageUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.util.DateUtil;
 import cn.jianwoo.blog.util.DomainUtil;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,6 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class AccessVO implements Serializable {
     private static final long serialVersionUID = -173120689091202491L;
     private static final String TEMPLATE = "来自<span class=\"dynamic-ip\">%s (ip:%s)</span>的网友在 " +

@@ -15,11 +15,11 @@ public class EmailBizException extends JwBlogException {
     public static final EmailBizException NOT_EXIST_EXCEPTION_CN = new EmailBizException(ExceptionConstants.BIZ_NOT_EXIST,
             "邮件[%s]不存在!");
     public static final EmailBizException CREATE_FAILED_EXCEPTION = new EmailBizException(
-            ExceptionConstants.BIZ_CREATE_FAIL, "The email template[%s] creation is failed.");
+            ExceptionConstants.BIZ_CREATE_FAIL, "The email[%s] creation is failed.");
     public static final EmailBizException MODIFY_FAILED_EXCEPTION = new EmailBizException(
-            ExceptionConstants.BIZ_MODIFY_FAIL, "The email template[%s] modification is failed.");
+            ExceptionConstants.BIZ_MODIFY_FAIL, "The email[%s] modification is failed.");
     public static final EmailBizException DELETE_FAILED_EXCEPTION = new EmailBizException(
-            ExceptionConstants.BIZ_DELETE_FAIL, "The email template[%s] deletion is failed.");
+            ExceptionConstants.BIZ_DELETE_FAIL, "The email[%s] deletion is failed.");
     private static final long serialVersionUID = -4477787493913372810L;
     private final Logger logger = LoggerFactory.getLogger(EmailBizException.class);
 

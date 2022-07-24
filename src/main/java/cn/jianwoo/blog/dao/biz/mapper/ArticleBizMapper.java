@@ -105,9 +105,51 @@ public interface ArticleBizMapper {
     /**
      * 分页获取首页文章列表
      *
-     * @param param 参数
+     * @param param     参数
+     * @param isPrivate 是否博主私有ip
      * @return
      * @author gulihua
      */
     List<ArticleExt> selectArticleListMain(@Param("param") ArticleQuery param, @Param("isPrivate") boolean isPrivate);
+
+    /**
+     * 获取某月的文章列表
+     *
+     * @param param     参数
+     * @param isPrivate 是否博主私有ip
+     * @return
+     * @author gulihua
+     */
+    List<ArticleExt> selectMonthDatePublishList(@Param("param") ArticleQuery param, @Param("isPrivate") boolean isPrivate);
+
+
+    /**
+     * 获取某月的文章数量
+     *
+     * @param param     参数
+     * @param isPrivate 是否博主私有ip
+     * @return
+     * @author gulihua
+     */
+    Integer selectMonthDatePublishCount(@Param("param") ArticleQuery param, @Param("isPrivate") boolean isPrivate);
+
+
+    /**
+     * 根据文章OID获取推荐文章列表
+     *
+     * @param oid 文章oid
+     * @return
+     * @author gulihua
+     */
+    List<ArticleExt> selectRecommendArticleByArtOid(Long oid);
+
+    /**
+     * 根据文章类别ID获取推荐文章列表
+     *
+     * @param categoryOid 类别id
+     * @return
+     * @author gulihua
+     */
+    List<ArticleExt> selectRecommendArticleByCategoryOid(Integer categoryOid);
+
 }

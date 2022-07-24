@@ -157,7 +157,7 @@ public class EmailApiController extends BaseController {
      * url:/api/admin/email/resend<br/>
      *
      * @param param JSON 参数({@link EntityOidRequest})<br/>
-     *              oid<br/>
+     *              entityOid<br/>
      * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * @author gulihua
@@ -183,8 +183,8 @@ public class EmailApiController extends BaseController {
      * 邮件重发<br/>
      * url:/api/admin/email/resend/list<br/>
      *
-     * @param param JSON 参数({@link EntityOidRequest})<br/>
-     *              oid<br/>
+     * @param param JSON 参数({@link EntityOidListRequest})<br/>
+     *              entityOidList<br/>
      * @return 返回响应 {@link BaseResponseDto}<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
      * @author gulihua

@@ -1,6 +1,5 @@
 package cn.jianwoo.blog.service.bo;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,6 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class MenuValidateBO implements Serializable {
     private static final long serialVersionUID = 3728070239002639495L;
     /**

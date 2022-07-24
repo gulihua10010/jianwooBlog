@@ -40,6 +40,7 @@ public class UserBaseServiceImpl implements UserBaseService {
 
     @Autowired
     private TransactionUtils transactionUtils;
+
     @Override
     public UserProfile queryUserByUsername(String username) {
         return userProfileTransDao.queryUserProfileByUsername(username);
@@ -83,7 +84,7 @@ public class UserBaseServiceImpl implements UserBaseService {
     @Transactional(rollbackFor = Exception.class)
     public void doUpdateUser(UserProfile userProfile) throws JwBlogException {
         Date now = DateUtil.getNow();
-        userProfile.setCreateTime(now);
+//        userProfile.setCreateTime(now);
         userProfile.setUpdateTime(now);
         try {
             userProfileTransDao.doUpdateByPrimaryKeySelective(userProfile);
@@ -152,5 +153,11 @@ public class UserBaseServiceImpl implements UserBaseService {
                 .with(UserProfile::setUserEmail, userTmpBO.getEmail())
                 .build();
         doUpdateUser(newUserProfile);
+    }
+
+    @Override
+    public UserProfile queryUserByUserId(String userId) {
+        return userProfileTransDao.queryUserProfileByUserId(userId);
+
     }
 }

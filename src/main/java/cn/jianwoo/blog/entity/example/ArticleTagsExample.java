@@ -305,6 +305,146 @@ public class ArticleTagsExample {
             return (Criteria) this;
         }
 
+        public Criteria andArtFlagActivityIsNull() {
+            addCriterion("ART_FLAG_ACTIVITY is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagActivityIsNotNull() {
+            addCriterion("ART_FLAG_ACTIVITY is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagActivityEqualTo(Boolean value) {
+            addCriterion("ART_FLAG_ACTIVITY =", value, "artFlagActivity");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagActivityNotEqualTo(Boolean value) {
+            addCriterion("ART_FLAG_ACTIVITY <>", value, "artFlagActivity");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagActivityGreaterThan(Boolean value) {
+            addCriterion("ART_FLAG_ACTIVITY >", value, "artFlagActivity");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagActivityGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("ART_FLAG_ACTIVITY >=", value, "artFlagActivity");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagActivityLessThan(Boolean value) {
+            addCriterion("ART_FLAG_ACTIVITY <", value, "artFlagActivity");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagActivityLessThanOrEqualTo(Boolean value) {
+            addCriterion("ART_FLAG_ACTIVITY <=", value, "artFlagActivity");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagActivityLike(Boolean value) {
+            addCriterion("ART_FLAG_ACTIVITY like", value, "artFlagActivity");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagActivityNotLike(Boolean value) {
+            addCriterion("ART_FLAG_ACTIVITY not like", value, "artFlagActivity");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagActivityIn(List<Boolean> values) {
+            addCriterion("ART_FLAG_ACTIVITY in", values, "artFlagActivity");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagActivityNotIn(List<Boolean> values) {
+            addCriterion("ART_FLAG_ACTIVITY not in", values, "artFlagActivity");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagActivityBetween(Boolean value1, Boolean value2) {
+            addCriterion("ART_FLAG_ACTIVITY between", value1, value2, "artFlagActivity");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagActivityNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("ART_FLAG_ACTIVITY not between", value1, value2, "artFlagActivity");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagPrivateIsNull() {
+            addCriterion("ART_FLAG_PRIVATE is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagPrivateIsNotNull() {
+            addCriterion("ART_FLAG_PRIVATE is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagPrivateEqualTo(Boolean value) {
+            addCriterion("ART_FLAG_PRIVATE =", value, "artFlagPrivate");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagPrivateNotEqualTo(Boolean value) {
+            addCriterion("ART_FLAG_PRIVATE <>", value, "artFlagPrivate");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagPrivateGreaterThan(Boolean value) {
+            addCriterion("ART_FLAG_PRIVATE >", value, "artFlagPrivate");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagPrivateGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("ART_FLAG_PRIVATE >=", value, "artFlagPrivate");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagPrivateLessThan(Boolean value) {
+            addCriterion("ART_FLAG_PRIVATE <", value, "artFlagPrivate");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagPrivateLessThanOrEqualTo(Boolean value) {
+            addCriterion("ART_FLAG_PRIVATE <=", value, "artFlagPrivate");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagPrivateLike(Boolean value) {
+            addCriterion("ART_FLAG_PRIVATE like", value, "artFlagPrivate");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagPrivateNotLike(Boolean value) {
+            addCriterion("ART_FLAG_PRIVATE not like", value, "artFlagPrivate");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagPrivateIn(List<Boolean> values) {
+            addCriterion("ART_FLAG_PRIVATE in", values, "artFlagPrivate");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagPrivateNotIn(List<Boolean> values) {
+            addCriterion("ART_FLAG_PRIVATE not in", values, "artFlagPrivate");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagPrivateBetween(Boolean value1, Boolean value2) {
+            addCriterion("ART_FLAG_PRIVATE between", value1, value2, "artFlagPrivate");
+            return (Criteria) this;
+        }
+
+        public Criteria andArtFlagPrivateNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("ART_FLAG_PRIVATE not between", value1, value2, "artFlagPrivate");
+            return (Criteria) this;
+        }
+
         public Criteria andCreateTimeIsNull() {
             addCriterion("CREATE_TIME is null");
             return (Criteria) this;

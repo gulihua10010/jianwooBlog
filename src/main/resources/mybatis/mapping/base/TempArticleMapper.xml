@@ -5,10 +5,13 @@
     <id column="OID" jdbcType="BIGINT" property="oid" />
     <result column="AUTHOR" jdbcType="VARCHAR" property="author" />
     <result column="TITLE" jdbcType="VARCHAR" property="title" />
-    <result column="MENU_OID" jdbcType="INTEGER" property="menuOid" />
+    <result column="CATEGORY_ID" jdbcType="INTEGER" property="categoryId" />
     <result column="IS_COMMENT" jdbcType="CHAR" property="isComment" />
+    <result column="FLAG_ORIGINAL" jdbcType="VARCHAR" property="flagOriginal" />
+    <result column="ORIGINAL_URL" jdbcType="VARCHAR" property="originalUrl" />
     <result column="IMG_SRC" jdbcType="VARCHAR" property="imgSrc" />
     <result column="ACCESS_TYPE" jdbcType="VARCHAR" property="accessType" />
+    <result column="TOP_PLACE_STATUS" jdbcType="VARCHAR" property="topPlaceStatus" />
     <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
     <result column="OLD_ARTICLE_OID" jdbcType="BIGINT" property="oldArticleOid" />
     <result column="TAGS" jdbcType="VARCHAR" property="tags" />
@@ -80,8 +83,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    OID, AUTHOR, TITLE, MENU_OID, IS_COMMENT, IMG_SRC, ACCESS_TYPE, `PASSWORD`, OLD_ARTICLE_OID, 
-    TAGS, PAGE_TYPE, `STATUS`, RESTORE_ARTICLE_OID, CREATE_TIME, UPDATE_TIME
+    OID, AUTHOR, TITLE, CATEGORY_ID, IS_COMMENT, FLAG_ORIGINAL, ORIGINAL_URL, IMG_SRC, 
+    ACCESS_TYPE, TOP_PLACE_STATUS, `PASSWORD`, OLD_ARTICLE_OID, TAGS, PAGE_TYPE, `STATUS`, 
+    RESTORE_ARTICLE_OID, CREATE_TIME, UPDATE_TIME
   </sql>
   <sql id="Blob_Column_List">
     CONTENT
@@ -94,7 +98,7 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from temp_article
+    from TEMP_ARTICLE
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -108,7 +112,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from temp_article
+    from TEMP_ARTICLE
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -122,35 +126,37 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from temp_article
+    from TEMP_ARTICLE
     where OID = #{oid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from temp_article
+    delete from TEMP_ARTICLE
     where OID = #{oid,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="cn.jianwoo.blog.entity.example.TempArticleExample">
-    delete from temp_article
+    delete from TEMP_ARTICLE
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.TempArticle" useGeneratedKeys="true">
-    insert into temp_article (AUTHOR, TITLE, MENU_OID, 
-      IS_COMMENT, IMG_SRC, ACCESS_TYPE, 
+    insert into TEMP_ARTICLE (AUTHOR, TITLE, CATEGORY_ID, 
+      IS_COMMENT, FLAG_ORIGINAL, ORIGINAL_URL, 
+      IMG_SRC, ACCESS_TYPE, TOP_PLACE_STATUS, 
       `PASSWORD`, OLD_ARTICLE_OID, TAGS, 
       PAGE_TYPE, `STATUS`, RESTORE_ARTICLE_OID, 
       CREATE_TIME, UPDATE_TIME, CONTENT
       )
-    values (#{author,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{menuOid,jdbcType=INTEGER}, 
-      #{isComment,jdbcType=CHAR}, #{imgSrc,jdbcType=VARCHAR}, #{accessType,jdbcType=VARCHAR}, 
+    values (#{author,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{categoryId,jdbcType=INTEGER}, 
+      #{isComment,jdbcType=CHAR}, #{flagOriginal,jdbcType=VARCHAR}, #{originalUrl,jdbcType=VARCHAR}, 
+      #{imgSrc,jdbcType=VARCHAR}, #{accessType,jdbcType=VARCHAR}, #{topPlaceStatus,jdbcType=VARCHAR}, 
       #{password,jdbcType=VARCHAR}, #{oldArticleOid,jdbcType=BIGINT}, #{tags,jdbcType=VARCHAR}, 
       #{pageType,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{restoreArticleOid,jdbcType=BIGINT}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR}
       )
   </insert>
   <insert id="insertSelective" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.TempArticle" useGeneratedKeys="true">
-    insert into temp_article
+    insert into TEMP_ARTICLE
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="author != null">
         AUTHOR,
@@ -158,17 +164,26 @@
       <if test="title != null">
         TITLE,
       </if>
-      <if test="menuOid != null">
-        MENU_OID,
+      <if test="categoryId != null">
+        CATEGORY_ID,
       </if>
       <if test="isComment != null">
         IS_COMMENT,
+      </if>
+      <if test="flagOriginal != null">
+        FLAG_ORIGINAL,
+      </if>
+      <if test="originalUrl != null">
+        ORIGINAL_URL,
       </if>
       <if test="imgSrc != null">
         IMG_SRC,
       </if>
       <if test="accessType != null">
         ACCESS_TYPE,
+      </if>
+      <if test="topPlaceStatus != null">
+        TOP_PLACE_STATUS,
       </if>
       <if test="password != null">
         `PASSWORD`,
@@ -205,17 +220,26 @@
       <if test="title != null">
         #{title,jdbcType=VARCHAR},
       </if>
-      <if test="menuOid != null">
-        #{menuOid,jdbcType=INTEGER},
+      <if test="categoryId != null">
+        #{categoryId,jdbcType=INTEGER},
       </if>
       <if test="isComment != null">
         #{isComment,jdbcType=CHAR},
+      </if>
+      <if test="flagOriginal != null">
+        #{flagOriginal,jdbcType=VARCHAR},
+      </if>
+      <if test="originalUrl != null">
+        #{originalUrl,jdbcType=VARCHAR},
       </if>
       <if test="imgSrc != null">
         #{imgSrc,jdbcType=VARCHAR},
       </if>
       <if test="accessType != null">
         #{accessType,jdbcType=VARCHAR},
+      </if>
+      <if test="topPlaceStatus != null">
+        #{topPlaceStatus,jdbcType=VARCHAR},
       </if>
       <if test="password != null">
         #{password,jdbcType=VARCHAR},
@@ -247,13 +271,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="cn.jianwoo.blog.entity.example.TempArticleExample" resultType="java.lang.Long">
-    select count(*) from temp_article
+    select count(*) from TEMP_ARTICLE
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update temp_article
+    update TEMP_ARTICLE
     <set>
       <if test="record.oid != null">
         OID = #{record.oid,jdbcType=BIGINT},
@@ -264,17 +288,26 @@
       <if test="record.title != null">
         TITLE = #{record.title,jdbcType=VARCHAR},
       </if>
-      <if test="record.menuOid != null">
-        MENU_OID = #{record.menuOid,jdbcType=INTEGER},
+      <if test="record.categoryId != null">
+        CATEGORY_ID = #{record.categoryId,jdbcType=INTEGER},
       </if>
       <if test="record.isComment != null">
         IS_COMMENT = #{record.isComment,jdbcType=CHAR},
+      </if>
+      <if test="record.flagOriginal != null">
+        FLAG_ORIGINAL = #{record.flagOriginal,jdbcType=VARCHAR},
+      </if>
+      <if test="record.originalUrl != null">
+        ORIGINAL_URL = #{record.originalUrl,jdbcType=VARCHAR},
       </if>
       <if test="record.imgSrc != null">
         IMG_SRC = #{record.imgSrc,jdbcType=VARCHAR},
       </if>
       <if test="record.accessType != null">
         ACCESS_TYPE = #{record.accessType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.topPlaceStatus != null">
+        TOP_PLACE_STATUS = #{record.topPlaceStatus,jdbcType=VARCHAR},
       </if>
       <if test="record.password != null">
         `PASSWORD` = #{record.password,jdbcType=VARCHAR},
@@ -309,14 +342,17 @@
     </if>
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
-    update temp_article
+    update TEMP_ARTICLE
     set OID = #{record.oid,jdbcType=BIGINT},
       AUTHOR = #{record.author,jdbcType=VARCHAR},
       TITLE = #{record.title,jdbcType=VARCHAR},
-      MENU_OID = #{record.menuOid,jdbcType=INTEGER},
+      CATEGORY_ID = #{record.categoryId,jdbcType=INTEGER},
       IS_COMMENT = #{record.isComment,jdbcType=CHAR},
+      FLAG_ORIGINAL = #{record.flagOriginal,jdbcType=VARCHAR},
+      ORIGINAL_URL = #{record.originalUrl,jdbcType=VARCHAR},
       IMG_SRC = #{record.imgSrc,jdbcType=VARCHAR},
       ACCESS_TYPE = #{record.accessType,jdbcType=VARCHAR},
+      TOP_PLACE_STATUS = #{record.topPlaceStatus,jdbcType=VARCHAR},
       `PASSWORD` = #{record.password,jdbcType=VARCHAR},
       OLD_ARTICLE_OID = #{record.oldArticleOid,jdbcType=BIGINT},
       TAGS = #{record.tags,jdbcType=VARCHAR},
@@ -331,14 +367,17 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update temp_article
+    update TEMP_ARTICLE
     set OID = #{record.oid,jdbcType=BIGINT},
       AUTHOR = #{record.author,jdbcType=VARCHAR},
       TITLE = #{record.title,jdbcType=VARCHAR},
-      MENU_OID = #{record.menuOid,jdbcType=INTEGER},
+      CATEGORY_ID = #{record.categoryId,jdbcType=INTEGER},
       IS_COMMENT = #{record.isComment,jdbcType=CHAR},
+      FLAG_ORIGINAL = #{record.flagOriginal,jdbcType=VARCHAR},
+      ORIGINAL_URL = #{record.originalUrl,jdbcType=VARCHAR},
       IMG_SRC = #{record.imgSrc,jdbcType=VARCHAR},
       ACCESS_TYPE = #{record.accessType,jdbcType=VARCHAR},
+      TOP_PLACE_STATUS = #{record.topPlaceStatus,jdbcType=VARCHAR},
       `PASSWORD` = #{record.password,jdbcType=VARCHAR},
       OLD_ARTICLE_OID = #{record.oldArticleOid,jdbcType=BIGINT},
       TAGS = #{record.tags,jdbcType=VARCHAR},
@@ -352,7 +391,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="cn.jianwoo.blog.entity.TempArticle">
-    update temp_article
+    update TEMP_ARTICLE
     <set>
       <if test="author != null">
         AUTHOR = #{author,jdbcType=VARCHAR},
@@ -360,17 +399,26 @@
       <if test="title != null">
         TITLE = #{title,jdbcType=VARCHAR},
       </if>
-      <if test="menuOid != null">
-        MENU_OID = #{menuOid,jdbcType=INTEGER},
+      <if test="categoryId != null">
+        CATEGORY_ID = #{categoryId,jdbcType=INTEGER},
       </if>
       <if test="isComment != null">
         IS_COMMENT = #{isComment,jdbcType=CHAR},
+      </if>
+      <if test="flagOriginal != null">
+        FLAG_ORIGINAL = #{flagOriginal,jdbcType=VARCHAR},
+      </if>
+      <if test="originalUrl != null">
+        ORIGINAL_URL = #{originalUrl,jdbcType=VARCHAR},
       </if>
       <if test="imgSrc != null">
         IMG_SRC = #{imgSrc,jdbcType=VARCHAR},
       </if>
       <if test="accessType != null">
         ACCESS_TYPE = #{accessType,jdbcType=VARCHAR},
+      </if>
+      <if test="topPlaceStatus != null">
+        TOP_PLACE_STATUS = #{topPlaceStatus,jdbcType=VARCHAR},
       </if>
       <if test="password != null">
         `PASSWORD` = #{password,jdbcType=VARCHAR},
@@ -403,13 +451,16 @@
     where OID = #{oid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.jianwoo.blog.entity.TempArticle">
-    update temp_article
+    update TEMP_ARTICLE
     set AUTHOR = #{author,jdbcType=VARCHAR},
       TITLE = #{title,jdbcType=VARCHAR},
-      MENU_OID = #{menuOid,jdbcType=INTEGER},
+      CATEGORY_ID = #{categoryId,jdbcType=INTEGER},
       IS_COMMENT = #{isComment,jdbcType=CHAR},
+      FLAG_ORIGINAL = #{flagOriginal,jdbcType=VARCHAR},
+      ORIGINAL_URL = #{originalUrl,jdbcType=VARCHAR},
       IMG_SRC = #{imgSrc,jdbcType=VARCHAR},
       ACCESS_TYPE = #{accessType,jdbcType=VARCHAR},
+      TOP_PLACE_STATUS = #{topPlaceStatus,jdbcType=VARCHAR},
       `PASSWORD` = #{password,jdbcType=VARCHAR},
       OLD_ARTICLE_OID = #{oldArticleOid,jdbcType=BIGINT},
       TAGS = #{tags,jdbcType=VARCHAR},
@@ -422,13 +473,16 @@
     where OID = #{oid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.jianwoo.blog.entity.TempArticle">
-    update temp_article
+    update TEMP_ARTICLE
     set AUTHOR = #{author,jdbcType=VARCHAR},
       TITLE = #{title,jdbcType=VARCHAR},
-      MENU_OID = #{menuOid,jdbcType=INTEGER},
+      CATEGORY_ID = #{categoryId,jdbcType=INTEGER},
       IS_COMMENT = #{isComment,jdbcType=CHAR},
+      FLAG_ORIGINAL = #{flagOriginal,jdbcType=VARCHAR},
+      ORIGINAL_URL = #{originalUrl,jdbcType=VARCHAR},
       IMG_SRC = #{imgSrc,jdbcType=VARCHAR},
       ACCESS_TYPE = #{accessType,jdbcType=VARCHAR},
+      TOP_PLACE_STATUS = #{topPlaceStatus,jdbcType=VARCHAR},
       `PASSWORD` = #{password,jdbcType=VARCHAR},
       OLD_ARTICLE_OID = #{oldArticleOid,jdbcType=BIGINT},
       TAGS = #{tags,jdbcType=VARCHAR},

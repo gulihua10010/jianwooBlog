@@ -16,7 +16,9 @@ public class Article implements Serializable {
 
     private Date modifiedTime;
 
-    private Integer menuId;
+    private Integer categoryId;
+
+    private String categoryName;
 
     private Long readCount;
 
@@ -24,11 +26,19 @@ public class Article implements Serializable {
 
     private Boolean isComment;
 
+    private Boolean flagOriginal;
+
+    private String originalUrl;
+
     private String imgSrc;
 
     private String accessType;
 
+    private String topPlaceStatus;
+
     private Long commentCount;
+
+    private Long totalCommentFloors;
 
     private String status;
 
@@ -92,12 +102,20 @@ public class Article implements Serializable {
         this.modifiedTime = modifiedTime;
     }
 
-    public Integer getMenuId() {
-        return menuId;
+    public Integer getCategoryId() {
+        return categoryId;
     }
 
-    public void setMenuId(Integer menuId) {
-        this.menuId = menuId;
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName == null ? null : categoryName.trim();
     }
 
     public Long getReadCount() {
@@ -124,6 +142,22 @@ public class Article implements Serializable {
         this.isComment = isComment;
     }
 
+    public Boolean getFlagOriginal() {
+        return flagOriginal;
+    }
+
+    public void setFlagOriginal(Boolean flagOriginal) {
+        this.flagOriginal = flagOriginal;
+    }
+
+    public String getOriginalUrl() {
+        return originalUrl;
+    }
+
+    public void setOriginalUrl(String originalUrl) {
+        this.originalUrl = originalUrl == null ? null : originalUrl.trim();
+    }
+
     public String getImgSrc() {
         return imgSrc;
     }
@@ -140,12 +174,28 @@ public class Article implements Serializable {
         this.accessType = accessType == null ? null : accessType.trim();
     }
 
+    public String getTopPlaceStatus() {
+        return topPlaceStatus;
+    }
+
+    public void setTopPlaceStatus(String topPlaceStatus) {
+        this.topPlaceStatus = topPlaceStatus == null ? null : topPlaceStatus.trim();
+    }
+
     public Long getCommentCount() {
         return commentCount;
     }
 
     public void setCommentCount(Long commentCount) {
         this.commentCount = commentCount;
+    }
+
+    public Long getTotalCommentFloors() {
+        return totalCommentFloors;
+    }
+
+    public void setTotalCommentFloors(Long totalCommentFloors) {
+        this.totalCommentFloors = totalCommentFloors;
     }
 
     public String getStatus() {
@@ -208,13 +258,18 @@ public class Article implements Serializable {
         sb.append(", pushBy=").append(pushBy);
         sb.append(", title=").append(title);
         sb.append(", modifiedTime=").append(modifiedTime);
-        sb.append(", menuId=").append(menuId);
+        sb.append(", categoryId=").append(categoryId);
+        sb.append(", categoryName=").append(categoryName);
         sb.append(", readCount=").append(readCount);
         sb.append(", praiseCount=").append(praiseCount);
         sb.append(", isComment=").append(isComment);
+        sb.append(", flagOriginal=").append(flagOriginal);
+        sb.append(", originalUrl=").append(originalUrl);
         sb.append(", imgSrc=").append(imgSrc);
         sb.append(", accessType=").append(accessType);
+        sb.append(", topPlaceStatus=").append(topPlaceStatus);
         sb.append(", commentCount=").append(commentCount);
+        sb.append(", totalCommentFloors=").append(totalCommentFloors);
         sb.append(", status=").append(status);
         sb.append(", password=").append(password);
         sb.append(", delTime=").append(delTime);

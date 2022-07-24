@@ -102,9 +102,9 @@
         </div>
     </div>
 </div>
-<script type="text/html" id="LOGIN-CAPTCHA" lay-url="/api/main/config/query"
-        lay-data="{key: 'IS_LOGIN_NEED_CAPTCHA'}" lay-type="post">
-    {{# if(d.data.value === 'TRUE'){ }}
+<script type="text/html" id="LOGIN-CAPTCHA" lay-url="/api/passport/fetch/captcha"
+        lay-data="{type: '10'}" lay-type="post">
+    {{# if(d.flag === 'TRUE'){ }}
     <div class="layui-form-item inputs" id="captcha-block">
         <div id="embed-captcha" style="margin-right: 15px"></div>
         <p id="wait" class="show">正在加载验证码......</p>
@@ -127,6 +127,7 @@
             key: setter.request.tokenName
             , remove: true
         });
+        form.render();
 
         var url = $('#LOGIN-CAPTCHA').attr('lay-url');
 
@@ -134,7 +135,7 @@
         var cryptoKey = setter.cryptoKey;
         ajaxApiPost(url
             ,1
-            , { key: 'IS_LOGIN_NEED_CAPTCHA'}
+            , { type: '10'}
             , function (d) {
                 var getTpl = document.getElementById('LOGIN-CAPTCHA').innerHTML;
                 var password = $('#USER-PASSWORD');
@@ -144,7 +145,7 @@
                 });
 
 
-                if (d.data.value === 'TRUE') {
+                if (d.flag === 'TRUE') {
                     var handlerEmbed = function (captchaObj) {
                         layui.form.on('submit(user-login-submit)', function (formData) {
                             captchaLogin(captchaObj, formData);

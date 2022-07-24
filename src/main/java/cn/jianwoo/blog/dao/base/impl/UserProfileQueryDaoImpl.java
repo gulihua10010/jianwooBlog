@@ -46,4 +46,15 @@ public class UserProfileQueryDaoImpl implements UserProfileQueryDao {
         }
         return null;
     }
+
+    @Override
+    public UserProfile queryUserProfileByUserId(String userId) {
+        UserProfileExample example = new UserProfileExample();
+        example.createCriteria().andUserIdEqualTo(userId);
+        List<UserProfile> list = userProfileMapper.selectByExample(example);
+        if (CollectionUtils.isNotEmpty(list)) {
+            return list.get(0);
+        }
+        return null;
+    }
 }

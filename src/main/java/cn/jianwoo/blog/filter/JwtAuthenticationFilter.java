@@ -4,7 +4,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.cache.CacheStore;
 import cn.jianwoo.blog.config.router.admin.MsgApiUrlConfig;
-import cn.jianwoo.blog.constants.CacaheKeyConstants;
+import cn.jianwoo.blog.constants.CacheKeyConstants;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.enums.LoginEventTypeEnum;
@@ -134,7 +134,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 oid = Long.parseLong(String.valueOf(claims.get(USER_KEY)));
                 request.setAttribute(USER_KEY, oid);
 
-                String loginIdCacheKey = MessageFormat.format(CacaheKeyConstants.LOGIN_USER_STATUS, oid);
+                String loginIdCacheKey = MessageFormat.format(CacheKeyConstants.LOGIN_USER_STATUS, oid);
                 boolean isLogin = (Boolean) jwCacheStore.get(loginIdCacheKey).orElse(false);
                 // 解决服务器每次重启缓存失效，但是jwt有效的问题，调试时可以注释
 //                if (!Boolean.TRUE.equals(isLogin)) {
@@ -142,7 +142,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 //                    return null;
 //                }
                 // 验证是否失效
-                String invalidTokenKey = MessageFormat.format(CacaheKeyConstants.INVALID_TOKEN, accessToken);
+                String invalidTokenKey = MessageFormat.format(CacheKeyConstants.INVALID_TOKEN, accessToken);
                 if (jwCacheStore.hasKey(invalidTokenKey)) {
                     return null;
                 }

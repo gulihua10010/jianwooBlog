@@ -2,7 +2,7 @@ package cn.jianwoo.blog.service.base.impl;
 
 import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.cache.CacheStore;
-import cn.jianwoo.blog.constants.CacaheKeyConstants;
+import cn.jianwoo.blog.constants.CacheKeyConstants;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dao.base.AccessIpCtrlTransDao;
 import cn.jianwoo.blog.dao.base.IpBlackListTransDao;
@@ -52,8 +52,8 @@ public class IpControlBaseServiceImpl implements IpControlBaseService {
 
     @Override
     public boolean isIpInBlackList(String ip) {
-        String cacheKey = MessageFormat.format(CacaheKeyConstants.IP_BLACK_KEY, ip);
-        String cacheFlagKey = CacaheKeyConstants.IP_BLACK_FLAG_KEY;
+        String cacheKey = MessageFormat.format(CacheKeyConstants.IP_BLACK_KEY, ip);
+        String cacheFlagKey = CacheKeyConstants.IP_BLACK_FLAG_KEY;
         //缓存有 黑名单列表
         if (cacheStore.hasKey(cacheFlagKey)) {
             if (cacheStore.hasKey(cacheKey)) {
@@ -67,7 +67,7 @@ public class IpControlBaseServiceImpl implements IpControlBaseService {
             cacheStore.put(cacheFlagKey, Constants.YES);
             if (!CollectionUtils.isEmpty(blackList)) {
                 for (IpBlackList ipBlack : blackList) {
-                    String cacheTmpKey = MessageFormat.format(CacaheKeyConstants.IP_BLACK_KEY, ipBlack.getAccessIp());
+                    String cacheTmpKey = MessageFormat.format(CacheKeyConstants.IP_BLACK_KEY, ipBlack.getAccessIp());
                     cacheStore.put(cacheTmpKey, Constants.YES);
                 }
 
@@ -90,7 +90,18 @@ public class IpControlBaseServiceImpl implements IpControlBaseService {
             log.error("IpControlBaseServiceImpl.doCreateBlackRecord exec failed, e:\r\n", e);
         }
 
-        String cacheKey = MessageFormat.format(CacaheKeyConstants.IP_BLACK_KEY, ip);
+        String cacheKey = MessageFormat.format(CacheKeyConstants.IP_BLACK_KEY, ip);
         cacheStore.put(cacheKey, Constants.YES);
+    }
+
+    @Override
+    public void doRemoveBlackRecord(String ip) {
+        try {
+            ipBlackListTransDao.doDeleteByIp(ip);
+        } catch (DaoException e) {
+            log.error("IpControlBaseServiceImpl.doRemoveBlackRecord exec failed, e:\r\n", e);
+
+
+        }
     }
 }

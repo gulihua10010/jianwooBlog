@@ -9,6 +9,7 @@ import cn.jianwoo.blog.dto.request.AnnouncePageRequest;
 import cn.jianwoo.blog.dto.request.ArticleAccessRequest;
 import cn.jianwoo.blog.dto.response.AnnounceSummaryResponse;
 import cn.jianwoo.blog.service.biz.ArticleAccessBizService;
+import cn.jianwoo.blog.validation.BizValidation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,6 +49,7 @@ public class ArticleAccessMainApiController extends BaseController {
         try {
             super.printRequestParams(param);
             ArticleAccessRequest req = this.convertParam(param, ArticleAccessRequest.class);
+            BizValidation.paramValidate(req.getArtOid(), "artOid", "文章id不能为空!");
             articleAccessBizService.createAccessRecord(request.getRemoteAddr(), Long.parseLong(req.getArtOid()));
             return super.responseToJSONString(BaseResponseDto.SUCCESS);
         } catch (Exception e) {

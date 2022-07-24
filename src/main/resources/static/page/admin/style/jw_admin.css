@@ -114,7 +114,7 @@ input:-webkit-autofill {
     display: none;
 }
 
-#isComment {
+#isComment, #isOriginal, #originalUrl{
     margin: 10px;
 }
 
@@ -125,7 +125,7 @@ input:-webkit-autofill {
 
 #passw-content, #passw-content-confirm {
     width: 260px;
-    display: none;
+    /*display: none;*/
 }
 
 #passw-content-confirm {

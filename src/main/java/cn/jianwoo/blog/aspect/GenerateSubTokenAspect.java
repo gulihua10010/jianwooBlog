@@ -8,6 +8,7 @@ import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -19,14 +20,16 @@ import javax.servlet.http.HttpServletRequest;
  * @Description
  * @date 2021-01-08 15:49
  */
-@Aspect
-@Component
+//@Aspect
+//@Component
 @Slf4j
 public class GenerateSubTokenAspect {
 
     public static final String SUB_TOKEN = "subToken";
     public static final String PAGE_ID = "PAGE_ID";
     public static final String OPEN = "_OPEN";
+    @Autowired
+    private ProcessTokenUtil processTokenUtil;
 
     @Pointcut("execution(public * cn.jianwoo.blog.controller.admin.page.AdminPageController.*(..))")
     public void generateToken() {
@@ -43,7 +46,7 @@ public class GenerateSubTokenAspect {
             page = pageId.value().getValue();
 
         }
-        ProcessTokenUtil.generateToken(request, page);
+        processTokenUtil.generateToken(request, page);
     }
 
 

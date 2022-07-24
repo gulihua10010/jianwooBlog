@@ -11,6 +11,7 @@ import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.util.ProcessTokenUtil;
 import cn.jianwoo.blog.validation.BizValidation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +27,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class SubTokenGenerateApiController extends BaseController {
 
+    @Autowired
+    private ProcessTokenUtil processTokenUtil;
+
     /**
      * 生成token，用于验证表单重复提交<br/>
-     * url:/api/admin/token/generate<br/>
+     * url:/api/admin/request/token/generate<br/>
      *
      * @param param JSON 参数({@link TokenGenRequest})<br/>
      *              pageId<br/>
@@ -47,7 +51,7 @@ public class SubTokenGenerateApiController extends BaseController {
             if (pageIdEnum == null) {
                 throw new JwBlogException(ExceptionConstants.VALIDATION_FAILED, "页面无效!");
             }
-            String token = ProcessTokenUtil.generateToken(super.request, request.getPageId());
+            String token = processTokenUtil.generateToken(super.request, request.getPageId());
             SubTokenResponse response = SubTokenResponse.getInstance();
             response.setToken(token);
             return super.responseToJSONString(response);

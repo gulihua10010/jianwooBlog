@@ -4,7 +4,9 @@ import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.dao.base.CommentTransDao;
 import cn.jianwoo.blog.dao.base.mapper.CommentMapper;
 import cn.jianwoo.blog.entity.Comment;
+import cn.jianwoo.blog.entity.example.CommentExample;
 import cn.jianwoo.blog.exception.DaoException;
+import cn.jianwoo.blog.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,6 +64,17 @@ public class CommentTransDaoImpl extends CommentQueryDaoImpl implements CommentT
         int updRlt = commentMapper.updateByPrimaryKeySelective(record);
         if (1 != updRlt) {
             throw DaoException.DAO_DELETE_RESULT_0.print();
+        }
+    }
+
+    @Override
+    public void doUpdateArtInfoByArtOidSelective(Comment record, Long artOid) throws DaoException {
+        CommentExample example = new CommentExample();
+        example.createCriteria().andArticleOidEqualTo(artOid);
+        record.setUpdateTime(DateUtil.getNow());
+        int updRlt = commentMapper.updateByExampleSelective(record, example);
+        if (0 == updRlt) {
+            throw DaoException.DAO_UPDATE_RESULT_0.print();
         }
     }
 }

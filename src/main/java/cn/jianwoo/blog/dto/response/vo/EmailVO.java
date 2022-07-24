@@ -19,7 +19,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class EmailVO implements Serializable {
 
     private static final long serialVersionUID = 1152316162401556760L;

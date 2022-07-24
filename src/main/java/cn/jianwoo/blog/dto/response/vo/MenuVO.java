@@ -1,12 +1,10 @@
 package cn.jianwoo.blog.dto.response.vo;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author GuLihua
@@ -16,7 +14,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class MenuVO implements Serializable {
     private static final long serialVersionUID = -6622957226309536544L;
     /**
@@ -43,6 +40,11 @@ public class MenuVO implements Serializable {
      * 菜单路由
      */
     private String url;
+
+    /**
+     * 是否是文章类别[MENU.FLAG_CATEGORY]
+     */
+    private Boolean flagCategory;
     /**
      * 是否有效
      */

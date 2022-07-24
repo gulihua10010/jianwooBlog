@@ -63,7 +63,7 @@
                         <input class="layui-input" name="loginID" value="{{ d.data.loginID }}" type="hidden">
                     </script>
 
-                    <script type="text/html" template lay-url="/api/admin/token/generate"
+                    <script type="text/html" template lay-url="/api/admin/request/token/generate"
                             lay-data="{pageId: 'APF10'}" lay-type="post" lay-done="doUpdateToken(d);">
                         <input type="hidden" name="subToken" id="subToken" value="{{d.token}}">
                     </script>

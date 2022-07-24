@@ -17,6 +17,7 @@ public class PassportApiUrlConfig extends UrlConfig {
     public static final String URL_PASSPORT_FORGET_EMAIL_CAPTCHA_SEND = "/forget/email/captcha/send";
     public static final String URL_PASSPORT_FORGET_CAPTCHA_AUTH = "/forget/captcha/auth";
     public static final String URL_USER_FORGET_PASSWORD_MODIFY = "/forget/password/modify";
+    public static final String URL_FETCH_CAPTCHA= "/fetch/captcha";
 
 
 

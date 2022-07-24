@@ -22,4 +22,15 @@ public interface NotifyMsgService {
      * @author gulihua
      */
     void doSend(String emailTplCode, JSONObject param, String recipient) throws JwBlogException;
+
+    /**
+     * 邮件发送
+     *
+     * @param emailTplCode 邮件模板编码
+     * @param param        参数
+     * @param recipient    收信人(可以多个)
+     * @return
+     * @author gulihua
+     */
+    void doSend(String emailTplCode, JSONObject param, String... recipient) throws JwBlogException;
 }

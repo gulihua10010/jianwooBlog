@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface MenuBizService {
     /**
-     * 获取后台的菜单
+     * 获取后台的菜单(使用缓存)
      *
      * @return
      * @author gulihua
@@ -19,15 +19,24 @@ public interface MenuBizService {
 
 
     /**
-     * 获取所有前台的菜单
+     * 获取所有前台的菜单(不使用缓存)
      *
      * @return
      * @author gulihua
      */
     List<MenuBO> queryAllMainMenuList() throws JwBlogException;
 
+
     /**
-     * 获取有效的前台的菜单
+     * 获取有效的前台的菜单(使用缓存)
+     *
+     * @return
+     * @author gulihua
+     */
+    List<MenuBO> queryEffectiveMainHomeMenuList() throws JwBlogException;
+
+    /**
+     * 获取有效的前台的菜单(不使用缓存)
      *
      * @return
      * @author gulihua
@@ -128,13 +137,21 @@ public interface MenuBizService {
 
 
     /**
-     * 根据类型获取所有排好序的子菜单
+     * 通过父 oid 查询 文章类别
      *
-     * @param type 类型 [MENU.TYPE] {@link MenuTypeEnum}
+     * @param parentOid 父 oid
+     * @return List<Menu>
+     * @author gulihua
+     */
+    List<Menu> querySubCategoryByParentId(Long parentOid);
+
+
+    /**
+     * 获取绑定文章类型的子菜单
      * @return
      * @author gulihua
      */
-    List<Menu> querySubMenuOrderedList(String type);
+    List<Menu> querySubMenuCategoryList();
 
 
     /**
@@ -193,5 +210,14 @@ public interface MenuBizService {
      * @author gulihua
      */
     MenuBO queryMenuByOid(String oid) throws JwBlogException;
+
+    /**
+     * 通过oid查询级联菜单
+     *
+     * @param oid 菜单主键
+     * @return MenuBO
+     * @author gulihua
+     */
+    MenuBO queryCascadeMenuByOid(String oid) throws JwBlogException;
 
 }

@@ -3,7 +3,6 @@ package cn.jianwoo.blog.dto.response.vo;
 import cn.jianwoo.blog.config.LongToStringSerializerConfig;
 import cn.jianwoo.blog.util.DateUtil;
 import com.alibaba.fastjson.annotation.JSONField;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -20,7 +19,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class ArticleMainPageVO implements Serializable {
     private static final long serialVersionUID = -8183712030536923735L;
     /**
@@ -89,9 +87,19 @@ public class ArticleMainPageVO implements Serializable {
     private Long praiseCount;
 
     /**
+     * 当前IP是否已经赞过
+     */
+    private Boolean isPraise;
+
+    /**
      * 标签列表
      */
     private List<TagsVO> tags;
+
+    /**
+     * 是否置顶
+     */
+    private Boolean topPlaceFlag;
 
     public String getPublishTimeDesc() {
         return DateUtil.optimizeTimeDesc(this.getPublishTime());

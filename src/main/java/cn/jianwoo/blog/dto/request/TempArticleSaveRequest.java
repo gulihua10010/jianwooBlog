@@ -17,7 +17,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@AllArgsConstructor
 public class TempArticleSaveRequest extends BaseRequestDto {
     private static final long serialVersionUID = 4249657870459225102L;
 
@@ -36,10 +35,11 @@ public class TempArticleSaveRequest extends BaseRequestDto {
      */
     private String articleContent;
 
+
     /**
-     * 文章类别
+     * 类别id
      */
-    private Integer menuOid;
+    private Integer categoryId;
 
     /**
      * 文章缩略图
@@ -80,4 +80,20 @@ public class TempArticleSaveRequest extends BaseRequestDto {
      * temp article tags信息
      */
     private List<TagsVO> tags;
+
+
+    /**
+     * 是否置顶
+     */
+    private Boolean topPlaceFlag;
+
+    /**
+     * 是否原创
+     */
+    private Boolean flagOriginal;
+
+    /**
+     * 转载源链接
+     */
+    private String originalUrl;
 }

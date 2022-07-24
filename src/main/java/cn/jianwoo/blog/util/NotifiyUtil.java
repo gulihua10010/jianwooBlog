@@ -3,7 +3,7 @@ package cn.jianwoo.blog.util;
 import cn.hutool.extra.mail.MailAccount;
 import cn.hutool.extra.mail.MailUtil;
 import cn.jianwoo.blog.cache.CacheStore;
-import cn.jianwoo.blog.constants.CacaheKeyConstants;
+import cn.jianwoo.blog.constants.CacheKeyConstants;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.WebConfDataConfig;
 import cn.jianwoo.blog.enums.CfgTypeEnum;
@@ -65,9 +65,9 @@ public class NotifiyUtil {
     private MailAccount fetchMailAcct() throws JwBlogException {
         MailAccount account = null;
 
-        if (cacheStore.hasKey(CacaheKeyConstants.EMAIL_CFG)) {
+        if (cacheStore.hasKey(CacheKeyConstants.EMAIL_CFG)) {
             log.info(">>Fetch MailAcct from cache success.");
-            return cacheStore.get(CacaheKeyConstants.EMAIL_CFG).get();
+            return cacheStore.get(CacheKeyConstants.EMAIL_CFG).get();
         }
         Map<String, String> cfgMap = webconfBizService.queryWebconfByType(CfgTypeEnum.EMAIL.getValue());
         String host = cfgMap.get(WebConfDataConfig.EMAIL_HOST);
@@ -113,7 +113,7 @@ public class NotifiyUtil {
         if (StringUtils.isNotBlank(connectionTimeout)) {
             account.setConnectionTimeout(new BigDecimal(connectionTimeout).longValue());
         }
-        cacheStore.put(CacaheKeyConstants.EMAIL_CFG, account);
+        cacheStore.put(CacheKeyConstants.EMAIL_CFG, account);
         return account;
 
     }

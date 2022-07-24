@@ -30,6 +30,9 @@ public class ArticleBizException extends JwBlogException {
             ExceptionConstants.BIZ_NOT_EXIST, "该文章不存在!");
     public static final ArticleBizException ARTICLE_NOT_ALLOW_COMMENT_EXCEPTION_CN = new ArticleBizException(
             ExceptionConstants.BIZ_NOT_EXIST, "该文章不允许评论!");
+    public static final ArticleBizException NOT_EXISTS_REPLY_COMMENT_CN = new ArticleBizException(
+            ExceptionConstants.BIZ_NOT_EXIST, "所回复的评论不存在!");
+
     public static final ArticleBizException STATUS_NOT_SUPPORT = new ArticleBizException(
             ExceptionConstants.BIZ_STATUS_INCORRECT, "The status of article[%s] must be PUBLISHED or DRAFT.");
     public static final ArticleBizException STATUS_NOT_SUPPORT_CN = new ArticleBizException(
@@ -54,6 +57,9 @@ public class ArticleBizException extends JwBlogException {
             ExceptionConstants.BIZ_STATUS_INCORRECT, "文章[%s]已经发布!");
     public static final ArticleBizException STATUS_NOT_RECYCLE = new ArticleBizException(
             ExceptionConstants.BIZ_STATUS_INCORRECT, "文章[%s]已经移出回收站!");
+
+    public static final ArticleBizException STATUS_NOT_CORRECT= new ArticleBizException(
+            ExceptionConstants.BIZ_STATUS_INCORRECT, "文章[%s]状态不正确, 不是[%]状态!");
     private static final long serialVersionUID = -4477787493913372810L;
     private final Logger logger = LoggerFactory.getLogger(ArticleBizException.class);
 

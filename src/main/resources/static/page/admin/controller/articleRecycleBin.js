@@ -14,7 +14,7 @@ layui.define(['laytable', 'form'], function (exports) {
             , {type: 'numbers', width: 40, title: 'SEQ',}
             , {field: 'title', title: '文章标题', sort: true, align: 'center'}
             , {field: 'author', width: 120, title: '作者',  align: 'center'}
-            , {field: 'type', width: 170, title: '类型',  align: 'center'}
+            , {field: 'category', width: 170, title: '类型',  align: 'center'}
             , {field: 'removeRecycleTimeDesc', title: '删除时间', sort: true, width: 200, align: 'center'}
             , {title: '操作', width: 360, align: 'left', fixed: 'right', toolbar: '#table-content-art'}
 

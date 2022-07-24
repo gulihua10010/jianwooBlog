@@ -38,8 +38,11 @@
             </div>
             <table id="comment-table" lay-filter="content-comm"></table>
             <script id="table-content-com" type="text/html">
+                {{#  if(d.artDelStatus !== '91'){ }}
                 <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="reply"><i
                         class="layui-icon layui-icon-reply-fill"></i>回复</a>
+                {{#  } }}
+
                 <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="view"><i
                         class="layui-icon layui-icon-form"></i>查看</a>
                 <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i

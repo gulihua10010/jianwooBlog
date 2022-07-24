@@ -11,6 +11,7 @@
         <result column="OID" property="oid" jdbcType="BIGINT" javaType="java.lang.Long"/>
         <result column="CONTENT" property="content" jdbcType="VARCHAR" javaType="java.lang.String"/>
         <result column="ARTICLE_OID" property="artOid" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result column="COUNT" property="count" jdbcType="INTEGER" javaType="java.lang.Integer"/>
         <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
         <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
     </resultMap>
@@ -36,5 +37,18 @@
         SELECT COUNT(1)
         FROM
             `TAGS`
+    </select>
+
+    <select id="selectAllTags" resultMap="ResultResultMapWithExt" parameterType="java.util.Map">
+        SELECT T.OID, T.CONTENT, T.`COUNT`
+        FROM (SELECT T.OID, CONTENT, COUNT(A.ARTICLE_OID) AS `COUNT`
+              FROM TAGS T
+                           LEFT JOIN ARTICLE_TAGS A ON A.TAGS_OID = T.OID
+              WHERE A.ART_FLAG_ACTIVITY = TRUE
+                <if test="isContainPrivate == false">
+                    AND ART_FLAG_PRIVATE = FALSE
+                </if>
+              GROUP BY T.OID) T
+        WHERE `COUNT` != 0
     </select>
 </mapper>

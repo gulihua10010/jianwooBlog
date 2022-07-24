@@ -108,9 +108,9 @@
                 <div class="layui-card-header">文章分类</div>
                 <div class="layui-card-body">
                     <div class="article-type">
-                        <script type="text/html" template lay-url="/api/admin/menu/article/type/list">
+                        <script type="text/html" template lay-url="/api/admin/menu/article/category/list">
                             <div class="layui-card layui-form" lay-filter="component-form-element" id="type-select">
-                                <select lay-search lay-verify="required" name="typeId" id="typeId">
+                                <select lay-search lay-verify="required" name="categoryId" id="categoryId">
                                     <option style="font-weight: bold;color: black" value="-1"></option>
                                     {{# layui.each(d.data, function(index, item){ }}
                                     <option style="color: #777" value="{{ item.id }}">{{ item.name }}</option>
@@ -191,9 +191,17 @@
                                     <input checked id="is-comment" name="isComment" title="是否可以评论" type="checkbox">
                                 </div>
                             </div>
+                            <div>
+                                <div id="isOriginal">
+                                    <input checked id="is-original" lay-filter="original" name="flagOriginal" title="是否原创" type="checkbox">
+                                </div>
+                                <div id="originalUrl" style="display: none">
+                                    <input class="layui-input wd80p" id="original-url" lay-verify="urlFmt|maxLength" lay-max="100" placeholder="转载源链接" name="originalUrl" title="转载源链接" type="text">
+                                </div>
+                            </div>
                         </form>
                         <div class="separation-line"></div>
-                        <script type="text/html" template lay-url="/api/admin/token/generate"
+                        <script type="text/html" template lay-url="/api/admin/request/token/generate"
                                 lay-data="{pageId: 'A11'}" lay-type="post" lay-done="doUpdateToken(d);">
                             <input type="hidden" name="subToken" id="subToken" value="{{d.token}}">
                         </script>
@@ -300,25 +308,27 @@
                     var index = layer.load(0, {shade: false, offset: '400px'});
                     $('input[name=title]').val(d.data.title);
                     $('input[name=author]').val(d.data.author);
-                    $('select[name=typeId]').val(d.data.menuOid);
+                    $('select[name=categoryId]').val(d.data.categoryId);
                     $('input[name=imgsrc]').val(d.data.imgSrc);
+                    $('input[name=originalUrl]').val(d.data.originalUrl);
                     var publicStr = "公开"
                     if (d.data.accessType === "11") {
                         publicStr = "密码";
                     } else if (d.data.accessType === "10") {
                         publicStr = "私密";
-                    } else if (d.data.accessType === "21") {
-                        publicStr = "置顶";
+                    }
+                    if (d.data.topPlaceFlag) {
+                        publicStr += "(置顶)";
                     }
                     $('#published-public').text(publicStr)
                     $('input[name=isPublic][value="' + d.data.accessType + '"]').attr("checked", true);
-                    if (d.data.accessType === "21") {
-                        $('input[name=isPublic][value="20"]').attr("checked", true);
+                    if (d.data.topPlaceFlag) {
+                        // $('input[name=isPublic][value="20"]').attr("checked", true);
                         $('input[name=hometop]').attr("checked", true);
                     }
                     if (d.data.accessType === "11") {
                         $('#passw-content').val(d.data.password)
-                        $('#hometop1').hide();
+                        // $('#hometop1').hide();
                         $('#passw-content').show();
                         $('#passw-content-confirm').show();
                     }
@@ -327,6 +337,11 @@
                         $('input[name=isComment]').attr("checked", true);
                     } else {
                         $('input[name=isComment]').removeAttr("checked");
+                    }
+                    if (d.data.flagOriginal) {
+                        $('input[name=flagOriginal]').attr("checked", true);
+                    } else {
+                        $('input[name=flagOriginal]').removeAttr("checked");
                     }
                     form.render();
                     edit.setContent(d.data.content);
@@ -364,10 +379,11 @@
                 if (!isChange) return;
                 var title = $('input[name=title]').val();
                 var author = $('input[name=author]').val();
-                var typeId = $('select[name=typeId]').val();
+                var categoryId = $('select[name=categoryId]').val();
                 var subToken = $('input[name=subToken]').val();
                 var imgsrc = $('input[name=imgsrc]').val();
                 var isPublic = $('input[name=isPublic]:checked').val();
+                var originalUrl = $('input[name=originalUrl]').val();
                 var articleContent = edit.getContent();
                 var tagsId = [];
                 var data = $('.choosed>span')
@@ -379,16 +395,21 @@
                 }
                 var publishTemp = isPublic;
                 var passw = '';
-                if (publishTemp === '20') {
-                    if ($('#hometop').prop('checked')) {
-                        publishTemp = "21";
-                    }
-                } else if (publishTemp === '11') {
+                var topPlaceFlag = false;
+                if ($('#hometop').prop('checked')) {
+                    topPlaceFlag = true;
+                }
+                if (publishTemp === '11') {
                     passw = $('#passw-content').val();
                 }
                 var iscomment = 0;
                 if ($('#is-comment').prop('checked')) {
                     iscomment = 1;
+                }
+                var flagOriginal = 0;
+                if ($('#is-original').prop('checked')) {
+                    flagOriginal = 1;
+
                 }
                 var oid = null;
                 if (d.data && d.data.oid) {
@@ -398,17 +419,20 @@
                 ajaxPost('/api/admin/article/temp/save',
                     1,
                     JSON.stringify({
+                        requestId: subToken,
                         oid: oid,
                         title: title,
                         author: author,
                         articleContent: articleContent,
                         tags: tagsId,
-                        menuOid: typeId,
+                        categoryId: categoryId,
                         imgSrc: imgsrc,
                         accessType: publishTemp,
                         password: passw,
                         isComment: iscomment !== 0,
-                        subToken: subToken,
+                        flagOriginal: flagOriginal !== 0,
+                        topPlaceFlag: topPlaceFlag,
+                        originalUrl: originalUrl,
                         pageType: "10"
                     }));
             }

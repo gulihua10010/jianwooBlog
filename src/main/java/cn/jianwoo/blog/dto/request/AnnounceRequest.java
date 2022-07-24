@@ -1,13 +1,11 @@
 package cn.jianwoo.blog.dto.request;
 
 import cn.jianwoo.blog.base.BaseRequestDto;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * @author GuLihua
@@ -17,7 +15,6 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class AnnounceRequest  extends BaseRequestDto implements Serializable {
     private static final long serialVersionUID = -7982293393643864915L;
 

@@ -19,6 +19,8 @@ public final class Constants {
     public static final String SUCCESS = "SUCCESS";
     public static final String FAILED = "FAILED";
 
+    public static final String NEGATIVE_ONE = "-1";
+
     public static final String URL_SEPARATOR = "/";
     public static final String BLANK = "";
     public static final String SPACE = " ";
@@ -52,6 +54,12 @@ public final class Constants {
     public static final Integer AUTHOR_LENGTH = 10;
     public static final Integer TAGS_LENGTH = 10;
     public static final Integer MENU_LENGTH = 10;
+    public static final Integer URL_LENGTH = 100;
+    public static final Integer NICK_LENGTH = 20;
+    public static final Integer EMAIL_LENGTH = 30;
+
+    public static final Integer COMMENT_MIN_CONTENT_LENGTH = 5;
+    public static final Integer COMMENT_MAX_CONTENT_LENGTH = 200;
 
     //reg
     public static final String MENU_NAME_REGEX = "^[_#$@\\d\\w]*$";
@@ -66,6 +74,14 @@ public final class Constants {
     public static final String DATE_REGEX = "^(\\d{4})[-\\/](\\d{1}|0\\d{1}|1[0-2])([-\\/](\\d{1}|0\\d{1}|[1-2][0-9]|3[0-1]))*$";
     //日期时间正则:yyyy-MM-dd HH:mm:ss
     public static final String DATETIME_REGEX = "^(\\d{4})[-\\/](\\d{1}|0\\d{1}|1[0-2])([-\\/](\\d{1}|0\\d{1}|[1-2][0-9]|3[0-1]))*\\s(\\d{1}|[0-1]\\d{1}|2[0-3])[:]([0-5]\\d{1})[:]([0-5]\\d{1})$";
+    // url正则
+    public static final String URL_REGEX="^http(s?):\\/\\/(([\\w-]+\\.)+[\\w-]+|((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3})(:\\d{1,5})?(\\/.*)?$";
+    //ipv4正则
+    public static final String IPV4_REGEX="^((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}$";
+
+   //昵称 (中文数字英文和$_)
+    public static final String NICK_REGEX="^[\u4E00-\u9FFF\\d\\w_$]+$";
+
 
     //path
     public static final String ALL_PATH_PATTERNS = "/**";
@@ -104,6 +120,9 @@ public final class Constants {
     public static final String LOGIN_SESSION = "JIANWOO.LOGIN.SESSION";
     public static final String IP_SPLIT = "@@";
     public static final String EMAIL_TPL_CODE_EXCEPTION = "-1";
+    public static final Integer CATEGORY_NULL = -1;
+    public static final String COMMENT_HAS_DELETE = "该评论已经删除!";
+    public static final String ARTICLE_NEED_PASSWORD = "文章[%s]需要验证密码!";
 
 
 }

@@ -4,6 +4,7 @@ import cn.jianwoo.blog.dao.biz.CommentBizDao;
 import cn.jianwoo.blog.dao.biz.mapper.CommentBizMapper;
 import cn.jianwoo.blog.entity.Comment;
 import cn.jianwoo.blog.entity.extension.CommentExt;
+import cn.jianwoo.blog.entity.query.CommentPageQuery;
 import cn.jianwoo.blog.entity.query.CommentQuery;
 import cn.jianwoo.blog.exception.DaoException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,9 +54,24 @@ public class CommentBizDaoImpl implements CommentBizDao {
 
 
     @Override
+    public List<CommentExt> queryCommentsPageListByArticleOid(CommentPageQuery query) {
+        return commentBizMapper.selectCommentsPageListByArticleOid(query);
+
+    }
+
+    @Override
+    public Long queryCommentsCountByArticleOid(CommentPageQuery query) {
+        return commentBizMapper.selectCommentsCountByArticleOid(query);
+    }
+
+    @Override
+    public Long queryCommentsRootCountByArticleOid(CommentPageQuery query) {
+        return commentBizMapper.selectCommentsRootCountByArticleOid(query);
+    }
+
+    @Override
     public List<CommentExt> queryCommentsExtByArticleOid(Long artOid) {
         return commentBizMapper.selectCommentsExtByArticleOid(artOid);
-
     }
 
 
@@ -78,6 +94,22 @@ public class CommentBizDaoImpl implements CommentBizDao {
     @Override
     public void doUpdateCommentPraiseCnt(Long oid) throws DaoException {
         int updRlt = commentBizMapper.updateCommentPraiseCnt(oid);
+        if (1 != updRlt) {
+            throw DaoException.DAO_UPDATE_RESULT_0.print();
+        }
+    }
+
+    @Override
+    public void doUpdateCommentReplyCnt(Long oid) throws DaoException {
+        int updRlt = commentBizMapper.updateCommentReplyCnt(oid);
+        if (1 != updRlt) {
+            throw DaoException.DAO_UPDATE_RESULT_0.print();
+        }
+    }
+
+    @Override
+    public void doUpdateCommentTotalReplyCnt(Long oid) throws DaoException {
+        int updRlt = commentBizMapper.updateCommentTotalReplyCnt(oid);
         if (1 != updRlt) {
             throw DaoException.DAO_UPDATE_RESULT_0.print();
         }

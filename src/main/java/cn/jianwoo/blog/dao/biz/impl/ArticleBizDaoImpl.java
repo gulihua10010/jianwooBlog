@@ -7,6 +7,8 @@ import cn.jianwoo.blog.entity.extension.ArticleExt;
 import cn.jianwoo.blog.entity.query.ArticleQuery;
 import cn.jianwoo.blog.enums.ArticleStatusEnum;
 import cn.jianwoo.blog.exception.DaoException;
+import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.service.bo.ArticleBO;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -106,6 +108,28 @@ public class ArticleBizDaoImpl implements ArticleBizDao {
     @Override
     public List<ArticleExt> queryArticleListMain(ArticleQuery param, boolean isPrivate) {
         return articleBizMapper.selectArticleListMain(param, isPrivate);
+    }
+
+    @Override
+    public List<ArticleExt> queryMonthDatePublishList(ArticleQuery param, boolean isPrivate) {
+        return articleBizMapper.selectMonthDatePublishList(param, isPrivate);
+
+    }
+
+    @Override
+    public Integer queryMonthDatePublishCount(ArticleQuery param, boolean isPrivate) {
+        return articleBizMapper.selectMonthDatePublishCount(param, isPrivate);
+
+    }
+
+    @Override
+    public List<ArticleExt> queryRecommendArticleByArtOid(Long oid) {
+        return articleBizMapper.selectRecommendArticleByArtOid(oid);
+    }
+
+    @Override
+    public List<ArticleExt> queryRecommendArticleByCategoryOid(Integer categoryOid) {
+        return articleBizMapper.selectRecommendArticleByCategoryOid(categoryOid);
     }
 
 

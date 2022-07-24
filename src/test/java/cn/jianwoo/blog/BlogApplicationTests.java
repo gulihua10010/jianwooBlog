@@ -123,8 +123,8 @@ class BlogApplicationTests {
     private EmailTemplateTransDao emailTemplateTransDao;
     @Test
      void EmailTEst() throws Exception
-    {
-//        notifiyUtil.sendEmail("1729846470@qq.com","test1","test content");
+    {//gulh+unit-error<gulh+unit-error@plbizgp.com>
+        notifiyUtil.sendEmail("1729846470@qq.com,gulh+unit-error<gulh+unit-error@plbizgp.com>","test1","test content");
     }
     @Test
     void Test1()

@@ -5,28 +5,28 @@ public enum ArticleStatusEnum {
     /**
      * 已发布
      */
-    PUBLISHED("90"),
+    PUBLISHED("90", "已发布"),
 
     /**
      * 草稿
      */
-    DRAFT("00"),
+    DRAFT("00", "草稿"),
 
     /**
      * 回收站
      */
-    RECYCLE("91"),
+    RECYCLE("91", "回收站"),
 
     /**
      * 所有
      */
-    ALL("100"),
+    ALL("100", "所有"),
 
 
     /**
      * 文章删除
      */
-    DELETE("99"),
+    DELETE("99", "文章删除"),
 
     ;
 
@@ -35,8 +35,15 @@ public enum ArticleStatusEnum {
      */
     private String value;
 
-    ArticleStatusEnum(String value) {
+    /**
+     * 描述
+     */
+    private String desc;
+
+
+    ArticleStatusEnum(String value, String desc) {
         this.value = value;
+        this.desc = desc;
     }
 
 
@@ -50,6 +57,15 @@ public enum ArticleStatusEnum {
         return null;
     }
 
+    public static String getDesc(String name) {
+        ArticleStatusEnum[] arry = ArticleStatusEnum.values();
+        for (int i = 0; i < arry.length; i++) {
+            if (arry[i].getValue().equals(name)) {
+                return arry[i].getDesc();
+            }
+        }
+        return "-";
+    }
 
     public String getValue() {
         return value;
@@ -60,5 +76,11 @@ public enum ArticleStatusEnum {
         this.value = value;
     }
 
+    public String getDesc() {
+        return this.desc;
+    }
 
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
 }

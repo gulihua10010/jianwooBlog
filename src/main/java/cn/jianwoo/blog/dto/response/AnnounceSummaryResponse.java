@@ -17,7 +17,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@AllArgsConstructor
 public class AnnounceSummaryResponse extends BaseResponseDto {
 
     private static final long serialVersionUID = -4171515102409676030L;

@@ -1,5 +1,8 @@
 package cn.jianwoo.blog.service.param;
 
+import cn.jianwoo.blog.util.DateUtil;
+
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,6 +27,16 @@ public class ArticleParam extends PageParam {
      */
     private String text;
 
+    /**
+     * 关键词
+     */
+    private String keywords;
+
+
+    /**
+     * 发布时间(yyyy-MM-dd)
+     */
+    private Date publishDate;
 
     /**
      * 标签
@@ -31,9 +44,68 @@ public class ArticleParam extends PageParam {
     private List<Integer> tags;
 
     /**
-     * 类型
+     * 类型1
      */
-    private Integer category;
+    private Integer category1;
+    /**
+     * 类型2
+     */
+    private Integer category2;
+
+
+    /**
+     * 发布时间的开始时间
+     */
+    private Date publishDateStart;
+    /**
+     * 发布时间的结束时间
+     */
+    private Date publishDateEnd;
+
+    public Date getPublishDateStart() {
+        return this.publishDateStart;
+    }
+
+    public void setPublishDateStart(Date publishDateStart) {
+        this.publishDateStart = publishDateStart;
+    }
+
+    public void setPublishDateStart(String publishDateStartStr) {
+        this.publishDateStart = DateUtil.parseDate(publishDateStartStr);
+    }
+
+    public Date getPublishDateEnd() {
+        return this.publishDateEnd;
+    }
+
+    public void setPublishDateEnd(Date publishDateEnd) {
+        this.publishDateEnd = publishDateEnd;
+    }
+
+    public void setPublishDateEnd(String publishDateEndStr) {
+        this.publishDateEnd = DateUtil.parseDate(publishDateEndStr);
+    }
+
+
+    public Date getPublishDate() {
+        return this.publishDate;
+    }
+
+    public void setPublishDate(Date publishDate) {
+        this.publishDate = publishDate;
+    }
+
+    public void setPublishDate(String publishDateStr) {
+        this.publishDate = DateUtil.parseDate(publishDateStr);
+    }
+
+    public String getKeywords() {
+        return this.keywords;
+    }
+
+    public void setKeywords(String keywords) {
+        this.keywords = keywords;
+    }
 
     public List<Integer> getTags() {
         return this.tags;
@@ -43,12 +115,20 @@ public class ArticleParam extends PageParam {
         this.tags = tags;
     }
 
-    public Integer getCategory() {
-        return this.category;
+    public Integer getCategory1() {
+        return this.category1;
     }
 
-    public void setCategory(Integer category) {
-        this.category = category;
+    public void setCategory1(Integer category1) {
+        this.category1 = category1;
+    }
+
+    public Integer getCategory2() {
+        return this.category2;
+    }
+
+    public void setCategory2(Integer category2) {
+        this.category2 = category2;
     }
 
     public String getTitle() {

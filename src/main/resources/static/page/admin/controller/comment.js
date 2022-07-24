@@ -15,8 +15,12 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
         , cols: [[
             {type: 'checkbox', fixed: 'right'}
             , {type: 'numbers', width: 40, title: 'SEQ',}
-            , {field: 'artTitle', width: 200, sort: true, title: '文章标题', align: 'center'}
-            , {field: 'userName', width: 80, title: '用户',  align: 'center'}
+            , {
+                field: 'artTitle', width: 200, sort: true, title: '文章标题', align: 'center', templet: function (d) {
+                    return formatTitle(d)
+                }
+            }
+            , {field: 'userNick', width: 80, title: '用户', align: 'center'}
             , {field: 'commentTimeDesc', width: 200, title: '时间', sort: true, align: 'center'}
             , {field: 'replyTo', title: '回复至', width: 80, align: 'center'}
             , {field: 'content', title: '内容', align: 'left'}
@@ -28,18 +32,32 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
             , statusCode: '000000'
         }
         , page: true
+        , autoSort: false //禁用前端自动排序。
         , text: {none: '无数据'}
 
     });
 
+    var formatTitle = function (d) {
+        if (!d.artTitle) {
+            d.artTitle = "";
+        }
+
+
+        if (d.artDelStatus === '91') {
+            return d.artTitle + '<span style="color:red">(' + '文章已删除' + ')</span>';
+        }
+        return d.artTitle;
+
+    }
+
     //触发排序事件
-    table.on('sort(content-comm)', function(obj){
+    table.on('sort(content-comm)', function (obj) {
 
         table.reload('comment-table', {
             initSort: obj
-            ,where: {
+            , where: {
                 sortField: obj.field
-                ,sortOrder: obj.type
+                , sortOrder: obj.type
             }
         });
     });
@@ -147,7 +165,7 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
 
             });
         } else if (obj.event === 'reply') {
-            var username = '博主';
+            var userNick = '博主';
             admin.popup({
                 title: '回复评论'
                 , area: ['450px', '300px']
@@ -164,12 +182,12 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
                                 "/api/admin/comment/reply",
                                 1,
                                 JSON.stringify({
+                                    requestId: field.subToken,
                                     content: field.content,
                                     parentOid: data.oid,
-                                    username: username,
+                                    userNick: userNick,
                                     artOid: data.artOid,
                                     avatarSrc: avatarSrc,
-                                    subToken: field.subToken
                                 }),
                                 "回复成功",
                                 function () {
@@ -216,7 +234,7 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
     renderComm = function (artOid, call) {
 
         ajaxApiPost(
-            "/api/admin/token/generate",
+            "/api/admin/request/token/generate",
             1,
             JSON.stringify({
                 pageId: 'C14',
@@ -276,9 +294,9 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
 
     $('#commentView').on('click', '.reply', function (e) {
         stopBubble(e)
-        var poid = $(this).attr('data-id')
+        var pOid = $(this).attr('data-id')
         // console.log(poid)
-        var username = '博主';
+        var userNick = '博主';
 
         admin.popup({
             title: '回复评论'
@@ -294,12 +312,12 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
                             "/api/admin/comment/reply",
                             1,
                             JSON.stringify({
+                                requestId: field.subToken,
                                 content: field.content,
-                                parentOid: poid,
-                                username: username,
+                                parentOid: pOid,
+                                userNick: userNick,
                                 artOid: artOid,
                                 avatarSrc: avatarSrc,
-                                subToken: field.subToken
                             }),
                             "回复成功",
                             function () {
@@ -315,8 +333,9 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
     });
 
     $('.art-comment').on('click', '.comment-btn', function () {
-        var username = '博主';
-        var qq = '00000000';
+        var userNick = '博主';
+        // var qq = '00000000';
+        var qq = '';
         var avatarSrc = "/static/comm/img/avatar/" + Math.ceil(Math.random() * 10) + ".jpg";
         var commentext = $('#comm-content').val();
         var replyId = 0;
@@ -329,13 +348,13 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
             "/api/admin/comment/reply",
             1,
             JSON.stringify({
+                requestId: commToken,
                 content: commentext,
-                username: username,
+                userNick: userNick,
                 contactQq: qq,
                 artOid: artOid,
                 parentOid: replyId,
                 avatarSrc: avatarSrc,
-                subToken: commToken
             }),
             "评论成功",
             function () {

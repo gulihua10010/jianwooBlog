@@ -7,12 +7,14 @@
         <result column="PUSH_TIME" jdbcType="TIMESTAMP" property="pushTime"/>
         <result column="TITLE" jdbcType="VARCHAR" property="title"/>
         <result column="MODIFIED_TIME" jdbcType="TIMESTAMP" property="modifiedTime"/>
-        <result column="MENU_ID" jdbcType="INTEGER" property="menuId"/>
+        <result column="CATEGORY_ID" jdbcType="INTEGER" property="categoryId"/>
+        <result column="CATEGORY_NAME" jdbcType="INTEGER" property="categoryName"/>
         <result column="READ_COUNT" jdbcType="BIGINT" property="readCount"/>
         <result column="PRAISE_COUNT" jdbcType="BIGINT" property="praiseCount"/>
         <result column="IS_COMMENT" jdbcType="CHAR" property="isComment"/>
         <result column="IMG_SRC" jdbcType="VARCHAR" property="imgSrc"/>
         <result column="ACCESS_TYPE" jdbcType="VARCHAR" property="accessType" />
+        <result column="TOP_PLACE_STATUS" jdbcType="VARCHAR" property="topPlaceStatus" />
         <result column="COMMENT_COUNT" jdbcType="BIGINT" property="commentCount"/>
         <result column="STATUS" jdbcType="VARCHAR" property="status"/>
         <result column="PASSWORD" jdbcType="VARCHAR" property="password"/>
@@ -27,11 +29,12 @@
     </resultMap>
     <resultMap id="ResultMapWithExt" extends="BaseResultMap" type="cn.jianwoo.blog.entity.extension.ArticleExt">
         <result column="TITLE" jdbcType="LONGVARCHAR" property="title"/>
-        <result column="TYPE_NAME" jdbcType="VARCHAR" property="typeName"/>
+        <result column="PUSH_DATE_STR" jdbcType="VARCHAR" property="pushDateStr"/>
+        <result column="COUNT" jdbcType="INTEGER" property="count"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        OID, AUTHOR, PUSH_TIME, TITLE, MODIFIED_TIME, MENU_ID, READ_COUNT, PRAISE_COUNT,
+        OID, AUTHOR, PUSH_TIME, TITLE, MODIFIED_TIME, CATEGORY_ID, READ_COUNT, PRAISE_COUNT,
     IS_COMMENT, IMG_SRC, ACCESS_TYPE, COMMENT_COUNT, `STATUS`, `PASSWORD`, DEL_TIME, REMOVE_RECYCLE_TIME,
     CREATE_TIME, UPDATE_TIME
     </sql>
@@ -89,8 +92,8 @@
 
     <select id="selectArticleListByStatus" parameterType="cn.jianwoo.blog.entity.query.ArticleQuery"
             resultMap="ResultMapWithExt">
-        SELECT A.TITLE,A.AUTHOR,A.OID,A.PUSH_TIME,MODIFIED_TIME,M.NAME AS TYPE_NAME,A.STATUS
-        FROM ARTICLE A LEFT JOIN MENU M ON M.OID=A.MENU_ID
+        SELECT A.TITLE,A.AUTHOR,A.OID,A.PUSH_TIME,MODIFIED_TIME,A.CATEGORY_NAME,A.STATUS
+        FROM ARTICLE A
         WHERE STATUS IN
         <foreach item="item" collection="statusParams" separator="," open="(" close=")" index="">
             #{item, jdbcType=INTEGER}
@@ -100,6 +103,12 @@
         </if>
         <if test="text != null">
             AND A.TEXT LIKE CONCAT('%',#{text,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="publishDateStart != null">
+            AND A.PUSH_TIME &gt;= #{publishDateStart,jdbcType=TIMESTAMP}
+        </if>
+        <if test="publishDateEnd != null">
+            AND A.PUSH_TIME &lt;= #{publishDateEnd,jdbcType=TIMESTAMP}
         </if>
 
         <if test="orderByClause == null">
@@ -149,38 +158,109 @@
     <select id="selectArticleListMain" parameterType="map"
             resultMap="ResultMapWithExt">
         SELECT A.TITLE,A.AUTHOR,A.OID,A.ACCESS_TYPE,A.PUSH_TIME,A.COMMENT_COUNT,A.TEXT,A.IMG_SRC,
-               A.PRAISE_COUNT,A.READ_COUNT,A.MODIFIED_TIME,M.NAME AS TYPE_NAME
+               A.PRAISE_COUNT,A.READ_COUNT,A.MODIFIED_TIME,A.CATEGORY_NAME,A.TOP_PLACE_STATUS
         FROM ARTICLE A
-            LEFT JOIN MENU M ON M.OID=A.MENU_ID
         WHERE STATUS = '90'
+        <if test="param.keywords != null">
+            AND (A.TITLE LIKE CONCAT('%',#{param.keywords,jdbcType=VARCHAR},'%')
+            OR
+            A.TEXT LIKE CONCAT('%',#{param.keywords,jdbcType=VARCHAR},'%'))
+        </if>
+        <if test="param.keywords == null">
+            <if test="param.title != null">
+                AND A.TITLE LIKE CONCAT('%',#{param.title,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="param.text != null">
+                AND A.TEXT LIKE CONCAT('%',#{param.text,jdbcType=VARCHAR},'%')
+            </if>
+        </if>
 
-        <if test="param.title != null">
-            AND A.TITLE LIKE CONCAT('%',#{param.title,jdbcType=VARCHAR},'%')
+
+        <if test="param.category2 != null">
+            AND A.CATEGORY_ID = #{param.category2, jdbcType=INTEGER}
         </if>
-        <if test="param.text != null">
-            AND A.TEXT LIKE CONCAT('%',#{param.text,jdbcType=VARCHAR},'%')
-        </if>
-        <if test="param.category != null">
-            AND A.MENU_ID = #{param.category, jdbcType=INTEGER}
+        <if test="param.category1 != null">
+            AND A.CATEGORY_ID IN (
+            <foreach item="item" collection="param.categorys" separator="," open="(" close=")" index="">
+                #{item, jdbcType=INTEGER}
+            </foreach>
+            )
         </if>
         <if test="param.tags != null">
         AND A.OID IN (
             SELECT T.ARTICLE_OID FROM ARTICLE_TAGS T WHERE T.TAGS_OID IN
             <foreach item="item" collection="param.tags" separator="," open="(" close=")" index="">
-                #{param.item, jdbcType=INTEGER}
+                #{item, jdbcType=INTEGER}
             </foreach>
             )
         </if>
         <if test="!isPrivate">
             AND A.ACCESS_TYPE != '10'
         </if>
+        <if test="param.publishDateStart != null">
+            AND A.PUSH_TIME &gt;= #{param.publishDateStart,jdbcType=TIMESTAMP}
+        </if>
+        <if test="param.publishDateEnd != null">
+            AND A.PUSH_TIME &lt;= #{param.publishDateEnd,jdbcType=TIMESTAMP}
+        </if>
         <if test="param.orderByClause == null">
-            ORDER BY MODIFIED_TIME DESC
+            ORDER BY A.TOP_PLACE_STATUS DESC, MODIFIED_TIME DESC
         </if>
         <if test="param.orderByClause != null">
-            ORDER BY #{param.orderByClause}
+            ORDER BY A.TOP_PLACE_STATUS DESC, #{param.orderByClause}
         </if>
 
     </select>
 
+
+
+    <select id="selectMonthDatePublishList" parameterType="map"
+            resultMap="ResultMapWithExt">
+        SELECT DATE_FORMAT(PUSH_TIME,'%Y-%m-%d') AS `PUSH_DATE_STR`, COUNT(OID) AS `COUNT`
+        FROM ARTICLE
+        WHERE STATUS = '90'
+        <if test="!isPrivate">
+            AND ACCESS_TYPE != '10'
+        </if>
+        <if test="param.publishDateStart != null">
+            AND PUSH_TIME &gt;= #{param.publishDateStart,jdbcType=TIMESTAMP}
+        </if>
+        <if test="param.publishDateEnd != null">
+            AND PUSH_TIME &lt;= #{param.publishDateEnd,jdbcType=TIMESTAMP}
+        </if>
+        GROUP BY DATE_FORMAT(PUSH_TIME,'%Y-%m-%d')
+    </select>
+
+
+    <select id="selectMonthDatePublishCount" parameterType="map"
+            resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM ARTICLE A
+        WHERE STATUS = '90'
+        <if test="!isPrivate">
+            AND A.ACCESS_TYPE != '10'
+        </if>
+        <if test="param.publishDateStart != null">
+            AND A.PUSH_TIME &gt;= #{param.publishDateStart,jdbcType=TIMESTAMP}
+        </if>
+        <if test="param.publishDateEnd != null">
+            AND A.PUSH_TIME &lt;= #{param.publishDateEnd,jdbcType=TIMESTAMP}
+        </if>
+    </select>
+
+    <select id="selectRecommendArticleByArtOid" parameterType="java.lang.Long"
+            resultMap="ResultMapWithExt">
+                SELECT DISTINCT ARTICLE_OID AS OID, A.TITLE, A.AUTHOR
+                FROM article_tags T LEFT JOIN ARTICLE A ON A.OID=T.ARTICLE_OID
+                WHERE ARTICLE_OID != #{oid} AND TAGS_OID IN
+                      (SELECT TAGS_OID FROM article_tags  WHERE ARTICLE_OID = #{oid})
+                AND ART_FLAG_ACTIVITY = TRUE AND ART_FLAG_PRIVATE = 0 ORDER BY READ_COUNT DESC LIMIT 5
+    </select>
+
+    <select id="selectRecommendArticleByCategoryOid" parameterType="Integer"
+            resultMap="ResultMapWithExt">
+        SELECT OID, TITLE, AUTHOR FROM ARTICLE
+        WHERE OID != #{oid} AND CATEGORY_ID = #{oid} AND ACCESS_TYPE = '20' AND STATUS = '90'
+        ORDER BY READ_COUNT DESC LIMIT 5
+    </select>
 </mapper>

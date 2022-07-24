@@ -2,11 +2,11 @@ package cn.jianwoo.blog.autotask;
 
 import cn.hutool.extra.spring.SpringUtil;
 import cn.jianwoo.blog.cache.CacheStore;
-import cn.jianwoo.blog.constants.CacaheKeyConstants;
+import cn.jianwoo.blog.constants.CacheKeyConstants;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.util.JwtUtils;
+import cn.jianwoo.blog.util.ProcessTokenUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
@@ -24,7 +24,7 @@ public class CacheCleanJob implements Job {
         log.info("====>>AutoTask::CacheCleanJob start...");
         try {
             cacheStore.keySet().forEach(key -> {
-                if (key.startsWith(CacaheKeyConstants.INVALID_TOKEN.replace("{0}",""))) {
+                if (key.startsWith(CacheKeyConstants.INVALID_TOKEN.replace("{0}", ""))) {
                     Optional<Object> value = cacheStore.get(key);
                     if (value.isPresent()) {
                         String accessToken = (String) value.get();
@@ -37,6 +37,11 @@ public class CacheCleanJob implements Job {
                     }
 
 
+                } else if (key.startsWith(ProcessTokenUtil.TOKEN_KEY)) {
+                    if (cacheStore.hasKey(key)) {
+                        log.debug("Delete expired Request Id Key : {}", key);
+
+                    }
                 }
             });
         } catch (Exception e) {

@@ -1,7 +1,7 @@
 package cn.jianwoo.blog.filter;
 
 import cn.jianwoo.blog.cache.CacheStore;
-import cn.jianwoo.blog.constants.CacaheKeyConstants;
+import cn.jianwoo.blog.constants.CacheKeyConstants;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.constants.WebConfDataConfig;
@@ -61,7 +61,7 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
             if (Constants.TRUE.equals(isNeed)) {
                 String accessToken = (String) param.get(Constants.CAPTCHA_TOKEN);
                 String guid = (String) param.get(Constants.GUID);
-                String cacheKey = MessageFormat.format(CacaheKeyConstants.LOGIN_CAPTCHA_AUTH, guid);
+                String cacheKey = MessageFormat.format(CacheKeyConstants.LOGIN_CAPTCHA_AUTH, guid);
                 String tokenStore = cacheStore.get(cacheKey).orElse(null);
                 boolean isCaptcha = null != accessToken && accessToken.equals(tokenStore);
                 if (!isCaptcha) {

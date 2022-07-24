@@ -13,7 +13,7 @@ layui.define(['form', 'mouseRightMenu'], function (exports) {
     }
     var token;
     ajaxApiPost(
-        "/api/admin/token/generate",
+        "/api/admin/request/token/generate",
         1,
         JSON.stringify({
             pageId: 'T14',
@@ -45,7 +45,7 @@ layui.define(['form', 'mouseRightMenu'], function (exports) {
                                 ajaxPost(
                                     '/api/admin/tag/update',
                                     1,
-                                    JSON.stringify({tagText: field.text, oid: d.data.oid, subToken: field.subToken}),
+                                    JSON.stringify({requestId: field.subToken,tagText: field.text, oid: d.data.oid}),
                                     "更新成功",
                                     function () {
                                         admin.events.refresh();
@@ -213,7 +213,7 @@ layui.define(['form', 'mouseRightMenu'], function (exports) {
         ajaxPost(
             '/api/admin/tag/create/list',
             1,
-            JSON.stringify({tagList: tagsArr, subToken: token}),
+            JSON.stringify({requestId: token,tagList: tagsArr}),
             "添加成功",
             function () {
                 admin.events.refresh()

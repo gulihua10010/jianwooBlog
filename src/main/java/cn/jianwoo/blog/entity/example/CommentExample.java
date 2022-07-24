@@ -455,6 +455,76 @@ public class CommentExample {
             return (Criteria) this;
         }
 
+        public Criteria andUserIdIsNull() {
+            addCriterion("USER_ID is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdIsNotNull() {
+            addCriterion("USER_ID is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdEqualTo(String value) {
+            addCriterion("USER_ID =", value, "userId");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdNotEqualTo(String value) {
+            addCriterion("USER_ID <>", value, "userId");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdGreaterThan(String value) {
+            addCriterion("USER_ID >", value, "userId");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdGreaterThanOrEqualTo(String value) {
+            addCriterion("USER_ID >=", value, "userId");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdLessThan(String value) {
+            addCriterion("USER_ID <", value, "userId");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdLessThanOrEqualTo(String value) {
+            addCriterion("USER_ID <=", value, "userId");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdLike(String value) {
+            addCriterion("USER_ID like", value, "userId");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdNotLike(String value) {
+            addCriterion("USER_ID not like", value, "userId");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdIn(List<String> values) {
+            addCriterion("USER_ID in", values, "userId");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdNotIn(List<String> values) {
+            addCriterion("USER_ID not in", values, "userId");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdBetween(String value1, String value2) {
+            addCriterion("USER_ID between", value1, value2, "userId");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdNotBetween(String value1, String value2) {
+            addCriterion("USER_ID not between", value1, value2, "userId");
+            return (Criteria) this;
+        }
+
         public Criteria andUserNameIsNull() {
             addCriterion("USER_NAME is null");
             return (Criteria) this;
@@ -522,6 +592,76 @@ public class CommentExample {
 
         public Criteria andUserNameNotBetween(String value1, String value2) {
             addCriterion("USER_NAME not between", value1, value2, "userName");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserNickIsNull() {
+            addCriterion("USER_NICK is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserNickIsNotNull() {
+            addCriterion("USER_NICK is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserNickEqualTo(String value) {
+            addCriterion("USER_NICK =", value, "userNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserNickNotEqualTo(String value) {
+            addCriterion("USER_NICK <>", value, "userNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserNickGreaterThan(String value) {
+            addCriterion("USER_NICK >", value, "userNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserNickGreaterThanOrEqualTo(String value) {
+            addCriterion("USER_NICK >=", value, "userNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserNickLessThan(String value) {
+            addCriterion("USER_NICK <", value, "userNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserNickLessThanOrEqualTo(String value) {
+            addCriterion("USER_NICK <=", value, "userNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserNickLike(String value) {
+            addCriterion("USER_NICK like", value, "userNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserNickNotLike(String value) {
+            addCriterion("USER_NICK not like", value, "userNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserNickIn(List<String> values) {
+            addCriterion("USER_NICK in", values, "userNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserNickNotIn(List<String> values) {
+            addCriterion("USER_NICK not in", values, "userNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserNickBetween(String value1, String value2) {
+            addCriterion("USER_NICK between", value1, value2, "userNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserNickNotBetween(String value1, String value2) {
+            addCriterion("USER_NICK not between", value1, value2, "userNick");
             return (Criteria) this;
         }
 
@@ -782,6 +922,276 @@ public class CommentExample {
 
         public Criteria andParentOidNotBetween(Long value1, Long value2) {
             addCriterion("PARENT_OID not between", value1, value2, "parentOid");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyRootOidIsNull() {
+            addCriterion("REPLY_ROOT_OID is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyRootOidIsNotNull() {
+            addCriterion("REPLY_ROOT_OID is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyRootOidEqualTo(Long value) {
+            addCriterion("REPLY_ROOT_OID =", value, "replyRootOid");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyRootOidNotEqualTo(Long value) {
+            addCriterion("REPLY_ROOT_OID <>", value, "replyRootOid");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyRootOidGreaterThan(Long value) {
+            addCriterion("REPLY_ROOT_OID >", value, "replyRootOid");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyRootOidGreaterThanOrEqualTo(Long value) {
+            addCriterion("REPLY_ROOT_OID >=", value, "replyRootOid");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyRootOidLessThan(Long value) {
+            addCriterion("REPLY_ROOT_OID <", value, "replyRootOid");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyRootOidLessThanOrEqualTo(Long value) {
+            addCriterion("REPLY_ROOT_OID <=", value, "replyRootOid");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyRootOidIn(List<Long> values) {
+            addCriterion("REPLY_ROOT_OID in", values, "replyRootOid");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyRootOidNotIn(List<Long> values) {
+            addCriterion("REPLY_ROOT_OID not in", values, "replyRootOid");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyRootOidBetween(Long value1, Long value2) {
+            addCriterion("REPLY_ROOT_OID between", value1, value2, "replyRootOid");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyRootOidNotBetween(Long value1, Long value2) {
+            addCriterion("REPLY_ROOT_OID not between", value1, value2, "replyRootOid");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserIdIsNull() {
+            addCriterion("REPLY_TO_USER_ID is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserIdIsNotNull() {
+            addCriterion("REPLY_TO_USER_ID is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserIdEqualTo(String value) {
+            addCriterion("REPLY_TO_USER_ID =", value, "replyToUserId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserIdNotEqualTo(String value) {
+            addCriterion("REPLY_TO_USER_ID <>", value, "replyToUserId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserIdGreaterThan(String value) {
+            addCriterion("REPLY_TO_USER_ID >", value, "replyToUserId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserIdGreaterThanOrEqualTo(String value) {
+            addCriterion("REPLY_TO_USER_ID >=", value, "replyToUserId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserIdLessThan(String value) {
+            addCriterion("REPLY_TO_USER_ID <", value, "replyToUserId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserIdLessThanOrEqualTo(String value) {
+            addCriterion("REPLY_TO_USER_ID <=", value, "replyToUserId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserIdLike(String value) {
+            addCriterion("REPLY_TO_USER_ID like", value, "replyToUserId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserIdNotLike(String value) {
+            addCriterion("REPLY_TO_USER_ID not like", value, "replyToUserId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserIdIn(List<String> values) {
+            addCriterion("REPLY_TO_USER_ID in", values, "replyToUserId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserIdNotIn(List<String> values) {
+            addCriterion("REPLY_TO_USER_ID not in", values, "replyToUserId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserIdBetween(String value1, String value2) {
+            addCriterion("REPLY_TO_USER_ID between", value1, value2, "replyToUserId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserIdNotBetween(String value1, String value2) {
+            addCriterion("REPLY_TO_USER_ID not between", value1, value2, "replyToUserId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNameIsNull() {
+            addCriterion("REPLY_TO_USER_NAME is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNameIsNotNull() {
+            addCriterion("REPLY_TO_USER_NAME is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNameEqualTo(String value) {
+            addCriterion("REPLY_TO_USER_NAME =", value, "replyToUserName");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNameNotEqualTo(String value) {
+            addCriterion("REPLY_TO_USER_NAME <>", value, "replyToUserName");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNameGreaterThan(String value) {
+            addCriterion("REPLY_TO_USER_NAME >", value, "replyToUserName");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNameGreaterThanOrEqualTo(String value) {
+            addCriterion("REPLY_TO_USER_NAME >=", value, "replyToUserName");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNameLessThan(String value) {
+            addCriterion("REPLY_TO_USER_NAME <", value, "replyToUserName");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNameLessThanOrEqualTo(String value) {
+            addCriterion("REPLY_TO_USER_NAME <=", value, "replyToUserName");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNameLike(String value) {
+            addCriterion("REPLY_TO_USER_NAME like", value, "replyToUserName");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNameNotLike(String value) {
+            addCriterion("REPLY_TO_USER_NAME not like", value, "replyToUserName");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNameIn(List<String> values) {
+            addCriterion("REPLY_TO_USER_NAME in", values, "replyToUserName");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNameNotIn(List<String> values) {
+            addCriterion("REPLY_TO_USER_NAME not in", values, "replyToUserName");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNameBetween(String value1, String value2) {
+            addCriterion("REPLY_TO_USER_NAME between", value1, value2, "replyToUserName");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNameNotBetween(String value1, String value2) {
+            addCriterion("REPLY_TO_USER_NAME not between", value1, value2, "replyToUserName");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNickIsNull() {
+            addCriterion("REPLY_TO_USER_NICK is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNickIsNotNull() {
+            addCriterion("REPLY_TO_USER_NICK is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNickEqualTo(String value) {
+            addCriterion("REPLY_TO_USER_NICK =", value, "replyToUserNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNickNotEqualTo(String value) {
+            addCriterion("REPLY_TO_USER_NICK <>", value, "replyToUserNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNickGreaterThan(String value) {
+            addCriterion("REPLY_TO_USER_NICK >", value, "replyToUserNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNickGreaterThanOrEqualTo(String value) {
+            addCriterion("REPLY_TO_USER_NICK >=", value, "replyToUserNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNickLessThan(String value) {
+            addCriterion("REPLY_TO_USER_NICK <", value, "replyToUserNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNickLessThanOrEqualTo(String value) {
+            addCriterion("REPLY_TO_USER_NICK <=", value, "replyToUserNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNickLike(String value) {
+            addCriterion("REPLY_TO_USER_NICK like", value, "replyToUserNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNickNotLike(String value) {
+            addCriterion("REPLY_TO_USER_NICK not like", value, "replyToUserNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNickIn(List<String> values) {
+            addCriterion("REPLY_TO_USER_NICK in", values, "replyToUserNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNickNotIn(List<String> values) {
+            addCriterion("REPLY_TO_USER_NICK not in", values, "replyToUserNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNickBetween(String value1, String value2) {
+            addCriterion("REPLY_TO_USER_NICK between", value1, value2, "replyToUserNick");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNickNotBetween(String value1, String value2) {
+            addCriterion("REPLY_TO_USER_NICK not between", value1, value2, "replyToUserNick");
             return (Criteria) this;
         }
 
@@ -1125,6 +1535,76 @@ public class CommentExample {
             return (Criteria) this;
         }
 
+        public Criteria andContactEmailIsNull() {
+            addCriterion("CONTACT_EMAIL is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andContactEmailIsNotNull() {
+            addCriterion("CONTACT_EMAIL is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andContactEmailEqualTo(String value) {
+            addCriterion("CONTACT_EMAIL =", value, "contactEmail");
+            return (Criteria) this;
+        }
+
+        public Criteria andContactEmailNotEqualTo(String value) {
+            addCriterion("CONTACT_EMAIL <>", value, "contactEmail");
+            return (Criteria) this;
+        }
+
+        public Criteria andContactEmailGreaterThan(String value) {
+            addCriterion("CONTACT_EMAIL >", value, "contactEmail");
+            return (Criteria) this;
+        }
+
+        public Criteria andContactEmailGreaterThanOrEqualTo(String value) {
+            addCriterion("CONTACT_EMAIL >=", value, "contactEmail");
+            return (Criteria) this;
+        }
+
+        public Criteria andContactEmailLessThan(String value) {
+            addCriterion("CONTACT_EMAIL <", value, "contactEmail");
+            return (Criteria) this;
+        }
+
+        public Criteria andContactEmailLessThanOrEqualTo(String value) {
+            addCriterion("CONTACT_EMAIL <=", value, "contactEmail");
+            return (Criteria) this;
+        }
+
+        public Criteria andContactEmailLike(String value) {
+            addCriterion("CONTACT_EMAIL like", value, "contactEmail");
+            return (Criteria) this;
+        }
+
+        public Criteria andContactEmailNotLike(String value) {
+            addCriterion("CONTACT_EMAIL not like", value, "contactEmail");
+            return (Criteria) this;
+        }
+
+        public Criteria andContactEmailIn(List<String> values) {
+            addCriterion("CONTACT_EMAIL in", values, "contactEmail");
+            return (Criteria) this;
+        }
+
+        public Criteria andContactEmailNotIn(List<String> values) {
+            addCriterion("CONTACT_EMAIL not in", values, "contactEmail");
+            return (Criteria) this;
+        }
+
+        public Criteria andContactEmailBetween(String value1, String value2) {
+            addCriterion("CONTACT_EMAIL between", value1, value2, "contactEmail");
+            return (Criteria) this;
+        }
+
+        public Criteria andContactEmailNotBetween(String value1, String value2) {
+            addCriterion("CONTACT_EMAIL not between", value1, value2, "contactEmail");
+            return (Criteria) this;
+        }
+
         public Criteria andAvatarSrcIsNull() {
             addCriterion("AVATAR_SRC is null");
             return (Criteria) this;
@@ -1195,73 +1675,73 @@ public class CommentExample {
             return (Criteria) this;
         }
 
-        public Criteria andArtDelStautsIsNull() {
-            addCriterion("ART_DEL_STAUTS is null");
+        public Criteria andArtDelStatusIsNull() {
+            addCriterion("ART_DEL_STATUS is null");
             return (Criteria) this;
         }
 
-        public Criteria andArtDelStautsIsNotNull() {
-            addCriterion("ART_DEL_STAUTS is not null");
+        public Criteria andArtDelStatusIsNotNull() {
+            addCriterion("ART_DEL_STATUS is not null");
             return (Criteria) this;
         }
 
-        public Criteria andArtDelStautsEqualTo(String value) {
-            addCriterion("ART_DEL_STAUTS =", value, "artDelStauts");
+        public Criteria andArtDelStatusEqualTo(String value) {
+            addCriterion("ART_DEL_STATUS =", value, "artDelStatus");
             return (Criteria) this;
         }
 
-        public Criteria andArtDelStautsNotEqualTo(String value) {
-            addCriterion("ART_DEL_STAUTS <>", value, "artDelStauts");
+        public Criteria andArtDelStatusNotEqualTo(String value) {
+            addCriterion("ART_DEL_STATUS <>", value, "artDelStatus");
             return (Criteria) this;
         }
 
-        public Criteria andArtDelStautsGreaterThan(String value) {
-            addCriterion("ART_DEL_STAUTS >", value, "artDelStauts");
+        public Criteria andArtDelStatusGreaterThan(String value) {
+            addCriterion("ART_DEL_STATUS >", value, "artDelStatus");
             return (Criteria) this;
         }
 
-        public Criteria andArtDelStautsGreaterThanOrEqualTo(String value) {
-            addCriterion("ART_DEL_STAUTS >=", value, "artDelStauts");
+        public Criteria andArtDelStatusGreaterThanOrEqualTo(String value) {
+            addCriterion("ART_DEL_STATUS >=", value, "artDelStatus");
             return (Criteria) this;
         }
 
-        public Criteria andArtDelStautsLessThan(String value) {
-            addCriterion("ART_DEL_STAUTS <", value, "artDelStauts");
+        public Criteria andArtDelStatusLessThan(String value) {
+            addCriterion("ART_DEL_STATUS <", value, "artDelStatus");
             return (Criteria) this;
         }
 
-        public Criteria andArtDelStautsLessThanOrEqualTo(String value) {
-            addCriterion("ART_DEL_STAUTS <=", value, "artDelStauts");
+        public Criteria andArtDelStatusLessThanOrEqualTo(String value) {
+            addCriterion("ART_DEL_STATUS <=", value, "artDelStatus");
             return (Criteria) this;
         }
 
-        public Criteria andArtDelStautsLike(String value) {
-            addCriterion("ART_DEL_STAUTS like", value, "artDelStauts");
+        public Criteria andArtDelStatusLike(String value) {
+            addCriterion("ART_DEL_STATUS like", value, "artDelStatus");
             return (Criteria) this;
         }
 
-        public Criteria andArtDelStautsNotLike(String value) {
-            addCriterion("ART_DEL_STAUTS not like", value, "artDelStauts");
+        public Criteria andArtDelStatusNotLike(String value) {
+            addCriterion("ART_DEL_STATUS not like", value, "artDelStatus");
             return (Criteria) this;
         }
 
-        public Criteria andArtDelStautsIn(List<String> values) {
-            addCriterion("ART_DEL_STAUTS in", values, "artDelStauts");
+        public Criteria andArtDelStatusIn(List<String> values) {
+            addCriterion("ART_DEL_STATUS in", values, "artDelStatus");
             return (Criteria) this;
         }
 
-        public Criteria andArtDelStautsNotIn(List<String> values) {
-            addCriterion("ART_DEL_STAUTS not in", values, "artDelStauts");
+        public Criteria andArtDelStatusNotIn(List<String> values) {
+            addCriterion("ART_DEL_STATUS not in", values, "artDelStatus");
             return (Criteria) this;
         }
 
-        public Criteria andArtDelStautsBetween(String value1, String value2) {
-            addCriterion("ART_DEL_STAUTS between", value1, value2, "artDelStauts");
+        public Criteria andArtDelStatusBetween(String value1, String value2) {
+            addCriterion("ART_DEL_STATUS between", value1, value2, "artDelStatus");
             return (Criteria) this;
         }
 
-        public Criteria andArtDelStautsNotBetween(String value1, String value2) {
-            addCriterion("ART_DEL_STAUTS not between", value1, value2, "artDelStauts");
+        public Criteria andArtDelStatusNotBetween(String value1, String value2) {
+            addCriterion("ART_DEL_STATUS not between", value1, value2, "artDelStatus");
             return (Criteria) this;
         }
 
@@ -1332,6 +1812,186 @@ public class CommentExample {
 
         public Criteria andReadStatusNotBetween(String value1, String value2) {
             addCriterion("READ_STATUS not between", value1, value2, "readStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andFloorNumberIsNull() {
+            addCriterion("FLOOR_NUMBER is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFloorNumberIsNotNull() {
+            addCriterion("FLOOR_NUMBER is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFloorNumberEqualTo(Long value) {
+            addCriterion("FLOOR_NUMBER =", value, "floorNumber");
+            return (Criteria) this;
+        }
+
+        public Criteria andFloorNumberNotEqualTo(Long value) {
+            addCriterion("FLOOR_NUMBER <>", value, "floorNumber");
+            return (Criteria) this;
+        }
+
+        public Criteria andFloorNumberGreaterThan(Long value) {
+            addCriterion("FLOOR_NUMBER >", value, "floorNumber");
+            return (Criteria) this;
+        }
+
+        public Criteria andFloorNumberGreaterThanOrEqualTo(Long value) {
+            addCriterion("FLOOR_NUMBER >=", value, "floorNumber");
+            return (Criteria) this;
+        }
+
+        public Criteria andFloorNumberLessThan(Long value) {
+            addCriterion("FLOOR_NUMBER <", value, "floorNumber");
+            return (Criteria) this;
+        }
+
+        public Criteria andFloorNumberLessThanOrEqualTo(Long value) {
+            addCriterion("FLOOR_NUMBER <=", value, "floorNumber");
+            return (Criteria) this;
+        }
+
+        public Criteria andFloorNumberIn(List<Long> values) {
+            addCriterion("FLOOR_NUMBER in", values, "floorNumber");
+            return (Criteria) this;
+        }
+
+        public Criteria andFloorNumberNotIn(List<Long> values) {
+            addCriterion("FLOOR_NUMBER not in", values, "floorNumber");
+            return (Criteria) this;
+        }
+
+        public Criteria andFloorNumberBetween(Long value1, Long value2) {
+            addCriterion("FLOOR_NUMBER between", value1, value2, "floorNumber");
+            return (Criteria) this;
+        }
+
+        public Criteria andFloorNumberNotBetween(Long value1, Long value2) {
+            addCriterion("FLOOR_NUMBER not between", value1, value2, "floorNumber");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyCountIsNull() {
+            addCriterion("REPLY_COUNT is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyCountIsNotNull() {
+            addCriterion("REPLY_COUNT is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyCountEqualTo(Long value) {
+            addCriterion("REPLY_COUNT =", value, "replyCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyCountNotEqualTo(Long value) {
+            addCriterion("REPLY_COUNT <>", value, "replyCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyCountGreaterThan(Long value) {
+            addCriterion("REPLY_COUNT >", value, "replyCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyCountGreaterThanOrEqualTo(Long value) {
+            addCriterion("REPLY_COUNT >=", value, "replyCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyCountLessThan(Long value) {
+            addCriterion("REPLY_COUNT <", value, "replyCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyCountLessThanOrEqualTo(Long value) {
+            addCriterion("REPLY_COUNT <=", value, "replyCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyCountIn(List<Long> values) {
+            addCriterion("REPLY_COUNT in", values, "replyCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyCountNotIn(List<Long> values) {
+            addCriterion("REPLY_COUNT not in", values, "replyCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyCountBetween(Long value1, Long value2) {
+            addCriterion("REPLY_COUNT between", value1, value2, "replyCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyCountNotBetween(Long value1, Long value2) {
+            addCriterion("REPLY_COUNT not between", value1, value2, "replyCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalReplyCountIsNull() {
+            addCriterion("TOTAL_REPLY_COUNT is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalReplyCountIsNotNull() {
+            addCriterion("TOTAL_REPLY_COUNT is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalReplyCountEqualTo(Long value) {
+            addCriterion("TOTAL_REPLY_COUNT =", value, "totalReplyCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalReplyCountNotEqualTo(Long value) {
+            addCriterion("TOTAL_REPLY_COUNT <>", value, "totalReplyCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalReplyCountGreaterThan(Long value) {
+            addCriterion("TOTAL_REPLY_COUNT >", value, "totalReplyCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalReplyCountGreaterThanOrEqualTo(Long value) {
+            addCriterion("TOTAL_REPLY_COUNT >=", value, "totalReplyCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalReplyCountLessThan(Long value) {
+            addCriterion("TOTAL_REPLY_COUNT <", value, "totalReplyCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalReplyCountLessThanOrEqualTo(Long value) {
+            addCriterion("TOTAL_REPLY_COUNT <=", value, "totalReplyCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalReplyCountIn(List<Long> values) {
+            addCriterion("TOTAL_REPLY_COUNT in", values, "totalReplyCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalReplyCountNotIn(List<Long> values) {
+            addCriterion("TOTAL_REPLY_COUNT not in", values, "totalReplyCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalReplyCountBetween(Long value1, Long value2) {
+            addCriterion("TOTAL_REPLY_COUNT between", value1, value2, "totalReplyCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalReplyCountNotBetween(Long value1, Long value2) {
+            addCriterion("TOTAL_REPLY_COUNT not between", value1, value2, "totalReplyCount");
             return (Criteria) this;
         }
 
@@ -1540,8 +2200,18 @@ public class CommentExample {
             return (Criteria) this;
         }
 
+        public Criteria andUserIdLikeInsensitive(String value) {
+            addCriterion("upper(USER_ID) like", value.toUpperCase(), "userId");
+            return (Criteria) this;
+        }
+
         public Criteria andUserNameLikeInsensitive(String value) {
             addCriterion("upper(USER_NAME) like", value.toUpperCase(), "userName");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserNickLikeInsensitive(String value) {
+            addCriterion("upper(USER_NICK) like", value.toUpperCase(), "userNick");
             return (Criteria) this;
         }
 
@@ -1552,6 +2222,21 @@ public class CommentExample {
 
         public Criteria andUserAreaLikeInsensitive(String value) {
             addCriterion("upper(USER_AREA) like", value.toUpperCase(), "userArea");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserIdLikeInsensitive(String value) {
+            addCriterion("upper(REPLY_TO_USER_ID) like", value.toUpperCase(), "replyToUserId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNameLikeInsensitive(String value) {
+            addCriterion("upper(REPLY_TO_USER_NAME) like", value.toUpperCase(), "replyToUserName");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplyToUserNickLikeInsensitive(String value) {
+            addCriterion("upper(REPLY_TO_USER_NICK) like", value.toUpperCase(), "replyToUserNick");
             return (Criteria) this;
         }
 
@@ -1575,13 +2260,18 @@ public class CommentExample {
             return (Criteria) this;
         }
 
+        public Criteria andContactEmailLikeInsensitive(String value) {
+            addCriterion("upper(CONTACT_EMAIL) like", value.toUpperCase(), "contactEmail");
+            return (Criteria) this;
+        }
+
         public Criteria andAvatarSrcLikeInsensitive(String value) {
             addCriterion("upper(AVATAR_SRC) like", value.toUpperCase(), "avatarSrc");
             return (Criteria) this;
         }
 
-        public Criteria andArtDelStautsLikeInsensitive(String value) {
-            addCriterion("upper(ART_DEL_STAUTS) like", value.toUpperCase(), "artDelStauts");
+        public Criteria andArtDelStatusLikeInsensitive(String value) {
+            addCriterion("upper(ART_DEL_STATUS) like", value.toUpperCase(), "artDelStatus");
             return (Criteria) this;
         }
 

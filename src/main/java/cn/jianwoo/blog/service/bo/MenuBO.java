@@ -1,6 +1,5 @@
 package cn.jianwoo.blog.service.bo;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -16,7 +15,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class MenuBO implements Serializable {
     private static final long serialVersionUID = -7200997826206334561L;
 
@@ -54,6 +52,12 @@ public class MenuBO implements Serializable {
      * url[MENU.URL]
      */
     private String url;
+
+    /**
+     * 是否是文章类别[MENU.FLAG_CATEGORY]
+     */
+    private Boolean flagCategory;
+
 
     /**
      * 是否有效[MENU.VALID]

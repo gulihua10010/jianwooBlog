@@ -45,11 +45,11 @@ public interface ArticleQueryDao {
     /**
      * 通过类别id 查询文章 *
      *
-     * @param typeId Menu主键
+     * @param categoryId 类别id
      * @return
      * @author gulihua
      */
-    List<Article> queryArticleByType(Integer typeId);
+    List<Article> queryArticleByCategory(Integer categoryId);
 
 
     /**

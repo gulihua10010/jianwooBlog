@@ -7,17 +7,22 @@ import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.config.apiversion.ApiVersion;
 import cn.jianwoo.blog.config.router.main.CommentMainApiUrlConfig;
-import cn.jianwoo.blog.dto.request.ArticlePageRequest;
+import cn.jianwoo.blog.constants.Constants;
+import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.dto.request.ArticlePraiseRequest;
-import cn.jianwoo.blog.dto.request.CommentRequest;
-import cn.jianwoo.blog.dto.request.CommentPageRequest;
+import cn.jianwoo.blog.dto.request.CommentMainPageRequest;
 import cn.jianwoo.blog.dto.request.CommentPraiseRequest;
 import cn.jianwoo.blog.dto.request.CommentRemoveRequest;
+import cn.jianwoo.blog.dto.request.CommentRequest;
 import cn.jianwoo.blog.dto.response.CommentListResponse;
 import cn.jianwoo.blog.dto.response.vo.ArticleCommentListVO;
-import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.dto.response.vo.UserInfoVO;
+import cn.jianwoo.blog.exception.ValidationException;
 import cn.jianwoo.blog.service.biz.CommentBizService;
 import cn.jianwoo.blog.service.bo.CommentBO;
+import cn.jianwoo.blog.service.bo.CommentMainPageListBO;
+import cn.jianwoo.blog.service.bo.UserInfoBO;
+import cn.jianwoo.blog.service.param.CommentMainParam;
 import cn.jianwoo.blog.service.param.PageParam;
 import cn.jianwoo.blog.validation.BizValidation;
 import com.github.pagehelper.PageInfo;
@@ -48,66 +53,134 @@ public class CommentMainApiController extends BaseController {
 
     /**
      * 根据文章oid查询文章评论(文章详情页面)<br/>
-     * url:/api/comment/query/article/list<br/>
+     * url:/api/comment/query/page/article/list<br/>
      *
-     * @param param JSON 参数({@link CommentPageRequest})<br/>
+     * @param param JSON 参数({@link CommentMainPageRequest})<br/>
      *              artOid<br/>
+     *              parentOid<br/>
+     *              replyRootOid<br/>
+     *              orderWay<br/>
      * @return 返回响应 {@link CommentListResponse}<br/>
+     * count<br/>
+     * rootCommCount<br/>
+     * userInfo<br/>
+     * userInfo<br/>
+     * --userId<br/>
+     * --userName<br/>
+     * --userNick<br/>
+     * --avatarSrc<br/>
+     * --contactQq<br/>
+     * --contactWechat<br/>
+     * --contactWeibo<br/>
+     * --contactEmail<br/>
      * commentList<br/>
      * --avatarSrc<br/>
+     * --userId<br/>
      * --userName<br/>
+     * --userNick<br/>
+     * --contactQq<br/>
+     * --contactWechat<br/>
+     * --contactWeibo<br/>
+     * --contactEmail<br/>
      * --commentTimeStr<br/>
      * --commentTime<br/>
      * --content<br/>
-     * --parentUserName<br/>
+     * --floorNumber<br/>
+     * --isPraise<br/>
+     * --flagEdit<br/>
+     * --praiseCount<br/>
      * --oid<br/>
+     * --replyCount<br/>
      * --replyList<br/>
      * ----avatarSrc<br/>
+     * ----userId<br/>
      * ----userName<br/>
+     * ----userNick<br/>
+     * ----contactQq<br/>
+     * ----contactWechat<br/>
+     * ----contactWeibo<br/>
+     * ----contactEmail<br/>
      * ----commentTimeStr<br/>
      * ----commentTime<br/>
      * ----content<br/>
-     * ----parentUserName<br/>
+     * ----replyToUserId<br/>
+     * ----replyToUserName<br/>
+     * ----replyToUserNick<br/>
+     * ----isPraise<br/>
+     * ----flagEdit<br/>
+     * ----praiseCount<br/>
      * ----oid<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)<br/>
      * msg<br/>
      * @author gulihua
      */
-    @PostMapping(CommentMainApiUrlConfig.URL_QUERY_PAGE_LIST)
+    @PostMapping(CommentMainApiUrlConfig.URL_QUERY_PAGE_ARTICLE_LIST)
     @ApiVersion()
     @IpLimit(key = "queryCommentListByArticle")
     public String queryCommentListByArticle(@RequestBody String param) {
         try {
             super.printRequestParams(param);
-            CommentPageRequest request = this.convertParam(param, CommentPageRequest.class);
-            PageParam pageParam = new PageParam();
-            pageParam.setPageNo(request.getPage());
-            pageParam.setPageSize(request.getLimit());
-            BizValidation.paramValidate(request.getArtOid(), "artOid", "文章ID不能为空!");
-            PageInfo<CommentBO> commentExtList = commentBizService.queryCommentsMainPageByArtOid(request.getArtOid(), pageParam);
+            CommentMainPageRequest req = this.convertParam(param, CommentMainPageRequest.class);
+            BizValidation.paramValidate(req.getArtOid(), "artOid", "文章ID不能为空!");
+            if (null == req.getParentOid() && null == req.getReplyRootOid()) {
+                throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_NULL, "评论父ID和回复根ID不能全部为空!", "parentOid||replyRootOid");
+            }
+
+            CommentMainParam commentParam = new CommentMainParam();
+            commentParam.setArtOid(Long.valueOf(req.getArtOid()));
+            commentParam.setParentOid(req.getParentOid());
+            commentParam.setReplyRootOid(req.getReplyRootOid());
+            commentParam.setOrderWay(req.getOrderWay());
+            commentParam.setCurrentIp(request.getRemoteAddr());
+            commentParam.setPageNo(req.getPage());
+            commentParam.setPageSize(req.getLimit());
+            CommentMainPageListBO commentResBO = commentBizService.queryCommentsMainPageByArtOid(commentParam);
 
             CommentListResponse response = CommentListResponse.getInstance();
             List<ArticleCommentListVO> commentListVOList = new ArrayList<>();
-            if (CollectionUtils.isNotEmpty(commentExtList.getList())) {
-                for (CommentBO commentBO : commentExtList.getList()) {
+            if (CollectionUtils.isNotEmpty(commentResBO.getList())) {
+                for (CommentBO commentBO : commentResBO.getList()) {
                     ArticleCommentListVO vo = new ArticleCommentListVO();
+                    vo.setUserId(commentBO.getUserId());
                     vo.setUserName(commentBO.getUserName());
+                    vo.setUserNick(commentBO.getUserNick());
+                    vo.setContactWeibo(commentBO.getContactWeibo());
+                    vo.setContactWechat(commentBO.getContactWechat());
+                    vo.setContactQq(commentBO.getContactQq());
+                    vo.setContactEmail(commentBO.getContactEmail());
                     vo.setContent(commentBO.getContent());
                     vo.setCommentTimeStr(DateUtil.formatDateTime(commentBO.getCommentTime()));
                     vo.setCommentTime(commentBO.getCommentTime());
                     vo.setAvatarSrc(commentBO.getAvatarSrc());
                     vo.setOid(commentBO.getOid());
+                    vo.setFloorNumber(commentBO.getFloorNumber());
+                    vo.setIsPraise(commentBO.getIsPraise());
+                    vo.setPraiseCount(commentBO.getPraiseCount());
+                    vo.setFlagEdit(commentBO.getFlagEdit());
+                    vo.setReplyCount(commentBO.getReplyCount());
                     List<ArticleCommentListVO> replyList = new ArrayList<>();
                     if (CollectionUtils.isNotEmpty(commentBO.getReplyComments())) {
                         for (CommentBO rep : commentBO.getReplyComments()) {
                             ArticleCommentListVO replyVo = new ArticleCommentListVO();
+                            replyVo.setUserId(rep.getUserId());
                             replyVo.setUserName(rep.getUserName());
+                            replyVo.setUserNick(rep.getUserNick());
+                            replyVo.setContactWeibo(rep.getContactWeibo());
+                            replyVo.setContactWechat(rep.getContactWechat());
+                            replyVo.setContactQq(rep.getContactQq());
+                            replyVo.setContactEmail(rep.getContactEmail());
                             replyVo.setContent(rep.getContent());
                             replyVo.setCommentTimeStr(DateUtil.formatDateTime(rep.getCommentTime()));
                             replyVo.setCommentTime(rep.getCommentTime());
                             replyVo.setAvatarSrc(rep.getAvatarSrc());
                             replyVo.setOid(rep.getOid());
-                            replyVo.setParentUserName(rep.getParentUserName());
+                            replyVo.setReplyToUserId(rep.getReplyToUserId());
+                            replyVo.setReplyToUserName(rep.getReplyToUserName());
+                            replyVo.setReplyToUserNick(rep.getReplyToUserNick());
+                            replyVo.setIsPraise(rep.getIsPraise());
+                            replyVo.setPraiseCount(rep.getPraiseCount());
+                            replyVo.setReplyCount(rep.getReplyCount());
+                            replyVo.setFlagEdit(rep.getFlagEdit());
                             replyList.add(replyVo);
                         }
                         vo.setReplyList(replyList);
@@ -116,8 +189,23 @@ public class CommentMainApiController extends BaseController {
                     commentListVOList.add(vo);
                 }
             }
+            if (null != commentResBO.getUserInfo()) {
+                UserInfoBO userInfoBO = commentResBO.getUserInfo();
+                UserInfoVO userInfoVO = new UserInfoVO();
+                userInfoVO.setAvatarSrc(userInfoBO.getAvatarSrc());
+                userInfoVO.setUserId(userInfoBO.getUserId());
+                userInfoVO.setUserName(userInfoBO.getUserName());
+                userInfoVO.setUserNick(userInfoBO.getUserNick());
+                userInfoVO.setContactEmail(userInfoBO.getContactEmail());
+                userInfoVO.setContactQq(userInfoBO.getContactQq());
+                userInfoVO.setContactWechat(userInfoBO.getContactWechat());
+                userInfoVO.setContactWeibo(userInfoBO.getContactWeibo());
+                response.setUserInfo(userInfoVO);
+            }
 
             response.setCommentList(commentListVOList);
+            response.setCount(commentResBO.getCount());
+            response.setRootCommCount(commentResBO.getRootCommCount());
             return super.responseToJSONString(response);
 
         } catch (Exception e) {
@@ -134,8 +222,9 @@ public class CommentMainApiController extends BaseController {
      *
      * @param param JSON 参数({@link CommentRequest})
      *              commentText<br/>
-     *              username<br/>
-     *              qq<br/>
+     *              userNick<br/>
+     *              contactQq<br/>
+     *              contactEmail<br/>
      *              artId<br/>
      *              commentParentId<br/>
      *              avatarSrc<br/>
@@ -150,25 +239,32 @@ public class CommentMainApiController extends BaseController {
     public String doCreateComment(@RequestBody String param) {
         try {
             super.printRequestParams(param);
-            CommentRequest request = this.convertParam(param, CommentRequest.class);
-            BizValidation.paramValidate(request.getArtId(), "artId", "文章id不能为空!");
-            BizValidation.paramValidate(request.getCommentParentId(), "commentParentId", "评论父id不能为空!");
-            BizValidation.paramValidate(request.getCommentText(), "commentText", "评论内容不能为空!");
-            BizValidation.paramValidate(request.getUsername(), "username", "用户不能为空!");
+            CommentRequest req = this.convertParam(param, CommentRequest.class);
+            BizValidation.paramValidate(req.getArtId(), "artId", "文章id不能为空!");
+            BizValidation.paramValidate(req.getCommentParentId(), "commentParentId", "评论父id不能为空!");
+            BizValidation.paramValidate(req.getCommentText(), "commentText", "评论内容不能为空!");
+            BizValidation.paramValidate(req.getUserNick(), "userNick", "用户昵称不能为空!");
+            BizValidation.paramValidate(req.getContactEmail(), "contactEmail", "用户邮箱不能为空!");
+            BizValidation.paramLengthValidate(req.getUserNick(), Constants.NICK_LENGTH, "userNick", "昵称不能大于20个字符!");
+            BizValidation.paramLengthValidate(req.getContactEmail(), Constants.EMAIL_LENGTH, "contactEmail", "用户邮箱不能大于30个字符!");
+            BizValidation.paramMinLengthValidate(req.getCommentText(), Constants.COMMENT_MIN_CONTENT_LENGTH, "commentText", "评论内容最少为5个字符!");
+            BizValidation.paramLengthValidate(req.getCommentText(), Constants.COMMENT_MAX_CONTENT_LENGTH, "commentText", "评论内容不能超过200个字符!");
+            BizValidation.paramRegexValidate(req.getUserNick(), Constants.NICK_REGEX, "userNick", "昵称只能为[中文数字英文和$_] !");
+            BizValidation.paramRegexValidate(req.getContactEmail(), Constants.EMAIL_REGEX, "contactEmail", "邮箱格式不正确!");
             CommentBO commentBO = JwBuilder.of(CommentBO::new)
-                    .with(CommentBO::setArticleOid, request.getArtId())
-                    .with(CommentBO::setUserName, request.getUsername())
-                    .with(CommentBO::setClientIp, request.getClientIp())
-                    .with(CommentBO::setContactQq, request.getContactQq())
-                    .with(CommentBO::setContactWechat, request.getContactWechat())
-                    .with(CommentBO::setContactWeibo, request.getContactWeibo())
-                    .with(CommentBO::setContactTel, request.getContactTel())
-                    .with(CommentBO::setContent, request.getCommentText())
-                    .with(CommentBO::setParentOid, request.getCommentParentId())
-                    .with(CommentBO::setAvatarSrc, request.getAvatarSrc())
+                    .with(CommentBO::setArticleOid, req.getArtId())
+                    .with(CommentBO::setUserNick, req.getUserNick())
+                    .with(CommentBO::setClientIp, request.getRemoteAddr())
+                    .with(CommentBO::setContactQq, req.getContactQq())
+                    .with(CommentBO::setContactWechat, req.getContactWechat())
+                    .with(CommentBO::setContactWeibo, req.getContactWeibo())
+                    .with(CommentBO::setContactEmail, req.getContactEmail())
+                    .with(CommentBO::setContent, req.getCommentText())
+                    .with(CommentBO::setParentOid, req.getCommentParentId())
+                    .with(CommentBO::setAvatarSrc, req.getAvatarSrc())
                     .build();
 
-            commentBizService.doCreateComment(commentBO);
+            commentBizService.doCreateComment(commentBO, false);
 
         } catch (Exception e) {
             return super.exceptionToString(e);
@@ -179,16 +275,16 @@ public class CommentMainApiController extends BaseController {
     }
 
 
-
     /**
      * 文章评论更新(文章详情页面)<br/>
-     * url:/api/comment/create<br/>
+     * url:/api/comment/update<br/>
      *
      * @param param JSON 参数({@link CommentRequest})
      *              oid<br/>
      *              commentText<br/>
-     *              username<br/>
+     *              userNick<br/>
      *              qq<br/>
+     *              contactEmail<br/>
      *              artId<br/>
      *              commentParentId<br/>
      *              avatarSrc<br/>
@@ -203,24 +299,31 @@ public class CommentMainApiController extends BaseController {
     public String doUpdateComment(@RequestBody String param) {
         try {
             super.printRequestParams(param);
-            CommentRequest request = this.convertParam(param, CommentRequest.class);
-            BizValidation.paramValidate(request.getOid(), "oid", "评论oid不能为空!");
-            BizValidation.paramValidate(request.getArtId(), "artId", "文章id不能为空!");
-            BizValidation.paramValidate(request.getCommentParentId(), "commentParentId", "评论父id不能为空!");
-            BizValidation.paramValidate(request.getCommentText(), "commentText", "评论内容不能为空!");
-            BizValidation.paramValidate(request.getUsername(), "username", "用户不能为空!");
+            CommentRequest req = this.convertParam(param, CommentRequest.class);
+            BizValidation.paramValidate(req.getOid(), "oid", "评论oid不能为空!");
+            BizValidation.paramValidate(req.getArtId(), "artId", "文章id不能为空!");
+            BizValidation.paramValidate(req.getCommentParentId(), "commentParentId", "评论父id不能为空!");
+            BizValidation.paramValidate(req.getCommentText(), "commentText", "评论内容不能为空!");
+            BizValidation.paramValidate(req.getUserNick(), "userNick", "用户昵称不能为空!");
+            BizValidation.paramValidate(req.getContactEmail(), "contactEmail", "用户邮箱不能为空!");
+            BizValidation.paramLengthValidate(req.getUserNick(), Constants.NICK_LENGTH, "userNick", "昵称不能大于20个字符!");
+            BizValidation.paramLengthValidate(req.getContactEmail(), Constants.EMAIL_LENGTH, "contactEmail", "用户邮箱不能大于30个字符!");
+            BizValidation.paramMinLengthValidate(req.getCommentText(), Constants.COMMENT_MIN_CONTENT_LENGTH, "commentText", "评论内容最少为5个字符!");
+            BizValidation.paramLengthValidate(req.getCommentText(), Constants.COMMENT_MAX_CONTENT_LENGTH, "commentText", "评论内容不能超过200个字符!");
+            BizValidation.paramRegexValidate(req.getUserNick(), Constants.NICK_REGEX, "userNick", "昵称只能为中文数字英文和$_!");
+            BizValidation.paramRegexValidate(req.getContactEmail(), Constants.EMAIL_REGEX, "contactEmail", "邮箱格式不正确!");
             CommentBO commentBO = JwBuilder.of(CommentBO::new)
-                    .with(CommentBO::setOid, request.getOid())
-                    .with(CommentBO::setArticleOid, request.getArtId())
-                    .with(CommentBO::setUserName, request.getUsername())
-                    .with(CommentBO::setClientIp, request.getClientIp())
-                    .with(CommentBO::setContactQq, request.getContactQq())
-                    .with(CommentBO::setContactWechat, request.getContactWechat())
-                    .with(CommentBO::setContactWeibo, request.getContactWeibo())
-                    .with(CommentBO::setContactTel, request.getContactTel())
-                    .with(CommentBO::setContent, request.getCommentText())
-                    .with(CommentBO::setParentOid, request.getCommentParentId())
-                    .with(CommentBO::setAvatarSrc, request.getAvatarSrc())
+                    .with(CommentBO::setOid, req.getOid())
+                    .with(CommentBO::setArticleOid, req.getArtId())
+                    .with(CommentBO::setUserName, req.getUserNick())
+                    .with(CommentBO::setClientIp, request.getRemoteAddr())
+                    .with(CommentBO::setContactQq, req.getContactQq())
+                    .with(CommentBO::setContactWechat, req.getContactWechat())
+                    .with(CommentBO::setContactWeibo, req.getContactWeibo())
+                    .with(CommentBO::setContactEmail, req.getContactEmail())
+                    .with(CommentBO::setContent, req.getCommentText())
+                    .with(CommentBO::setParentOid, req.getCommentParentId())
+                    .with(CommentBO::setAvatarSrc, req.getAvatarSrc())
                     .build();
 
             commentBizService.doUpdateComment(commentBO);

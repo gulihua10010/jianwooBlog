@@ -14,7 +14,11 @@ public class Comment implements Serializable {
 
     private String articlePushBy;
 
+    private String userId;
+
     private String userName;
+
+    private String userNick;
 
     private String clientIp;
 
@@ -23,6 +27,14 @@ public class Comment implements Serializable {
     private Date commentTime;
 
     private Long parentOid;
+
+    private Long replyRootOid;
+
+    private String replyToUserId;
+
+    private String replyToUserName;
+
+    private String replyToUserNick;
 
     private Long praiseCount;
 
@@ -34,11 +46,19 @@ public class Comment implements Serializable {
 
     private String contactTel;
 
+    private String contactEmail;
+
     private String avatarSrc;
 
-    private String artDelStauts;
+    private String artDelStatus;
 
     private String readStatus;
+
+    private Long floorNumber;
+
+    private Long replyCount;
+
+    private Long totalReplyCount;
 
     private Boolean isDelete;
 
@@ -90,12 +110,28 @@ public class Comment implements Serializable {
         this.articlePushBy = articlePushBy == null ? null : articlePushBy.trim();
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId == null ? null : userId.trim();
+    }
+
     public String getUserName() {
         return userName;
     }
 
     public void setUserName(String userName) {
         this.userName = userName == null ? null : userName.trim();
+    }
+
+    public String getUserNick() {
+        return userNick;
+    }
+
+    public void setUserNick(String userNick) {
+        this.userNick = userNick == null ? null : userNick.trim();
     }
 
     public String getClientIp() {
@@ -128,6 +164,38 @@ public class Comment implements Serializable {
 
     public void setParentOid(Long parentOid) {
         this.parentOid = parentOid;
+    }
+
+    public Long getReplyRootOid() {
+        return replyRootOid;
+    }
+
+    public void setReplyRootOid(Long replyRootOid) {
+        this.replyRootOid = replyRootOid;
+    }
+
+    public String getReplyToUserId() {
+        return replyToUserId;
+    }
+
+    public void setReplyToUserId(String replyToUserId) {
+        this.replyToUserId = replyToUserId == null ? null : replyToUserId.trim();
+    }
+
+    public String getReplyToUserName() {
+        return replyToUserName;
+    }
+
+    public void setReplyToUserName(String replyToUserName) {
+        this.replyToUserName = replyToUserName == null ? null : replyToUserName.trim();
+    }
+
+    public String getReplyToUserNick() {
+        return replyToUserNick;
+    }
+
+    public void setReplyToUserNick(String replyToUserNick) {
+        this.replyToUserNick = replyToUserNick == null ? null : replyToUserNick.trim();
     }
 
     public Long getPraiseCount() {
@@ -170,6 +238,14 @@ public class Comment implements Serializable {
         this.contactTel = contactTel == null ? null : contactTel.trim();
     }
 
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail == null ? null : contactEmail.trim();
+    }
+
     public String getAvatarSrc() {
         return avatarSrc;
     }
@@ -178,12 +254,12 @@ public class Comment implements Serializable {
         this.avatarSrc = avatarSrc == null ? null : avatarSrc.trim();
     }
 
-    public String getArtDelStauts() {
-        return artDelStauts;
+    public String getArtDelStatus() {
+        return artDelStatus;
     }
 
-    public void setArtDelStauts(String artDelStauts) {
-        this.artDelStauts = artDelStauts == null ? null : artDelStauts.trim();
+    public void setArtDelStatus(String artDelStatus) {
+        this.artDelStatus = artDelStatus == null ? null : artDelStatus.trim();
     }
 
     public String getReadStatus() {
@@ -192,6 +268,30 @@ public class Comment implements Serializable {
 
     public void setReadStatus(String readStatus) {
         this.readStatus = readStatus == null ? null : readStatus.trim();
+    }
+
+    public Long getFloorNumber() {
+        return floorNumber;
+    }
+
+    public void setFloorNumber(Long floorNumber) {
+        this.floorNumber = floorNumber;
+    }
+
+    public Long getReplyCount() {
+        return replyCount;
+    }
+
+    public void setReplyCount(Long replyCount) {
+        this.replyCount = replyCount;
+    }
+
+    public Long getTotalReplyCount() {
+        return totalReplyCount;
+    }
+
+    public void setTotalReplyCount(Long totalReplyCount) {
+        this.totalReplyCount = totalReplyCount;
     }
 
     public Boolean getIsDelete() {
@@ -237,19 +337,29 @@ public class Comment implements Serializable {
         sb.append(", articleTitle=").append(articleTitle);
         sb.append(", articleAuthor=").append(articleAuthor);
         sb.append(", articlePushBy=").append(articlePushBy);
+        sb.append(", userId=").append(userId);
         sb.append(", userName=").append(userName);
+        sb.append(", userNick=").append(userNick);
         sb.append(", clientIp=").append(clientIp);
         sb.append(", userArea=").append(userArea);
         sb.append(", commentTime=").append(commentTime);
         sb.append(", parentOid=").append(parentOid);
+        sb.append(", replyRootOid=").append(replyRootOid);
+        sb.append(", replyToUserId=").append(replyToUserId);
+        sb.append(", replyToUserName=").append(replyToUserName);
+        sb.append(", replyToUserNick=").append(replyToUserNick);
         sb.append(", praiseCount=").append(praiseCount);
         sb.append(", contactQq=").append(contactQq);
         sb.append(", contactWechat=").append(contactWechat);
         sb.append(", contactWeibo=").append(contactWeibo);
         sb.append(", contactTel=").append(contactTel);
+        sb.append(", contactEmail=").append(contactEmail);
         sb.append(", avatarSrc=").append(avatarSrc);
-        sb.append(", artDelStauts=").append(artDelStauts);
+        sb.append(", artDelStatus=").append(artDelStatus);
         sb.append(", readStatus=").append(readStatus);
+        sb.append(", floorNumber=").append(floorNumber);
+        sb.append(", replyCount=").append(replyCount);
+        sb.append(", totalReplyCount=").append(totalReplyCount);
         sb.append(", isDelete=").append(isDelete);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);

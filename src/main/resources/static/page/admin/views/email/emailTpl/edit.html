@@ -1,0 +1,116 @@
+<title>邮件模板编辑</title>
+<style>
+
+
+</style>
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>邮件管理</cite></a>
+        <a><cite>邮件模板编辑</cite></a>
+    </div>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <div class="layui-form" id="layuiadmin-form-emailTpl"
+                     lay-filter="layuiadmin-form-emailTpl">
+                    <script type="text/html" template lay-url="/api/admin/email/tpl/edit/{{ layui.router().search.code }}"
+                            lay-done="doEdit(d);">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">邮件模板编号</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" name="code" value="{{d.data.code}}" type="text"
+                                       lay-verify="required|maxLength" lay-max="20" disabled>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">描述</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" name="desc" value="{{d.data.desc}}" type="text"
+                                       lay-verify="required|maxLength" lay-max="100">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">邮件模板主题</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" name="subject" value="{{ d.data.subject }}"
+                                       lay-verify="required|maxLength" lay-max="500" type="text">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">邮件模板内容</label>
+                            <div class="layui-input-block">
+                            <textarea class="layui-input" style="height: 200px;resize:none;padding-top: 5px;" id="content"
+                                      name="content"
+                            >{{ d.data.content }}</textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">测试的JSON数据</label>
+                            <div class="layui-input-block">
+                            <textarea class="layui-input" style="height: 200px;resize:none;padding-top: 5px;"
+                                      name="testJsonData" id="testJsonData"
+                            >{{ d.data.testJsonData }}</textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"></label>
+                            <div class="layui-input-block">
+                                <input class="layui-btn" id="render-tpl" value="渲染模板">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">创建时间</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" disabled name="createTime"
+                                       value="{{d.data.createTime}}"
+                                       type="text">
+                            </div>
+                        </div>
+                    </script>
+
+                    <script type="text/html" template lay-url="/api/admin/request/token/generate"
+                            lay-data="{pageId: 'ET11'}" lay-type="post" lay-done="doUpdateToken(d);">
+                        <input type="hidden" name="subToken" id="subToken" value="{{d.token}}">
+                    </script>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"></label>
+                        <div class="layui-input-block">
+                            <input class="layui-btn submit" id="submit"
+                                   lay-filter="submit-emailTpl-edit" lay-submit
+                                   style="float: right" type="button" value="确认">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+<script>
+
+    doEdit = function (d) {
+        layui.use('emailTpl', layui.factory('emailTpl')).use(['admin', 'form', 'emailTpl'], function () {
+            var $ = layui.jquery
+                , form = layui.form
+                , element = layui.element;
+            element.render();
+            form.render();
+
+
+        })
+    }
+
+    doUpdateToken =function (d)
+    {
+
+    }
+
+
+</script>

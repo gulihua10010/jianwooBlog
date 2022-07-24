@@ -515,63 +515,133 @@ public class ArticleExample {
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdIsNull() {
-            addCriterion("MENU_ID is null");
+        public Criteria andCategoryIdIsNull() {
+            addCriterion("CATEGORY_ID is null");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdIsNotNull() {
-            addCriterion("MENU_ID is not null");
+        public Criteria andCategoryIdIsNotNull() {
+            addCriterion("CATEGORY_ID is not null");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdEqualTo(Integer value) {
-            addCriterion("MENU_ID =", value, "menuId");
+        public Criteria andCategoryIdEqualTo(Integer value) {
+            addCriterion("CATEGORY_ID =", value, "categoryId");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdNotEqualTo(Integer value) {
-            addCriterion("MENU_ID <>", value, "menuId");
+        public Criteria andCategoryIdNotEqualTo(Integer value) {
+            addCriterion("CATEGORY_ID <>", value, "categoryId");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdGreaterThan(Integer value) {
-            addCriterion("MENU_ID >", value, "menuId");
+        public Criteria andCategoryIdGreaterThan(Integer value) {
+            addCriterion("CATEGORY_ID >", value, "categoryId");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdGreaterThanOrEqualTo(Integer value) {
-            addCriterion("MENU_ID >=", value, "menuId");
+        public Criteria andCategoryIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("CATEGORY_ID >=", value, "categoryId");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdLessThan(Integer value) {
-            addCriterion("MENU_ID <", value, "menuId");
+        public Criteria andCategoryIdLessThan(Integer value) {
+            addCriterion("CATEGORY_ID <", value, "categoryId");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdLessThanOrEqualTo(Integer value) {
-            addCriterion("MENU_ID <=", value, "menuId");
+        public Criteria andCategoryIdLessThanOrEqualTo(Integer value) {
+            addCriterion("CATEGORY_ID <=", value, "categoryId");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdIn(List<Integer> values) {
-            addCriterion("MENU_ID in", values, "menuId");
+        public Criteria andCategoryIdIn(List<Integer> values) {
+            addCriterion("CATEGORY_ID in", values, "categoryId");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdNotIn(List<Integer> values) {
-            addCriterion("MENU_ID not in", values, "menuId");
+        public Criteria andCategoryIdNotIn(List<Integer> values) {
+            addCriterion("CATEGORY_ID not in", values, "categoryId");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdBetween(Integer value1, Integer value2) {
-            addCriterion("MENU_ID between", value1, value2, "menuId");
+        public Criteria andCategoryIdBetween(Integer value1, Integer value2) {
+            addCriterion("CATEGORY_ID between", value1, value2, "categoryId");
             return (Criteria) this;
         }
 
-        public Criteria andMenuIdNotBetween(Integer value1, Integer value2) {
-            addCriterion("MENU_ID not between", value1, value2, "menuId");
+        public Criteria andCategoryIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("CATEGORY_ID not between", value1, value2, "categoryId");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryNameIsNull() {
+            addCriterion("CATEGORY_NAME is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryNameIsNotNull() {
+            addCriterion("CATEGORY_NAME is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryNameEqualTo(String value) {
+            addCriterion("CATEGORY_NAME =", value, "categoryName");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryNameNotEqualTo(String value) {
+            addCriterion("CATEGORY_NAME <>", value, "categoryName");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryNameGreaterThan(String value) {
+            addCriterion("CATEGORY_NAME >", value, "categoryName");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryNameGreaterThanOrEqualTo(String value) {
+            addCriterion("CATEGORY_NAME >=", value, "categoryName");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryNameLessThan(String value) {
+            addCriterion("CATEGORY_NAME <", value, "categoryName");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryNameLessThanOrEqualTo(String value) {
+            addCriterion("CATEGORY_NAME <=", value, "categoryName");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryNameLike(String value) {
+            addCriterion("CATEGORY_NAME like", value, "categoryName");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryNameNotLike(String value) {
+            addCriterion("CATEGORY_NAME not like", value, "categoryName");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryNameIn(List<String> values) {
+            addCriterion("CATEGORY_NAME in", values, "categoryName");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryNameNotIn(List<String> values) {
+            addCriterion("CATEGORY_NAME not in", values, "categoryName");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryNameBetween(String value1, String value2) {
+            addCriterion("CATEGORY_NAME between", value1, value2, "categoryName");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryNameNotBetween(String value1, String value2) {
+            addCriterion("CATEGORY_NAME not between", value1, value2, "categoryName");
             return (Criteria) this;
         }
 
@@ -765,6 +835,146 @@ public class ArticleExample {
             return (Criteria) this;
         }
 
+        public Criteria andFlagOriginalIsNull() {
+            addCriterion("FLAG_ORIGINAL is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagOriginalIsNotNull() {
+            addCriterion("FLAG_ORIGINAL is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagOriginalEqualTo(Boolean value) {
+            addCriterion("FLAG_ORIGINAL =", value, "flagOriginal");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagOriginalNotEqualTo(Boolean value) {
+            addCriterion("FLAG_ORIGINAL <>", value, "flagOriginal");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagOriginalGreaterThan(Boolean value) {
+            addCriterion("FLAG_ORIGINAL >", value, "flagOriginal");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagOriginalGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("FLAG_ORIGINAL >=", value, "flagOriginal");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagOriginalLessThan(Boolean value) {
+            addCriterion("FLAG_ORIGINAL <", value, "flagOriginal");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagOriginalLessThanOrEqualTo(Boolean value) {
+            addCriterion("FLAG_ORIGINAL <=", value, "flagOriginal");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagOriginalLike(Boolean value) {
+            addCriterion("FLAG_ORIGINAL like", value, "flagOriginal");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagOriginalNotLike(Boolean value) {
+            addCriterion("FLAG_ORIGINAL not like", value, "flagOriginal");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagOriginalIn(List<Boolean> values) {
+            addCriterion("FLAG_ORIGINAL in", values, "flagOriginal");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagOriginalNotIn(List<Boolean> values) {
+            addCriterion("FLAG_ORIGINAL not in", values, "flagOriginal");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagOriginalBetween(Boolean value1, Boolean value2) {
+            addCriterion("FLAG_ORIGINAL between", value1, value2, "flagOriginal");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagOriginalNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("FLAG_ORIGINAL not between", value1, value2, "flagOriginal");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalUrlIsNull() {
+            addCriterion("ORIGINAL_URL is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalUrlIsNotNull() {
+            addCriterion("ORIGINAL_URL is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalUrlEqualTo(String value) {
+            addCriterion("ORIGINAL_URL =", value, "originalUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalUrlNotEqualTo(String value) {
+            addCriterion("ORIGINAL_URL <>", value, "originalUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalUrlGreaterThan(String value) {
+            addCriterion("ORIGINAL_URL >", value, "originalUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalUrlGreaterThanOrEqualTo(String value) {
+            addCriterion("ORIGINAL_URL >=", value, "originalUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalUrlLessThan(String value) {
+            addCriterion("ORIGINAL_URL <", value, "originalUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalUrlLessThanOrEqualTo(String value) {
+            addCriterion("ORIGINAL_URL <=", value, "originalUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalUrlLike(String value) {
+            addCriterion("ORIGINAL_URL like", value, "originalUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalUrlNotLike(String value) {
+            addCriterion("ORIGINAL_URL not like", value, "originalUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalUrlIn(List<String> values) {
+            addCriterion("ORIGINAL_URL in", values, "originalUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalUrlNotIn(List<String> values) {
+            addCriterion("ORIGINAL_URL not in", values, "originalUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalUrlBetween(String value1, String value2) {
+            addCriterion("ORIGINAL_URL between", value1, value2, "originalUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalUrlNotBetween(String value1, String value2) {
+            addCriterion("ORIGINAL_URL not between", value1, value2, "originalUrl");
+            return (Criteria) this;
+        }
+
         public Criteria andImgSrcIsNull() {
             addCriterion("IMG_SRC is null");
             return (Criteria) this;
@@ -905,6 +1115,76 @@ public class ArticleExample {
             return (Criteria) this;
         }
 
+        public Criteria andTopPlaceStatusIsNull() {
+            addCriterion("TOP_PLACE_STATUS is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopPlaceStatusIsNotNull() {
+            addCriterion("TOP_PLACE_STATUS is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopPlaceStatusEqualTo(String value) {
+            addCriterion("TOP_PLACE_STATUS =", value, "topPlaceStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopPlaceStatusNotEqualTo(String value) {
+            addCriterion("TOP_PLACE_STATUS <>", value, "topPlaceStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopPlaceStatusGreaterThan(String value) {
+            addCriterion("TOP_PLACE_STATUS >", value, "topPlaceStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopPlaceStatusGreaterThanOrEqualTo(String value) {
+            addCriterion("TOP_PLACE_STATUS >=", value, "topPlaceStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopPlaceStatusLessThan(String value) {
+            addCriterion("TOP_PLACE_STATUS <", value, "topPlaceStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopPlaceStatusLessThanOrEqualTo(String value) {
+            addCriterion("TOP_PLACE_STATUS <=", value, "topPlaceStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopPlaceStatusLike(String value) {
+            addCriterion("TOP_PLACE_STATUS like", value, "topPlaceStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopPlaceStatusNotLike(String value) {
+            addCriterion("TOP_PLACE_STATUS not like", value, "topPlaceStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopPlaceStatusIn(List<String> values) {
+            addCriterion("TOP_PLACE_STATUS in", values, "topPlaceStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopPlaceStatusNotIn(List<String> values) {
+            addCriterion("TOP_PLACE_STATUS not in", values, "topPlaceStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopPlaceStatusBetween(String value1, String value2) {
+            addCriterion("TOP_PLACE_STATUS between", value1, value2, "topPlaceStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopPlaceStatusNotBetween(String value1, String value2) {
+            addCriterion("TOP_PLACE_STATUS not between", value1, value2, "topPlaceStatus");
+            return (Criteria) this;
+        }
+
         public Criteria andCommentCountIsNull() {
             addCriterion("COMMENT_COUNT is null");
             return (Criteria) this;
@@ -962,6 +1242,66 @@ public class ArticleExample {
 
         public Criteria andCommentCountNotBetween(Long value1, Long value2) {
             addCriterion("COMMENT_COUNT not between", value1, value2, "commentCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalCommentFloorsIsNull() {
+            addCriterion("TOTAL_COMMENT_FLOORS is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalCommentFloorsIsNotNull() {
+            addCriterion("TOTAL_COMMENT_FLOORS is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalCommentFloorsEqualTo(Long value) {
+            addCriterion("TOTAL_COMMENT_FLOORS =", value, "totalCommentFloors");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalCommentFloorsNotEqualTo(Long value) {
+            addCriterion("TOTAL_COMMENT_FLOORS <>", value, "totalCommentFloors");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalCommentFloorsGreaterThan(Long value) {
+            addCriterion("TOTAL_COMMENT_FLOORS >", value, "totalCommentFloors");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalCommentFloorsGreaterThanOrEqualTo(Long value) {
+            addCriterion("TOTAL_COMMENT_FLOORS >=", value, "totalCommentFloors");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalCommentFloorsLessThan(Long value) {
+            addCriterion("TOTAL_COMMENT_FLOORS <", value, "totalCommentFloors");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalCommentFloorsLessThanOrEqualTo(Long value) {
+            addCriterion("TOTAL_COMMENT_FLOORS <=", value, "totalCommentFloors");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalCommentFloorsIn(List<Long> values) {
+            addCriterion("TOTAL_COMMENT_FLOORS in", values, "totalCommentFloors");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalCommentFloorsNotIn(List<Long> values) {
+            addCriterion("TOTAL_COMMENT_FLOORS not in", values, "totalCommentFloors");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalCommentFloorsBetween(Long value1, Long value2) {
+            addCriterion("TOTAL_COMMENT_FLOORS between", value1, value2, "totalCommentFloors");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalCommentFloorsNotBetween(Long value1, Long value2) {
+            addCriterion("TOTAL_COMMENT_FLOORS not between", value1, value2, "totalCommentFloors");
             return (Criteria) this;
         }
 
@@ -1360,6 +1700,16 @@ public class ArticleExample {
             return (Criteria) this;
         }
 
+        public Criteria andCategoryNameLikeInsensitive(String value) {
+            addCriterion("upper(CATEGORY_NAME) like", value.toUpperCase(), "categoryName");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalUrlLikeInsensitive(String value) {
+            addCriterion("upper(ORIGINAL_URL) like", value.toUpperCase(), "originalUrl");
+            return (Criteria) this;
+        }
+
         public Criteria andImgSrcLikeInsensitive(String value) {
             addCriterion("upper(IMG_SRC) like", value.toUpperCase(), "imgSrc");
             return (Criteria) this;
@@ -1367,6 +1717,11 @@ public class ArticleExample {
 
         public Criteria andAccessTypeLikeInsensitive(String value) {
             addCriterion("upper(ACCESS_TYPE) like", value.toUpperCase(), "accessType");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopPlaceStatusLikeInsensitive(String value) {
+            addCriterion("upper(TOP_PLACE_STATUS) like", value.toUpperCase(), "topPlaceStatus");
             return (Criteria) this;
         }
 

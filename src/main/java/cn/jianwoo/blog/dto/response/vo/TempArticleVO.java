@@ -2,7 +2,6 @@ package cn.jianwoo.blog.dto.response.vo;
 
 import cn.jianwoo.blog.config.LongToStringSerializerConfig;
 import com.alibaba.fastjson.annotation.JSONField;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -18,7 +17,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class TempArticleVO implements Serializable {
     private static final long serialVersionUID = -6622957226309536544L;
     /**
@@ -40,9 +38,9 @@ public class TempArticleVO implements Serializable {
      */
     private String content;
     /**
-     * 菜单主键
+     * 类别id
      */
-    private Integer menuOid;
+    private Integer categoryId;
     /**
      * 缩略图
      */
@@ -69,5 +67,21 @@ public class TempArticleVO implements Serializable {
      */
     private List<TagsVO> artTagsList;
 
+
+    /**
+     * 是否置顶
+     */
+    private Boolean topPlaceFlag;
+
+
+    /**
+     * 是否原创
+     */
+    private Boolean flagOriginal;
+
+    /**
+     * 转载源链接
+     */
+    private String originalUrl;
 
 }

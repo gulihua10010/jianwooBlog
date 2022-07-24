@@ -1,7 +1,6 @@
 package cn.jianwoo.blog.dto.request;
 
 import cn.jianwoo.blog.base.BaseRequestDto;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,6 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@AllArgsConstructor
 public class CommentRequest extends BaseRequestDto {
     private static final long serialVersionUID = 1691429969857619376L;
 
@@ -28,9 +26,9 @@ public class CommentRequest extends BaseRequestDto {
      */
     private String commentText;
     /**
-     * 用户名
+     * 用户昵称
      */
-    private String username;
+    private String userNick;
 
     /**
      * 评论用户的qq号码
@@ -47,10 +45,16 @@ public class CommentRequest extends BaseRequestDto {
      */
     private String contactWeibo;
 
+
     /**
      * 评论用户的联系手机号
      */
     private String contactTel;
+
+    /**
+     * 评论用户的邮箱
+     */
+    private String contactEmail;
 
     /**
      * 文章oid

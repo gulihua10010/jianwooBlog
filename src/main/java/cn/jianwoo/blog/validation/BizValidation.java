@@ -1,5 +1,6 @@
 package cn.jianwoo.blog.validation;
 
+import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.ReUtil;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
@@ -450,6 +451,30 @@ public class BizValidation {
         }
 
     }
+
+
+    /**
+     * 验证类别是否为空
+     *
+     * @param paramValue 字符串值
+     * @param paramName  字段名
+     * @param msg        错误提示消息
+     * @return
+     * @author gulihua
+     */
+    public static void paramCategoryValidate(Integer paramValue, String paramName, String msg) throws ValidationException {
+        if (null == paramValue) {
+            logger.error("Parameter verified failed, the value is empty in the parameter: {}", paramName);
+            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_NULL, msg, paramName);
+
+        }
+        if (Constants.CATEGORY_NULL.equals(paramValue)) {
+            logger.error("Parameter verified failed, the value is empty in the parameter: {}", paramName);
+            throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_NULL, msg, paramName);
+
+        }
+    }
+
 
 
 }

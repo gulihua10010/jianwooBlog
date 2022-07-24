@@ -3,7 +3,6 @@ package cn.jianwoo.blog.dto.response.vo;
 import cn.jianwoo.blog.enums.FormTypeEnum;
 import cn.jianwoo.blog.enums.ValidateTypeEnum;
 import cn.jianwoo.blog.enums.ValueTypeEnum;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -18,7 +17,6 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class WebconfVO implements Serializable {
     /**
      * 键名

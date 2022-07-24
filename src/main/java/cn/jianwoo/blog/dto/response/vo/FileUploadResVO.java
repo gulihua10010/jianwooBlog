@@ -1,7 +1,6 @@
 package cn.jianwoo.blog.dto.response.vo;
 
 import com.alibaba.fastjson.JSONObject;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -16,7 +15,6 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class FileUploadResVO implements Serializable {
     private static final long serialVersionUID = 4563971387655597400L;
     /**

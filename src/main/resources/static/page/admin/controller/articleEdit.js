@@ -60,21 +60,30 @@ layui.define(['layer', 'form', 'element', 'layupload', 'tinymce'], function (exp
 
 
     form.on('radio(public)', function (data) {
-        $('#hometop1').show();
+        // $('#hometop1').show();
         $('#passw-content').hide();
         $('#passw-content-confirm').hide();
         form.render();
     });
     form.on('radio(secret)', function (data) {
-        $('#hometop1').show();
+        // $('#hometop1').show();
         $('#passw-content').hide();
         $('#passw-content-confirm').hide();
         form.render();
     });
     form.on('radio(passw)', function (data) {
-        $('#hometop1').hide();
+        // $('#hometop1').hide();
         $('#passw-content').show();
         $('#passw-content-confirm').show();
+        form.render();
+    });
+
+    form.on('checkbox(original)', function (data) {
+        if ($('#is-original').prop('checked')) {
+            $('#originalUrl').hide()
+        }else {
+            $('#originalUrl').show()
+        }
         form.render();
     });
 
@@ -140,19 +149,31 @@ layui.define(['layer', 'form', 'element', 'layupload', 'tinymce'], function (exp
         return false;
 
     })
-    $('#btn-ispublic-sure').click(function () {
+
+    function validatePass()
+    {
         var pass = $('#passw-content').val();
         var repass = $('#passw-content-confirm').val();
         var isPublic = $('#ispublic-form .ispublic-radio:checked').val()
         var patt = /(.+){6,12}$/;
         if ((isEmpty(pass)) && isPublic == '11') {
             $('#pwd-tips').text('密码不能为空').css('color', 'red').css('display', 'block')
-
+            return false;
         } else if (!patt.test(pass) && isPublic == '11') {
             $('#pwd-tips').text('密码必须6到12位').css('color', 'red').css('display', 'block')
+            return false;
         } else if ((pass != repass) && isPublic == '11') {
             $('#pwd-tips').text('两次密码不一致').css('color', 'red').css('display', 'block')
-        } else if (status1 == 1) {
+            return false;
+        }
+        return true;
+    }
+    $('#btn-ispublic-sure').click(function () {
+            if (!validatePass()){
+                return  false;
+            }
+
+          if (status1 == 1) {
             $('#ispublic-form').css("display", "none");
             $('#pwd-tips').text('')
             status1 = 0;
@@ -176,15 +197,43 @@ layui.define(['layer', 'form', 'element', 'layupload', 'tinymce'], function (exp
         }
         var articleContent = edit.getContent();
         var contentText = articleContent.replace(new RegExp('\n', 'g'), '');
-        if (btnType === 1 && contentText == '<!DOCTYPE html><html><head></head><body></body></html>') {
+        contentText = contentText.replace('<!DOCTYPE html>', '');
+        contentText = contentText.replace(new RegExp('<html(/)?>', 'g'), '');
+        contentText = contentText.replace(new RegExp('<head(/)?>', 'g'), '');
+        contentText = contentText.replace(new RegExp('<body(/)?>', 'g'), '');
+
+        if ((btnType === 1 || btnType === 2 || btnType === 3) && isEmpty(contentText)) {
             alertFail('提示', '文章内容不可为空！', '#article-content')
             return false;
         }
-        if (btnType === 1 && (isEmpty(field.typeId) || field.typeId == -1)) {
+        if ((btnType === 1 || btnType === 3) && (isEmpty(field.categoryId) || field.categoryId == -1)) {
             alertFail('提示', '请选择类别！', '#type-select')
             return false;
 
         }
+        if ((btnType === 1 || btnType === 3) && !$('#is-original').prop('checked')) {
+            if (isEmpty($('#original-url').val())) {
+                alertFail('提示', '非原创时转载源链接不能为空！', '#original-url')
+                return false;
+            }
+
+        }
+
+        var pass = $('#passw-content').val();
+        var repass = $('#passw-content-confirm').val();
+        var isPublic = $('#ispublic-form .ispublic-radio:checked').val()
+        var patt = /(.+){6,12}$/;
+        if ((isEmpty(pass)) && isPublic == '11') {
+            alertFail('提示', '密码不能为空！', '#type-select')
+            return false;
+        } else if (!patt.test(pass) && isPublic == '11') {
+            alertFail('提示', '密码必须6到12位！', '#type-select')
+            return false;
+        } else if ((pass != repass) && isPublic == '11') {
+            alertFail('提示', '两次密码不一致！', '#type-select')
+            return false;
+        }
+
 
         // console.log(field)
         var tagsId = [];
@@ -196,12 +245,11 @@ layui.define(['layer', 'form', 'element', 'layupload', 'tinymce'], function (exp
             tagsId[i] = data.eq(i).data('id');
         }
         publishTemp = field.isPublic
-        if (publishTemp == '20') {
-            if ($('#hometop').prop('checked')) {
-                publishTemp = '21';
-
-            }
-        } else if (publishTemp == '11') {
+        var topPlaceFlag = false;
+        if ($('#hometop').prop('checked')) {
+            topPlaceFlag = true;
+        }
+        if (publishTemp == '11') {
             passw = $('#passw-content').val();
         }
         var iscomment = 0;
@@ -209,7 +257,11 @@ layui.define(['layer', 'form', 'element', 'layupload', 'tinymce'], function (exp
             iscomment = 1;
 
         }
+        var flagOriginal = 0;
+        if ($('#is-original').prop('checked')) {
+            flagOriginal = 1;
 
+        }
         var tags = tagsId;
         var published = publishTemp === undefined ? '20' : publishTemp;
         var password = passw;
@@ -222,18 +274,21 @@ layui.define(['layer', 'form', 'element', 'layupload', 'tinymce'], function (exp
                 '/api/admin/article/update',
                 1,
                 JSON.stringify({
+                    requestId: field.subToken,
                     artOid: artOid,
                     title: field.title,
                     author: field.author,
                     articleContent: articleContent,
                     tagOidList: tags,
-                    type: field.typeId,
+                    categoryId: field.categoryId,
                     imgSrc: field.imgsrc,
+                    originalUrl: field.originalUrl,
                     accessType: published,
                     password: password,
                     isComment: iscomment !== 0,
+                    flagOriginal: flagOriginal !== 0,
                     tempArtOid: tempArtOid,
-                    subToken: field.subToken
+                    topPlaceFlag: topPlaceFlag,
                 }),
                 "更新成功",
                 function () {
@@ -245,18 +300,21 @@ layui.define(['layer', 'form', 'element', 'layupload', 'tinymce'], function (exp
             ajaxPost('/api/admin/article/draft/save',
                 1,
                 JSON.stringify({
+                    requestId: field.subToken,
                     artOid: artOid,
                     title: field.title,
                     author: field.author,
                     articleContent: articleContent,
                     tagOidList: tags,
-                    type: field.typeId,
+                    categoryId: field.categoryId,
                     imgSrc: field.imgsrc,
+                    originalUrl: field.originalUrl,
                     accessType: published,
                     password: password,
                     isComment: iscomment !== 0,
+                    flagOriginal: flagOriginal !== 0,
                     tempArtOid: tempArtOid,
-                    subToken: field.subToken
+                    topPlaceFlag: topPlaceFlag,
                 }),
                 "保存成功",
                 function () {
@@ -267,18 +325,21 @@ layui.define(['layer', 'form', 'element', 'layupload', 'tinymce'], function (exp
             ajaxPost('/api/admin/article/draft/publish',
                 1,
                 JSON.stringify({
+                    requestId: field.subToken,
                     artOid: artOid,
                     title: field.title,
                     author: field.author,
                     articleContent: articleContent,
                     tagOidList: tags,
-                    type: field.typeId,
+                    categoryId: field.categoryId,
                     imgSrc: field.imgsrc,
+                    originalUrl: field.originalUrl,
                     accessType: published,
                     password: password,
                     isComment: iscomment !== 0,
+                    flagOriginal: flagOriginal !== 0,
                     tempArtOid: tempArtOid,
-                    subToken: field.subToken
+                    topPlaceFlag: topPlaceFlag,
 
                 }),
                 "发布成功",
@@ -291,18 +352,21 @@ layui.define(['layer', 'form', 'element', 'layupload', 'tinymce'], function (exp
                 ajaxPost('/api/admin/article/save/remove/recycle',
                     1,
                     JSON.stringify({
+                        requestId: field.subToken,
                         artOid: artOid,
                         title: field.title,
                         author: field.author,
                         articleContent: articleContent,
                         tagOidList: tags,
-                        type: field.typeId,
+                        categoryId: field.categoryId,
                         imgSrc: field.imgsrc,
+                        originalUrl: field.originalUrl,
                         accessType: published,
                         password: password,
                         isComment: iscomment !== 0,
+                        flagOriginal: flagOriginal !== 0,
                         tempArtOid: tempArtOid,
-                        subToken: field.subToken
+                        topPlaceFlag: topPlaceFlag,
 
                     }),
                     '移动至回收站成功',

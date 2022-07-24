@@ -7,19 +7,29 @@
     <result column="ARTICLE_TITLE" jdbcType="VARCHAR" property="articleTitle" />
     <result column="ARTICLE_AUTHOR" jdbcType="VARCHAR" property="articleAuthor" />
     <result column="ARTICLE_PUSH_BY" jdbcType="VARCHAR" property="articlePushBy" />
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
     <result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
+    <result column="USER_NICK" jdbcType="VARCHAR" property="userNick" />
     <result column="CLIENT_IP" jdbcType="VARCHAR" property="clientIp" />
     <result column="USER_AREA" jdbcType="VARCHAR" property="userArea" />
     <result column="COMMENT_TIME" jdbcType="TIMESTAMP" property="commentTime" />
     <result column="PARENT_OID" jdbcType="BIGINT" property="parentOid" />
+    <result column="REPLY_ROOT_OID" jdbcType="BIGINT" property="replyRootOid" />
+    <result column="REPLY_TO_USER_ID" jdbcType="VARCHAR" property="replyToUserId" />
+    <result column="REPLY_TO_USER_NAME" jdbcType="VARCHAR" property="replyToUserName" />
+    <result column="REPLY_TO_USER_NICK" jdbcType="VARCHAR" property="replyToUserNick" />
     <result column="PRAISE_COUNT" jdbcType="BIGINT" property="praiseCount" />
     <result column="CONTACT_QQ" jdbcType="VARCHAR" property="contactQq" />
     <result column="CONTACT_WECHAT" jdbcType="VARCHAR" property="contactWechat" />
     <result column="CONTACT_WEIBO" jdbcType="VARCHAR" property="contactWeibo" />
     <result column="CONTACT_TEL" jdbcType="VARCHAR" property="contactTel" />
+    <result column="CONTACT_EMAIL" jdbcType="VARCHAR" property="contactEmail" />
     <result column="AVATAR_SRC" jdbcType="VARCHAR" property="avatarSrc" />
-    <result column="ART_DEL_STAUTS" jdbcType="VARCHAR" property="artDelStauts" />
+    <result column="ART_DEL_STATUS" jdbcType="VARCHAR" property="artDelStatus" />
     <result column="READ_STATUS" jdbcType="VARCHAR" property="readStatus" />
+    <result column="FLOOR_NUMBER" jdbcType="BIGINT" property="floorNumber" />
+    <result column="REPLY_COUNT" jdbcType="BIGINT" property="replyCount" />
+    <result column="TOTAL_REPLY_COUNT" jdbcType="BIGINT" property="totalReplyCount" />
     <result column="IS_DELETE" jdbcType="CHAR" property="isDelete" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
     <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
@@ -86,9 +96,11 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    OID, ARTICLE_OID, ARTICLE_TITLE, ARTICLE_AUTHOR, ARTICLE_PUSH_BY, USER_NAME, CLIENT_IP, 
-    USER_AREA, COMMENT_TIME, PARENT_OID, PRAISE_COUNT, CONTACT_QQ, CONTACT_WECHAT, CONTACT_WEIBO, 
-    CONTACT_TEL, AVATAR_SRC, ART_DEL_STAUTS, READ_STATUS, IS_DELETE, CREATE_TIME, UPDATE_TIME
+    OID, ARTICLE_OID, ARTICLE_TITLE, ARTICLE_AUTHOR, ARTICLE_PUSH_BY, USER_ID, USER_NAME, 
+    USER_NICK, CLIENT_IP, USER_AREA, COMMENT_TIME, PARENT_OID, REPLY_ROOT_OID, REPLY_TO_USER_ID, 
+    REPLY_TO_USER_NAME, REPLY_TO_USER_NICK, PRAISE_COUNT, CONTACT_QQ, CONTACT_WECHAT, 
+    CONTACT_WEIBO, CONTACT_TEL, CONTACT_EMAIL, AVATAR_SRC, ART_DEL_STATUS, READ_STATUS, 
+    FLOOR_NUMBER, REPLY_COUNT, TOTAL_REPLY_COUNT, IS_DELETE, CREATE_TIME, UPDATE_TIME
   </sql>
   <sql id="Blob_Column_List">
     CONTENT
@@ -144,21 +156,27 @@
   </delete>
   <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.Comment" useGeneratedKeys="true">
     insert into comments (ARTICLE_OID, ARTICLE_TITLE, ARTICLE_AUTHOR, 
-      ARTICLE_PUSH_BY, USER_NAME, CLIENT_IP, 
-      USER_AREA, COMMENT_TIME, PARENT_OID, 
+      ARTICLE_PUSH_BY, USER_ID, USER_NAME, 
+      USER_NICK, CLIENT_IP, USER_AREA, 
+      COMMENT_TIME, PARENT_OID, REPLY_ROOT_OID, 
+      REPLY_TO_USER_ID, REPLY_TO_USER_NAME, REPLY_TO_USER_NICK, 
       PRAISE_COUNT, CONTACT_QQ, CONTACT_WECHAT, 
-      CONTACT_WEIBO, CONTACT_TEL, AVATAR_SRC, 
-      ART_DEL_STAUTS, READ_STATUS, IS_DELETE, 
-      CREATE_TIME, UPDATE_TIME, CONTENT
-      )
+      CONTACT_WEIBO, CONTACT_TEL, CONTACT_EMAIL, 
+      AVATAR_SRC, ART_DEL_STATUS, READ_STATUS, 
+      FLOOR_NUMBER, REPLY_COUNT, TOTAL_REPLY_COUNT, 
+      IS_DELETE, CREATE_TIME, UPDATE_TIME, 
+      CONTENT)
     values (#{articleOid,jdbcType=BIGINT}, #{articleTitle,jdbcType=VARCHAR}, #{articleAuthor,jdbcType=VARCHAR}, 
-      #{articlePushBy,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{clientIp,jdbcType=VARCHAR}, 
-      #{userArea,jdbcType=VARCHAR}, #{commentTime,jdbcType=TIMESTAMP}, #{parentOid,jdbcType=BIGINT}, 
+      #{articlePushBy,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
+      #{userNick,jdbcType=VARCHAR}, #{clientIp,jdbcType=VARCHAR}, #{userArea,jdbcType=VARCHAR}, 
+      #{commentTime,jdbcType=TIMESTAMP}, #{parentOid,jdbcType=BIGINT}, #{replyRootOid,jdbcType=BIGINT}, 
+      #{replyToUserId,jdbcType=VARCHAR}, #{replyToUserName,jdbcType=VARCHAR}, #{replyToUserNick,jdbcType=VARCHAR}, 
       #{praiseCount,jdbcType=BIGINT}, #{contactQq,jdbcType=VARCHAR}, #{contactWechat,jdbcType=VARCHAR}, 
-      #{contactWeibo,jdbcType=VARCHAR}, #{contactTel,jdbcType=VARCHAR}, #{avatarSrc,jdbcType=VARCHAR}, 
-      #{artDelStauts,jdbcType=VARCHAR}, #{readStatus,jdbcType=VARCHAR}, #{isDelete,jdbcType=CHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR}
-      )
+      #{contactWeibo,jdbcType=VARCHAR}, #{contactTel,jdbcType=VARCHAR}, #{contactEmail,jdbcType=VARCHAR}, 
+      #{avatarSrc,jdbcType=VARCHAR}, #{artDelStatus,jdbcType=VARCHAR}, #{readStatus,jdbcType=VARCHAR}, 
+      #{floorNumber,jdbcType=BIGINT}, #{replyCount,jdbcType=BIGINT}, #{totalReplyCount,jdbcType=BIGINT}, 
+      #{isDelete,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{content,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.Comment" useGeneratedKeys="true">
     insert into comments
@@ -175,8 +193,14 @@
       <if test="articlePushBy != null">
         ARTICLE_PUSH_BY,
       </if>
+      <if test="userId != null">
+        USER_ID,
+      </if>
       <if test="userName != null">
         USER_NAME,
+      </if>
+      <if test="userNick != null">
+        USER_NICK,
       </if>
       <if test="clientIp != null">
         CLIENT_IP,
@@ -189,6 +213,18 @@
       </if>
       <if test="parentOid != null">
         PARENT_OID,
+      </if>
+      <if test="replyRootOid != null">
+        REPLY_ROOT_OID,
+      </if>
+      <if test="replyToUserId != null">
+        REPLY_TO_USER_ID,
+      </if>
+      <if test="replyToUserName != null">
+        REPLY_TO_USER_NAME,
+      </if>
+      <if test="replyToUserNick != null">
+        REPLY_TO_USER_NICK,
       </if>
       <if test="praiseCount != null">
         PRAISE_COUNT,
@@ -205,14 +241,26 @@
       <if test="contactTel != null">
         CONTACT_TEL,
       </if>
+      <if test="contactEmail != null">
+        CONTACT_EMAIL,
+      </if>
       <if test="avatarSrc != null">
         AVATAR_SRC,
       </if>
-      <if test="artDelStauts != null">
-        ART_DEL_STAUTS,
+      <if test="artDelStatus != null">
+        ART_DEL_STATUS,
       </if>
       <if test="readStatus != null">
         READ_STATUS,
+      </if>
+      <if test="floorNumber != null">
+        FLOOR_NUMBER,
+      </if>
+      <if test="replyCount != null">
+        REPLY_COUNT,
+      </if>
+      <if test="totalReplyCount != null">
+        TOTAL_REPLY_COUNT,
       </if>
       <if test="isDelete != null">
         IS_DELETE,
@@ -240,8 +288,14 @@
       <if test="articlePushBy != null">
         #{articlePushBy,jdbcType=VARCHAR},
       </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
       <if test="userName != null">
         #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userNick != null">
+        #{userNick,jdbcType=VARCHAR},
       </if>
       <if test="clientIp != null">
         #{clientIp,jdbcType=VARCHAR},
@@ -254,6 +308,18 @@
       </if>
       <if test="parentOid != null">
         #{parentOid,jdbcType=BIGINT},
+      </if>
+      <if test="replyRootOid != null">
+        #{replyRootOid,jdbcType=BIGINT},
+      </if>
+      <if test="replyToUserId != null">
+        #{replyToUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="replyToUserName != null">
+        #{replyToUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="replyToUserNick != null">
+        #{replyToUserNick,jdbcType=VARCHAR},
       </if>
       <if test="praiseCount != null">
         #{praiseCount,jdbcType=BIGINT},
@@ -270,14 +336,26 @@
       <if test="contactTel != null">
         #{contactTel,jdbcType=VARCHAR},
       </if>
+      <if test="contactEmail != null">
+        #{contactEmail,jdbcType=VARCHAR},
+      </if>
       <if test="avatarSrc != null">
         #{avatarSrc,jdbcType=VARCHAR},
       </if>
-      <if test="artDelStauts != null">
-        #{artDelStauts,jdbcType=VARCHAR},
+      <if test="artDelStatus != null">
+        #{artDelStatus,jdbcType=VARCHAR},
       </if>
       <if test="readStatus != null">
         #{readStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="floorNumber != null">
+        #{floorNumber,jdbcType=BIGINT},
+      </if>
+      <if test="replyCount != null">
+        #{replyCount,jdbcType=BIGINT},
+      </if>
+      <if test="totalReplyCount != null">
+        #{totalReplyCount,jdbcType=BIGINT},
       </if>
       <if test="isDelete != null">
         #{isDelete,jdbcType=CHAR},
@@ -317,8 +395,14 @@
       <if test="record.articlePushBy != null">
         ARTICLE_PUSH_BY = #{record.articlePushBy,jdbcType=VARCHAR},
       </if>
+      <if test="record.userId != null">
+        USER_ID = #{record.userId,jdbcType=VARCHAR},
+      </if>
       <if test="record.userName != null">
         USER_NAME = #{record.userName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userNick != null">
+        USER_NICK = #{record.userNick,jdbcType=VARCHAR},
       </if>
       <if test="record.clientIp != null">
         CLIENT_IP = #{record.clientIp,jdbcType=VARCHAR},
@@ -331,6 +415,18 @@
       </if>
       <if test="record.parentOid != null">
         PARENT_OID = #{record.parentOid,jdbcType=BIGINT},
+      </if>
+      <if test="record.replyRootOid != null">
+        REPLY_ROOT_OID = #{record.replyRootOid,jdbcType=BIGINT},
+      </if>
+      <if test="record.replyToUserId != null">
+        REPLY_TO_USER_ID = #{record.replyToUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.replyToUserName != null">
+        REPLY_TO_USER_NAME = #{record.replyToUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.replyToUserNick != null">
+        REPLY_TO_USER_NICK = #{record.replyToUserNick,jdbcType=VARCHAR},
       </if>
       <if test="record.praiseCount != null">
         PRAISE_COUNT = #{record.praiseCount,jdbcType=BIGINT},
@@ -347,14 +443,26 @@
       <if test="record.contactTel != null">
         CONTACT_TEL = #{record.contactTel,jdbcType=VARCHAR},
       </if>
+      <if test="record.contactEmail != null">
+        CONTACT_EMAIL = #{record.contactEmail,jdbcType=VARCHAR},
+      </if>
       <if test="record.avatarSrc != null">
         AVATAR_SRC = #{record.avatarSrc,jdbcType=VARCHAR},
       </if>
-      <if test="record.artDelStauts != null">
-        ART_DEL_STAUTS = #{record.artDelStauts,jdbcType=VARCHAR},
+      <if test="record.artDelStatus != null">
+        ART_DEL_STATUS = #{record.artDelStatus,jdbcType=VARCHAR},
       </if>
       <if test="record.readStatus != null">
         READ_STATUS = #{record.readStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.floorNumber != null">
+        FLOOR_NUMBER = #{record.floorNumber,jdbcType=BIGINT},
+      </if>
+      <if test="record.replyCount != null">
+        REPLY_COUNT = #{record.replyCount,jdbcType=BIGINT},
+      </if>
+      <if test="record.totalReplyCount != null">
+        TOTAL_REPLY_COUNT = #{record.totalReplyCount,jdbcType=BIGINT},
       </if>
       <if test="record.isDelete != null">
         IS_DELETE = #{record.isDelete,jdbcType=CHAR},
@@ -380,19 +488,29 @@
       ARTICLE_TITLE = #{record.articleTitle,jdbcType=VARCHAR},
       ARTICLE_AUTHOR = #{record.articleAuthor,jdbcType=VARCHAR},
       ARTICLE_PUSH_BY = #{record.articlePushBy,jdbcType=VARCHAR},
+      USER_ID = #{record.userId,jdbcType=VARCHAR},
       USER_NAME = #{record.userName,jdbcType=VARCHAR},
+      USER_NICK = #{record.userNick,jdbcType=VARCHAR},
       CLIENT_IP = #{record.clientIp,jdbcType=VARCHAR},
       USER_AREA = #{record.userArea,jdbcType=VARCHAR},
       COMMENT_TIME = #{record.commentTime,jdbcType=TIMESTAMP},
       PARENT_OID = #{record.parentOid,jdbcType=BIGINT},
+      REPLY_ROOT_OID = #{record.replyRootOid,jdbcType=BIGINT},
+      REPLY_TO_USER_ID = #{record.replyToUserId,jdbcType=VARCHAR},
+      REPLY_TO_USER_NAME = #{record.replyToUserName,jdbcType=VARCHAR},
+      REPLY_TO_USER_NICK = #{record.replyToUserNick,jdbcType=VARCHAR},
       PRAISE_COUNT = #{record.praiseCount,jdbcType=BIGINT},
       CONTACT_QQ = #{record.contactQq,jdbcType=VARCHAR},
       CONTACT_WECHAT = #{record.contactWechat,jdbcType=VARCHAR},
       CONTACT_WEIBO = #{record.contactWeibo,jdbcType=VARCHAR},
       CONTACT_TEL = #{record.contactTel,jdbcType=VARCHAR},
+      CONTACT_EMAIL = #{record.contactEmail,jdbcType=VARCHAR},
       AVATAR_SRC = #{record.avatarSrc,jdbcType=VARCHAR},
-      ART_DEL_STAUTS = #{record.artDelStauts,jdbcType=VARCHAR},
+      ART_DEL_STATUS = #{record.artDelStatus,jdbcType=VARCHAR},
       READ_STATUS = #{record.readStatus,jdbcType=VARCHAR},
+      FLOOR_NUMBER = #{record.floorNumber,jdbcType=BIGINT},
+      REPLY_COUNT = #{record.replyCount,jdbcType=BIGINT},
+      TOTAL_REPLY_COUNT = #{record.totalReplyCount,jdbcType=BIGINT},
       IS_DELETE = #{record.isDelete,jdbcType=CHAR},
       CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP},
@@ -408,19 +526,29 @@
       ARTICLE_TITLE = #{record.articleTitle,jdbcType=VARCHAR},
       ARTICLE_AUTHOR = #{record.articleAuthor,jdbcType=VARCHAR},
       ARTICLE_PUSH_BY = #{record.articlePushBy,jdbcType=VARCHAR},
+      USER_ID = #{record.userId,jdbcType=VARCHAR},
       USER_NAME = #{record.userName,jdbcType=VARCHAR},
+      USER_NICK = #{record.userNick,jdbcType=VARCHAR},
       CLIENT_IP = #{record.clientIp,jdbcType=VARCHAR},
       USER_AREA = #{record.userArea,jdbcType=VARCHAR},
       COMMENT_TIME = #{record.commentTime,jdbcType=TIMESTAMP},
       PARENT_OID = #{record.parentOid,jdbcType=BIGINT},
+      REPLY_ROOT_OID = #{record.replyRootOid,jdbcType=BIGINT},
+      REPLY_TO_USER_ID = #{record.replyToUserId,jdbcType=VARCHAR},
+      REPLY_TO_USER_NAME = #{record.replyToUserName,jdbcType=VARCHAR},
+      REPLY_TO_USER_NICK = #{record.replyToUserNick,jdbcType=VARCHAR},
       PRAISE_COUNT = #{record.praiseCount,jdbcType=BIGINT},
       CONTACT_QQ = #{record.contactQq,jdbcType=VARCHAR},
       CONTACT_WECHAT = #{record.contactWechat,jdbcType=VARCHAR},
       CONTACT_WEIBO = #{record.contactWeibo,jdbcType=VARCHAR},
       CONTACT_TEL = #{record.contactTel,jdbcType=VARCHAR},
+      CONTACT_EMAIL = #{record.contactEmail,jdbcType=VARCHAR},
       AVATAR_SRC = #{record.avatarSrc,jdbcType=VARCHAR},
-      ART_DEL_STAUTS = #{record.artDelStauts,jdbcType=VARCHAR},
+      ART_DEL_STATUS = #{record.artDelStatus,jdbcType=VARCHAR},
       READ_STATUS = #{record.readStatus,jdbcType=VARCHAR},
+      FLOOR_NUMBER = #{record.floorNumber,jdbcType=BIGINT},
+      REPLY_COUNT = #{record.replyCount,jdbcType=BIGINT},
+      TOTAL_REPLY_COUNT = #{record.totalReplyCount,jdbcType=BIGINT},
       IS_DELETE = #{record.isDelete,jdbcType=CHAR},
       CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP}
@@ -443,8 +571,14 @@
       <if test="articlePushBy != null">
         ARTICLE_PUSH_BY = #{articlePushBy,jdbcType=VARCHAR},
       </if>
+      <if test="userId != null">
+        USER_ID = #{userId,jdbcType=VARCHAR},
+      </if>
       <if test="userName != null">
         USER_NAME = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userNick != null">
+        USER_NICK = #{userNick,jdbcType=VARCHAR},
       </if>
       <if test="clientIp != null">
         CLIENT_IP = #{clientIp,jdbcType=VARCHAR},
@@ -457,6 +591,18 @@
       </if>
       <if test="parentOid != null">
         PARENT_OID = #{parentOid,jdbcType=BIGINT},
+      </if>
+      <if test="replyRootOid != null">
+        REPLY_ROOT_OID = #{replyRootOid,jdbcType=BIGINT},
+      </if>
+      <if test="replyToUserId != null">
+        REPLY_TO_USER_ID = #{replyToUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="replyToUserName != null">
+        REPLY_TO_USER_NAME = #{replyToUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="replyToUserNick != null">
+        REPLY_TO_USER_NICK = #{replyToUserNick,jdbcType=VARCHAR},
       </if>
       <if test="praiseCount != null">
         PRAISE_COUNT = #{praiseCount,jdbcType=BIGINT},
@@ -473,14 +619,26 @@
       <if test="contactTel != null">
         CONTACT_TEL = #{contactTel,jdbcType=VARCHAR},
       </if>
+      <if test="contactEmail != null">
+        CONTACT_EMAIL = #{contactEmail,jdbcType=VARCHAR},
+      </if>
       <if test="avatarSrc != null">
         AVATAR_SRC = #{avatarSrc,jdbcType=VARCHAR},
       </if>
-      <if test="artDelStauts != null">
-        ART_DEL_STAUTS = #{artDelStauts,jdbcType=VARCHAR},
+      <if test="artDelStatus != null">
+        ART_DEL_STATUS = #{artDelStatus,jdbcType=VARCHAR},
       </if>
       <if test="readStatus != null">
         READ_STATUS = #{readStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="floorNumber != null">
+        FLOOR_NUMBER = #{floorNumber,jdbcType=BIGINT},
+      </if>
+      <if test="replyCount != null">
+        REPLY_COUNT = #{replyCount,jdbcType=BIGINT},
+      </if>
+      <if test="totalReplyCount != null">
+        TOTAL_REPLY_COUNT = #{totalReplyCount,jdbcType=BIGINT},
       </if>
       <if test="isDelete != null">
         IS_DELETE = #{isDelete,jdbcType=CHAR},
@@ -503,19 +661,29 @@
       ARTICLE_TITLE = #{articleTitle,jdbcType=VARCHAR},
       ARTICLE_AUTHOR = #{articleAuthor,jdbcType=VARCHAR},
       ARTICLE_PUSH_BY = #{articlePushBy,jdbcType=VARCHAR},
+      USER_ID = #{userId,jdbcType=VARCHAR},
       USER_NAME = #{userName,jdbcType=VARCHAR},
+      USER_NICK = #{userNick,jdbcType=VARCHAR},
       CLIENT_IP = #{clientIp,jdbcType=VARCHAR},
       USER_AREA = #{userArea,jdbcType=VARCHAR},
       COMMENT_TIME = #{commentTime,jdbcType=TIMESTAMP},
       PARENT_OID = #{parentOid,jdbcType=BIGINT},
+      REPLY_ROOT_OID = #{replyRootOid,jdbcType=BIGINT},
+      REPLY_TO_USER_ID = #{replyToUserId,jdbcType=VARCHAR},
+      REPLY_TO_USER_NAME = #{replyToUserName,jdbcType=VARCHAR},
+      REPLY_TO_USER_NICK = #{replyToUserNick,jdbcType=VARCHAR},
       PRAISE_COUNT = #{praiseCount,jdbcType=BIGINT},
       CONTACT_QQ = #{contactQq,jdbcType=VARCHAR},
       CONTACT_WECHAT = #{contactWechat,jdbcType=VARCHAR},
       CONTACT_WEIBO = #{contactWeibo,jdbcType=VARCHAR},
       CONTACT_TEL = #{contactTel,jdbcType=VARCHAR},
+      CONTACT_EMAIL = #{contactEmail,jdbcType=VARCHAR},
       AVATAR_SRC = #{avatarSrc,jdbcType=VARCHAR},
-      ART_DEL_STAUTS = #{artDelStauts,jdbcType=VARCHAR},
+      ART_DEL_STATUS = #{artDelStatus,jdbcType=VARCHAR},
       READ_STATUS = #{readStatus,jdbcType=VARCHAR},
+      FLOOR_NUMBER = #{floorNumber,jdbcType=BIGINT},
+      REPLY_COUNT = #{replyCount,jdbcType=BIGINT},
+      TOTAL_REPLY_COUNT = #{totalReplyCount,jdbcType=BIGINT},
       IS_DELETE = #{isDelete,jdbcType=CHAR},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
@@ -528,19 +696,29 @@
       ARTICLE_TITLE = #{articleTitle,jdbcType=VARCHAR},
       ARTICLE_AUTHOR = #{articleAuthor,jdbcType=VARCHAR},
       ARTICLE_PUSH_BY = #{articlePushBy,jdbcType=VARCHAR},
+      USER_ID = #{userId,jdbcType=VARCHAR},
       USER_NAME = #{userName,jdbcType=VARCHAR},
+      USER_NICK = #{userNick,jdbcType=VARCHAR},
       CLIENT_IP = #{clientIp,jdbcType=VARCHAR},
       USER_AREA = #{userArea,jdbcType=VARCHAR},
       COMMENT_TIME = #{commentTime,jdbcType=TIMESTAMP},
       PARENT_OID = #{parentOid,jdbcType=BIGINT},
+      REPLY_ROOT_OID = #{replyRootOid,jdbcType=BIGINT},
+      REPLY_TO_USER_ID = #{replyToUserId,jdbcType=VARCHAR},
+      REPLY_TO_USER_NAME = #{replyToUserName,jdbcType=VARCHAR},
+      REPLY_TO_USER_NICK = #{replyToUserNick,jdbcType=VARCHAR},
       PRAISE_COUNT = #{praiseCount,jdbcType=BIGINT},
       CONTACT_QQ = #{contactQq,jdbcType=VARCHAR},
       CONTACT_WECHAT = #{contactWechat,jdbcType=VARCHAR},
       CONTACT_WEIBO = #{contactWeibo,jdbcType=VARCHAR},
       CONTACT_TEL = #{contactTel,jdbcType=VARCHAR},
+      CONTACT_EMAIL = #{contactEmail,jdbcType=VARCHAR},
       AVATAR_SRC = #{avatarSrc,jdbcType=VARCHAR},
-      ART_DEL_STAUTS = #{artDelStauts,jdbcType=VARCHAR},
+      ART_DEL_STATUS = #{artDelStatus,jdbcType=VARCHAR},
       READ_STATUS = #{readStatus,jdbcType=VARCHAR},
+      FLOOR_NUMBER = #{floorNumber,jdbcType=BIGINT},
+      REPLY_COUNT = #{replyCount,jdbcType=BIGINT},
+      TOTAL_REPLY_COUNT = #{totalReplyCount,jdbcType=BIGINT},
       IS_DELETE = #{isDelete,jdbcType=CHAR},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}

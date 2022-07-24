@@ -3,7 +3,7 @@ package cn.jianwoo.blog.aspect;
 import cn.jianwoo.blog.annotation.IpLimit;
 import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.cache.CacheStore;
-import cn.jianwoo.blog.constants.CacaheKeyConstants;
+import cn.jianwoo.blog.constants.CacheKeyConstants;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.service.base.IpControlBaseService;
@@ -17,6 +17,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -48,6 +49,8 @@ public class IPLimitAspect {
     private LoadingCacheIpService loadingCacheIpService;
     @Autowired
     private IpControlBaseService ipControlBaseService;
+    @Value("${black.ip.warn.count}")
+    private Integer ipWarnCount;
 
     @Pointcut("@annotation(cn.jianwoo.blog.annotation.IpLimit)")
     public void ipLimit() {
@@ -65,7 +68,7 @@ public class IPLimitAspect {
             String ipAddr = request.getRemoteAddr();
             String key = ipAddr.concat(Constants.IP_SPLIT).concat(limit.key());
             if (limit.limit() != -1) {
-                String cacheKey = MessageFormat.format(CacaheKeyConstants.IP_BLACK_KEY, limit.key());
+                String cacheKey = MessageFormat.format(CacheKeyConstants.IIP_ACCESS_TRAFFIC_CTRL_KEY, limit.key());
                 cacheStore.put(cacheKey, limit.limit());
             }
 
@@ -75,11 +78,17 @@ public class IPLimitAspect {
                 obj = joinPoint.proceed();
             } else {
                 // 未获得令牌（限制访问）
-                String cacheKey = MessageFormat.format(CacaheKeyConstants.IP_BLACK_WARN_KEY, ipAddr);
+                String cacheKey = MessageFormat.format(CacheKeyConstants.IP_BLACK_WARN_KEY, ipAddr);
+
+                Integer warnCnt = 0;
                 if (cacheStore.hasKey(cacheKey)) {
+                    warnCnt = (Integer) cacheStore.get(cacheKey).orElse(0);
+                }
+                if (warnCnt > ipWarnCount  && !ipControlBaseService.isIpInBlackList(ipAddr)) {
                     ipControlBaseService.doCreateBlackRecord(ipAddr);
                 }
-                cacheStore.put(cacheKey, Constants.YES);
+
+                cacheStore.put(cacheKey, warnCnt + 1);
 
                 responseFail();
             }
@@ -92,7 +101,7 @@ public class IPLimitAspect {
     /**
      * 直接向前端抛出异常
      */
-    private void responseFail() throws Exception{
+    private void responseFail() throws Exception {
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(Constants.CONTENT_TYPE_JSON);

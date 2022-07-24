@@ -76,12 +76,13 @@ layui.define(['form', 'mouseRightMenu'], function (exports) {
                                         "/api/admin/menu/update",
                                         1,
                                         JSON.stringify({
+                                            requestId: field.subToken,
                                             name: field.name,
                                             text: field.text,
                                             icon: field.icon,
                                             url: field.url,
-                                            valid: field.valid === 1 ? 1 : 0,
-                                            subToken: field.subToken,
+                                            valid: field.valid === '1' ? 1 : 0,
+                                            flagCategory: field.flagCategory === '1' ? 1 : 0,
                                             oid: id
                                         }),
                                         "更新成功",
@@ -167,12 +168,13 @@ layui.define(['form', 'mouseRightMenu'], function (exports) {
                             "/api/admin/menu/create",
                             1,
                             JSON.stringify({
+                                requestId: field.subToken,
                                 name: field.name,
                                 text: field.text,
                                 icon: field.icon,
                                 url: field.url,
+                                flagCategory: field.flagCategory === '1' ? 1 : 0,
                                 parentOid: pid,
-                                subToken: field.subToken,
 
                             }),
                             "添加成功",

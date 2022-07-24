@@ -87,7 +87,7 @@
                     lay-done="layui.element.render('nav', 'layadmin-system-side-menu');" id="TPL_layout">
 
                 <div class="layui-logo" lay-href="">
-                    <span>{{ layui.setter.name || 'layuiAdmin' }}</span>
+                    <span>{{ layui.setter.name || '简窝' }}</span>
                 </div>
 
                 <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu"
@@ -101,7 +101,7 @@
                     }
 
                     layui.each(d[dataName], function(index, item){
-                    var hasChildren = typeof item.list === 'object' && item.list.length > 0
+                    var hasChildren = typeof item.subList === 'object' && item.subList.length > 0
                     ,classSelected = function(){
                     var match = path[0] == item.name || (index == 0 && !path[0])
                     || (item.jump && pathURL == layui.admin.correctRouter(item.jump)) || item.spread;
@@ -121,7 +121,7 @@
                         </a>
                         {{# if(hasChildren){ }}
                         <dl class="layui-nav-child">
-                            {{# layui.each(item.list, function(index2, item2){
+                            {{# layui.each(item.subList, function(index2, item2){
                             var hasChildren2 = typeof item2.list == 'object' && item2.list.length > 0
                             ,classSelected2 = function(){
                             var match = (path[0] == item.name && path[1] == item2.name)

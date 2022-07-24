@@ -66,7 +66,7 @@ public class CommentApiController extends BaseController {
      *
      * @param param JSON 参数({@link CommentRequest})<br/>
      *              commentText<br/>
-     *              username<br/>
+     *              userNick<br/>
      *              qq<br/>
      *              artId<br/>
      *              commentParentId<br/>
@@ -85,10 +85,10 @@ public class CommentApiController extends BaseController {
             BizValidation.paramValidate(request.getArtId(), "artId", "文章id不能为空!");
             BizValidation.paramValidate(request.getCommentParentId(), "commentParentId", "评论父id不能为空!");
             BizValidation.paramValidate(request.getCommentText(), "commentText", "评论内容不能为空!");
-            BizValidation.paramValidate(request.getUsername(), "username", "用户不能为空!");
+            BizValidation.paramValidate(request.getUserNick(), "userNick", "用户昵称不能为空!");
             CommentBO commentBO = JwBuilder.of(CommentBO::new)
                     .with(CommentBO::setArticleOid, request.getArtId())
-                    .with(CommentBO::setUserName, request.getUsername())
+                    .with(CommentBO::setUserNick, request.getUserNick())
                     .with(CommentBO::setClientIp, request.getClientIp())
                     .with(CommentBO::setContactQq, request.getContactQq())
                     .with(CommentBO::setContactWechat, request.getContactWechat())
@@ -99,7 +99,7 @@ public class CommentApiController extends BaseController {
                     .with(CommentBO::setAvatarSrc, request.getAvatarSrc())
                     .build();
 
-            commentBizService.doCreateComment(commentBO);
+            commentBizService.doCreateComment(commentBO, true);
 
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
@@ -161,56 +161,6 @@ public class CommentApiController extends BaseController {
         return super.responseToJSONString(BaseResponseDto.SUCCESS);
     }
 
-
-    //    @GetMapping(CommentApiUrlConfig.URL_COMMENT_QUERY)
-    @Deprecated
-    public String queryComment(Integer page, Integer limit, CommentParam param) {
-        List<CommentBO> commentList = commentBizService.queryAllEffectiveComment(param);
-        List<CommentSummaryVO> commentVOList = new ArrayList<>();
-        CommentSummaryResponse response = new CommentSummaryResponse();
-        Map<Long, Integer> oidSeqMap = new HashMap<>();
-        Integer seq = 1;
-        for (CommentBO commentBO : commentList) {
-            CommentSummaryVO vo = new CommentSummaryVO();
-            vo.setArtTitle(commentBO.getArticleTitle());
-            vo.setContent(commentBO.getContent());
-            vo.setCommentTimeStr(DateUtil.formatDateTime(commentBO.getCommentTime()));
-            vo.setCommentTime(commentBO.getCommentTime());
-            vo.setUserName(commentBO.getUserName());
-            vo.setReplyTo(commentBO.getParentUserName());
-            vo.setReplyOid(commentBO.getParentOid());
-            vo.setSeq(seq++);
-            oidSeqMap.put(commentBO.getOid(), vo.getSeq());
-            commentVOList.add(vo);
-        }
-        if (page == null) {
-            page = 1;
-        }
-        if (limit == null) {
-            limit = 10;
-        }
-        List<CommentSummaryVO> resCommList = new ArrayList<>();
-        Integer size = (page - 1) * limit + limit;
-        if (size > commentVOList.size()) {
-            size = commentVOList.size();
-        }
-
-        for (int i = (page - 1) * limit; i < size; i++) {
-            CommentSummaryVO vo = commentVOList.get(i);
-            Integer replySeq = oidSeqMap.get(vo.getReplyOid());
-            if (vo.getReplyOid().equals(0L)) {
-                vo.setReplyTo("文章");
-            } else {
-                vo.setReplyTo(vo.getReplyTo() + "(Seq: " + replySeq + ")");
-            }
-            resCommList.add(vo);
-        }
-        response.setData(resCommList);
-        response.setCount(Long.parseLong(String.valueOf(commentVOList.size())));
-
-        return super.responseToJSONString(response);
-    }
-
     /**
      * 分页查询评论(评论列表)<br/>
      * url:/api/admin/comment/query<br/>
@@ -224,7 +174,7 @@ public class CommentApiController extends BaseController {
      * data<br/>
      * --seq<br/>
      * --artTitle<br/>
-     * --userName<br/>
+     * --userNick<br/>
      * --commentTimeDesc<br/>
      * --replyTo<br/>
      * --content<br/>
@@ -234,6 +184,8 @@ public class CommentApiController extends BaseController {
      * --clientIp<br/>
      * --userArea<br/>
      * --desc<br/>
+     * --artDelStatus<br/>
+//     * --isDelete<br/>
      * @author gulihua
      */
     @ApiVersion()
@@ -263,10 +215,13 @@ public class CommentApiController extends BaseController {
                 vo.setContent(StringEscapeUtils.escapeHtml4(commentBO.getContent()));
                 vo.setCommentTimeStr(DateUtil.formatDateTime(commentBO.getCommentTime()));
                 vo.setCommentTime(commentBO.getCommentTime());
-                vo.setUserName(commentBO.getUserName());
-                vo.setReplyTo(commentBO.getParentUserName());
+                vo.setUserNick(commentBO.getUserNick());
+                vo.setReplyTo(commentBO.getReplyToUserNick());
                 vo.setReplyOid(commentBO.getParentOid());
                 vo.setOid(commentBO.getOid());
+                vo.setArtOid(commentBO.getArticleOid());
+                vo.setArtDelStatus(commentBO.getArtDelStatus());
+//                vo.setIsDelete(commentBO.getIsDelete() ? Constants.TRUE_1 : Constants.FALSE_0);
                 vo.setArtOid(commentBO.getArticleOid());
                 list.add(vo);
             }
@@ -286,6 +241,7 @@ public class CommentApiController extends BaseController {
      * url:/api/admin/comment/reply<br/>
      *
      * @param param JSON 参数({@link CommentReplyRequest})<br/>
+     *              userNick<br/>
      *              content<br/>
      *              parentOid<br/>
      *              artOid<br/>
@@ -304,19 +260,20 @@ public class CommentApiController extends BaseController {
         try {
             super.printRequestParams(param);
             CommentReplyRequest request = this.convertParam(param, CommentReplyRequest.class);
+            BizValidation.paramValidate(request.getUserNick(), "userNick", "用户昵称不能为空!");
             BizValidation.paramValidate(request.getContent(), "content", "回复内容不能为空!");
             BizValidation.paramValidate(request.getParentOid(), "parentOid", "评论父oid不能为空!");
             BizValidation.paramValidate(request.getArtOid(), "artOid", "文章oid不能为空!");
             CommentBO commentBO = JwBuilder.of(CommentBO::new)
                     .with(CommentBO::setArticleOid, request.getArtOid())
-                    .with(CommentBO::setUserName, request.getUserName())
+                    .with(CommentBO::setUserNick, request.getUserNick())
                     .with(CommentBO::setClientIp, request.getClientIp())
                     .with(CommentBO::setContactQq, request.getContactQq())
                     .with(CommentBO::setContent, request.getContent())
                     .with(CommentBO::setParentOid, request.getParentOid())
                     .with(CommentBO::setAvatarSrc, request.getAvatarSrc())
                     .build();
-            commentBizService.doCreateComment(commentBO);
+            commentBizService.doCreateComment(commentBO, true);
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
 
@@ -333,19 +290,20 @@ public class CommentApiController extends BaseController {
      * @return 返回响应 {@link BaseResponseDto}<br/>
      * commentList<br/>
      * --avatarSrc<br/>
-     * --userName<br/>
+     * --userNick<br/>
      * --commentTimeStr<br/>
      * --commentTime<br/>
      * --content<br/>
-     * --parentUserName<br/>
      * --oid<br/>
      * --replyList<br/>
      * ----avatarSrc<br/>
-     * ----userName<br/>
+     * ----userNick<br/>
      * ----commentTimeStr<br/>
      * ----commentTime<br/>
      * ----content<br/>
-     * ----parentUserName<br/>
+     * ----replyToUserId<br/>
+     * ----replyToUserName<br/>
+     * ----replyToUserNick<br/>
      * ----oid<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)<br/>
      * msg<br/>
@@ -356,16 +314,16 @@ public class CommentApiController extends BaseController {
     public String queryCommentListByArticle(@RequestBody String param) {
         try {
             super.printRequestParams(param);
-            EntityOidRequest request = this.convertParam(param, EntityOidRequest.class);
-            BizValidation.paramValidate(request.getEntityOid(), "entityOid", "文章主键不能为空!");
-            List<CommentBO> commentExtList = commentBizService.queryCommentsByArtOid(request.getEntityOid());
-            log.info(">>query comment Service by article oid[{}]: {}", request.getEntityOid(),
+            EntityOidRequest req = this.convertParam(param, EntityOidRequest.class);
+            BizValidation.paramValidate(req.getEntityOid(), "entityOid", "文章主键不能为空!");
+            List<CommentBO> commentExtList = commentBizService.queryCommentsByArtOid(req.getEntityOid(), request.getRemoteAddr());
+            log.info(">>query comment Service by article oid[{}]: {}", req.getEntityOid(),
                     JSON.toJSONString(commentExtList));
             CommentListResponse response = CommentListResponse.getInstance();
             List<ArticleCommentListVO> commentListVOList = new ArrayList<>();
             for (CommentBO commentBO : commentExtList) {
                 ArticleCommentListVO vo = new ArticleCommentListVO();
-                vo.setUserName(commentBO.getUserName());
+                vo.setUserNick(commentBO.getUserNick());
                 vo.setContent(commentBO.getContent());
                 vo.setCommentTimeStr(DateUtil.formatDateTime(commentBO.getCommentTime()));
                 vo.setCommentTime(commentBO.getCommentTime());
@@ -375,13 +333,15 @@ public class CommentApiController extends BaseController {
                 if (CollectionUtils.isNotEmpty(commentBO.getReplyComments())) {
                     for (CommentBO rep : commentBO.getReplyComments()) {
                         ArticleCommentListVO replyVo = new ArticleCommentListVO();
-                        replyVo.setUserName(rep.getUserName());
+                        replyVo.setUserNick(rep.getUserNick());
                         replyVo.setContent(rep.getContent());
                         replyVo.setCommentTimeStr(DateUtil.formatDateTime(rep.getCommentTime()));
                         replyVo.setCommentTime(rep.getCommentTime());
                         replyVo.setAvatarSrc(rep.getAvatarSrc());
                         replyVo.setOid(rep.getOid());
-                        replyVo.setParentUserName(rep.getParentUserName());
+                        replyVo.setReplyToUserName(rep.getReplyToUserName());
+                        replyVo.setReplyToUserId(rep.getReplyToUserId());
+                        replyVo.setReplyToUserNick(rep.getReplyToUserNick());
                         replyList.add(replyVo);
                     }
                     vo.setReplyList(replyList);
@@ -461,7 +421,9 @@ public class CommentApiController extends BaseController {
      * msg<br/>
      * data<br/>
      * --oid<br/>
+     * --userId<br/>
      * --userName<br/>
+     * --userNick<br/>
      * --avatarSrc<br/>
      * --contactQq<br/>
      * --contactWechat<br/>
@@ -482,7 +444,9 @@ public class CommentApiController extends BaseController {
             CommentBO commentBO = commentBizService.queryCommentExtByOid(id);
             CommentVO vo = JwBuilder.of(CommentVO::new)
                     .with(CommentVO::setOid, commentBO.getOid())
+                    .with(CommentVO::setUserId, commentBO.getUserId())
                     .with(CommentVO::setUserName, commentBO.getUserName())
+                    .with(CommentVO::setUserNick, commentBO.getUserNick())
                     .with(CommentVO::setArtOid, commentBO.getArticleOid())
                     .with(CommentVO::setArtTitle, commentBO.getArticleTitle())
                     .with(CommentVO::setAvatarSrc, commentBO.getAvatarSrc())

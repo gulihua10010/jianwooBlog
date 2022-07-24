@@ -36,9 +36,17 @@
             </div>
         </div>
         <div class="layui-form-item">
+            <div class="layui-input-block">
+                <input id="flagCategory" name="flagCategory"
+                       title="是否为文章类别" lay-filter="flagCategory"
+                       type="checkbox" value="1">
+            </div>
+        </div>
+
+        <div class="layui-form-item" id="menuUrl">
             <label class="layui-form-label">菜单url</label>
             <div class="layui-input-block">
-                <input class="layui-input" name="url" autocomplete="off" lay-verify="maxLength" lay-max="200"
+                <input class="layui-input" name="url" autocomplete="off" lay-verify="urlFmt|maxLength" lay-max="200"
                        type="text">
             </div>
         </div>
@@ -47,7 +55,7 @@
                 <span style="color: red" id="menu-tips-text"></span>
             </div>
         </div>
-        <script type="text/html" template lay-url="/api/admin/token/generate"
+        <script type="text/html" template lay-url="/api/admin/request/token/generate"
                 lay-data="{pageId: 'M11'}" lay-type="post">
             <input type="hidden" name="subToken" id="subToken" value="{{d.token}}">
         </script>
@@ -60,3 +68,18 @@
         </div>
     </div>
 </div>
+<script>
+    layui.use(['admin', 'form'], function () {
+        var form = layui.form;
+        form.render();
+        form.on('checkbox(flagCategory)', function (data) {
+            if ($('#flagCategory').prop('checked')) {
+                $('#menuUrl').hide()
+            }else {
+                $('#menuUrl').show()
+            }
+            form.render();
+        });
+    })
+
+</script>

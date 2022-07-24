@@ -195,10 +195,10 @@
                         {{# } }}
                     </div>
                 </div>
-                {{# if(d.data.status === '91' && d.data.menuName == null && d.data.artTagsList){ }}
+                {{# if(d.data.status === '91' && d.data.categoryName == null && d.data.artTagsList){ }}
                 <div class="layui-card" style="color: #aaa">
                     <div class="layui-card-header">
-                        <span style="color: #aaa">{{ d.data.menuName == null ? "" : ("类别: " + d.data.menuName) }}</span>
+                        <span style="color: #aaa">{{ d.data.categoryName == null ? "" : ("类别: " + d.data.categoryName) }}</span>
                         {{# if(d.data.artTagsList){ }}
                         <span style="color: #aaa">标签:</span>
                         {{# } }}
@@ -281,10 +281,10 @@
                     <div class="layui-card-body">
                         <div class="article-type">
                             <div class="layui-card layui-form" lay-filter="component-form-element" id="type-select">
-                                <select lay-search lay-verify="required" name="typeId" id="typeId">
+                                <select lay-search lay-verify="required" name="categoryId" id="categoryId">
                                     <option style="font-weight: bold;color: black" value="-1"></option>
-                                    {{# layui.each(d.data.menuList, function(index, item){ }}
-                                    <option style="color: #777" value="{{ item.id }}" {{# if(item.id=== d.data.menuOid){
+                                    {{# layui.each(d.data.categoryList, function(index, item){ }}
+                                    <option style="color: #777" value="{{ item.id }}" {{# if(item.id=== d.data.categoryId){
                                             }} selected {{# } }}>{{ item.name }}
                                     </option>
                                     {{# }); }}
@@ -342,26 +342,28 @@
                             {{# if(d.data.accessType === '10'){ }}
                                 私密
                             {{#  } }}
-                            {{# if(d.data.accessType === '21'){ }}
-                                置顶
-                            {{#  } }}
                             {{# if(d.data.accessType === '20'){ }}
                                 公开
+
+                            {{#  } }}
+
+                            {{# if(d.data.topPlaceFlag){ }}
+                                (置顶)
                             {{#  } }}
                             </span></a>&nbsp;
                             <a id="edit">编辑</a>
                             <form class="layui-form" lay-filter="component-form-element" method="post">
                                 <div class="layui-form-item" id="ispublic-form">
                                     <div class="layui-input-block">
-                                        <input {{# if(d.data.accessType== 20 || d.data.accessType== 21){ }} checked {{# }
+                                        <input {{# if(d.data.accessType== 20){ }} checked {{# }
                                                }}
                                                class="ispublic-radio" id="public" lay-filter="public"
                                                name="isPublic" title="公开"
                                                type="radio" value="20">
                                         <span id="hometop1"><input id="hometop" lay-skin="primary" title="将文章置于首页顶端"
                                                                    type="checkbox"
-                                                                   {{# if(d.data.accessType== 21){ }} checked {{# } }}
-                                                                   value="21" name="hometop"></span><br>
+                                                                   {{# if(d.data.topPlaceFlag){ }} checked {{# } }}
+                                                                   value="1" name="hometop"></span><br>
                                         <input class="ispublic-radio" id="passw" lay-filter="passw" name="isPublic"
                                                title="密码保护" {{# if(d.data.accessType== 11){ }} checked {{# } }}
                                                type="radio"
@@ -393,6 +395,15 @@
                                     <div id="isComment">
                                         <input id="is-comment" name="isComment" title="是否可以评论"
                                                {{# if(d.data.isComment=== true){ }} checked {{# } }} type="checkbox">
+                                    </div>
+                                </div>
+                                <div>
+                                    <div id="isOriginal">
+                                        <input id="is-original" name="flagOriginal" title="是否原创" lay-filter="original"
+                                               {{# if(d.data.flagOriginal=== true){ }} checked {{# } }} type="checkbox">
+                                    </div>
+                                    <div id="originalUrl" {{# if(d.data.flagOriginal=== true){ }} style="display: none" {{# } }}>
+                                        <input class="layui-input wd80p" id="original-url" lay-verify="urlFmt|maxLength" lay-max="100" placeholder="转载源链接" name="originalUrl" value="{{ d.data.originalUrl }}" title="转载源链接" type="text">
                                     </div>
                                 </div>
                             </form>
@@ -435,7 +446,7 @@
             </div>
         </div>
     </script>
-    <script type="text/html" template lay-url="/api/admin/token/generate"
+    <script type="text/html" template lay-url="/api/admin/request/token/generate"
             lay-data="{pageId: 'A12'}" lay-type="post" lay-done="doUpdateToken(d);">
         <input type="hidden" name="subToken" id="subToken" value="{{d.token}}">
     </script>
@@ -454,7 +465,7 @@
                 </a>
                 <div class="pad-btm">
                     <p class="fontColor">
-                        <a href="javascript:">{{ comm.userName }}</a>
+                        <a href="javascript:">{{ comm.userNick }}</a>
                         <span style="float: right">
                                             <button class="layui-btn layui-btn-sm reply"
                                                     data-id="{{ comm.oid}}">回复</button>
@@ -478,7 +489,7 @@
                         </a>
                         <div class="pad-btm">
                             <p class="fontColor">
-                                <a href="javascript:">{{rep.userName}}</a>
+                                <a href="javascript:">{{rep.userNick}}</a>
                                 <a href="javascript:">回复 @{{rep.parentUserName}}</a>
                                 <span style="float: right">
                                                         <button class="layui-btn layui-btn-sm reply"
@@ -607,25 +618,27 @@
                         var index = layer.load(0, {shade: false, offset: '400px'});
                         $('input[name=title]').val(tmpData.title);
                         $('input[name=author]').val(tmpData.author);
-                        $('select[name=typeId]').val(tmpData.menuOid);
+                        $('select[name=categoryId]').val(tmpData.categoryId);
                         $('input[name=imgsrc]').val(tmpData.imgSrc);
+                        $('input[name=originalUrl]').val(tmpData.originalUrl);
                         var publicStr = "公开"
                         if (tmpData.accessType === "11") {
                             publicStr = "密码";
                         } else if (tmpData.accessType === "10") {
                             publicStr = "私密";
-                        } else if (tmpData.accessType === "21") {
-                            publicStr = "置顶";
+                        }
+                        if (tmpData.topPlaceFlag) {
+                            publicStr += "(置顶)";
                         }
                         $('#published-public').text(publicStr)
                         $('input[name=isPublic][value="' + tmpData.accessType + '"]').attr("checked", true);
-                        if (tmpData.accessType === "21") {
-                            $('input[name=isPublic][value="20"]').attr("checked", true);
+                        if (tmpData.topPlaceFlag) {
+                            // $('input[name=isPublic][value="20"]').attr("checked", true);
                             $('input[name=hometop]').attr("checked", true);
                         }
                         if (tmpData.accessType === "11") {
                             $('#passw-content').val(tmpData.password)
-                            $('#hometop1').hide();
+                            // $('#hometop1').hide();
                             $('#passw-content').show();
                             $('#passw-content-confirm').show();
                         }
@@ -635,6 +648,13 @@
                         } else {
                             $('input[name=isComment]').removeAttr("checked");
                         }
+
+                        if (tmpData.flagOriginal) {
+                            $('input[name=flagOriginal]').attr("checked", true);
+                        } else {
+                            $('input[name=flagOriginal]').removeAttr("checked");
+                        }
+
                         form.render();
                         edit.setContent(tmpData.content);
                         var tagsHtml = "";
@@ -673,9 +693,10 @@
                     if (!isChange) return '';
                     var title = $('input[name=title]').val();
                     var author = $('input[name=author]').val();
-                    var typeId = $('select[name=typeId]').val();
+                    var categoryId = $('select[name=categoryId]').val();
                     var subToken = $('input[name=subToken]').val();
                     var imgsrc = $('input[name=imgsrc]').val();
+                    var originalUrl = $('input[name=originalUrl]').val();
                     var isPublic = $('input[name=isPublic]:checked').val();
                     var articleContent = tinyMCE.activeEditor.getContent();
                     var tagsId = [];
@@ -688,16 +709,22 @@
                     }
                     var publishTemp = isPublic;
                     var passw = '';
-                    if (publishTemp === '20') {
-                        if ($('#hometop').prop('checked')) {
-                            publishTemp = '21';
-                        }
-                    } else if (publishTemp === '11') {
+                    var topPlaceFlag = false;
+                    if ($('#hometop').prop('checked')) {
+                        topPlaceFlag = true;
+                    }
+
+                    if (publishTemp === '11') {
                         passw = $('#passw-content').val();
                     }
                     var iscomment = 0;
                     if ($('#is-comment').prop('checked')) {
                         iscomment = 1;
+                    }
+                    var flagOriginal = 0;
+                    if ($('#is-original').prop('checked')) {
+                        flagOriginal = 1;
+
                     }
                     var oid = null;
                     if (d.data.tempArticle && d.data.tempArticle.oid) {
@@ -707,18 +734,21 @@
                     ajaxPost('/api/admin/article/temp/save',
                         1,
                         JSON.stringify({
+                            requestId: subToken,
                             oid: oid,
                             oldArticleOid: artOid,
                             title: title,
                             author: author,
                             articleContent: articleContent,
                             tags: tagsId,
-                            menuOid: typeId,
+                            categoryId: categoryId,
                             imgSrc: imgsrc,
                             accessType: publishTemp,
                             password: passw,
+                            originalUrl: originalUrl,
                             isComment: iscomment !== 0,
-                            subToken: subToken,
+                            flagOriginal: flagOriginal !== 0,
+                            topPlaceFlag: topPlaceFlag,
                             pageType: "20",
 
                         }));

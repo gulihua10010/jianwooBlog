@@ -24,10 +24,13 @@ public class CommentBizException extends JwBlogException {
     public static final CommentBizException ARTICLE_NOT_SAME = new CommentBizException(
             ExceptionConstants.BIZ_NOT_MATCH, "修改评论的文章与之前的不一致!");
     public static final CommentBizException FREQUENCY_HIGH_CN = new CommentBizException(
-            ExceptionConstants.BIZ_OPERATION_FAILED, "系统检测到您评论的频率过高,请稍后再试!");
+            ExceptionConstants.BIZ_OPERATION_FAILED, "系统检测到您评论的频率过高, 请稍后再试!");
+
+    public static final CommentBizException MORE_THAN_MAX_COMMENTS_ONE_DAY = new CommentBizException(
+            ExceptionConstants.BIZ_OPERATION_FAILED, "您今天最多可以发%s条评论, 请明天再试!");
 
     public static final ArticleBizException BLOG_NOT_ALLOW_COMMENT_EXCEPTION_CN = new ArticleBizException(
-            ExceptionConstants.BIZ_NOT_EXIST, "该博客不允许评论!");
+            ExceptionConstants.BIZ_NOT_EXIST, "网站的评论系统已经关闭!");
 
     public static final CommentBizException CREATE_FAILED_EXCEPTION = new CommentBizException(
             ExceptionConstants.BIZ_CREATE_FAIL, "The comment[%s] creation is failed.");

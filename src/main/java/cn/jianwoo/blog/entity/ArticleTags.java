@@ -10,6 +10,10 @@ public class ArticleTags implements Serializable {
 
     private Long articleOid;
 
+    private Boolean artFlagActivity;
+
+    private Boolean artFlagPrivate;
+
     private Date createTime;
 
     private Date updateTime;
@@ -40,6 +44,22 @@ public class ArticleTags implements Serializable {
         this.articleOid = articleOid;
     }
 
+    public Boolean getArtFlagActivity() {
+        return artFlagActivity;
+    }
+
+    public void setArtFlagActivity(Boolean artFlagActivity) {
+        this.artFlagActivity = artFlagActivity;
+    }
+
+    public Boolean getArtFlagPrivate() {
+        return artFlagPrivate;
+    }
+
+    public void setArtFlagPrivate(Boolean artFlagPrivate) {
+        this.artFlagPrivate = artFlagPrivate;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -65,6 +85,8 @@ public class ArticleTags implements Serializable {
         sb.append(", oid=").append(oid);
         sb.append(", tagsOid=").append(tagsOid);
         sb.append(", articleOid=").append(articleOid);
+        sb.append(", artFlagActivity=").append(artFlagActivity);
+        sb.append(", artFlagPrivate=").append(artFlagPrivate);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append("]");

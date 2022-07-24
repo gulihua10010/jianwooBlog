@@ -16,12 +16,13 @@ public interface MsgBaseService {
      *
      * @param busiSceneCode 业务场景编码
      * @param loginId       登录id
+     * @param userId        要通知的游客用户id,如果不需要通知,则为null
      * @param msgData       消息数据
-     * @param bizId       业务ID主键
+     * @param bizId         业务ID主键
      * @return
      * @author gulihua
      */
-    void doCreateMsg(String busiSceneCode, String loginId, JSONObject msgData, String bizId) throws JwBlogException;
+    void doCreateMsg(String busiSceneCode, String loginId, String userId, JSONObject msgData, String bizId) throws JwBlogException;
 
 
     /**

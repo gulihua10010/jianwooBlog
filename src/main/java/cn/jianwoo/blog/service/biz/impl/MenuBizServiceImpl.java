@@ -2,7 +2,7 @@ package cn.jianwoo.blog.service.biz.impl;
 
 import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.cache.CacheStore;
-import cn.jianwoo.blog.constants.CacaheKeyConstants;
+import cn.jianwoo.blog.constants.CacheKeyConstants;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.dao.base.ArticleTransDao;
@@ -31,8 +31,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -60,12 +60,12 @@ public class MenuBizServiceImpl implements MenuBizService {
 
     @Override
     public List<MenuBO> queryAdminMenuList() throws JwBlogException {
-        String cacheKey = CacaheKeyConstants.ADMIN_MENU_KEY;
-        if (cacheStore.hasKey(cacheKey)){
+        String cacheKey = CacheKeyConstants.ADMIN_MENU_KEY;
+        if (cacheStore.hasKey(cacheKey)) {
             return (List<MenuBO>) cacheStore.get(cacheKey).orElse(new ArrayList<MenuBO>());
         }
         List<Menu> menus = menuTransDao.queryEffectiveMenuByType(MenuTypeEnum.BACKEND.getValue());
-        List<MenuBO> allMenus =  queryMenuWithLevel(menus);
+        List<MenuBO> allMenus = queryMenuWithLevel(menus);
         cacheStore.put(cacheKey, allMenus);
         return allMenus;
     }
@@ -141,6 +141,18 @@ public class MenuBizServiceImpl implements MenuBizService {
     }
 
     @Override
+    public List<MenuBO> queryEffectiveMainHomeMenuList() throws JwBlogException {
+        String cacheKey = CacheKeyConstants.HOME_MENU_KEY;
+        if (cacheStore.hasKey(cacheKey)) {
+            return (List<MenuBO>) cacheStore.get(cacheKey).orElse(new ArrayList<MenuBO>());
+        }
+        List<Menu> menus = menuTransDao.queryEffectiveMenuByType(MenuTypeEnum.FRONTEND.getValue());
+        List<MenuBO> allMenus = queryMenuWithLevel(menus);
+        cacheStore.put(cacheKey, allMenus);
+        return allMenus;
+    }
+
+    @Override
     public List<MenuBO> queryEffectiveMainMenuList() throws JwBlogException {
         List<Menu> menus = menuTransDao.queryEffectiveMenuByType(MenuTypeEnum.FRONTEND.getValue());
         return queryMenuWithLevel(menus);
@@ -168,6 +180,7 @@ public class MenuBizServiceImpl implements MenuBizService {
                 .with(Menu::setIcon, menuBO.getIcon())
                 .with(Menu::setText, menuBO.getText())
                 .with(Menu::setUrl, menuBO.getUrl())
+                .with(Menu::setFlagCategory, menuBO.getFlagCategory())
                 .with(Menu::setValid, true)
                 .with(Menu::setCreateTime, now)
                 .with(Menu::setUpdateTime, now)
@@ -274,12 +287,15 @@ public class MenuBizServiceImpl implements MenuBizService {
             log.error("MenuBizServiceImpl.queryParentMenuBySubId exec failed, e:\n", e);
             throw MenuBizException.NOT_EXIST_EXCEPTION.format(oid).print();
         }
+        if (TOP_LEVEL_MENU_OID.equals(subMenu.getParentOid())) {
+            return null;
+        }
         Menu parentMenu = null;
         try {
             parentMenu = menuTransDao.queryMenuByPrimaryKey(subMenu.getParentOid());
         } catch (DaoException e) {
             log.error("MenuBizServiceImpl.queryParentMenuBySubId exec failed, e:\n", e);
-            throw MenuBizException.NOT_EXIST_EXCEPTION.format(oid).print();
+            throw MenuBizException.NOT_EXIST_EXCEPTION.format(subMenu.getParentOid()).print();
         }
         return parentMenu;
     }
@@ -299,12 +315,17 @@ public class MenuBizServiceImpl implements MenuBizService {
         return menuTransDao.queryMenuByParentIdAndType(oid, m.getType());
     }
 
+    @Override
+    public List<Menu> querySubCategoryByParentId(Long oid) {
+        return menuTransDao.querySubCategoryByParentId(oid);
+    }
+
 
     @Override
-    public List<Menu> querySubMenuOrderedList(String type) {
-        final List<Menu> menuList = menuTransDao.queryEffectiveMenuByType(type);
+    public List<Menu> querySubMenuCategoryList() {
+        final List<Menu> menuList = menuTransDao.queryEffectiveMenuByType(MenuTypeEnum.FRONTEND.getValue());
         List<Menu> newMenuList = menuList.stream().filter(menu -> (menu.getParentOid().compareTo(TOP_LEVEL_MENU_OID) != 0))
-                .collect(Collectors.toList());
+                .filter(Menu::getFlagCategory).collect(Collectors.toList());
 //        Map<Long, List<Menu>> menuMap = menuList.stream().collect(Collectors.groupingBy(Menu::getParentOid));
 //        List<Menu> newMenuList = new ArrayList<>();
 //        for (Menu menu : parentMenu)
@@ -351,6 +372,7 @@ public class MenuBizServiceImpl implements MenuBizService {
         menu.setIcon(menuBO.getIcon());
         menu.setUrl(menuBO.getUrl());
         menu.setValid(menuBO.getValid());
+        menu.setFlagCategory(menuBO.getFlagCategory());
         menu.setUpdateTime(new Date());
         try {
             menuTransDao.doUpdateByPrimaryKeySelective(menu);
@@ -358,6 +380,9 @@ public class MenuBizServiceImpl implements MenuBizService {
             log.error("MenuBizServiceImpl.doUpdateMenu exec failed, e:\n", e);
             throw MenuBizException.MODIFY_FAILED_EXCEPTION.format(menuBO.getOid()).print();
         }
+        String cacheKey = CacheKeyConstants.HOME_MENU_KEY;
+        cacheStore.delete(cacheKey);
+
         registerBizEvent(menu.getOid(), menu.getText(), BizEventOptTypeEnum.UPDATE);
     }
 
@@ -406,7 +431,7 @@ public class MenuBizServiceImpl implements MenuBizService {
             log.error("MenuBizServiceImpl.doValidateArticleExistsInMenu exec failed, e:\n", e);
             throw MenuBizException.NOT_EXIST_EXCEPTION.format(oid).print();
         }
-        List<Article> articleList = articleTransDao.queryArticleByType(oid.intValue());
+        List<Article> articleList = articleTransDao.queryArticleByCategory(oid.intValue());
 
         MenuValidateBO bo = new MenuValidateBO();
         bo.setIsSuccess(Constants.YES);
@@ -431,6 +456,29 @@ public class MenuBizServiceImpl implements MenuBizService {
             throw MenuBizException.NOT_EXIST_EXCEPTION_CN.format(oid).print();
         }
 
+    }
+
+    @Override
+    public MenuBO queryCascadeMenuByOid(String oid) throws JwBlogException {
+        Menu menu;
+        try {
+            menu = menuTransDao.queryMenuByPrimaryKey(Long.parseLong(oid));
+            MenuBO menuBO = new MenuBO();
+
+            if (menu.getParentOid() != null && !Objects.equals(menu.getParentOid(), TOP_LEVEL_MENU_OID)) {
+                Menu parentMenu = menuTransDao.queryMenuByPrimaryKey(menu.getParentOid());
+                MenuBO subMenuBO = new MenuBO();
+                BeanUtils.copyProperties(parentMenu, menuBO);
+                BeanUtils.copyProperties(menu, subMenuBO);
+                menuBO.setSubMenuList(Collections.singletonList(subMenuBO));
+            } else {
+                BeanUtils.copyProperties(menu, menuBO);
+            }
+            return menuBO;
+        } catch (Exception e) {
+            log.error(">>queryCascadeMenuByOid exec failed, oid=[{}], e\r\n{}", oid, e);
+            throw MenuBizException.NOT_EXIST_EXCEPTION_CN.format(oid).print();
+        }
     }
 
     private void registerBizEvent(Long oid, String desc, BizEventOptTypeEnum optTypeEnum) {

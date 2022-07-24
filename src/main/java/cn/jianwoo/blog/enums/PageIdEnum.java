@@ -90,7 +90,7 @@ public enum PageIdEnum {
     ANNOUNCEMENT_CREATE("AN10"),
     ANNOUNCEMENT_UPDATE("AN11"),
 
-
+    BLACK_IP_CREATE("BI10"),
 
     ;
     private String value;

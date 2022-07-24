@@ -18,6 +18,8 @@ public class Menu implements Serializable {
 
     private String url;
 
+    private Boolean flagCategory;
+
     private Boolean valid;
 
     private Long parentOid;
@@ -84,6 +86,14 @@ public class Menu implements Serializable {
         this.url = url == null ? null : url.trim();
     }
 
+    public Boolean getFlagCategory() {
+        return flagCategory;
+    }
+
+    public void setFlagCategory(Boolean flagCategory) {
+        this.flagCategory = flagCategory;
+    }
+
     public Boolean getValid() {
         return valid;
     }
@@ -129,6 +139,7 @@ public class Menu implements Serializable {
         sb.append(", icon=").append(icon);
         sb.append(", text=").append(text);
         sb.append(", url=").append(url);
+        sb.append(", flagCategory=").append(flagCategory);
         sb.append(", valid=").append(valid);
         sb.append(", parentOid=").append(parentOid);
         sb.append(", createTime=").append(createTime);

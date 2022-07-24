@@ -38,11 +38,12 @@ public class BaseController implements Serializable {
     protected void printRequestParams(String param) {
         String clazzName = Thread.currentThread().getStackTrace()[2].getClassName();
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(">> receive the request in method [{}.{}] with param :: {}", clazzName, methodName, param);
+        log.info(">> [IP:{}] receive the request in method [{}.{}] with param :: {}", request.getRemoteAddr(),
+                clazzName, methodName, param);
     }
 
 
-    public  <T> T convertParam(String param, Class<T> class1) throws ControllerBizException {
+    public <T> T convertParam(String param, Class<T> class1) throws ControllerBizException {
         T result;
         if (StringUtils.isBlank(param)) {
             throw ControllerBizException.JSON_IS_NULL.print();

@@ -1,7 +1,6 @@
 package cn.jianwoo.blog.dto.request;
 
 import cn.jianwoo.blog.base.BasePageRequestDto;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@AllArgsConstructor
 public class MenuVoRequest extends BasePageRequestDto {
     private static final long serialVersionUID = 4600458570269532916L;
     /**
@@ -45,6 +43,10 @@ public class MenuVoRequest extends BasePageRequestDto {
      * 是否有效
      */
     private Boolean valid;
+    /**
+     * 是否是文章类别[MENU.FLAG_CATEGORY]
+     */
+    private Boolean flagCategory;
 
 
 }

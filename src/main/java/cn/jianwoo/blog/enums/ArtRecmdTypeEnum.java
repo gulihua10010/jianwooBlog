@@ -16,7 +16,7 @@ public enum ArtRecmdTypeEnum {
     /**
      * 随机文章
      */
-    RANDOM("20"),
+    RANDOM("30"),
     ;
 
     /**

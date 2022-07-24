@@ -158,10 +158,82 @@ public class DateUtil extends cn.hutool.core.date.DateUtil {
 
     /**
      * 获取日期目录 yyyyMM(当前时间)
-     *
      */
-    public static String getCommDateFolder()
-    {
-        return  format(new Date(), DATE_FORMAT_YYYYMM);
+    public static String getCommDateFolder() {
+        return format(new Date(), DATE_FORMAT_YYYYMM);
     }
+
+    /**
+     * 获取某天的开始时间(yyyy-MM-dd 00:00:00)
+     *
+     * @param inDate 输入日期
+     * @return
+     * @author gulihua
+     */
+    public static Date getFirstTimeOfDay(Date inDate) {
+        if (inDate == null) {
+            return null;
+        }
+
+        String inValue_ = format(inDate, DATE_FORMAT_YYYYMMDD) + " 00:00:00";
+
+        return parse(inValue_, DATE_FORMAT_YYYYMMDD + " HH:mm:ss");
+    }
+
+    /**
+     * 获取某天的结束时间(yyyy-MM-dd 23:59:59)
+     *
+     * @param inDate 输入日期
+     * @return
+     * @author gulihua
+     */
+    public static Date getLastTimeOfDay(Date inDate) {
+        if (inDate == null) {
+            return null;
+        }
+
+        String inValue_ = format(inDate, DATE_FORMAT_YYYYMMDD) + " 23:59:59";
+
+        return parse(inValue_, DATE_FORMAT_YYYYMMDD + " HH:mm:ss");
+    }
+
+    /**
+     * 获取某月的开始时间(yyyy-MM-01 00:00:00)
+     *
+     * @param month 输入月份 (yyyy-MM)
+     * @return
+     * @author gulihua
+     */
+    public static Date getFirstTimeOfMonth(String month) {
+        if (StringUtils.isBlank(month)) {
+            return null;
+        }
+
+
+        return parse(month + "-01 00:00:00", DATE_FORMAT_YYYYMMDD + " HH:mm:ss");
+    }
+
+    /**
+     * 获取某月的结束时间(yyyy-MM-31 23:59:59)
+     *
+     * @param month 输入月份 (yyyy-MM)
+     * @return
+     * @author gulihua
+     */
+    public static Date getLastTimeOfMonth(String month) {
+        if (StringUtils.isBlank(month)) {
+            return null;
+        }
+
+        Date date = parse(month + "-01 00:00:00", DATE_FORMAT_YYYYMMDD);
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.MONTH, 1);
+        c.add(Calendar.DATE, -1);
+        String inValue_ = format(c.getTime(), DATE_FORMAT_YYYYMMDD) + " 23:59:59";
+
+        return parse(inValue_, DATE_FORMAT_YYYYMMDD + " HH:mm:ss");
+    }
+
+
 }

@@ -35,4 +35,13 @@ public interface IpControlBaseService {
      * @author gulihua
      */
     void doCreateBlackRecord(String ip);
+
+    /**
+     * 移除一条IP黑名单记录
+     *
+     * @param ip ip地址
+     * @return
+     * @author gulihua
+     */
+    void doRemoveBlackRecord(String ip);
 }

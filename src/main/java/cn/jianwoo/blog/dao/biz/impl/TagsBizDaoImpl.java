@@ -29,4 +29,9 @@ public class TagsBizDaoImpl implements TagsBizDao {
         return tagsBizMapper.countAllTags();
     }
 
+    @Override
+    public List<ArticleTagsExt> queryAllTags(boolean isContainPrivate) {
+        return tagsBizMapper.selectAllTags(isContainPrivate);
+    }
+
 }

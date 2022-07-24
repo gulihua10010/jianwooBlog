@@ -1,6 +1,5 @@
 package cn.jianwoo.blog.dto.response.vo;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -16,7 +15,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode()
 @NoArgsConstructor
-@AllArgsConstructor
 public class WebconfGroupVO implements Serializable {
 
     private static final long serialVersionUID = 7217525969848055174L;

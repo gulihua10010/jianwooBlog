@@ -44,7 +44,7 @@ public class AsyncProcAutoTaskD0099Impl implements AsyncAutoTaskService {
 
             emailBizService.doSendEmail(admin.getUserEmail(), "-1", null, "【简窝博客】系统异常", data.getExcepionMsg());
         } catch (JwBlogException ex) {
-            log.error("defaultExceptionHandler.sendEmail failed, exception:\r\n", ex);
+//            log.error("defaultExceptionHandler(AsyncProcAutoTaskD0099Impl).sendEmail failed, exception:\r\n", ex);
             return returnFailedJsonResult(ex.getMsg());
         }
         return returnSuccessJsonResult();

@@ -2,7 +2,7 @@ package cn.jianwoo.blog.service.biz.impl;
 
 import cn.jianwoo.blog.builder.JwBuilder;
 import cn.jianwoo.blog.cache.CacheStore;
-import cn.jianwoo.blog.constants.CacaheKeyConstants;
+import cn.jianwoo.blog.constants.CacheKeyConstants;
 import cn.jianwoo.blog.dao.base.AdminTransDao;
 import cn.jianwoo.blog.entity.Admin;
 import cn.jianwoo.blog.enums.AsyncIpEnum;
@@ -155,12 +155,12 @@ public class AdminBizServiceImpl implements AdminBizService {
         UserBO user = JwBuilder.of(UserBO::new)
                 .with(UserBO::setId, admin.getOid())
                 .with(UserBO::setName, admin.getUsername()).build();
-        String accessCacheKey = MessageFormat.format(CacaheKeyConstants.TOKEN_ACCESS_CACHE, user.getId());
+        String accessCacheKey = MessageFormat.format(CacheKeyConstants.TOKEN_ACCESS_CACHE, user.getId());
         jwCacheStore.put(accessCacheKey, authToken.getAccessToken(), accessTokenExpiredSeconds, TimeUnit.SECONDS);
-        String loginIdCacheKey = MessageFormat.format(CacaheKeyConstants.LOGIN_USER_STATUS, user.getId());
+        String loginIdCacheKey = MessageFormat.format(CacheKeyConstants.LOGIN_USER_STATUS, user.getId());
         jwCacheStore.put(loginIdCacheKey, true);
 
-        String loginIDNameKey = MessageFormat.format(CacaheKeyConstants.ADMIN_OID_NAME_KEY, user.getId());
+        String loginIDNameKey = MessageFormat.format(CacheKeyConstants.ADMIN_OID_NAME_KEY, user.getId());
         jwCacheStore.put(loginIDNameKey, admin.getUsername());
 
         //执行异步任务
@@ -186,7 +186,7 @@ public class AdminBizServiceImpl implements AdminBizService {
 
     @Override
     public AdminBO queryAdminInfoByLoginId(String loginID) throws JwBlogException {
-        String cacheKey = MessageFormat.format(CacaheKeyConstants.ADMIN_NAME_KEY, loginID);
+        String cacheKey = MessageFormat.format(CacheKeyConstants.ADMIN_NAME_KEY, loginID);
 
         if (jwCacheStore.hasKey(cacheKey)) {
             Optional<Object> adminBO = jwCacheStore.get(cacheKey);
@@ -207,7 +207,7 @@ public class AdminBizServiceImpl implements AdminBizService {
 
     @Override
     public AdminBO queryAdminByOid(Long oid) throws JwBlogException {
-        String cacheKey = MessageFormat.format(CacaheKeyConstants.ADMIN_OID_KEY, oid);
+        String cacheKey = MessageFormat.format(CacheKeyConstants.ADMIN_OID_KEY, oid);
         if (jwCacheStore.hasKey(cacheKey)) {
             Optional<Object> adminBO = jwCacheStore.get(cacheKey);
             if (adminBO.isPresent()) {
@@ -268,7 +268,7 @@ public class AdminBizServiceImpl implements AdminBizService {
         resBO.setLoginIdEncrypt(JwUtil.encrypt(loginID));
         resBO.setCaptchaCodeEncrypt(JwUtil.encrypt(captchaCode));
 
-        String loginIDNameKey = MessageFormat.format(CacaheKeyConstants.VERIFY_CODE_LOGIN_ID, loginID);
+        String loginIDNameKey = MessageFormat.format(CacheKeyConstants.VERIFY_CODE_LOGIN_ID, loginID);
         Optional verifyConfirmCodeOpt = jwCacheStore.get(loginIDNameKey);
         if (!verifyConfirmCodeOpt.isPresent()) {
             resBO.setReason(AdminBizException.VERIFY_CODE_INCORRECT.getMsg());
@@ -295,7 +295,7 @@ public class AdminBizServiceImpl implements AdminBizService {
 
         Admin admin = adminBaseService.queryAdminByLoginId(loginID);
 
-        String loginIDNameKey = MessageFormat.format(CacaheKeyConstants.VERIFY_CODE_LOGIN_ID, loginID);
+        String loginIDNameKey = MessageFormat.format(CacheKeyConstants.VERIFY_CODE_LOGIN_ID, loginID);
         Optional verifyConfirmCodeOpt = jwCacheStore.get(loginIDNameKey);
         if (!verifyConfirmCodeOpt.isPresent()) {
             registerLog(admin.getUsername(), AdminBizException.PAGE_TIMEOUT.getMsg(), LoginEventTypeEnum.FORGET_PASSWORD);
@@ -351,8 +351,8 @@ public class AdminBizServiceImpl implements AdminBizService {
             log.warn("Change password failed. e:\r\n", e);
             throw AdminBizException.MODIFY_FAILED_EXCEPTION.print();
         }
-        String nameCacheKey = MessageFormat.format(CacaheKeyConstants.ADMIN_NAME_KEY, admin.getUsername());
-        String oidCacheKey = MessageFormat.format(CacaheKeyConstants.ADMIN_OID_KEY, admin.getOid());
+        String nameCacheKey = MessageFormat.format(CacheKeyConstants.ADMIN_NAME_KEY, admin.getUsername());
+        String oidCacheKey = MessageFormat.format(CacheKeyConstants.ADMIN_OID_KEY, admin.getOid());
         registerLog(admin.getUsername(), null, LoginEventTypeEnum.EDIT_USER);
 
         jwCacheStore.delete(nameCacheKey);
@@ -371,7 +371,7 @@ public class AdminBizServiceImpl implements AdminBizService {
             throw AdminBizException.EMAIL_INCORRECT.print();
         }
         String captchaCode = JwUtil.generateVerifyCode(6);
-        String loginIDNameKey = MessageFormat.format(CacaheKeyConstants.VERIFY_CODE_LOGIN_ID, loginID);
+        String loginIDNameKey = MessageFormat.format(CacheKeyConstants.VERIFY_CODE_LOGIN_ID, loginID);
         jwCacheStore.put(loginIDNameKey, captchaCode, 1, TimeUnit.HOURS);
         JSONObject param = new JSONObject();
         param.put("username", loginID);

@@ -78,4 +78,14 @@ public class ArticleTagsTransDaoImpl extends ArticleTagsQueryDaoImpl implements 
 
         }
     }
+
+    @Override
+    public void doUpdateByArticleOid(ArticleTags record, Long artOid) {
+        ArticleTagsExample example = new ArticleTagsExample();
+        example.createCriteria().andArticleOidEqualTo(artOid);
+        int updRlt = articleTagsMapper.updateByExampleSelective(record, example);
+        if (updRlt < 1) {
+            logger.warn("Update table ARTICLE_TAGS failed, reason: artOid[{}] not found.", artOid);
+        }
+    }
 }

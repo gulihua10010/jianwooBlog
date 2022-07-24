@@ -17,6 +17,9 @@ public class MenuBizException extends JwBlogException {
             "The menu[%s] does not exist.");
     public static final MenuBizException NOT_EXIST_EXCEPTION_CN = new MenuBizException(ExceptionConstants.BIZ_NOT_EXIST,
             "菜单[%s]不存在!");
+
+    public static final MenuBizException MENU_DEL_ARTICLE_EXITS = new MenuBizException(ExceptionConstants.MENU_DEL_ARTICLE_EXITS,
+            ExceptionConstants.MENU_DEL_ARTICLE_EXITS_DESC);
     public static final MenuBizException CREATE_FAILED_EXCEPTION = new MenuBizException(
             ExceptionConstants.BIZ_CREATE_FAIL, "The menu[%s] creation is failed.");
     public static final MenuBizException MODIFY_FAILED_EXCEPTION = new MenuBizException(

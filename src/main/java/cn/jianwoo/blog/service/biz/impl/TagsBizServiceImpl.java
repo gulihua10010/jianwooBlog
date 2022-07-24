@@ -13,11 +13,15 @@ import cn.jianwoo.blog.event.BizEventLogEvent;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.exception.TagsBizException;
+import cn.jianwoo.blog.service.biz.AdminBizService;
 import cn.jianwoo.blog.service.biz.TagsBizService;
+import cn.jianwoo.blog.service.bo.AdminBO;
 import cn.jianwoo.blog.service.bo.TagsBO;
 import cn.jianwoo.blog.util.DateUtil;
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -40,6 +44,10 @@ public class TagsBizServiceImpl implements TagsBizService {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired
+    private AdminBizService adminBizService;
+    @Value("${admin.name}")
+    private String adminName;
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void doCreateTag(String name) throws JwBlogException {
@@ -192,6 +200,27 @@ public class TagsBizServiceImpl implements TagsBizService {
             throw TagsBizException.NOT_EXIST_EXCEPTION_CN.format(oid).print();
         }
 
+    }
+
+
+    @Override
+    public List<TagsBO> queryMainAllTags(String currentIp)  throws JwBlogException{
+        AdminBO admin = adminBizService.queryAdminInfoByLoginId(adminName.trim());
+        boolean isPrivate = currentIp.equals(admin.getLastLoginIp());
+
+        List<ArticleTagsExt> tagsList = tagsBizDao.queryAllTags(isPrivate);
+        List<TagsBO> list = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(tagsList)) {
+            tagsList.forEach(o -> {
+                TagsBO tagsBO = new TagsBO();
+                tagsBO.setId(o.getOid());
+                tagsBO.setName(o.getContent());
+                tagsBO.setCount(o.getCount());
+                list.add(tagsBO);
+            });
+
+        }
+        return list;
     }
 
     private void registerBizEvent(Long oid, String desc, BizEventOptTypeEnum optTypeEnum) {

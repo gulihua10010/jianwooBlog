@@ -8,13 +8,18 @@
     <result column="PUSH_BY" jdbcType="VARCHAR" property="pushBy" />
     <result column="TITLE" jdbcType="VARCHAR" property="title" />
     <result column="MODIFIED_TIME" jdbcType="TIMESTAMP" property="modifiedTime" />
-    <result column="MENU_ID" jdbcType="INTEGER" property="menuId" />
+    <result column="CATEGORY_ID" jdbcType="INTEGER" property="categoryId" />
+    <result column="CATEGORY_NAME" jdbcType="VARCHAR" property="categoryName" />
     <result column="READ_COUNT" jdbcType="BIGINT" property="readCount" />
     <result column="PRAISE_COUNT" jdbcType="BIGINT" property="praiseCount" />
     <result column="IS_COMMENT" jdbcType="CHAR" property="isComment" />
+    <result column="FLAG_ORIGINAL" jdbcType="VARCHAR" property="flagOriginal" />
+    <result column="ORIGINAL_URL" jdbcType="VARCHAR" property="originalUrl" />
     <result column="IMG_SRC" jdbcType="VARCHAR" property="imgSrc" />
     <result column="ACCESS_TYPE" jdbcType="VARCHAR" property="accessType" />
+    <result column="TOP_PLACE_STATUS" jdbcType="VARCHAR" property="topPlaceStatus" />
     <result column="COMMENT_COUNT" jdbcType="BIGINT" property="commentCount" />
+    <result column="TOTAL_COMMENT_FLOORS" jdbcType="BIGINT" property="totalCommentFloors" />
     <result column="STATUS" jdbcType="VARCHAR" property="status" />
     <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
     <result column="DEL_TIME" jdbcType="TIMESTAMP" property="delTime" />
@@ -85,8 +90,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    OID, AUTHOR, PUSH_TIME, PUSH_BY, TITLE, MODIFIED_TIME, MENU_ID, READ_COUNT, PRAISE_COUNT, 
-    IS_COMMENT, IMG_SRC, ACCESS_TYPE, COMMENT_COUNT, `STATUS`, `PASSWORD`, DEL_TIME, 
+    OID, AUTHOR, PUSH_TIME, PUSH_BY, TITLE, MODIFIED_TIME, CATEGORY_ID, CATEGORY_NAME, 
+    READ_COUNT, PRAISE_COUNT, IS_COMMENT, FLAG_ORIGINAL, ORIGINAL_URL, IMG_SRC, ACCESS_TYPE, 
+    TOP_PLACE_STATUS, COMMENT_COUNT, TOTAL_COMMENT_FLOORS, `STATUS`, `PASSWORD`, DEL_TIME, 
     REMOVE_RECYCLE_TIME, CREATE_TIME, UPDATE_TIME
   </sql>
   <sql id="Blob_Column_List">
@@ -144,20 +150,22 @@
   <insert id="insert" parameterType="cn.jianwoo.blog.entity.ArticleWithBLOBs">
     insert into article (OID, AUTHOR, PUSH_TIME, 
       PUSH_BY, TITLE, MODIFIED_TIME, 
-      MENU_ID, READ_COUNT, PRAISE_COUNT, 
-      IS_COMMENT, IMG_SRC, ACCESS_TYPE, 
-      COMMENT_COUNT, `STATUS`, `PASSWORD`, 
-      DEL_TIME, REMOVE_RECYCLE_TIME, CREATE_TIME, 
-      UPDATE_TIME, CONTENT, `TEXT`
-      )
+      CATEGORY_ID, CATEGORY_NAME, READ_COUNT, 
+      PRAISE_COUNT, IS_COMMENT, FLAG_ORIGINAL, 
+      ORIGINAL_URL, IMG_SRC, ACCESS_TYPE, 
+      TOP_PLACE_STATUS, COMMENT_COUNT, TOTAL_COMMENT_FLOORS, 
+      `STATUS`, `PASSWORD`, DEL_TIME, 
+      REMOVE_RECYCLE_TIME, CREATE_TIME, UPDATE_TIME, 
+      CONTENT, `TEXT`)
     values (#{oid,jdbcType=BIGINT}, #{author,jdbcType=VARCHAR}, #{pushTime,jdbcType=TIMESTAMP}, 
       #{pushBy,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{modifiedTime,jdbcType=TIMESTAMP}, 
-      #{menuId,jdbcType=INTEGER}, #{readCount,jdbcType=BIGINT}, #{praiseCount,jdbcType=BIGINT}, 
-      #{isComment,jdbcType=CHAR}, #{imgSrc,jdbcType=VARCHAR}, #{accessType,jdbcType=VARCHAR}, 
-      #{commentCount,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{delTime,jdbcType=TIMESTAMP}, #{removeRecycleTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR}, #{text,jdbcType=LONGVARCHAR}
-      )
+      #{categoryId,jdbcType=INTEGER}, #{categoryName,jdbcType=VARCHAR}, #{readCount,jdbcType=BIGINT}, 
+      #{praiseCount,jdbcType=BIGINT}, #{isComment,jdbcType=CHAR}, #{flagOriginal,jdbcType=VARCHAR}, 
+      #{originalUrl,jdbcType=VARCHAR}, #{imgSrc,jdbcType=VARCHAR}, #{accessType,jdbcType=VARCHAR}, 
+      #{topPlaceStatus,jdbcType=VARCHAR}, #{commentCount,jdbcType=BIGINT}, #{totalCommentFloors,jdbcType=BIGINT}, 
+      #{status,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{delTime,jdbcType=TIMESTAMP}, 
+      #{removeRecycleTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{content,jdbcType=LONGVARCHAR}, #{text,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cn.jianwoo.blog.entity.ArticleWithBLOBs">
     insert into article
@@ -180,8 +188,11 @@
       <if test="modifiedTime != null">
         MODIFIED_TIME,
       </if>
-      <if test="menuId != null">
-        MENU_ID,
+      <if test="categoryId != null">
+        CATEGORY_ID,
+      </if>
+      <if test="categoryName != null">
+        CATEGORY_NAME,
       </if>
       <if test="readCount != null">
         READ_COUNT,
@@ -192,14 +203,26 @@
       <if test="isComment != null">
         IS_COMMENT,
       </if>
+      <if test="flagOriginal != null">
+        FLAG_ORIGINAL,
+      </if>
+      <if test="originalUrl != null">
+        ORIGINAL_URL,
+      </if>
       <if test="imgSrc != null">
         IMG_SRC,
       </if>
       <if test="accessType != null">
         ACCESS_TYPE,
       </if>
+      <if test="topPlaceStatus != null">
+        TOP_PLACE_STATUS,
+      </if>
       <if test="commentCount != null">
         COMMENT_COUNT,
+      </if>
+      <if test="totalCommentFloors != null">
+        TOTAL_COMMENT_FLOORS,
       </if>
       <if test="status != null">
         `STATUS`,
@@ -245,8 +268,11 @@
       <if test="modifiedTime != null">
         #{modifiedTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="menuId != null">
-        #{menuId,jdbcType=INTEGER},
+      <if test="categoryId != null">
+        #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="categoryName != null">
+        #{categoryName,jdbcType=VARCHAR},
       </if>
       <if test="readCount != null">
         #{readCount,jdbcType=BIGINT},
@@ -257,14 +283,26 @@
       <if test="isComment != null">
         #{isComment,jdbcType=CHAR},
       </if>
+      <if test="flagOriginal != null">
+        #{flagOriginal,jdbcType=VARCHAR},
+      </if>
+      <if test="originalUrl != null">
+        #{originalUrl,jdbcType=VARCHAR},
+      </if>
       <if test="imgSrc != null">
         #{imgSrc,jdbcType=VARCHAR},
       </if>
       <if test="accessType != null">
         #{accessType,jdbcType=VARCHAR},
       </if>
+      <if test="topPlaceStatus != null">
+        #{topPlaceStatus,jdbcType=VARCHAR},
+      </if>
       <if test="commentCount != null">
         #{commentCount,jdbcType=BIGINT},
+      </if>
+      <if test="totalCommentFloors != null">
+        #{totalCommentFloors,jdbcType=BIGINT},
       </if>
       <if test="status != null">
         #{status,jdbcType=VARCHAR},
@@ -319,8 +357,11 @@
       <if test="record.modifiedTime != null">
         MODIFIED_TIME = #{record.modifiedTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.menuId != null">
-        MENU_ID = #{record.menuId,jdbcType=INTEGER},
+      <if test="record.categoryId != null">
+        CATEGORY_ID = #{record.categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="record.categoryName != null">
+        CATEGORY_NAME = #{record.categoryName,jdbcType=VARCHAR},
       </if>
       <if test="record.readCount != null">
         READ_COUNT = #{record.readCount,jdbcType=BIGINT},
@@ -331,14 +372,26 @@
       <if test="record.isComment != null">
         IS_COMMENT = #{record.isComment,jdbcType=CHAR},
       </if>
+      <if test="record.flagOriginal != null">
+        FLAG_ORIGINAL = #{record.flagOriginal,jdbcType=VARCHAR},
+      </if>
+      <if test="record.originalUrl != null">
+        ORIGINAL_URL = #{record.originalUrl,jdbcType=VARCHAR},
+      </if>
       <if test="record.imgSrc != null">
         IMG_SRC = #{record.imgSrc,jdbcType=VARCHAR},
       </if>
       <if test="record.accessType != null">
         ACCESS_TYPE = #{record.accessType,jdbcType=VARCHAR},
       </if>
+      <if test="record.topPlaceStatus != null">
+        TOP_PLACE_STATUS = #{record.topPlaceStatus,jdbcType=VARCHAR},
+      </if>
       <if test="record.commentCount != null">
         COMMENT_COUNT = #{record.commentCount,jdbcType=BIGINT},
+      </if>
+      <if test="record.totalCommentFloors != null">
+        TOTAL_COMMENT_FLOORS = #{record.totalCommentFloors,jdbcType=BIGINT},
       </if>
       <if test="record.status != null">
         `STATUS` = #{record.status,jdbcType=VARCHAR},
@@ -377,13 +430,18 @@
       PUSH_BY = #{record.pushBy,jdbcType=VARCHAR},
       TITLE = #{record.title,jdbcType=VARCHAR},
       MODIFIED_TIME = #{record.modifiedTime,jdbcType=TIMESTAMP},
-      MENU_ID = #{record.menuId,jdbcType=INTEGER},
+      CATEGORY_ID = #{record.categoryId,jdbcType=INTEGER},
+      CATEGORY_NAME = #{record.categoryName,jdbcType=VARCHAR},
       READ_COUNT = #{record.readCount,jdbcType=BIGINT},
       PRAISE_COUNT = #{record.praiseCount,jdbcType=BIGINT},
       IS_COMMENT = #{record.isComment,jdbcType=CHAR},
+      FLAG_ORIGINAL = #{record.flagOriginal,jdbcType=VARCHAR},
+      ORIGINAL_URL = #{record.originalUrl,jdbcType=VARCHAR},
       IMG_SRC = #{record.imgSrc,jdbcType=VARCHAR},
       ACCESS_TYPE = #{record.accessType,jdbcType=VARCHAR},
+      TOP_PLACE_STATUS = #{record.topPlaceStatus,jdbcType=VARCHAR},
       COMMENT_COUNT = #{record.commentCount,jdbcType=BIGINT},
+      TOTAL_COMMENT_FLOORS = #{record.totalCommentFloors,jdbcType=BIGINT},
       `STATUS` = #{record.status,jdbcType=VARCHAR},
       `PASSWORD` = #{record.password,jdbcType=VARCHAR},
       DEL_TIME = #{record.delTime,jdbcType=TIMESTAMP},
@@ -404,13 +462,18 @@
       PUSH_BY = #{record.pushBy,jdbcType=VARCHAR},
       TITLE = #{record.title,jdbcType=VARCHAR},
       MODIFIED_TIME = #{record.modifiedTime,jdbcType=TIMESTAMP},
-      MENU_ID = #{record.menuId,jdbcType=INTEGER},
+      CATEGORY_ID = #{record.categoryId,jdbcType=INTEGER},
+      CATEGORY_NAME = #{record.categoryName,jdbcType=VARCHAR},
       READ_COUNT = #{record.readCount,jdbcType=BIGINT},
       PRAISE_COUNT = #{record.praiseCount,jdbcType=BIGINT},
       IS_COMMENT = #{record.isComment,jdbcType=CHAR},
+      FLAG_ORIGINAL = #{record.flagOriginal,jdbcType=VARCHAR},
+      ORIGINAL_URL = #{record.originalUrl,jdbcType=VARCHAR},
       IMG_SRC = #{record.imgSrc,jdbcType=VARCHAR},
       ACCESS_TYPE = #{record.accessType,jdbcType=VARCHAR},
+      TOP_PLACE_STATUS = #{record.topPlaceStatus,jdbcType=VARCHAR},
       COMMENT_COUNT = #{record.commentCount,jdbcType=BIGINT},
+      TOTAL_COMMENT_FLOORS = #{record.totalCommentFloors,jdbcType=BIGINT},
       `STATUS` = #{record.status,jdbcType=VARCHAR},
       `PASSWORD` = #{record.password,jdbcType=VARCHAR},
       DEL_TIME = #{record.delTime,jdbcType=TIMESTAMP},
@@ -439,8 +502,11 @@
       <if test="modifiedTime != null">
         MODIFIED_TIME = #{modifiedTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="menuId != null">
-        MENU_ID = #{menuId,jdbcType=INTEGER},
+      <if test="categoryId != null">
+        CATEGORY_ID = #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="categoryName != null">
+        CATEGORY_NAME = #{categoryName,jdbcType=VARCHAR},
       </if>
       <if test="readCount != null">
         READ_COUNT = #{readCount,jdbcType=BIGINT},
@@ -451,14 +517,26 @@
       <if test="isComment != null">
         IS_COMMENT = #{isComment,jdbcType=CHAR},
       </if>
+      <if test="flagOriginal != null">
+        FLAG_ORIGINAL = #{flagOriginal,jdbcType=VARCHAR},
+      </if>
+      <if test="originalUrl != null">
+        ORIGINAL_URL = #{originalUrl,jdbcType=VARCHAR},
+      </if>
       <if test="imgSrc != null">
         IMG_SRC = #{imgSrc,jdbcType=VARCHAR},
       </if>
       <if test="accessType != null">
         ACCESS_TYPE = #{accessType,jdbcType=VARCHAR},
       </if>
+      <if test="topPlaceStatus != null">
+        TOP_PLACE_STATUS = #{topPlaceStatus,jdbcType=VARCHAR},
+      </if>
       <if test="commentCount != null">
         COMMENT_COUNT = #{commentCount,jdbcType=BIGINT},
+      </if>
+      <if test="totalCommentFloors != null">
+        TOTAL_COMMENT_FLOORS = #{totalCommentFloors,jdbcType=BIGINT},
       </if>
       <if test="status != null">
         `STATUS` = #{status,jdbcType=VARCHAR},
@@ -494,13 +572,18 @@
       PUSH_BY = #{pushBy,jdbcType=VARCHAR},
       TITLE = #{title,jdbcType=VARCHAR},
       MODIFIED_TIME = #{modifiedTime,jdbcType=TIMESTAMP},
-      MENU_ID = #{menuId,jdbcType=INTEGER},
+      CATEGORY_ID = #{categoryId,jdbcType=INTEGER},
+      CATEGORY_NAME = #{categoryName,jdbcType=VARCHAR},
       READ_COUNT = #{readCount,jdbcType=BIGINT},
       PRAISE_COUNT = #{praiseCount,jdbcType=BIGINT},
       IS_COMMENT = #{isComment,jdbcType=CHAR},
+      FLAG_ORIGINAL = #{flagOriginal,jdbcType=VARCHAR},
+      ORIGINAL_URL = #{originalUrl,jdbcType=VARCHAR},
       IMG_SRC = #{imgSrc,jdbcType=VARCHAR},
       ACCESS_TYPE = #{accessType,jdbcType=VARCHAR},
+      TOP_PLACE_STATUS = #{topPlaceStatus,jdbcType=VARCHAR},
       COMMENT_COUNT = #{commentCount,jdbcType=BIGINT},
+      TOTAL_COMMENT_FLOORS = #{totalCommentFloors,jdbcType=BIGINT},
       `STATUS` = #{status,jdbcType=VARCHAR},
       `PASSWORD` = #{password,jdbcType=VARCHAR},
       DEL_TIME = #{delTime,jdbcType=TIMESTAMP},
@@ -518,13 +601,18 @@
       PUSH_BY = #{pushBy,jdbcType=VARCHAR},
       TITLE = #{title,jdbcType=VARCHAR},
       MODIFIED_TIME = #{modifiedTime,jdbcType=TIMESTAMP},
-      MENU_ID = #{menuId,jdbcType=INTEGER},
+      CATEGORY_ID = #{categoryId,jdbcType=INTEGER},
+      CATEGORY_NAME = #{categoryName,jdbcType=VARCHAR},
       READ_COUNT = #{readCount,jdbcType=BIGINT},
       PRAISE_COUNT = #{praiseCount,jdbcType=BIGINT},
       IS_COMMENT = #{isComment,jdbcType=CHAR},
+      FLAG_ORIGINAL = #{flagOriginal,jdbcType=VARCHAR},
+      ORIGINAL_URL = #{originalUrl,jdbcType=VARCHAR},
       IMG_SRC = #{imgSrc,jdbcType=VARCHAR},
       ACCESS_TYPE = #{accessType,jdbcType=VARCHAR},
+      TOP_PLACE_STATUS = #{topPlaceStatus,jdbcType=VARCHAR},
       COMMENT_COUNT = #{commentCount,jdbcType=BIGINT},
+      TOTAL_COMMENT_FLOORS = #{totalCommentFloors,jdbcType=BIGINT},
       `STATUS` = #{status,jdbcType=VARCHAR},
       `PASSWORD` = #{password,jdbcType=VARCHAR},
       DEL_TIME = #{delTime,jdbcType=TIMESTAMP},

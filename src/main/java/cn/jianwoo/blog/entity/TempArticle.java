@@ -10,13 +10,19 @@ public class TempArticle implements Serializable {
 
     private String title;
 
-    private Integer menuOid;
+    private Integer categoryId;
 
     private Boolean isComment;
+
+    private Boolean flagOriginal;
+
+    private String originalUrl;
 
     private String imgSrc;
 
     private String accessType;
+
+    private String topPlaceStatus;
 
     private String password;
 
@@ -62,12 +68,12 @@ public class TempArticle implements Serializable {
         this.title = title == null ? null : title.trim();
     }
 
-    public Integer getMenuOid() {
-        return menuOid;
+    public Integer getCategoryId() {
+        return categoryId;
     }
 
-    public void setMenuOid(Integer menuOid) {
-        this.menuOid = menuOid;
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
     }
 
     public Boolean getIsComment() {
@@ -76,6 +82,22 @@ public class TempArticle implements Serializable {
 
     public void setIsComment(Boolean isComment) {
         this.isComment = isComment;
+    }
+
+    public Boolean getFlagOriginal() {
+        return flagOriginal;
+    }
+
+    public void setFlagOriginal(Boolean flagOriginal) {
+        this.flagOriginal = flagOriginal;
+    }
+
+    public String getOriginalUrl() {
+        return originalUrl;
+    }
+
+    public void setOriginalUrl(String originalUrl) {
+        this.originalUrl = originalUrl == null ? null : originalUrl.trim();
     }
 
     public String getImgSrc() {
@@ -92,6 +114,14 @@ public class TempArticle implements Serializable {
 
     public void setAccessType(String accessType) {
         this.accessType = accessType == null ? null : accessType.trim();
+    }
+
+    public String getTopPlaceStatus() {
+        return topPlaceStatus;
+    }
+
+    public void setTopPlaceStatus(String topPlaceStatus) {
+        this.topPlaceStatus = topPlaceStatus == null ? null : topPlaceStatus.trim();
     }
 
     public String getPassword() {
@@ -175,10 +205,13 @@ public class TempArticle implements Serializable {
         sb.append(", oid=").append(oid);
         sb.append(", author=").append(author);
         sb.append(", title=").append(title);
-        sb.append(", menuOid=").append(menuOid);
+        sb.append(", categoryId=").append(categoryId);
         sb.append(", isComment=").append(isComment);
+        sb.append(", flagOriginal=").append(flagOriginal);
+        sb.append(", originalUrl=").append(originalUrl);
         sb.append(", imgSrc=").append(imgSrc);
         sb.append(", accessType=").append(accessType);
+        sb.append(", topPlaceStatus=").append(topPlaceStatus);
         sb.append(", password=").append(password);
         sb.append(", oldArticleOid=").append(oldArticleOid);
         sb.append(", tags=").append(tags);

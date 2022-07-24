@@ -16,7 +16,7 @@ layui.define(['laytable'],function (exports) {
             , {type: 'numbers', width: 40, title: 'SEQ',}
             , {field: 'title', title: '文章标题',  sort: true, align: 'center'}
             , {field: 'author', width: 120, title: '作者', align: 'center'}
-            , {field: 'type', width: 170, title: '类型',  align: 'center'}
+            , {field: 'category', width: 170, title: '类型',  align: 'center'}
             , {field: 'publishTimeDesc', title: '发布时间', sort: true, width: 200, align: 'center'}
             // , {field: 'modifiedDate', title: '最后修改时间', width: 200, align: 'center'}
             , {title: '操作', width: 360, align: 'left', fixed: 'right', toolbar: '#table-content-art'}
@@ -124,12 +124,14 @@ layui.define(['laytable'],function (exports) {
                     view(this.id).render('article/quickEdit', data).done(function () {
                         var oid = data.oid;
                         var status = data.status;
+                        // console.log(status);
                         form.render(null, 'LAY-popup-article-fast-edit');
                         //监听提交
                         form.on('submit(JW-quick-edit-submit)', function (data) {
                             var field = data.field; //获取提交的字段
                             var tags = layero.contents().find('.tags:checked');
                             var comment = layero.contents().find('#isComment');
+                            var original = layero.contents().find('#flagOriginal');
                             var type = layero.contents().find('#type');
                             var tagsId = [];
                             for (var i = 0; i < tags.length; i++) {
@@ -139,23 +141,35 @@ layui.define(['laytable'],function (exports) {
                             if (comment.prop('checked')) {
                                 isComment = 1;
                             }
-                            if (status === 1 && type.val() === undefined || type.val() === -1) {
+                            var flagOriginal = 0;
+                            if (original.prop('checked')) {
+                                flagOriginal = 1;
+                            }
+                            if (status === '90' && (type.val() === undefined || type.val() === '-1')) {
                                 alertFail("提示", "文章类型不能为空")
-                                return;
+                                return false;
+                            }
+                            if (status === '90' && !flagOriginal && isEmpty(field.originalUrl)) {
+                                alertFail("提示", "非原创时转载源链接不能为空")
+                                return false;
                             }
                             ajaxPost(
                                 '/api/admin/article/info/update',
                                 1,
                                 JSON.stringify({
+                                    requestId: field.subToken,
                                     artOid: oid,
                                     title: field.title,
                                     author: field.author,
                                     tagOidList: tagsId,
-                                    type: type.val(),
+                                    categoryId: type.val(),
                                     accessType: field.isPublic,
+                                    topPlaceFlag: field.topPlaceFlag,
+                                    originalUrl: field.originalUrl,
                                     password: field.passwContent,
                                     isComment: isComment !== 0,
-                                    subToken: field.subToken
+                                    flagOriginal: flagOriginal !== 0,
+                                    status: status,
                                 }),
                                 "更新成功",
                                 function () {

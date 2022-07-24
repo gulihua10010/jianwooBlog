@@ -5,6 +5,7 @@ import cn.jianwoo.blog.dao.base.TempArticleTransDao;
 import cn.jianwoo.blog.entity.TempArticle;
 import cn.jianwoo.blog.enums.ArticleAccessEnum;
 import cn.jianwoo.blog.enums.TempArticleStatusEnum;
+import cn.jianwoo.blog.enums.TopPlaceEnum;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.exception.TempArticleBizException;
@@ -55,17 +56,21 @@ public class TempArticleBizServiceImpl implements TempArticleBizService {
             }
         }
         articleBO.setIsComment(articleBO.getIsComment() != null && articleBO.getIsComment());
+        articleBO.setFlagOriginal(articleBO.getFlagOriginal() == null || articleBO.getFlagOriginal());
         if (articleBO.getAccessType() == null) {
             articleBO.setAccessType(ArticleAccessEnum.PUBLIC.getValue());
         }
         TempArticle article = JwBuilder.of(TempArticle::new)
                 .with(TempArticle::setAuthor, articleBO.getAuthor())
                 .with(TempArticle::setTitle, articleBO.getTitle())
-                .with(TempArticle::setMenuOid, articleBO.getMenuOid())
+                .with(TempArticle::setCategoryId, articleBO.getCategoryId())
                 .with(TempArticle::setStatus, TempArticleStatusEnum.TEMP.getValue())
                 .with(TempArticle::setIsComment, articleBO.getIsComment())
+                .with(TempArticle::setFlagOriginal, articleBO.getFlagOriginal())
+                .with(TempArticle::setOriginalUrl, articleBO.getOriginalUrl())
                 .with(TempArticle::setImgSrc, articleBO.getImgSrc())
                 .with(TempArticle::setAccessType, articleBO.getAccessType())
+                .with(TempArticle::setTopPlaceStatus, articleBO.getTopPlaceStatus())
                 .with(TempArticle::setContent, articleBO.getContent())
                 .with(TempArticle::setOldArticleOid, articleBO.getOldArticleOid())
                 .with(TempArticle::setPageType, articleBO.getPageType())
@@ -129,15 +134,18 @@ public class TempArticleBizServiceImpl implements TempArticleBizService {
         article.setOid(articleBO.getOid());
         article.setAuthor(articleBO.getAuthor());
         article.setTitle(articleBO.getTitle());
-        article.setMenuOid(articleBO.getMenuOid());
+        article.setCategoryId(articleBO.getCategoryId());
         article.setIsComment(articleBO.getIsComment() != null && articleBO.getIsComment());
+        article.setFlagOriginal(articleBO.getFlagOriginal() == null || articleBO.getFlagOriginal());
         article.setImgSrc(articleBO.getImgSrc());
+        article.setOriginalUrl(articleBO.getOriginalUrl());
         if (ArticleAccessEnum.PASSWORD.getValue().equals(articleBO.getAccessType())) {
             article.setPassword(JwUtil.encrypt(articleBO.getPassword()));
         }
         article.setUpdateTime(now);
         article.setAccessType(articleBO.getAccessType() == null ? ArticleAccessEnum.PUBLIC.getValue() : articleBO.getAccessType());
         article.setContent(articleBO.getContent());
+        article.setTopPlaceStatus(articleBO.getTopPlaceStatus());
         if (articleBO.getStatus() != null) {
             article.setStatus(articleBO.getStatus());
         }
@@ -194,6 +202,7 @@ public class TempArticleBizServiceImpl implements TempArticleBizService {
         }
         TempArticleBO tempArticleBO = new TempArticleBO();
         BeanUtils.copyProperties(article, tempArticleBO);
+        tempArticleBO.setFlagTop(TopPlaceEnum.TOP.getValue().equals(article.getTopPlaceStatus()));
         tempArticleBO.setArtTagsList(JSONArray.parseArray(article.getTags(), TagsBO.class));
         return tempArticleBO;
     }

@@ -30,9 +30,9 @@ public class CommentParam extends PageParam {
     public void processSortField(String field, String order) {
         this.setSortOrder(order);
         if ("artTitle".equals(field)) {
-            this.setSortField("A.TITLE");
+            this.setSortField("C.ARTICLE_TITLE");
         } else if ("commentTimeDesc".equals(field)) {
-            this.setSortField(" C.COMMENT_TIME");
+            this.setSortField("C.COMMENT_TIME");
         }
     }
 }

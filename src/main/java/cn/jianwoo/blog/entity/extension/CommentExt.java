@@ -22,6 +22,11 @@ public class CommentExt extends Comment {
     private String parentUserName;
 
     /**
+     * 业务赞表的主键
+     */
+    private Long praiseOid;
+
+    /**
      * 回复list
      */
     private List<ReplyCommentsExt> replyComments;
@@ -53,5 +58,13 @@ public class CommentExt extends Comment {
     @Override
     public void setArticleTitle(String articleTitle) {
         this.articleTitle = articleTitle;
+    }
+
+    public Long getPraiseOid() {
+        return this.praiseOid;
+    }
+
+    public void setPraiseOid(Long praiseOid) {
+        this.praiseOid = praiseOid;
     }
 }

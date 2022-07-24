@@ -2,6 +2,8 @@ package cn.jianwoo.blog.service.biz;
 
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.bo.CommentBO;
+import cn.jianwoo.blog.service.bo.CommentMainPageListBO;
+import cn.jianwoo.blog.service.param.CommentMainParam;
 import cn.jianwoo.blog.service.param.CommentParam;
 import cn.jianwoo.blog.service.param.PageParam;
 import com.github.pagehelper.PageInfo;
@@ -49,20 +51,22 @@ public interface CommentBizService {
      * 添加评论
      *
      * @param bo 评论
+     * @param isAdmin 是否是管理员后台创建
      * @return
      * @author gulihua
      */
-    void doCreateComment(CommentBO bo) throws JwBlogException;
+    void doCreateComment(CommentBO bo, boolean isAdmin) throws JwBlogException;
 
 
     /**
      * 通过文章oid请求评论
      *
-     * @param artOid 文章oid [ARTICLE.ARTICLE_OID]
+     * @param artOid    文章oid [ARTICLE.ARTICLE_OID]
+     * @param currentIp 当前IP
      * @return
      * @author gulihua
      */
-    List<CommentBO> queryCommentsByArtOid(Long artOid);
+    List<CommentBO> queryCommentsByArtOid(Long artOid, String currentIp);
 
 
     /**
@@ -119,7 +123,7 @@ public interface CommentBizService {
      * 通过oid list删除评论
      *
      * @param oidList 主键list[COMMENTS.OID]
-     * @param ip  ip地址
+     * @param ip      ip地址
      * @return
      * @author gulihua
      */
@@ -159,11 +163,11 @@ public interface CommentBizService {
     /**
      * 通过文章oid分页请求评论
      *
-     * @param artOid 文章oid [ARTICLE.ARTICLE_OID]
+     * @param param     查询参数
      * @return
      * @author gulihua
      */
-    PageInfo<CommentBO> queryCommentsMainPageByArtOid(String artOid, PageParam param);
+    CommentMainPageListBO queryCommentsMainPageByArtOid(CommentMainParam param) throws JwBlogException;
 
 
     /**
@@ -186,8 +190,6 @@ public interface CommentBizService {
      * @author gulihua
      */
     void doDelCommentByIdInMain(Long oid, String ip) throws JwBlogException;
-
-
 
 
     /**

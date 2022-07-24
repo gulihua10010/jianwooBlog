@@ -72,4 +72,14 @@ public interface UserBaseService {
      * @author gulihua
      */
     void doUpdateUser(String ip, UserTmpBO userTmpBO) throws JwBlogException;
+
+
+    /**
+     * 通过userID查询
+     *
+     * @param userId 用户ID
+     * @return
+     * @author gulihua
+     */
+    UserProfile queryUserByUserId(String userId);
 }

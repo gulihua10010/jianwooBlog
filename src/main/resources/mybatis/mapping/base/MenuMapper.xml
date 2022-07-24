@@ -9,6 +9,7 @@
     <result column="ICON" jdbcType="VARCHAR" property="icon" />
     <result column="TEXT" jdbcType="VARCHAR" property="text" />
     <result column="URL" jdbcType="VARCHAR" property="url" />
+    <result column="FLAG_CATEGORY" jdbcType="VARCHAR" property="flagCategory" />
     <result column="VALID" jdbcType="CHAR" property="valid" />
     <result column="PARENT_OID" jdbcType="BIGINT" property="parentOid" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
@@ -73,8 +74,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    OID, `NAME`, `INDEX`, `TYPE`, ICON, `TEXT`, URL, `VALID`, PARENT_OID, CREATE_TIME, 
-    UPDATE_TIME
+    OID, `NAME`, `INDEX`, `TYPE`, ICON, `TEXT`, URL, FLAG_CATEGORY, `VALID`, PARENT_OID, 
+    CREATE_TIME, UPDATE_TIME
   </sql>
   <select id="selectByExample" parameterType="cn.jianwoo.blog.entity.example.MenuExample" resultMap="BaseResultMap">
     select
@@ -109,13 +110,13 @@
   </delete>
   <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.Menu" useGeneratedKeys="true">
     insert into menu (`NAME`, `INDEX`, `TYPE`, 
-      ICON, `TEXT`, URL, `VALID`, 
-      PARENT_OID, CREATE_TIME, UPDATE_TIME
-      )
+      ICON, `TEXT`, URL, FLAG_CATEGORY, 
+      `VALID`, PARENT_OID, CREATE_TIME, 
+      UPDATE_TIME)
     values (#{name,jdbcType=VARCHAR}, #{index,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, 
-      #{icon,jdbcType=VARCHAR}, #{text,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{valid,jdbcType=CHAR}, 
-      #{parentOid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
+      #{icon,jdbcType=VARCHAR}, #{text,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{flagCategory,jdbcType=VARCHAR}, 
+      #{valid,jdbcType=CHAR}, #{parentOid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.Menu" useGeneratedKeys="true">
     insert into menu
@@ -137,6 +138,9 @@
       </if>
       <if test="url != null">
         URL,
+      </if>
+      <if test="flagCategory != null">
+        FLAG_CATEGORY,
       </if>
       <if test="valid != null">
         `VALID`,
@@ -169,6 +173,9 @@
       </if>
       <if test="url != null">
         #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="flagCategory != null">
+        #{flagCategory,jdbcType=VARCHAR},
       </if>
       <if test="valid != null">
         #{valid,jdbcType=CHAR},
@@ -214,6 +221,9 @@
       <if test="record.url != null">
         URL = #{record.url,jdbcType=VARCHAR},
       </if>
+      <if test="record.flagCategory != null">
+        FLAG_CATEGORY = #{record.flagCategory,jdbcType=VARCHAR},
+      </if>
       <if test="record.valid != null">
         `VALID` = #{record.valid,jdbcType=CHAR},
       </if>
@@ -240,6 +250,7 @@
       ICON = #{record.icon,jdbcType=VARCHAR},
       `TEXT` = #{record.text,jdbcType=VARCHAR},
       URL = #{record.url,jdbcType=VARCHAR},
+      FLAG_CATEGORY = #{record.flagCategory,jdbcType=VARCHAR},
       `VALID` = #{record.valid,jdbcType=CHAR},
       PARENT_OID = #{record.parentOid,jdbcType=BIGINT},
       CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
@@ -269,6 +280,9 @@
       <if test="url != null">
         URL = #{url,jdbcType=VARCHAR},
       </if>
+      <if test="flagCategory != null">
+        FLAG_CATEGORY = #{flagCategory,jdbcType=VARCHAR},
+      </if>
       <if test="valid != null">
         `VALID` = #{valid,jdbcType=CHAR},
       </if>
@@ -292,6 +306,7 @@
       ICON = #{icon,jdbcType=VARCHAR},
       `TEXT` = #{text,jdbcType=VARCHAR},
       URL = #{url,jdbcType=VARCHAR},
+      FLAG_CATEGORY = #{flagCategory,jdbcType=VARCHAR},
       `VALID` = #{valid,jdbcType=CHAR},
       PARENT_OID = #{parentOid,jdbcType=BIGINT},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},

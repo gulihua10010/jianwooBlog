@@ -33,6 +33,7 @@ public class IpControlFilter implements Filter {
     private IpControlBaseService ipControlBaseService;
 
 
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
@@ -40,6 +41,7 @@ public class IpControlFilter implements Filter {
         String ip = request.getRemoteAddr();
         String url = httpServletRequest.getRequestURI();
         log.info("IpControlFilter::IP={}, URI={}", ip, url);
+
         if (ipControlBaseService.isIpInBlackList(ip)) {
             log.info("IpControlFilter::IP={} is in black list", ip);
             httpServletResponse.setStatus(HttpStatus.BAD_REQUEST.value());
