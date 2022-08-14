@@ -36,7 +36,11 @@ layui.define(['laytable', 'form'], function (exports) {
         elem: '#comment-table'
         , url: "/api/admin/console/recent/comment/query?v=1"
         , cols: [[
-            {field: 'desc', title: '评论概览', align: 'center'}
+            {
+                field: 'content', title: '评论概览', align: 'center', templet: function (d) {
+                    return formatComm(d)
+                }
+            }
 
         ]]
         , response: {
@@ -48,6 +52,43 @@ layui.define(['laytable', 'form'], function (exports) {
 
     });
 
+    table.render({
+        elem: '#message-board-table'
+        , url: "/api/admin/console/recent/message/board/query?v=1"
+        , cols: [[
+            {
+                field: 'content', title: '留言概览', align: 'center', templet: function (d) {
+                    return formatMsg(d)
+                }
+            }
+
+        ]]
+        , response: {
+            statusName: 'status'
+            , statusCode: '000000'
+        }
+        , page: false
+        , text: {none: '无数据'}
+
+    });
+
+
+    function formatComm(d) {
+    return "网友 <span class=\"console-user\">["+format(d.user)+"]</span> 在 <span class=\"console-time\">"+d.commentTimeDesc+"</span> 评论了文章 \n"
+        + "                <span class=\"console-title\"><a href=\"#/article/edit/id="+d.artOid +"\">"+d.artTitle+"</a></span>: <span class=\"console-comm\">"+entitiestoUtf16(d.content)+"</span>";
+    }
+
+    function formatMsg(d) {
+    return "网友 <span class=\"console-user\">["+format(d.user)+"]</span> 在 <span class=\"console-time\">"+d.pushTimeDesc+"</span> 给博客留了言 \n"
+            + "                : <span class=\"console-msg\">"+entitiestoUtf16(d.content)+"</span>"
+    }
+
+    formatArea = function (s) {
+        if (!s) {
+            return "未知地区";
+        }
+        return s.trim();
+    }
 
     form.on('submit(JW-submit)', function (formData) {
         var field = formData.field;

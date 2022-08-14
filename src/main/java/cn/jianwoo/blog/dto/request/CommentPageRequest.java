@@ -25,9 +25,14 @@ public class CommentPageRequest extends BasePageRequestDto {
      */
     private Integer unread;
     /**
-     * 文章标题
+     * 文章主键
      */
     private String  artOid;
+
+    /**
+     * 主键, 用于消息跳转
+     */
+    private Long oid;
 
 
 }

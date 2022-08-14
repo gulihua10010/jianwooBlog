@@ -7,6 +7,7 @@ import cn.jianwoo.blog.entity.MessageProfile;
 import cn.jianwoo.blog.entity.MessageProfileWithBLOBs;
 import cn.jianwoo.blog.entity.example.MessageProfileExample;
 import cn.jianwoo.blog.entity.query.MsgQuery;
+import cn.jianwoo.blog.enums.ReceiverTypeEnum;
 import cn.jianwoo.blog.exception.DaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,16 +35,20 @@ public class MessageProfileQueryDaoImpl implements MessageProfileQueryDao {
         if (Constants.TRUE_1.equals(query.getIsRead())) {
             criteria.andFlagReadEqualTo(true);
         }
+        criteria.andReceiverIdEqualTo(query.getReceiverId());
+        criteria.andReceiverTypeEqualTo(query.getReceiverType());
         example.setOrderByClause("CREATE_TIME DESC");
         return messageProfileMapper.selectByExampleWithBLOBs(example);
     }
 
     @Override
-    public List<MessageProfileWithBLOBs> queryMessageProfileTimerList(Integer limit) {
+    public List<MessageProfileWithBLOBs> queryMessageProfileTimerList(String receiverId, String receiverType, Integer limit) {
         MessageProfileExample example = new MessageProfileExample();
         MessageProfileExample.Criteria criteria = example.createCriteria();
         criteria.andFlagReadEqualTo(false);
         criteria.andFlagPopupEqualTo(false);
+        criteria.andReceiverIdEqualTo(receiverId);
+        criteria.andReceiverTypeEqualTo(receiverType);
 
         example.setOrderByClause("CREATE_TIME DESC");
         if (limit != null && limit > 0) {
@@ -55,10 +60,12 @@ public class MessageProfileQueryDaoImpl implements MessageProfileQueryDao {
     }
 
     @Override
-    public Long queryUnreadMsgCount() {
+    public Long queryUnreadMsgCount(String receiverId, String receiverType) {
         MessageProfileExample example = new MessageProfileExample();
         MessageProfileExample.Criteria criteria = example.createCriteria();
         criteria.andFlagReadEqualTo(false);
+        criteria.andReceiverIdEqualTo(receiverId);
+        criteria.andReceiverTypeEqualTo(receiverType);
         return messageProfileMapper.countByExample(example);
     }
 }

@@ -25,6 +25,10 @@ public class UserInfoBO implements Serializable {
      */
     private String userNick;
     /**
+     * 用户IP所在区域
+     */
+    private String userRegion;
+    /**
      * 用户名
      */
     private String userName;

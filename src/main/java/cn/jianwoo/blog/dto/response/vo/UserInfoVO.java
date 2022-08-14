@@ -24,6 +24,11 @@ public class UserInfoVO implements Serializable {
      * 用户昵称
      */
     private String userNick;
+
+    /**
+     * 用户IP所在区域
+     */
+    private String userRegion;
     /**
      * 用户名
      */

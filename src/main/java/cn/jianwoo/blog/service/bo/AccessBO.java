@@ -30,7 +30,7 @@ public class AccessBO implements Serializable {
     /**
      * 访问地区
      */
-    private String accessArea;
+    private String accessRegion;
 
     /**
      * 访问文章oid

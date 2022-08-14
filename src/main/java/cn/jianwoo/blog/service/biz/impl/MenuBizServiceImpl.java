@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,7 +67,7 @@ public class MenuBizServiceImpl implements MenuBizService {
         }
         List<Menu> menus = menuTransDao.queryEffectiveMenuByType(MenuTypeEnum.BACKEND.getValue());
         List<MenuBO> allMenus = queryMenuWithLevel(menus);
-        cacheStore.put(cacheKey, allMenus);
+        cacheStore.put(cacheKey, allMenus, 30, TimeUnit.DAYS);
         return allMenus;
     }
 
@@ -148,7 +149,7 @@ public class MenuBizServiceImpl implements MenuBizService {
         }
         List<Menu> menus = menuTransDao.queryEffectiveMenuByType(MenuTypeEnum.FRONTEND.getValue());
         List<MenuBO> allMenus = queryMenuWithLevel(menus);
-        cacheStore.put(cacheKey, allMenus);
+        cacheStore.put(cacheKey, allMenus, 2, TimeUnit.DAYS);
         return allMenus;
     }
 
@@ -171,7 +172,7 @@ public class MenuBizServiceImpl implements MenuBizService {
 
         Date now = DateUtil.getNow();
 
-        int index = countMenuWithSameLevel(menuBO.getType(), menuBO.getParentOid());
+        int index = queryMaxIndexMenuWithSameLevel(menuBO.getType(), menuBO.getParentOid());
         Menu menu = JwBuilder.of(Menu::new)
                 .with(Menu::setName, menuBO.getName())
                 .with(Menu::setType, menuBO.getType())
@@ -196,11 +197,11 @@ public class MenuBizServiceImpl implements MenuBizService {
 
 
     @Override
-    public int countMenuWithSameLevel(String type, Long parentOid) {
+    public int queryMaxIndexMenuWithSameLevel(String type, Long parentOid) {
         Map<String, Object> params = new HashMap<>();
         params.put("type", type);
         params.put("parentOid", parentOid);
-        return menuBizDao.countMenuWithSameLevel(params);
+        return menuBizDao.queryMaxIndexMenuWithSameLevel(params);
     }
 
 

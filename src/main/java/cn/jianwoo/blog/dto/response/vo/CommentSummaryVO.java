@@ -79,7 +79,7 @@ public class CommentSummaryVO implements Serializable {
     /**
      * ip所属地域
      */
-    private String userArea;
+    private String userRegion;
     /**
      * 评论文章是否删除
      */
@@ -96,7 +96,7 @@ public class CommentSummaryVO implements Serializable {
 
     public String getDesc() {
         if ("DYNAMIC_TEMPLATE".equals(templateName)) {
-            desc = String.format(DYNAMIC_TEMPLATE, DomainUtil.format(this.userArea, Constants.UNKNOW),
+            desc = String.format(DYNAMIC_TEMPLATE, DomainUtil.format(this.userRegion, Constants.UNKNOW),
                     DomainUtil.format(this.clientIp, Constants.UNKNOW), DomainUtil.format(this.userNick, Constants.ANAONYMOUS),
                     DateUtil.optimizeTimeDesc(this.commentTime), CommAdminPageUrlConfig.URL_PREFIX + CommAdminPageUrlConfig.URL_ARTICLE_EDIT.replace("{id}", String.valueOf(this.artOid)),
                     this.artTitle, this.content);

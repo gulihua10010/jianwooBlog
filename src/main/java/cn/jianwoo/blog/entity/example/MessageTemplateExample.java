@@ -335,6 +335,146 @@ public class MessageTemplateExample {
             return (Criteria) this;
         }
 
+        public Criteria andOptTypeIsNull() {
+            addCriterion("OPT_TYPE is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptTypeIsNotNull() {
+            addCriterion("OPT_TYPE is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptTypeEqualTo(String value) {
+            addCriterion("OPT_TYPE =", value, "optType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptTypeNotEqualTo(String value) {
+            addCriterion("OPT_TYPE <>", value, "optType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptTypeGreaterThan(String value) {
+            addCriterion("OPT_TYPE >", value, "optType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("OPT_TYPE >=", value, "optType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptTypeLessThan(String value) {
+            addCriterion("OPT_TYPE <", value, "optType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptTypeLessThanOrEqualTo(String value) {
+            addCriterion("OPT_TYPE <=", value, "optType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptTypeLike(String value) {
+            addCriterion("OPT_TYPE like", value, "optType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptTypeNotLike(String value) {
+            addCriterion("OPT_TYPE not like", value, "optType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptTypeIn(List<String> values) {
+            addCriterion("OPT_TYPE in", values, "optType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptTypeNotIn(List<String> values) {
+            addCriterion("OPT_TYPE not in", values, "optType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptTypeBetween(String value1, String value2) {
+            addCriterion("OPT_TYPE between", value1, value2, "optType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptTypeNotBetween(String value1, String value2) {
+            addCriterion("OPT_TYPE not between", value1, value2, "optType");
+            return (Criteria) this;
+        }
+
+        public Criteria andReceiverTypeIsNull() {
+            addCriterion("RECEIVER_TYPE is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReceiverTypeIsNotNull() {
+            addCriterion("RECEIVER_TYPE is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReceiverTypeEqualTo(String value) {
+            addCriterion("RECEIVER_TYPE =", value, "receiverType");
+            return (Criteria) this;
+        }
+
+        public Criteria andReceiverTypeNotEqualTo(String value) {
+            addCriterion("RECEIVER_TYPE <>", value, "receiverType");
+            return (Criteria) this;
+        }
+
+        public Criteria andReceiverTypeGreaterThan(String value) {
+            addCriterion("RECEIVER_TYPE >", value, "receiverType");
+            return (Criteria) this;
+        }
+
+        public Criteria andReceiverTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("RECEIVER_TYPE >=", value, "receiverType");
+            return (Criteria) this;
+        }
+
+        public Criteria andReceiverTypeLessThan(String value) {
+            addCriterion("RECEIVER_TYPE <", value, "receiverType");
+            return (Criteria) this;
+        }
+
+        public Criteria andReceiverTypeLessThanOrEqualTo(String value) {
+            addCriterion("RECEIVER_TYPE <=", value, "receiverType");
+            return (Criteria) this;
+        }
+
+        public Criteria andReceiverTypeLike(String value) {
+            addCriterion("RECEIVER_TYPE like", value, "receiverType");
+            return (Criteria) this;
+        }
+
+        public Criteria andReceiverTypeNotLike(String value) {
+            addCriterion("RECEIVER_TYPE not like", value, "receiverType");
+            return (Criteria) this;
+        }
+
+        public Criteria andReceiverTypeIn(List<String> values) {
+            addCriterion("RECEIVER_TYPE in", values, "receiverType");
+            return (Criteria) this;
+        }
+
+        public Criteria andReceiverTypeNotIn(List<String> values) {
+            addCriterion("RECEIVER_TYPE not in", values, "receiverType");
+            return (Criteria) this;
+        }
+
+        public Criteria andReceiverTypeBetween(String value1, String value2) {
+            addCriterion("RECEIVER_TYPE between", value1, value2, "receiverType");
+            return (Criteria) this;
+        }
+
+        public Criteria andReceiverTypeNotBetween(String value1, String value2) {
+            addCriterion("RECEIVER_TYPE not between", value1, value2, "receiverType");
+            return (Criteria) this;
+        }
+
         public Criteria andMsgDescIsNull() {
             addCriterion("MSG_DESC is null");
             return (Criteria) this;
@@ -1027,6 +1167,16 @@ public class MessageTemplateExample {
 
         public Criteria andMsgTypeLikeInsensitive(String value) {
             addCriterion("upper(MSG_TYPE) like", value.toUpperCase(), "msgType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOptTypeLikeInsensitive(String value) {
+            addCriterion("upper(OPT_TYPE) like", value.toUpperCase(), "optType");
+            return (Criteria) this;
+        }
+
+        public Criteria andReceiverTypeLikeInsensitive(String value) {
+            addCriterion("upper(RECEIVER_TYPE) like", value.toUpperCase(), "receiverType");
             return (Criteria) this;
         }
 

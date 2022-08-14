@@ -2,8 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.jianwoo.blog.dao.base.mapper.WebconfMapper">
   <resultMap id="BaseResultMap" type="cn.jianwoo.blog.entity.Webconf">
-    <id column="OID" jdbcType="BIGINT" property="oid" />
-    <result column="KEY" jdbcType="VARCHAR" property="key" />
+    <id column="KEY" jdbcType="VARCHAR" property="key" />
     <result column="DESC" jdbcType="VARCHAR" property="desc" />
     <result column="CFG_TYPE" jdbcType="VARCHAR" property="cfgType" />
     <result column="VALUE_TYPE" jdbcType="VARCHAR" property="valueType" />
@@ -75,7 +74,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    OID, `KEY`, `DESC`, CFG_TYPE, VALUE_TYPE, STRING_VALUE, INT_VALUE, FLOAT_VALUE, BOOLEAN_VALUE, 
+    `KEY`, `DESC`, CFG_TYPE, VALUE_TYPE, STRING_VALUE, INT_VALUE, FLOAT_VALUE, BOOLEAN_VALUE, 
     DATE_VALUE, `VALID`, CREATE_TIME, UPDATE_TIME
   </sql>
   <select id="selectByExample" parameterType="cn.jianwoo.blog.entity.example.WebconfExample" resultMap="BaseResultMap">
@@ -93,15 +92,15 @@
     </if>
     <include refid="MySQLDialectSuffix" />
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from WEBCONF
-    where OID = #{oid,jdbcType=BIGINT}
+    where `KEY` = #{key,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from WEBCONF
-    where OID = #{oid,jdbcType=BIGINT}
+    where `KEY` = #{key,jdbcType=VARCHAR}
   </delete>
   <delete id="deleteByExample" parameterType="cn.jianwoo.blog.entity.example.WebconfExample">
     delete from WEBCONF
@@ -109,7 +108,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.Webconf" useGeneratedKeys="true">
+  <insert id="insert" parameterType="cn.jianwoo.blog.entity.Webconf">
     insert into WEBCONF (`KEY`, `DESC`, CFG_TYPE, 
       VALUE_TYPE, STRING_VALUE, INT_VALUE, 
       FLOAT_VALUE, BOOLEAN_VALUE, DATE_VALUE, 
@@ -121,7 +120,7 @@
       #{valid,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.Webconf" useGeneratedKeys="true">
+  <insert id="insertSelective" parameterType="cn.jianwoo.blog.entity.Webconf">
     insert into WEBCONF
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="key != null">
@@ -209,9 +208,6 @@
   <update id="updateByExampleSelective" parameterType="map">
     update WEBCONF
     <set>
-      <if test="record.oid != null">
-        OID = #{record.oid,jdbcType=BIGINT},
-      </if>
       <if test="record.key != null">
         `KEY` = #{record.key,jdbcType=VARCHAR},
       </if>
@@ -255,8 +251,7 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update WEBCONF
-    set OID = #{record.oid,jdbcType=BIGINT},
-      `KEY` = #{record.key,jdbcType=VARCHAR},
+    set `KEY` = #{record.key,jdbcType=VARCHAR},
       `DESC` = #{record.desc,jdbcType=VARCHAR},
       CFG_TYPE = #{record.cfgType,jdbcType=VARCHAR},
       VALUE_TYPE = #{record.valueType,jdbcType=VARCHAR},
@@ -275,9 +270,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="cn.jianwoo.blog.entity.Webconf">
     update WEBCONF
     <set>
-      <if test="key != null">
-        `KEY` = #{key,jdbcType=VARCHAR},
-      </if>
       <if test="desc != null">
         `DESC` = #{desc,jdbcType=VARCHAR},
       </if>
@@ -312,12 +304,11 @@
         UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where OID = #{oid,jdbcType=BIGINT}
+    where `KEY` = #{key,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.jianwoo.blog.entity.Webconf">
     update WEBCONF
-    set `KEY` = #{key,jdbcType=VARCHAR},
-      `DESC` = #{desc,jdbcType=VARCHAR},
+    set `DESC` = #{desc,jdbcType=VARCHAR},
       CFG_TYPE = #{cfgType,jdbcType=VARCHAR},
       VALUE_TYPE = #{valueType,jdbcType=VARCHAR},
       STRING_VALUE = #{stringValue,jdbcType=VARCHAR},
@@ -328,7 +319,7 @@
       `VALID` = #{valid,jdbcType=CHAR},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
-    where OID = #{oid,jdbcType=BIGINT}
+    where `KEY` = #{key,jdbcType=VARCHAR}
   </update>
   <sql id="MySQLDialectSuffix">
     <if test="start != null and rows != null">

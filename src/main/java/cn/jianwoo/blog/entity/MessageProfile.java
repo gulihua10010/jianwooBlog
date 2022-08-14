@@ -12,6 +12,10 @@ public class MessageProfile implements Serializable {
 
     private String msgType;
 
+    private String optType;
+
+    private String receiverType;
+
     private String msgTitle;
 
     private String msgLink;
@@ -35,6 +39,8 @@ public class MessageProfile implements Serializable {
     private Boolean flagRead;
 
     private Boolean flagPopup;
+
+    private Boolean flagPopupMain;
 
     private Date readTime;
 
@@ -80,6 +86,22 @@ public class MessageProfile implements Serializable {
 
     public void setMsgType(String msgType) {
         this.msgType = msgType == null ? null : msgType.trim();
+    }
+
+    public String getOptType() {
+        return optType;
+    }
+
+    public void setOptType(String optType) {
+        this.optType = optType == null ? null : optType.trim();
+    }
+
+    public String getReceiverType() {
+        return receiverType;
+    }
+
+    public void setReceiverType(String receiverType) {
+        this.receiverType = receiverType == null ? null : receiverType.trim();
     }
 
     public String getMsgTitle() {
@@ -178,6 +200,14 @@ public class MessageProfile implements Serializable {
         this.flagPopup = flagPopup;
     }
 
+    public Boolean getFlagPopupMain() {
+        return flagPopupMain;
+    }
+
+    public void setFlagPopupMain(Boolean flagPopupMain) {
+        this.flagPopupMain = flagPopupMain;
+    }
+
     public Date getReadTime() {
         return readTime;
     }
@@ -236,6 +266,8 @@ public class MessageProfile implements Serializable {
         sb.append(", busiSceneCode=").append(busiSceneCode);
         sb.append(", busiType=").append(busiType);
         sb.append(", msgType=").append(msgType);
+        sb.append(", optType=").append(optType);
+        sb.append(", receiverType=").append(receiverType);
         sb.append(", msgTitle=").append(msgTitle);
         sb.append(", msgLink=").append(msgLink);
         sb.append(", bizId=").append(bizId);
@@ -248,6 +280,7 @@ public class MessageProfile implements Serializable {
         sb.append(", emailSendResult=").append(emailSendResult);
         sb.append(", flagRead=").append(flagRead);
         sb.append(", flagPopup=").append(flagPopup);
+        sb.append(", flagPopupMain=").append(flagPopupMain);
         sb.append(", readTime=").append(readTime);
         sb.append(", procRslt=").append(procRslt);
         sb.append(", procTime=").append(procTime);

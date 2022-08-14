@@ -12,5 +12,5 @@ public interface WebconfFacadeTransDao extends WebconfFacadeQueryDao {
 
     void doUpdateByPrimaryKeySelective(WebconfFacade record) throws DaoException;
 
-    void doDeleteByPrimaryKey(Long oid) throws DaoException;
+    void doDeleteByPrimaryKey(String key) throws DaoException;
 }

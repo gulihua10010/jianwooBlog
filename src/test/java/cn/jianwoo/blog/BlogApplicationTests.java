@@ -14,12 +14,17 @@ import cn.jianwoo.blog.util.NotifiyUtil;
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.lionsoul.ip2region.xdb.Searcher;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.ResourceUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -139,15 +144,15 @@ class BlogApplicationTests {
 //        //解密为字符串
 //        String decryptStr = aes.decryptStr("b7YLsLqb2A8IX7nM9+wTUg==", CharsetUtil.CHARSET_UTF_8);
         //构建
-         final  ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("application");
-        String base64Security = RESOURCE_BUNDLE.getString("aes.secret");
+//         final  ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("application");
+//        String base64Security = RESOURCE_BUNDLE.getString("aes.secret");
 
-        SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES,
-                new String(Base64.decode(base64Security)).getBytes(StandardCharsets.UTF_8));
-        //解密为字符串
-        String decryptStr = aes.decryptStr((Base64.decode(Base64.decode("RmVqazZjTUxFNVVnQmpRaW04TXNuUT09"))), CharsetUtil.CHARSET_UTF_8);
-        System.out.println(decryptStr);
-        System.out.println(JwUtil.decrypt("RmVqazZjTUxFNVVnQmpRaW04TXNuUT09"));
+//        SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES,
+//                new String(Base64.decode(base64Security)).getBytes(StandardCharsets.UTF_8));
+//        //解密为字符串
+//        String decryptStr = aes.decryptStr((Base64.decode(Base64.decode("RmVqazZjTUxFNVVnQmpRaW04TXNuUT09"))), CharsetUtil.CHARSET_UTF_8);
+//        System.out.println(decryptStr);
+//        System.out.println(JwUtil.decrypt("RmVqazZjTUxFNVVnQmpRaW04TXNuUT09"));
     }
 
 
@@ -168,7 +173,7 @@ class BlogApplicationTests {
                 Pattern r = Pattern.compile(IP_REX_PATTERN);
                 Matcher m = r.matcher(ip.trim());
                 if (m.matches()) {
-                    String area = netWorkService.getIpArea(ip.trim());
+                    String area = netWorkService.getIpRegion(ip.trim());
                     Object o = asyncIpEnum.getClazz().newInstance();
                     BeanUtil.setFieldValue(o, asyncIpEnum.getPrimaryKey(), oid);
                     BeanUtil.setFieldValue(o, asyncIpEnum.getField(), area);
@@ -182,6 +187,45 @@ class BlogApplicationTests {
             e.printStackTrace();
         }
         System.out.println(">> End async task execIpAreaTask");
+
+
+
+    }
+
+    @Test
+    public void test() throws Exception{
+        File f = ResourceUtils.getFile("classpath:ip/ip2region.xdb");
+        System.out.println(f.exists());
+
+        String dbPath = f.getAbsolutePath();
+        System.out.println(dbPath);
+        Searcher searcher = null;
+        try {
+            searcher = Searcher.newWithFileOnly(dbPath);
+        } catch (IOException e) {
+            System.out.printf("failed to create searcher with `%s`: %s\n", dbPath, e);
+            return;
+        }
+
+        // 2、查询
+        try {
+//            String ip = "114.222.63.185";
+            String ip = "1.2.3.4";
+//            String ip = "0.0.0.2";
+//            String ip = "164.92.77.168";
+//            String ip = "114.0.63.185";
+//            String ip = "223.104.21.43";
+            long sTime = System.nanoTime();
+            String region = searcher.search(ip);
+            long cost = TimeUnit.NANOSECONDS.toMicros((long) (System.nanoTime() - sTime));
+            System.out.printf("{region: %s, ioCount: %d, took: %d μs}\n", region, searcher.getIOCount(), cost);
+        } catch (Exception e) {
+            System.out.printf("failed to search : %s\n",   e);
+        }
+    }
+
+    public void stst1(){
+
 
     }
 }

@@ -21,6 +21,7 @@ import cn.jianwoo.blog.dto.request.TempArticleStatusRequest;
 import cn.jianwoo.blog.dto.response.ArticleInfoResponse;
 import cn.jianwoo.blog.dto.response.ArticleSummaryResponse;
 import cn.jianwoo.blog.dto.response.TempArticleInfoResponse;
+import cn.jianwoo.blog.dto.response.TempArticleSaveResponse;
 import cn.jianwoo.blog.dto.response.vo.ArticleCategoryVO;
 import cn.jianwoo.blog.dto.response.vo.ArticleSummaryVO;
 import cn.jianwoo.blog.dto.response.vo.ArticleVO;
@@ -137,6 +138,7 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleBO::setFlagTop, request.getTopPlaceFlag())
                     .with(ArticleBO::setFlagOriginal, request.getFlagOriginal())
                     .with(ArticleBO::setOriginalUrl, request.getOriginalUrl())
+                    .with(ArticleBO::setPushIp, request.getClientIp())
                     .with(ArticleBO::setStatus, ArticleStatusEnum.PUBLISHED.getValue()).build();
             articleBizService.doCreateArticle(articleBO);
         } catch (JwBlogException e) {
@@ -201,6 +203,7 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleBO::setFlagTop, request.getTopPlaceFlag())
                     .with(ArticleBO::setFlagOriginal, request.getFlagOriginal())
                     .with(ArticleBO::setOriginalUrl, request.getOriginalUrl())
+                    .with(ArticleBO::setPushIp, request.getClientIp())
                     .with(ArticleBO::setStatus, ArticleStatusEnum.DRAFT.getValue()).build();
             articleBizService.doCreateArticle(articleBO);
         } catch (JwBlogException e) {
@@ -264,6 +267,7 @@ public class ArticleApiController extends BaseController {
                     .with(ArticleBO::setFlagTop, request.getTopPlaceFlag())
                     .with(ArticleBO::setFlagOriginal, request.getFlagOriginal())
                     .with(ArticleBO::setOriginalUrl, request.getOriginalUrl())
+                    .with(ArticleBO::setPushIp, request.getClientIp())
                     .with(ArticleBO::setStatus, ArticleStatusEnum.RECYCLE.getValue()).build();
             articleBizService.doCreateArticle(articleBO);
         } catch (JwBlogException e) {
@@ -1187,10 +1191,10 @@ public class ArticleApiController extends BaseController {
     @ApiVersion()
     @PostMapping(ArticleApiUrlConfig.URL_ARTICLE_TEMP_SAVE)
     public String doTempArticleSave(@RequestBody String param) {
+        TempArticleSaveResponse response = TempArticleSaveResponse.getInstance();
         try {
             super.printRequestParams(param);
             TempArticleSaveRequest request = this.convertParam(param, TempArticleSaveRequest.class);
-
             TempArticleBO articleBO = JwBuilder.of(TempArticleBO::new)
                     .with(TempArticleBO::setOid, request.getOid())
                     .with(TempArticleBO::setTitle, request.getTitle())
@@ -1217,13 +1221,14 @@ public class ArticleApiController extends BaseController {
                 });
                 articleBO.setArtTagsList(list);
             }
-            tempArticleBizService.doSaveTempArticle(articleBO);
+            Long oid = tempArticleBizService.doSaveTempArticle(articleBO);
+            response.setOid(oid);
 
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
         }
 
-        return super.responseToJSONString(BaseResponseDto.SUCCESS);
+        return super.responseToJSONString(response);
     }
 
     /**

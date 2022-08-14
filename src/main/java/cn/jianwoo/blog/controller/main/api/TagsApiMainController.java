@@ -9,6 +9,7 @@ import cn.jianwoo.blog.dto.response.TagListResponse;
 import cn.jianwoo.blog.dto.response.vo.TagsVO;
 import cn.jianwoo.blog.service.biz.TagsBizService;
 import cn.jianwoo.blog.service.bo.TagsBO;
+import cn.jianwoo.blog.util.JwUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -48,14 +49,14 @@ public class TagsApiMainController extends BaseController {
      * @author gulihua
      */
     @ApiVersion()
-    @PostMapping(TagsMainApiUrlConfig.URL_QUERY_ALL_LIST)
+    @PostMapping(TagsMainApiUrlConfig.URL_TAGS_QUERY_ALL_LIST)
     @IpLimit(key = "queryAllTags")
     public String queryAllTags(@RequestBody String param) {
 
         try {
             TagListResponse response = TagListResponse.getInstance();
             List<TagsVO> list = new ArrayList<TagsVO>();
-            List<TagsBO> tags = tagsBizService.queryMainAllTags(request.getRemoteAddr());
+            List<TagsBO> tags = tagsBizService.queryMainAllTags(JwUtil.getRealIpAddress(request));
             if (CollectionUtils.isNotEmpty(tags)) {
                 for (TagsBO tag : tags) {
                     TagsVO vo = JwBuilder.of(TagsVO::new)

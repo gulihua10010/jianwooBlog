@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="cn.jianwoo.blog.entity.ArticleAccess">
     <id column="OID" jdbcType="BIGINT" property="oid" />
     <result column="ACCESS_IP" jdbcType="VARCHAR" property="accessIp" />
-    <result column="ACCESS_AREA" jdbcType="VARCHAR" property="accessArea" />
+    <result column="ACCESS_REGION" jdbcType="VARCHAR" property="accessRegion" />
     <result column="ARTICLE_OID" jdbcType="BIGINT" property="articleOid" />
     <result column="ARTICLE_TITLE" jdbcType="VARCHAR" property="articleTitle" />
     <result column="ACCESS_TIME" jdbcType="TIMESTAMP" property="accessTime" />
@@ -70,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    OID, ACCESS_IP, ACCESS_AREA, ARTICLE_OID, ARTICLE_TITLE, ACCESS_TIME, CREATE_TIME, 
+    OID, ACCESS_IP, ACCESS_REGION, ARTICLE_OID, ARTICLE_TITLE, ACCESS_TIME, CREATE_TIME, 
     UPDATE_TIME
   </sql>
   <select id="selectByExample" parameterType="cn.jianwoo.blog.entity.example.ArticleAccessExample" resultMap="BaseResultMap">
@@ -105,10 +105,10 @@
     </if>
   </delete>
   <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.ArticleAccess" useGeneratedKeys="true">
-    insert into ARTICLE_ACCESS (ACCESS_IP, ACCESS_AREA, ARTICLE_OID, 
+    insert into ARTICLE_ACCESS (ACCESS_IP, ACCESS_REGION, ARTICLE_OID, 
       ARTICLE_TITLE, ACCESS_TIME, CREATE_TIME, 
       UPDATE_TIME)
-    values (#{accessIp,jdbcType=VARCHAR}, #{accessArea,jdbcType=VARCHAR}, #{articleOid,jdbcType=BIGINT}, 
+    values (#{accessIp,jdbcType=VARCHAR}, #{accessRegion,jdbcType=VARCHAR}, #{articleOid,jdbcType=BIGINT}, 
       #{articleTitle,jdbcType=VARCHAR}, #{accessTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
@@ -118,8 +118,8 @@
       <if test="accessIp != null">
         ACCESS_IP,
       </if>
-      <if test="accessArea != null">
-        ACCESS_AREA,
+      <if test="accessRegion != null">
+        ACCESS_REGION,
       </if>
       <if test="articleOid != null">
         ARTICLE_OID,
@@ -141,8 +141,8 @@
       <if test="accessIp != null">
         #{accessIp,jdbcType=VARCHAR},
       </if>
-      <if test="accessArea != null">
-        #{accessArea,jdbcType=VARCHAR},
+      <if test="accessRegion != null">
+        #{accessRegion,jdbcType=VARCHAR},
       </if>
       <if test="articleOid != null">
         #{articleOid,jdbcType=BIGINT},
@@ -176,8 +176,8 @@
       <if test="record.accessIp != null">
         ACCESS_IP = #{record.accessIp,jdbcType=VARCHAR},
       </if>
-      <if test="record.accessArea != null">
-        ACCESS_AREA = #{record.accessArea,jdbcType=VARCHAR},
+      <if test="record.accessRegion != null">
+        ACCESS_REGION = #{record.accessRegion,jdbcType=VARCHAR},
       </if>
       <if test="record.articleOid != null">
         ARTICLE_OID = #{record.articleOid,jdbcType=BIGINT},
@@ -203,7 +203,7 @@
     update ARTICLE_ACCESS
     set OID = #{record.oid,jdbcType=BIGINT},
       ACCESS_IP = #{record.accessIp,jdbcType=VARCHAR},
-      ACCESS_AREA = #{record.accessArea,jdbcType=VARCHAR},
+      ACCESS_REGION = #{record.accessRegion,jdbcType=VARCHAR},
       ARTICLE_OID = #{record.articleOid,jdbcType=BIGINT},
       ARTICLE_TITLE = #{record.articleTitle,jdbcType=VARCHAR},
       ACCESS_TIME = #{record.accessTime,jdbcType=TIMESTAMP},
@@ -219,8 +219,8 @@
       <if test="accessIp != null">
         ACCESS_IP = #{accessIp,jdbcType=VARCHAR},
       </if>
-      <if test="accessArea != null">
-        ACCESS_AREA = #{accessArea,jdbcType=VARCHAR},
+      <if test="accessRegion != null">
+        ACCESS_REGION = #{accessRegion,jdbcType=VARCHAR},
       </if>
       <if test="articleOid != null">
         ARTICLE_OID = #{articleOid,jdbcType=BIGINT},
@@ -243,7 +243,7 @@
   <update id="updateByPrimaryKey" parameterType="cn.jianwoo.blog.entity.ArticleAccess">
     update ARTICLE_ACCESS
     set ACCESS_IP = #{accessIp,jdbcType=VARCHAR},
-      ACCESS_AREA = #{accessArea,jdbcType=VARCHAR},
+      ACCESS_REGION = #{accessRegion,jdbcType=VARCHAR},
       ARTICLE_OID = #{articleOid,jdbcType=BIGINT},
       ARTICLE_TITLE = #{articleTitle,jdbcType=VARCHAR},
       ACCESS_TIME = #{accessTime,jdbcType=TIMESTAMP},

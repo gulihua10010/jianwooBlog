@@ -54,7 +54,7 @@ public class CommentBO implements Serializable {
     /**
      * 地域
      */
-    private String userArea;
+    private String userRegion;
 
     /**
      * 评论时间

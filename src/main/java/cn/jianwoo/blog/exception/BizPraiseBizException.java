@@ -23,6 +23,8 @@ public class BizPraiseBizException extends JwBlogException {
             ExceptionConstants.BIZ_STATUS_INCORRECT, "你已经赞过了该文章!");
     public static final ArticleBizException PRAISE_COMMENT_ALREADY = new ArticleBizException(
             ExceptionConstants.BIZ_STATUS_INCORRECT, "你已经赞过了该评论!");
+    public static final ArticleBizException PRAISE_MESSAGE_ALREADY = new ArticleBizException(
+            ExceptionConstants.BIZ_STATUS_INCORRECT, "你已经赞过了该留言!");
     private static final long serialVersionUID = -4477787493913372810L;
     private final Logger logger = LoggerFactory.getLogger(BizPraiseBizException.class);
 

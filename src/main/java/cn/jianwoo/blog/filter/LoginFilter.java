@@ -9,6 +9,7 @@ import cn.jianwoo.blog.event.LoginLogEvent;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.security.token.AuthUserTokenBO;
 import cn.jianwoo.blog.service.biz.LoginFailedBizService;
+import cn.jianwoo.blog.util.ApplicationConfigUtil;
 import cn.jianwoo.blog.util.DateUtil;
 import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.util.JwtUtils;
@@ -28,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 /**
  * @author GuLihua
@@ -39,11 +39,11 @@ import java.util.ResourceBundle;
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
 
-    private final static ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("application");
-    public static String refreshTokenExpireDays = RESOURCE_BUNDLE.getString("refresh.token.expired.days");
     private final ApplicationContext applicationContext = SpringUtil.getApplicationContext();
     private final LoginFailedBizService loginFailedBizService = SpringUtil.getBean(LoginFailedBizService.class);
+    private final ApplicationConfigUtil applicationConfigUtil = SpringUtil.getBean(ApplicationConfigUtil.class);
 
+    public String refreshTokenExpireDays = applicationConfigUtil.getRefreshTokenExpiredDays();
 
     public LoginFilter() {
     }
@@ -65,12 +65,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 
         Map<String, Object> map = new HashMap<>();
-        map.put(Constants.LOGIN_IP, request.getRemoteAddr());
+        map.put(Constants.LOGIN_IP, JwUtil.getRealIpAddress(request));
         map.put(Constants.CAPTCHA_TOKEN, accessToken);
         map.put(Constants.GUID, guid);
         boolean isBlock = false;
         try {
-            isBlock = loginFailedBizService.queryIsBlock(username, request.getRemoteAddr());
+            isBlock = loginFailedBizService.queryIsBlock(username, JwUtil.getRealIpAddress(request));
         } catch (JwBlogException e) {
             log.error(">>LoginFilter.attemptAuthentication exec failed, e:\r\n", e);
 
@@ -92,14 +92,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String username = request.getParameter(Constants.USERNAME);
         String password = request.getParameter(Constants.PASSWORD);
         log.info("user {} login failed, password is {}, ip is {}, time is {}.", username, password,
-                request.getRemoteAddr(), DateUtil.getNowStandardFormat());
+                JwUtil.getRealIpAddress(request), DateUtil.getNowStandardFormat());
         response.setContentType(Constants.CONTENT_TYPE_JSON);
         response.getWriter().write(processException(exception));
         LoginLogEvent event = new LoginLogEvent(this, username, request);
         event.setEventTypeEnum(LoginEventTypeEnum.LOGIN);
         event.setIsSuccess(false);
         event.setReason(exception.getMessage());
-        doCheckAdminBlock(username, request.getRemoteAddr());
+        doCheckAdminBlock(username, JwUtil.getRealIpAddress(request));
         applicationContext.publishEvent(event);
 
     }
@@ -125,7 +125,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         event.setIsSuccess(true);//
         applicationContext.publishEvent(event);
         try {
-            loginFailedBizService.doVoidRecord(user.getUsername(), request.getRemoteAddr());
+            loginFailedBizService.doVoidRecord(user.getUsername(), JwUtil.getRealIpAddress(request));
         } catch (JwBlogException e) {
             log.error(">>LoginFilter.successfulAuthentication exec failed, e:\r\n", e);
 
@@ -151,6 +151,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         map.put(Constants.USER_KEY, user.getAuthToken().getUid());
         map.put(Constants.REFRESH_TOKEN, user.getAuthToken().getRefreshToken());
         String token = JwtUtils.sign(map, Long.parseLong(refreshTokenExpireDays) * 24 * 60 * 60 * 1000);
+
         // 将token放入响应头中
         response.setContentType(Constants.CONTENT_TYPE_JSON);
         response.addHeader(Constants.REFRESH_TOKEN, token);

@@ -4,9 +4,12 @@ import {ElMessage} from 'element-plus'
 
 export function postJson(str, p) {
 
-    const url = CONFIG.API_URI + '/api' + str;
+    var url = CONFIG.API_URI + '/api' + str;
+
+    url = doAddUrlVersion(url);
 
     var instance = axios.create({
+
         baseURL: url,
         method: "post",
         headers: {
@@ -14,6 +17,20 @@ export function postJson(str, p) {
         }
     });
     // console.log(url)
+
+
+
+    function doAddUrlVersion(url, version) {
+        if (!version) {
+            version = 1;
+        }
+        var idx = url.indexOf('?');
+        if (idx === -1) {
+            return url + "?v=" + version;
+        }
+        return url + "&v=" + version
+
+    }
 
     var showErrMsg = function (res) {
         var msg = 'API调用出错！请稍后重试！';

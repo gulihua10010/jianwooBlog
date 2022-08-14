@@ -53,7 +53,9 @@ public final class Constants {
     public static final Integer TITLE_LENGTH = 50;
     public static final Integer AUTHOR_LENGTH = 10;
     public static final Integer TAGS_LENGTH = 10;
-    public static final Integer MENU_LENGTH = 10;
+
+    public static final Integer MENU_TEXT_LENGTH = 10;
+    public static final Integer MENU_NAME_LENGTH = 20;
     public static final Integer URL_LENGTH = 100;
     public static final Integer NICK_LENGTH = 20;
     public static final Integer EMAIL_LENGTH = 30;
@@ -61,6 +63,8 @@ public final class Constants {
     public static final Integer COMMENT_MIN_CONTENT_LENGTH = 5;
     public static final Integer COMMENT_MAX_CONTENT_LENGTH = 200;
 
+    public static final Integer MESSAGE_BOARD_MIN_CONTENT_LENGTH = 5;
+    public static final Integer MESSAGE_BOARD_MAX_CONTENT_LENGTH = 200;
     //reg
     public static final String MENU_NAME_REGEX = "^[_#$@\\d\\w]*$";
     public static final String CLEAR_HTML_TAGS_WITHOUT_MEDIA_REGEX = "\\<(?!img |/?video|source ).*?>";
@@ -90,6 +94,11 @@ public final class Constants {
     public static final String ALL_ADMIN_API = "/api/admin/**";
     public static final String ALL_FILE_API = "/api/file/**";
     public static final String ALL_ADMIN_PAGE= "/admin**";
+
+    //file
+
+    public static final String FILE_EXT_JPG= ".jpg";
+
     public static final String ALL_ADMIN_PASSPORT= "/admin/passport";
 
     //admin
@@ -122,6 +131,7 @@ public final class Constants {
     public static final String EMAIL_TPL_CODE_EXCEPTION = "-1";
     public static final Integer CATEGORY_NULL = -1;
     public static final String COMMENT_HAS_DELETE = "该评论已经删除!";
+    public static final String MESSAGE_HAS_DELETE = "该留言已经删除!";
     public static final String ARTICLE_NEED_PASSWORD = "文章[%s]需要验证密码!";
 
 

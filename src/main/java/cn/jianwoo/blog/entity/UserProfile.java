@@ -22,11 +22,11 @@ public class UserProfile implements Serializable {
 
     private String registerIp;
 
-    private String registerArea;
+    private String registerRegion;
 
     private String lastLoginIp;
 
-    private String lastLoginArea;
+    private String lastLoginRegion;
 
     private Date lastLoginTime;
 
@@ -118,12 +118,12 @@ public class UserProfile implements Serializable {
         this.registerIp = registerIp == null ? null : registerIp.trim();
     }
 
-    public String getRegisterArea() {
-        return registerArea;
+    public String getRegisterRegion() {
+        return registerRegion;
     }
 
-    public void setRegisterArea(String registerArea) {
-        this.registerArea = registerArea == null ? null : registerArea.trim();
+    public void setRegisterRegion(String registerRegion) {
+        this.registerRegion = registerRegion == null ? null : registerRegion.trim();
     }
 
     public String getLastLoginIp() {
@@ -134,12 +134,12 @@ public class UserProfile implements Serializable {
         this.lastLoginIp = lastLoginIp == null ? null : lastLoginIp.trim();
     }
 
-    public String getLastLoginArea() {
-        return lastLoginArea;
+    public String getLastLoginRegion() {
+        return lastLoginRegion;
     }
 
-    public void setLastLoginArea(String lastLoginArea) {
-        this.lastLoginArea = lastLoginArea == null ? null : lastLoginArea.trim();
+    public void setLastLoginRegion(String lastLoginRegion) {
+        this.lastLoginRegion = lastLoginRegion == null ? null : lastLoginRegion.trim();
     }
 
     public Date getLastLoginTime() {
@@ -221,9 +221,9 @@ public class UserProfile implements Serializable {
         sb.append(", userEmail=").append(userEmail);
         sb.append(", userSex=").append(userSex);
         sb.append(", registerIp=").append(registerIp);
-        sb.append(", registerArea=").append(registerArea);
+        sb.append(", registerRegion=").append(registerRegion);
         sb.append(", lastLoginIp=").append(lastLoginIp);
-        sb.append(", lastLoginArea=").append(lastLoginArea);
+        sb.append(", lastLoginRegion=").append(lastLoginRegion);
         sb.append(", lastLoginTime=").append(lastLoginTime);
         sb.append(", userQq=").append(userQq);
         sb.append(", userWechat=").append(userWechat);

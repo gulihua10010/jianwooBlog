@@ -27,6 +27,7 @@ import cn.jianwoo.blog.service.biz.CommentBizService;
 import cn.jianwoo.blog.service.bo.CommentBO;
 import cn.jianwoo.blog.service.param.CommentParam;
 import cn.jianwoo.blog.util.DomainUtil;
+import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.validation.BizValidation;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
@@ -127,7 +128,7 @@ public class CommentApiController extends BaseController {
             super.printRequestParams(param);
             EntityOidRequest req = this.convertParam(param, EntityOidRequest.class);
             BizValidation.paramValidate(req.getEntityOid(), "entityOid", "评论id不能为空!");
-            commentBizService.doDelCommentById(req.getEntityOid(), request.getRemoteAddr());
+            commentBizService.doDelCommentById(req.getEntityOid(), JwUtil.getRealIpAddress(request), true);
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
 
@@ -153,7 +154,7 @@ public class CommentApiController extends BaseController {
             super.printRequestParams(param);
             EntityOidListRequest req = this.convertParam(param, EntityOidListRequest.class);
             BizValidation.paramValidate(req.getEntityOidList(), "entityOidList", "评论id不能为空!");
-            commentBizService.doDelCommentByListOid(req.getEntityOidList(), request.getRemoteAddr());
+            commentBizService.doDelCommentByListOid(req.getEntityOidList(), JwUtil.getRealIpAddress(request));
         } catch (JwBlogException e) {
             return super.exceptionToString(e);
 
@@ -163,11 +164,12 @@ public class CommentApiController extends BaseController {
 
     /**
      * 分页查询评论(评论列表)<br/>
-     * url:/api/admin/comment/query<br/>
+     * url:/api/admin/comment/query/list<br/>
      *
      * @param param JSON 参数({@link CommentPageRequest})<br/>
      *              title<br/>
      *              unread<br/>
+     *              oid<br/>
      * @return 返回响应 {@link CommentSummaryResponse}<br/>
      * code<br/>
      * count<br/>
@@ -182,14 +184,14 @@ public class CommentApiController extends BaseController {
      * --oid<br/>
      * --artOid<br/>
      * --clientIp<br/>
-     * --userArea<br/>
+     * --userRegion<br/>
      * --desc<br/>
      * --artDelStatus<br/>
 //     * --isDelete<br/>
      * @author gulihua
      */
     @ApiVersion()
-    @GetMapping(CommentApiUrlConfig.URL_COMMENT_QUERY)
+    @GetMapping(CommentApiUrlConfig.URL_COMMENT_QUERY_LIST)
     public String queryCommentPageList(CommentPageRequest param) {
         try {
             super.printRequestParams(DomainUtil.toString(param));
@@ -205,6 +207,7 @@ public class CommentApiController extends BaseController {
                 commParam.setReadStatus(new Integer(1).equals(param.getUnread()) ? CommReadEnum.UNREAD.getValue()
                         : CommReadEnum.READ.getValue());
             }
+            commParam.setOid(param.getOid());
 
             PageInfo<CommentBO> pageInfo = commentBizService.queryAllCommentPage(commParam);
             List<CommentSummaryVO> list = new ArrayList<>();
@@ -212,7 +215,11 @@ public class CommentApiController extends BaseController {
             for (CommentBO commentBO : pageInfo.getList()) {
                 CommentSummaryVO vo = new CommentSummaryVO();
                 vo.setArtTitle(commentBO.getArticleTitle());
-                vo.setContent(StringEscapeUtils.escapeHtml4(commentBO.getContent()));
+                String content = StringEscapeUtils.escapeHtml4(commentBO.getContent());
+                if (content.length() > 50) {
+                    content.substring(0, 50).concat(Constants.ELLIPSIS);
+                }
+                vo.setContent(content);
                 vo.setCommentTimeStr(DateUtil.formatDateTime(commentBO.getCommentTime()));
                 vo.setCommentTime(commentBO.getCommentTime());
                 vo.setUserNick(commentBO.getUserNick());
@@ -316,7 +323,7 @@ public class CommentApiController extends BaseController {
             super.printRequestParams(param);
             EntityOidRequest req = this.convertParam(param, EntityOidRequest.class);
             BizValidation.paramValidate(req.getEntityOid(), "entityOid", "文章主键不能为空!");
-            List<CommentBO> commentExtList = commentBizService.queryCommentsByArtOid(req.getEntityOid(), request.getRemoteAddr());
+            List<CommentBO> commentExtList = commentBizService.queryCommentsByArtOid(req.getEntityOid(), JwUtil.getRealIpAddress(request));
             log.info(">>query comment Service by article oid[{}]: {}", req.getEntityOid(),
                     JSON.toJSONString(commentExtList));
             CommentListResponse response = CommentListResponse.getInstance();
@@ -430,6 +437,7 @@ public class CommentApiController extends BaseController {
      * --contactWeibo<br/>
      * --contactTel<br/>
      * --clientIp<br/>
+     * --userRegion<br/>
      * --content<br/>
      * --commentTime<br/>
      * @author gulihua
@@ -451,7 +459,7 @@ public class CommentApiController extends BaseController {
                     .with(CommentVO::setArtTitle, commentBO.getArticleTitle())
                     .with(CommentVO::setAvatarSrc, commentBO.getAvatarSrc())
                     .with(CommentVO::setClientIp, commentBO.getClientIp())
-                    .with(CommentVO::setUserArea, DomainUtil.format(commentBO.getUserArea(), Constants.UNKNOW))
+                    .with(CommentVO::setUserRegion, DomainUtil.format(commentBO.getUserRegion(), Constants.UNKNOW))
                     .with(CommentVO::setContactQq, commentBO.getContactQq())
                     .with(CommentVO::setContactWeibo, commentBO.getContactWeibo())
                     .with(CommentVO::setContactWechat, commentBO.getContactWechat())

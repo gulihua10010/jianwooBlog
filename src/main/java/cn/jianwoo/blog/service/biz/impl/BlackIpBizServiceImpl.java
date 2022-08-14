@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author gulihua
@@ -79,7 +80,7 @@ public class BlackIpBizServiceImpl implements BlackIpBizService {
 
         }
         String cacheKey = MessageFormat.format(CacheKeyConstants.IP_BLACK_KEY, ip);
-        cacheStore.put(cacheKey, Constants.YES);
+        cacheStore.put(cacheKey, Constants.YES, 7, TimeUnit.DAYS);
     }
 
     @Override

@@ -152,7 +152,7 @@ layui.define(['laytable', 'form', 'tinymce'], function (exports) {
             JSON.stringify(field),
             "创建成功",
             function () {
-                location.hash = '/announce/list'
+                location.hash = '/web/announce/list'
 
             }
         );
@@ -174,7 +174,7 @@ layui.define(['laytable', 'form', 'tinymce'], function (exports) {
             JSON.stringify(field),
             "更新成功",
             function () {
-                location.hash = '/announce/list'
+                location.hash = '/web/announce/list'
             }
         );
 

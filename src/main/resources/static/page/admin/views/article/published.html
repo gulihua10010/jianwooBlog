@@ -147,9 +147,6 @@
                                     lay-filter="submit-article"
                                     lay-submit id="save-draft">保存草稿
                             </button>
-                            <button class="layui-btn layui-btn-primary layui-btn-sm wd30p wdmin70" id="articlePreview">
-                                文章预览
-                            </button>
                         </div>
                         <div class="separation-line"></div>
                         <a><i class="iconfont">&#xe606;</i> 公开度：<span id="published-public">公开</span></a>&nbsp;
@@ -267,6 +264,7 @@
             element.render()
             form.render()
             var isChange = false;
+            var tempOid;
 
             var edit = articlePublish.getEdit(function () {
                 isChange = true;
@@ -370,6 +368,7 @@
                         JSON.stringify({
                             entityOid: d.data.oid
                         }));
+                    d.data.oid = null;
                 })
 
             }
@@ -411,16 +410,15 @@
                     flagOriginal = 1;
 
                 }
-                var oid = null;
                 if (d.data && d.data.oid) {
-                    oid = d.data.oid;
+                    tempOid = d.data.oid;
                 }
 
                 ajaxPost('/api/admin/article/temp/save',
                     1,
                     JSON.stringify({
                         requestId: subToken,
-                        oid: oid,
+                        oid: tempOid,
                         title: title,
                         author: author,
                         articleContent: articleContent,
@@ -434,7 +432,13 @@
                         topPlaceFlag: topPlaceFlag,
                         originalUrl: originalUrl,
                         pageType: "10"
-                    }));
+                    }),
+                null,
+                function (res) {
+                    if (!tempOid) {
+                        tempOid = res.oid;
+                    }
+                });
             }
         });
 

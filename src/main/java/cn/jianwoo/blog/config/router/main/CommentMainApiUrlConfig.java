@@ -9,10 +9,10 @@ import cn.jianwoo.blog.config.router.UrlConfig;
  */
 public class CommentMainApiUrlConfig extends UrlConfig {
     public static final String URL_PREFIX = "/api/comment";
-    public static final String URL_QUERY_PAGE_ARTICLE_LIST = "/query/page/article/list";
-    public static final String URL_CREATE_COMMENT = "/create";
-    public static final String URL_UPDATE_COMMENT = "/update";
+    public static final String URL_COMMENT_ARTICLE_QUERY_PAGE_LIST = "/article/query/page/list";
+    public static final String URL_COMMENT_CREATE = "/create";
+    public static final String URL_COMMENT_UPDATE = "/update";
     public static final String URL_COMMENT_PRAISE_ADD = "/praise/add";
-    public static final String URL_REMOVE_COMMENT = "/remove";
+    public static final String URL_COMMENT_REMOVE = "/remove";
 
 }

@@ -59,7 +59,7 @@ public class BizLogBO {
     /**
      * 触发地区
      */
-    private String triggerArea;
+    private String triggerRegion;
 
     /**
      * 处理状态

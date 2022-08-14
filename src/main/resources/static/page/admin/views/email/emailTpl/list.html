@@ -34,12 +34,12 @@
         </div>
         <div class="layui-card-body">
             <div style="padding-bottom: 10px;">
-                <button class="layui-btn layuiadmin-btn-add"  lay-href="/emailTpl/create" data-type="createEmailTpl">创建邮件模板</button>
+                <button class="layui-btn layuiadmin-btn-add"  lay-href="/email/emailTpl/create" data-type="createEmailTpl">创建邮件模板</button>
             </div>
             <table id="emailTpl-table" lay-filter="emailTpl"></table>
             <script id="table-content-email" type="text/html">
                 <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"
-                   lay-href="/emailTpl/edit/code={{d.code}}"><i
+                   lay-href="/email/emailTpl/edit/code={{d.code}}"><i
                         class="layui-icon layui-icon-form"></i>编辑</a>
                 <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
                         class="layui-icon layui-icon-delete"></i>删除</a>

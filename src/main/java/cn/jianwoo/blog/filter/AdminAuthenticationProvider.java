@@ -1,5 +1,6 @@
 package cn.jianwoo.blog.filter;
 
+import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.cache.CacheStore;
 import cn.jianwoo.blog.constants.CacheKeyConstants;
 import cn.jianwoo.blog.constants.Constants;
@@ -8,11 +9,14 @@ import cn.jianwoo.blog.constants.WebConfDataConfig;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.security.token.AuthToken;
 import cn.jianwoo.blog.security.token.AuthUserTokenBO;
+import cn.jianwoo.blog.service.base.IpControlBaseService;
 import cn.jianwoo.blog.service.biz.AdminBizService;
 import cn.jianwoo.blog.service.biz.WebconfBizService;
 import cn.jianwoo.blog.util.JwUtil;
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -42,6 +46,8 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
     private CacheStore<String, String> cacheStore;
     @Autowired
     private WebconfBizService webconfBizService;
+    @Autowired
+    private IpControlBaseService ipControlBaseService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -51,9 +57,7 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
         String userName = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
         Map<String, Object> param = jwAuthenticationToken.getParam();
-        AuthUserTokenBO user = (AuthUserTokenBO) userDetailsService.loadUserByUsername(userName);
 
-        boolean isValid = passwordEncoder().matches(JwUtil.decrypt(password), user.getPassword());
         //验证验证码token(如果开启)
         try {
 
@@ -70,9 +74,19 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
                 }
             }
 
+            if (ipControlBaseService.isIpInBlackList((String) param.get(Constants.LOGIN_IP))) {
+                throw new JwBlogException(ExceptionConstants.BIZ_ACCESS_REFUSED,
+                        ExceptionConstants.ACCESS_REFUSED_DESC);
+
+            }
+
         } catch (Exception e) {
             throw new AuthenticationServiceException(e.getMessage(), e);
         }
+
+        AuthUserTokenBO user = (AuthUserTokenBO) userDetailsService.loadUserByUsername(userName);
+        boolean isValid = passwordEncoder().matches(JwUtil.decrypt(password), user.getPassword());
+
         // 验证密码
         if (!isValid) {
             throw new BadCredentialsException(Constants.WRONG_PASSWORD);

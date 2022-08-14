@@ -12,6 +12,10 @@ public class Article implements Serializable {
 
     private String pushBy;
 
+    private String pushIp;
+
+    private String pushRegion;
+
     private String title;
 
     private Date modifiedTime;
@@ -84,6 +88,22 @@ public class Article implements Serializable {
 
     public void setPushBy(String pushBy) {
         this.pushBy = pushBy == null ? null : pushBy.trim();
+    }
+
+    public String getPushIp() {
+        return pushIp;
+    }
+
+    public void setPushIp(String pushIp) {
+        this.pushIp = pushIp == null ? null : pushIp.trim();
+    }
+
+    public String getPushRegion() {
+        return pushRegion;
+    }
+
+    public void setPushRegion(String pushRegion) {
+        this.pushRegion = pushRegion == null ? null : pushRegion.trim();
     }
 
     public String getTitle() {
@@ -256,6 +276,8 @@ public class Article implements Serializable {
         sb.append(", author=").append(author);
         sb.append(", pushTime=").append(pushTime);
         sb.append(", pushBy=").append(pushBy);
+        sb.append(", pushIp=").append(pushIp);
+        sb.append(", pushRegion=").append(pushRegion);
         sb.append(", title=").append(title);
         sb.append(", modifiedTime=").append(modifiedTime);
         sb.append(", categoryId=").append(categoryId);

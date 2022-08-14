@@ -1,11 +1,11 @@
 <template>
     <div class="emoji-panel-wrap">
-            <span
-                    v-for="(item,index) in emojis"
-                    :text="item"
-                    v-bind:key="index"
-                    @click="handleEmojiClick(index)"
-            >{{ item }}</span>
+                <span
+                        v-for="(item,index) in emojis"
+                        :text="item"
+                        v-bind:key="index"
+                        @click="handleEmojiClick(index)"
+                >{{ item }}</span>
     </div>
 </template>
 <script>
@@ -35,14 +35,17 @@ export default {
 };
 </script>
 <style scoped>
+
+
 .emoji-panel-wrap {
+    display: block;
     box-sizing: border-box;
     border: 1px solid #cccccc;
     border-radius: 5px;
     background-color: #ffffff;
     width: 508px;
     height: 200px;
-    position: absolute;
+    /*position: absolute;*/
     left: 0px;
     top: 32px;
     overflow-y: scroll;

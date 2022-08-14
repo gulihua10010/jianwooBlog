@@ -103,11 +103,10 @@ public interface AnnouncementBizService {
 
 
     /**
-     * 获取所有可用公告
+     * 获取可用公告(最多4条)
      *
-     * @param param 参数
-     * @return PageInfo<AnnounceBO>
+     * @return List<AnnounceBO>
      * @author gulihua
      */
-    PageInfo<AnnounceBO> queryUsefulAnnouncePage(AnnounceParam param);
+    List<AnnounceBO> queryUsefulAnnounce();
 }

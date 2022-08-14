@@ -126,66 +126,6 @@ public class WebconfExample {
             criteria.add(new Criterion(condition, value1, value2));
         }
 
-        public Criteria andOidIsNull() {
-            addCriterion("OID is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidIsNotNull() {
-            addCriterion("OID is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidEqualTo(Long value) {
-            addCriterion("OID =", value, "oid");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidNotEqualTo(Long value) {
-            addCriterion("OID <>", value, "oid");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidGreaterThan(Long value) {
-            addCriterion("OID >", value, "oid");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidGreaterThanOrEqualTo(Long value) {
-            addCriterion("OID >=", value, "oid");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidLessThan(Long value) {
-            addCriterion("OID <", value, "oid");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidLessThanOrEqualTo(Long value) {
-            addCriterion("OID <=", value, "oid");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidIn(List<Long> values) {
-            addCriterion("OID in", values, "oid");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidNotIn(List<Long> values) {
-            addCriterion("OID not in", values, "oid");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidBetween(Long value1, Long value2) {
-            addCriterion("OID between", value1, value2, "oid");
-            return (Criteria) this;
-        }
-
-        public Criteria andOidNotBetween(Long value1, Long value2) {
-            addCriterion("OID not between", value1, value2, "oid");
-            return (Criteria) this;
-        }
-
         public Criteria andKeyIsNull() {
             addCriterion("`KEY` is null");
             return (Criteria) this;

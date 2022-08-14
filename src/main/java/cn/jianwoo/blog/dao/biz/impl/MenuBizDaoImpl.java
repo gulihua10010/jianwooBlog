@@ -24,7 +24,7 @@ public class MenuBizDaoImpl implements MenuBizDao {
 
 
     @Override
-    public int countMenuWithSameLevel(Map<String, Object> params) {
-        return menuBizMapper.countMenuWithSameLevel(params);
+    public int queryMaxIndexMenuWithSameLevel(Map<String, Object> params) {
+        return menuBizMapper.selectMaxIndexMenuWithSameLevel(params);
     }
 }

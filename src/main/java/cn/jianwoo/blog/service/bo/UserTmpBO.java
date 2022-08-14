@@ -29,6 +29,11 @@ public class UserTmpBO implements Serializable {
     private String username;
 
     /**
+     * 用户所属地区
+     */
+    private String userRegion;
+
+    /**
      * 用户头像
      */
     private String avatarSrc;

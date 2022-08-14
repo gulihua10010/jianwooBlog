@@ -25,6 +25,15 @@ public class CommentQueryDaoImpl implements CommentQueryDao {
         return record;
     }
 
+    @Override
+    public Comment queryCommentByOidWithDel(Long oid) throws DaoException {
+        Comment record = commentMapper.selectByPrimaryKey(oid);
+        if (null == record) {
+            throw DaoException.DAO_SELECTONE_IS_NULL.print();
+        }
+        return record;
+    }
+
 
     @Override
     public List<Comment> queryCommentByArticleOid(Long oid) {

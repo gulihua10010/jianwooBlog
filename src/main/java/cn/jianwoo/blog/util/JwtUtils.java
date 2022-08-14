@@ -1,5 +1,6 @@
 package cn.jianwoo.blog.util;
 
+import cn.hutool.extra.spring.SpringUtil;
 import cn.jianwoo.blog.constants.Constants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -11,7 +12,6 @@ import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
 import java.util.Date;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -23,9 +23,9 @@ import java.util.concurrent.TimeUnit;
 public class JwtUtils {
 
     // 签名密钥（高度保密）
-    private final static ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("application");
-    public static String base64Security = RESOURCE_BUNDLE.getString("jwt.token.secret");
-    public static String accessTokenExpireSec = RESOURCE_BUNDLE.getString("access.token.expired.seconds");
+    private static final ApplicationConfigUtil applicationConfigUtil = SpringUtil.getBean(ApplicationConfigUtil.class);
+    public static String base64Security = applicationConfigUtil.getJwtTokenSecret();
+
 
     // 签名算法
     private static final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS512;

@@ -39,7 +39,7 @@ input:-webkit-autofill {
     font-style: italic;
 }
 
-.console-comm {
+.console-comm, .console-msg {
     background-color: #eee;
 }
 

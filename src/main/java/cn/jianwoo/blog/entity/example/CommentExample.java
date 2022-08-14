@@ -735,73 +735,73 @@ public class CommentExample {
             return (Criteria) this;
         }
 
-        public Criteria andUserAreaIsNull() {
-            addCriterion("USER_AREA is null");
+        public Criteria andUserRegionIsNull() {
+            addCriterion("USER_REGION is null");
             return (Criteria) this;
         }
 
-        public Criteria andUserAreaIsNotNull() {
-            addCriterion("USER_AREA is not null");
+        public Criteria andUserRegionIsNotNull() {
+            addCriterion("USER_REGION is not null");
             return (Criteria) this;
         }
 
-        public Criteria andUserAreaEqualTo(String value) {
-            addCriterion("USER_AREA =", value, "userArea");
+        public Criteria andUserRegionEqualTo(String value) {
+            addCriterion("USER_REGION =", value, "userRegion");
             return (Criteria) this;
         }
 
-        public Criteria andUserAreaNotEqualTo(String value) {
-            addCriterion("USER_AREA <>", value, "userArea");
+        public Criteria andUserRegionNotEqualTo(String value) {
+            addCriterion("USER_REGION <>", value, "userRegion");
             return (Criteria) this;
         }
 
-        public Criteria andUserAreaGreaterThan(String value) {
-            addCriterion("USER_AREA >", value, "userArea");
+        public Criteria andUserRegionGreaterThan(String value) {
+            addCriterion("USER_REGION >", value, "userRegion");
             return (Criteria) this;
         }
 
-        public Criteria andUserAreaGreaterThanOrEqualTo(String value) {
-            addCriterion("USER_AREA >=", value, "userArea");
+        public Criteria andUserRegionGreaterThanOrEqualTo(String value) {
+            addCriterion("USER_REGION >=", value, "userRegion");
             return (Criteria) this;
         }
 
-        public Criteria andUserAreaLessThan(String value) {
-            addCriterion("USER_AREA <", value, "userArea");
+        public Criteria andUserRegionLessThan(String value) {
+            addCriterion("USER_REGION <", value, "userRegion");
             return (Criteria) this;
         }
 
-        public Criteria andUserAreaLessThanOrEqualTo(String value) {
-            addCriterion("USER_AREA <=", value, "userArea");
+        public Criteria andUserRegionLessThanOrEqualTo(String value) {
+            addCriterion("USER_REGION <=", value, "userRegion");
             return (Criteria) this;
         }
 
-        public Criteria andUserAreaLike(String value) {
-            addCriterion("USER_AREA like", value, "userArea");
+        public Criteria andUserRegionLike(String value) {
+            addCriterion("USER_REGION like", value, "userRegion");
             return (Criteria) this;
         }
 
-        public Criteria andUserAreaNotLike(String value) {
-            addCriterion("USER_AREA not like", value, "userArea");
+        public Criteria andUserRegionNotLike(String value) {
+            addCriterion("USER_REGION not like", value, "userRegion");
             return (Criteria) this;
         }
 
-        public Criteria andUserAreaIn(List<String> values) {
-            addCriterion("USER_AREA in", values, "userArea");
+        public Criteria andUserRegionIn(List<String> values) {
+            addCriterion("USER_REGION in", values, "userRegion");
             return (Criteria) this;
         }
 
-        public Criteria andUserAreaNotIn(List<String> values) {
-            addCriterion("USER_AREA not in", values, "userArea");
+        public Criteria andUserRegionNotIn(List<String> values) {
+            addCriterion("USER_REGION not in", values, "userRegion");
             return (Criteria) this;
         }
 
-        public Criteria andUserAreaBetween(String value1, String value2) {
-            addCriterion("USER_AREA between", value1, value2, "userArea");
+        public Criteria andUserRegionBetween(String value1, String value2) {
+            addCriterion("USER_REGION between", value1, value2, "userRegion");
             return (Criteria) this;
         }
 
-        public Criteria andUserAreaNotBetween(String value1, String value2) {
-            addCriterion("USER_AREA not between", value1, value2, "userArea");
+        public Criteria andUserRegionNotBetween(String value1, String value2) {
+            addCriterion("USER_REGION not between", value1, value2, "userRegion");
             return (Criteria) this;
         }
 
@@ -2220,8 +2220,8 @@ public class CommentExample {
             return (Criteria) this;
         }
 
-        public Criteria andUserAreaLikeInsensitive(String value) {
-            addCriterion("upper(USER_AREA) like", value.toUpperCase(), "userArea");
+        public Criteria andUserRegionLikeInsensitive(String value) {
+            addCriterion("upper(USER_REGION) like", value.toUpperCase(), "userRegion");
             return (Criteria) this;
         }
 

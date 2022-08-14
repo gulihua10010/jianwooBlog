@@ -65,7 +65,7 @@ public class MenuQueryDaoImpl implements MenuQueryDao {
     @Override
     public List<Menu> querySubCategoryByParentId(Long parentOid) {
         MenuExample example = new MenuExample();
-        example.createCriteria().andParentOidEqualTo(parentOid).andFlagCategoryEqualTo(true)
+        example.createCriteria().andParentOidEqualTo(parentOid).andFlagCategoryEqualTo(true).andValidEqualTo(true)
                 .andTypeEqualTo(MenuTypeEnum.FRONTEND.getValue());
         return menuMapper.selectByExample(example);
     }

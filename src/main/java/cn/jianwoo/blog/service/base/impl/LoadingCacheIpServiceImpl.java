@@ -45,7 +45,7 @@ public class LoadingCacheIpServiceImpl implements LoadingCacheIpService {
     private Integer getIpAccessCtrl(String ipWithInter) {
         Integer limiter = 10;
         String[] name = ipWithInter.split(Constants.IP_SPLIT);
-        String cacheKey = MessageFormat.format(CacheKeyConstants.IIP_ACCESS_TRAFFIC_CTRL_KEY, name[1]);
+        String cacheKey = MessageFormat.format(CacheKeyConstants.IP_ACCESS_TRAFFIC_CTRL_KEY, name[1]);
 
         if (cacheStore.hasKey(cacheKey)) {
             Integer v = cacheStore.get(cacheKey).orElse(limiter);
@@ -54,7 +54,7 @@ public class LoadingCacheIpServiceImpl implements LoadingCacheIpService {
         try {
             String value = webconfBizService.queryWebconfByKey(WebConfDataConfig.IP_ACCESS_TRAFFIC_CTRL);
             log.info("IP_ACCESS_TRAFFIC_CTRL value is {}", value);
-            cacheStore.put(cacheKey, Integer.valueOf(value));
+            cacheStore.put(cacheKey, Integer.valueOf(value), 1, TimeUnit.DAYS);
             return Integer.valueOf(value);
         } catch (JwBlogException e) {
             log.error("LoadingCacheIpServiceImpl.getIpAccessCtrl exec failed: e \r\n", e);

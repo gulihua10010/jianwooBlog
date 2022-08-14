@@ -116,10 +116,10 @@
         <!--                    <property name="useActualColumnNames" value="false"/>-->
         <!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
         <!--                </table>-->
-        <!--                <table tableName="TAGS" domainObjectName="Tags">-->
-        <!--                    <property name="useActualColumnNames" value="false"/>-->
-        <!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
-        <!--                </table>-->
+<!--                        <table tableName="TAGS" domainObjectName="Tags">-->
+<!--                            <property name="useActualColumnNames" value="false"/>-->
+<!--                            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+<!--                        </table>-->
         <!--                <table tableName="TYPES" domainObjectName="Types">-->
         <!--                    <property name="useActualColumnNames" value="false"/>-->
 <!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
@@ -150,23 +150,23 @@
         <!--                    <columnOverride column="VALID" javaType="Boolean"/>-->
         <!--                    <columnOverride column="BOOLEAN_VALUE" javaType="Boolean"/>-->
         <!--                </table>-->
-        <!--                <table tableName="webconf_facade" domainObjectName="WebconfFacade">-->
-        <!--                    <property name="useActualColumnNames" value="false"/>-->
-        <!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
-        <!--                    <columnOverride column="REQUIRED" javaType="Boolean"/>-->
-        <!--                </table>-->
+<!--                        <table tableName="webconf_facade" domainObjectName="WebconfFacade">-->
+<!--                            <property name="useActualColumnNames" value="false"/>-->
+<!--                            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+<!--                            <columnOverride column="REQUIRED" javaType="Boolean"/>-->
+<!--                        </table>-->
 
-        <!--        <table tableName="EMAIL" domainObjectName="Email">-->
-        <!--            <property name="useActualColumnNames" value="false"/>-->
-        <!--            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
-        <!--            &lt;!&ndash;            <columnOverride column="PROC_STATUS" javaType="Boolean"/>&ndash;&gt;-->
-        <!--        </table>-->
+<!--                <table tableName="EMAIL" domainObjectName="Email">-->
+<!--                    <property name="useActualColumnNames" value="false"/>-->
+<!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+<!--                    &lt;!&ndash;            <columnOverride column="PROC_STATUS" javaType="Boolean"/>&ndash;&gt;-->
+<!--                </table>-->
 
 
-        <!--        <table tableName="EMAIL_TEMPLATE" domainObjectName="EmailTemplate">-->
-        <!--            <property name="useActualColumnNames" value="false"/>-->
-        <!--            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
-        <!--        </table>-->
+<!--                <table tableName="EMAIL_TEMPLATE" domainObjectName="EmailTemplate">-->
+<!--                    <property name="useActualColumnNames" value="false"/>-->
+<!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+<!--                </table>-->
 
 <!--                                        <table tableName="TEMP_ARTICLE" domainObjectName="TempArticle">-->
 <!--                                            <property name="useActualColumnNames" value="false"/>-->
@@ -174,10 +174,10 @@
 <!--                                            <columnOverride column="IS_COMMENT" javaType="Boolean"/>-->
 <!--                                            <columnOverride column="FLAG_ORIGINAL" javaType="Boolean"/>-->
 <!--                                        </table>-->
-        <!--                                <table tableName="LOGIN_LOG" domainObjectName="LoginLog">-->
-        <!--                                    <property name="useActualColumnNames" value="false"/>-->
-        <!--                                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
-        <!--                                </table>-->
+<!--                                        <table tableName="LOGIN_LOG" domainObjectName="LoginLog">-->
+<!--                                            <property name="useActualColumnNames" value="false"/>-->
+<!--                                            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+<!--                                        </table>-->
 <!--                <table tableName="BIZ_EVENT_LOG" domainObjectName="BizEventLog">-->
 <!--                    <property name="useActualColumnNames" value="false"/>-->
 <!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
@@ -208,11 +208,11 @@
 <!--                                <property name="useActualColumnNames" value="false"/>-->
 <!--                                <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
 <!--                           </table>-->
-                <table tableName="COMMENTS" domainObjectName="Comment">
-                    <property name="useActualColumnNames" value="false"/>
-                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>
-                                <columnOverride column="IS_DELETE" javaType="Boolean"/>
-                </table>
+<!--                <table tableName="COMMENTS" domainObjectName="Comment">-->
+<!--                    <property name="useActualColumnNames" value="false"/>-->
+<!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+<!--                                <columnOverride column="IS_DELETE" javaType="Boolean"/>-->
+<!--                </table>-->
 <!--        <table tableName="ANNOUNCEMENT_MSG" domainObjectName="AnnouncementMsg">-->
 <!--            <property name="useActualColumnNames" value="false"/>-->
 <!--            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
@@ -236,6 +236,7 @@
 <!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
 <!--                    <columnOverride column="FLAG_READ" javaType="Boolean"/>-->
 <!--                    <columnOverride column="FLAG_POPUP" javaType="Boolean"/>-->
+<!--                    <columnOverride column="FLAG_POPUP_MAIN" javaType="Boolean"/>-->
 <!--                    <columnOverride column="EMAIL_NOTIFY" javaType="Boolean"/>-->
 <!--                </table>-->
 <!--        <table tableName="MESSAGE_TEMPLATE" domainObjectName="MessageTemplate">-->
@@ -250,7 +251,11 @@
 <!--                    <columnOverride column="STATUS_USED" javaType="Boolean"/>-->
 <!--                </table>-->
 
-
+<!--                        <table tableName="MESSAGE_BOARD" domainObjectName="MessageBoard">-->
+<!--                            <property name="useActualColumnNames" value="false"/>-->
+<!--                            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
+<!--                                        <columnOverride column="IS_DELETE" javaType="Boolean"/>-->
+<!--                        </table>-->
 
 
 

@@ -12,6 +12,15 @@ public class ArticleExt extends ArticleWithBLOBs {
 
     private String pushDateStr;
     private Integer count;
+    private Long praiseOid;
+
+    public Long getPraiseOid() {
+        return this.praiseOid;
+    }
+
+    public void setPraiseOid(Long praiseOid) {
+        this.praiseOid = praiseOid;
+    }
 
     public String getPushDateStr() {
         return this.pushDateStr;

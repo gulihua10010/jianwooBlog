@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class Webconf implements Serializable {
-    private Long oid;
-
     private String key;
 
     private String desc;
@@ -32,14 +30,6 @@ public class Webconf implements Serializable {
     private Date updateTime;
 
     private static final long serialVersionUID = 1L;
-
-    public Long getOid() {
-        return oid;
-    }
-
-    public void setOid(Long oid) {
-        this.oid = oid;
-    }
 
     public String getKey() {
         return key;
@@ -143,7 +133,6 @@ public class Webconf implements Serializable {
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
-        sb.append(", oid=").append(oid);
         sb.append(", key=").append(key);
         sb.append(", desc=").append(desc);
         sb.append(", cfgType=").append(cfgType);

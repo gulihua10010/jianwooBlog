@@ -15,13 +15,13 @@ public interface MenuBizDao {
 
 
     /**
-     * 统计相同层级的菜单数量（统计添加菜单，获取排序索引）
+     * 获取相同层级的最大菜单索引（添加菜单，获取排序索引）
      *
      * @param params type 菜单类型 [TYPE]
      * @param params parentOid 菜单父oid [PARENT_OID]
      * @return
      * @author gulihua
      */
-    int countMenuWithSameLevel(Map<String, Object> params);
+    int queryMaxIndexMenuWithSameLevel(Map<String, Object> params);
 
 }

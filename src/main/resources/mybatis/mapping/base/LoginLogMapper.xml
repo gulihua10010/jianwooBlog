@@ -9,7 +9,7 @@
     <result column="TRIGGER_TIME" jdbcType="TIMESTAMP" property="triggerTime" />
     <result column="TRIGGER_DESC" jdbcType="VARCHAR" property="triggerDesc" />
     <result column="TRIGGER_IP" jdbcType="VARCHAR" property="triggerIp" />
-    <result column="TRIGGER_AREA" jdbcType="VARCHAR" property="triggerArea" />
+    <result column="TRIGGER_REGION" jdbcType="VARCHAR" property="triggerRegion" />
     <result column="TRIGGER_DEVICE" jdbcType="VARCHAR" property="triggerDevice" />
     <result column="PROCESS_STATUS" jdbcType="VARCHAR" property="processStatus" />
     <result column="FAILED_REASON" jdbcType="VARCHAR" property="failedReason" />
@@ -75,7 +75,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    OID, LOGIN_ID, USER_NAME, EVENT_TYPE, TRIGGER_TIME, TRIGGER_DESC, TRIGGER_IP, TRIGGER_AREA, 
+    OID, LOGIN_ID, USER_NAME, EVENT_TYPE, TRIGGER_TIME, TRIGGER_DESC, TRIGGER_IP, TRIGGER_REGION, 
     TRIGGER_DEVICE, PROCESS_STATUS, FAILED_REASON, CREATE_TIME, UPDATE_TIME
   </sql>
   <select id="selectByExample" parameterType="cn.jianwoo.blog.entity.example.LoginLogExample" resultMap="BaseResultMap">
@@ -84,7 +84,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from login_log
+    from LOGIN_LOG
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -96,33 +96,33 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from login_log
+    from LOGIN_LOG
     where OID = #{oid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from login_log
+    delete from LOGIN_LOG
     where OID = #{oid,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="cn.jianwoo.blog.entity.example.LoginLogExample">
-    delete from login_log
+    delete from LOGIN_LOG
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.LoginLog" useGeneratedKeys="true">
-    insert into login_log (LOGIN_ID, USER_NAME, EVENT_TYPE, 
+    insert into LOGIN_LOG (LOGIN_ID, USER_NAME, EVENT_TYPE, 
       TRIGGER_TIME, TRIGGER_DESC, TRIGGER_IP, 
-      TRIGGER_AREA, TRIGGER_DEVICE, PROCESS_STATUS, 
+      TRIGGER_REGION, TRIGGER_DEVICE, PROCESS_STATUS, 
       FAILED_REASON, CREATE_TIME, UPDATE_TIME
       )
     values (#{loginId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{eventType,jdbcType=VARCHAR}, 
       #{triggerTime,jdbcType=TIMESTAMP}, #{triggerDesc,jdbcType=VARCHAR}, #{triggerIp,jdbcType=VARCHAR}, 
-      #{triggerArea,jdbcType=VARCHAR}, #{triggerDevice,jdbcType=VARCHAR}, #{processStatus,jdbcType=VARCHAR}, 
+      #{triggerRegion,jdbcType=VARCHAR}, #{triggerDevice,jdbcType=VARCHAR}, #{processStatus,jdbcType=VARCHAR}, 
       #{failedReason,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.LoginLog" useGeneratedKeys="true">
-    insert into login_log
+    insert into LOGIN_LOG
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="loginId != null">
         LOGIN_ID,
@@ -142,8 +142,8 @@
       <if test="triggerIp != null">
         TRIGGER_IP,
       </if>
-      <if test="triggerArea != null">
-        TRIGGER_AREA,
+      <if test="triggerRegion != null">
+        TRIGGER_REGION,
       </if>
       <if test="triggerDevice != null">
         TRIGGER_DEVICE,
@@ -180,8 +180,8 @@
       <if test="triggerIp != null">
         #{triggerIp,jdbcType=VARCHAR},
       </if>
-      <if test="triggerArea != null">
-        #{triggerArea,jdbcType=VARCHAR},
+      <if test="triggerRegion != null">
+        #{triggerRegion,jdbcType=VARCHAR},
       </if>
       <if test="triggerDevice != null">
         #{triggerDevice,jdbcType=VARCHAR},
@@ -201,13 +201,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="cn.jianwoo.blog.entity.example.LoginLogExample" resultType="java.lang.Long">
-    select count(*) from login_log
+    select count(*) from LOGIN_LOG
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update login_log
+    update LOGIN_LOG
     <set>
       <if test="record.oid != null">
         OID = #{record.oid,jdbcType=BIGINT},
@@ -230,8 +230,8 @@
       <if test="record.triggerIp != null">
         TRIGGER_IP = #{record.triggerIp,jdbcType=VARCHAR},
       </if>
-      <if test="record.triggerArea != null">
-        TRIGGER_AREA = #{record.triggerArea,jdbcType=VARCHAR},
+      <if test="record.triggerRegion != null">
+        TRIGGER_REGION = #{record.triggerRegion,jdbcType=VARCHAR},
       </if>
       <if test="record.triggerDevice != null">
         TRIGGER_DEVICE = #{record.triggerDevice,jdbcType=VARCHAR},
@@ -254,7 +254,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update login_log
+    update LOGIN_LOG
     set OID = #{record.oid,jdbcType=BIGINT},
       LOGIN_ID = #{record.loginId,jdbcType=VARCHAR},
       USER_NAME = #{record.userName,jdbcType=VARCHAR},
@@ -262,7 +262,7 @@
       TRIGGER_TIME = #{record.triggerTime,jdbcType=TIMESTAMP},
       TRIGGER_DESC = #{record.triggerDesc,jdbcType=VARCHAR},
       TRIGGER_IP = #{record.triggerIp,jdbcType=VARCHAR},
-      TRIGGER_AREA = #{record.triggerArea,jdbcType=VARCHAR},
+      TRIGGER_REGION = #{record.triggerRegion,jdbcType=VARCHAR},
       TRIGGER_DEVICE = #{record.triggerDevice,jdbcType=VARCHAR},
       PROCESS_STATUS = #{record.processStatus,jdbcType=VARCHAR},
       FAILED_REASON = #{record.failedReason,jdbcType=VARCHAR},
@@ -273,7 +273,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="cn.jianwoo.blog.entity.LoginLog">
-    update login_log
+    update LOGIN_LOG
     <set>
       <if test="loginId != null">
         LOGIN_ID = #{loginId,jdbcType=VARCHAR},
@@ -293,8 +293,8 @@
       <if test="triggerIp != null">
         TRIGGER_IP = #{triggerIp,jdbcType=VARCHAR},
       </if>
-      <if test="triggerArea != null">
-        TRIGGER_AREA = #{triggerArea,jdbcType=VARCHAR},
+      <if test="triggerRegion != null">
+        TRIGGER_REGION = #{triggerRegion,jdbcType=VARCHAR},
       </if>
       <if test="triggerDevice != null">
         TRIGGER_DEVICE = #{triggerDevice,jdbcType=VARCHAR},
@@ -315,14 +315,14 @@
     where OID = #{oid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.jianwoo.blog.entity.LoginLog">
-    update login_log
+    update LOGIN_LOG
     set LOGIN_ID = #{loginId,jdbcType=VARCHAR},
       USER_NAME = #{userName,jdbcType=VARCHAR},
       EVENT_TYPE = #{eventType,jdbcType=VARCHAR},
       TRIGGER_TIME = #{triggerTime,jdbcType=TIMESTAMP},
       TRIGGER_DESC = #{triggerDesc,jdbcType=VARCHAR},
       TRIGGER_IP = #{triggerIp,jdbcType=VARCHAR},
-      TRIGGER_AREA = #{triggerArea,jdbcType=VARCHAR},
+      TRIGGER_REGION = #{triggerRegion,jdbcType=VARCHAR},
       TRIGGER_DEVICE = #{triggerDevice,jdbcType=VARCHAR},
       PROCESS_STATUS = #{processStatus,jdbcType=VARCHAR},
       FAILED_REASON = #{failedReason,jdbcType=VARCHAR},

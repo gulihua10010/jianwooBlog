@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.jianwoo.blog.dao.biz.mapper.MsgBizMapper">
+    <resultMap id="BaseResultMap" type="cn.jianwoo.blog.entity.MessageProfile">
+        <id column="OID" jdbcType="BIGINT" property="oid" />
+        <result column="BUSI_SCENE_CODE" jdbcType="VARCHAR" property="busiSceneCode" />
+        <result column="BUSI_TYPE" jdbcType="VARCHAR" property="busiType" />
+        <result column="MSG_TYPE" jdbcType="VARCHAR" property="msgType" />
+        <result column="OPT_TYPE" jdbcType="VARCHAR" property="optType" />
+        <result column="RECEIVER_TYPE" jdbcType="VARCHAR" property="receiverType" />
+        <result column="MSG_TITLE" jdbcType="VARCHAR" property="msgTitle" />
+        <result column="MSG_LINK" jdbcType="VARCHAR" property="msgLink" />
+        <result column="BIZ_ID" jdbcType="VARCHAR" property="bizId" />
+        <result column="RECEIVER_ID" jdbcType="VARCHAR" property="receiverId" />
+        <result column="RECEIVER_NAME" jdbcType="VARCHAR" property="receiverName" />
+        <result column="RECEIVER_EMAIL" jdbcType="VARCHAR" property="receiverEmail" />
+        <result column="RECEIVER_MOBILE_NO" jdbcType="VARCHAR" property="receiverMobileNo" />
+        <result column="EMAIL_NOTIFY" jdbcType="VARCHAR" property="emailNotify" />
+        <result column="EMAIL_TPL_CODE" jdbcType="VARCHAR" property="emailTplCode" />
+        <result column="EMAIL_SEND_RESULT" jdbcType="VARCHAR" property="emailSendResult" />
+        <result column="FLAG_READ" jdbcType="VARCHAR" property="flagRead" />
+        <result column="FLAG_POPUP" jdbcType="VARCHAR" property="flagPopup" />
+        <result column="FLAG_POPUP_MAIN" jdbcType="VARCHAR" property="flagPopupMain" />
+        <result column="READ_TIME" jdbcType="TIMESTAMP" property="readTime" />
+        <result column="PROC_RSLT" jdbcType="VARCHAR" property="procRslt" />
+        <result column="PROC_TIME" jdbcType="TIMESTAMP" property="procTime" />
+        <result column="SEND_TIME" jdbcType="TIMESTAMP" property="sendTime" />
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="cn.jianwoo.blog.entity.MessageProfileWithBLOBs">
+        <result column="MSG_CONTENT" jdbcType="LONGVARBINARY" property="msgContent" />
+        <result column="BIZ_PARAM" jdbcType="LONGVARBINARY" property="bizParam" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        M.OID, BUSI_SCENE_CODE, BUSI_TYPE, MSG_TYPE, OPT_TYPE, RECEIVER_TYPE, MSG_TITLE, MSG_LINK, BIZ_ID, RECEIVER_ID,
+    RECEIVER_NAME, RECEIVER_EMAIL, RECEIVER_MOBILE_NO, EMAIL_NOTIFY, EMAIL_TPL_CODE,
+    EMAIL_SEND_RESULT, FLAG_READ, FLAG_POPUP, FLAG_POPUP_MAIN, READ_TIME, PROC_RSLT, PROC_TIME, SEND_TIME,
+    M.CREATE_TIME, M.UPDATE_TIME
+    </sql>
+    <sql id="Blob_Column_List">
+        MSG_CONTENT, BIZ_PARAM
+    </sql>
+
+    <select id="selectMsgTimerMainList" resultMap="ResultMapWithBLOBs" parameterType="map">
+        SELECT
+        <include refid="Base_Column_List"/>, <include refid="Blob_Column_List"/>
+        FROM MESSAGE_PROFILE M INNER JOIN USER_PROFILE U ON U.USER_ID = M.RECEIVER_ID
+        WHERE U.REGISTER_IP = #{currentIp}
+        AND M.RECEIVER_TYPE = '10'
+        AND M.FLAG_POPUP_MAIN = '0'
+        ORDER BY M.CREATE_TIME DESC
+        <if test="limit != null">
+            LIMIT #{limit,jdbcType=INTEGER}
+        </if>
+    </select>
+</mapper>

@@ -6,27 +6,26 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
 import cn.hutool.crypto.symmetric.SymmetricCrypto;
+import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.extra.template.Template;
 import cn.hutool.extra.template.TemplateConfig;
 import cn.hutool.extra.template.TemplateEngine;
 import cn.hutool.extra.template.TemplateUtil;
+import cn.hutool.extra.template.engine.velocity.VelocityEngine;
 import cn.jianwoo.blog.constants.Constants;
-import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.exception.EmailTplBizException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.bo.FrequencyBO;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.ResourceUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 /**
  * @author GuLihua
@@ -37,9 +36,9 @@ import java.util.ResourceBundle;
 public class JwUtil {
 
 
-    private final static ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("application");
-    public static String base64Security = RESOURCE_BUNDLE.getString("aes.secret");
-    public static String avatarSrc = RESOURCE_BUNDLE.getString("user.profile.avatar");
+    private static final ApplicationConfigUtil applicationConfigUtil = SpringUtil.getBean(ApplicationConfigUtil.class);
+    public static String base64Security = applicationConfigUtil.getAesSecret();
+    public static String avatarSrc = applicationConfigUtil.getUserProfileAvatar();
 
     public JwUtil() {
     }
@@ -295,18 +294,9 @@ public class JwUtil {
      * @return
      * @throws JwBlogException
      */
-    public static String fetchUserAvatar() throws JwBlogException {
-        int index = RandomUtil.randomInt(0, 10);
-        //文件路径,此处static前不能加/，否则解析不到
-        try {
-            //此处的static前不能加/！！！ 　　
-            File file = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + avatarSrc);
-            File[] imgs = file.listFiles();
-            return avatarSrc + File.separator + imgs[index].getName();
-        } catch (FileNotFoundException e) {
-            log.error("Fetch User Avatar failed, e", e);
-            throw new JwBlogException(ExceptionConstants.FILE_NOT_EXIST, ExceptionConstants.FILE_NOT_EXIST_DESC, ResourceUtils.CLASSPATH_URL_PREFIX + avatarSrc).print();
-        }
+    public static String fetchUserAvatar() {
+        int index = RandomUtil.randomInt(1, 11);
+        return avatarSrc + File.separator + index + Constants.FILE_EXT_JPG;
     }
 
 
@@ -327,7 +317,7 @@ public class JwUtil {
         try {
             //自动根据用户引入的模板引擎库的jar来自动选择使用的引擎
             //TemplateConfig为模板引擎的选项，可选内容有字符编码、模板路径、模板加载方式等，默认通过模板字符串渲染
-            TemplateEngine engine = TemplateUtil.createEngine(new TemplateConfig());
+            TemplateEngine engine = TemplateUtil.createEngine(new TemplateConfig().setCustomEngine(VelocityEngine.class));
 
             //假设我们引入的是Beetl引擎，则：
             Template template = engine.getTemplate(content);
@@ -346,5 +336,24 @@ public class JwUtil {
         return v.trim();
     }
 
+    public static String format(String v, String anther) {
+        if (StringUtils.isBlank(v)) {
+            return anther;
+        }
+        return v.trim();
+    }
 
+    public static String getRealIpAddress(HttpServletRequest request) {
+        String ip = request.getHeader("x-forwarded-for");
+        if (StringUtils.isBlank(ip) || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (StringUtils.isBlank(ip) || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (StringUtils.isBlank(ip) || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        return ip;
+    }
 }

@@ -38,4 +38,13 @@ public interface MessageProfileTransDao extends MessageProfileQueryDao {
      * @author gulihua
      */
     void doUpdateAllMsgRead();
+
+    /**
+     * 批量更新首页的弹出状态
+     *
+     * @param oidList oid列表
+     * @return
+     * @author gulihua
+     */
+    void doUpdateFlagPopupMainByOidList(List<Long> oidList);
 }

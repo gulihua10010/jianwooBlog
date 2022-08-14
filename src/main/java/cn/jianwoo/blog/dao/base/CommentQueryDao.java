@@ -9,6 +9,15 @@ import java.util.List;
 public interface CommentQueryDao {
     Comment queryCommentByPrimaryKey(Long oid) throws DaoException;
 
+    /**
+     * 通过oid获取评论(包含状态为已经删除的评论)
+     *
+     * @param oid oid
+     * @return
+     * @author gulihua
+     */
+    Comment queryCommentByOidWithDel(Long oid) throws DaoException;
+
 
     /**
      * 通过文章oid获取评论

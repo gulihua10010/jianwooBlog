@@ -50,8 +50,8 @@ public class WebconfTransDaoImpl extends WebconfQueryDaoImpl implements WebconfT
 
 
     @Override
-    public void doDeleteByPrimaryKey(Long oid) throws DaoException {
-        int delRlt = webconfMapper.deleteByPrimaryKey(oid);
+    public void doDeleteByPrimaryKey(String key) throws DaoException {
+        int delRlt = webconfMapper.deleteByPrimaryKey(key);
         if (1 != delRlt) {
             throw DaoException.DAO_DELETE_RESULT_0.print();
         }

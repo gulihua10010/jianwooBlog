@@ -35,7 +35,13 @@
                     <div class="art-bre-top">
                         <div class="art-bre-left"
                              @click="jump(item.oid)">
-                            <img :src="item.imgSrc ? item.imgSrc : require('../static/img/jw.jpg')" alt="">
+                            <el-image :src="item.imgSrc ? item.imgSrc : 'https://cdn.jianwoo.cn/static%2Fjianwoo%2Fjw.jpg'" :alt="item.title" lazy>
+                                <template #error>
+                                    <div class="image-slot">
+                                       <img src="https://cdn.jianwoo.cn/static%2Fjianwoo%2Fjw.jpg" :alt="item.title">
+                                    </div>
+                                </template>
+                            </el-image>
                             <div></div>
                         </div>
                         <div class="art-bre-right">
@@ -59,7 +65,7 @@
                                     <use xlink:href="#icon-yuedu1"></use>
                                 </svg>&nbsp;{{ item.readCount }}</span>
                             <a class="art-comment"
-                               href="/detail#comments">
+                               :href="'/#/detail?id=' + item.oid + '&jump=comment'">
                                 <svg class="icon" aria-hidden="true">
                                     <use xlink:href="#icon-pinglunxiao"></use>
                                 </svg>&nbsp;{{ item.commentCount }}条评论</a>
@@ -155,17 +161,10 @@ export default {
         this.initQueryParams();
         this.getList();
 
-        window.addEventListener(
-                'hashchange',
-                () => {
-                    // console.log('hashchange')
-                    this.clearParams();
-                    this.initQueryParams();
-                    this.getList();
 
-                },
-                false
-        );
+
+
+
 
     },
     methods: {
@@ -187,12 +186,17 @@ export default {
                     if (res.condition1) {
                         this.nav.breakNav1.name = res.condition1.condition;
                         let key = '';
+                        let value = res.condition1.conditionId;
                         if (res.condition1.conditionType === 'CATEGORY1') {
                             key = 'category1';
                         } else if (res.condition1.conditionType === 'KEYWORDS') {
                             key = 'keywords';
+                            value = '';
+                            if (res.condition1.condition){
+                                value = res.condition1.condition.replace('搜索结果: ','');
+                            }
                         }
-                        this.nav.breakNav1.url = "/#/index?" + key + "=" + res.condition1.conditionId;
+                        this.nav.breakNav1.url = "/#/index?" + key + "=" + value;
                     }
                     if (res.condition2) {
                         this.nav.breakNav2.name = res.condition2.condition;
@@ -208,11 +212,17 @@ export default {
             });
         },
         handleCurrentChange: function () {
+            var query = this.$route.query;
+            var newQuery = {};
+            for (let queryKey in query) {
+                if (query[queryKey] ) {
+                    newQuery[queryKey] = query[queryKey];
+                }
+            }
+            newQuery.page = this.searchForm.page;
             this.$router.push({
                 path: '/index',
-                query: {
-                    page: this.searchForm.page,
-                }
+                query: newQuery
             }).then(() => {
                 this.initQueryParams();
                 this.getList();
@@ -244,6 +254,8 @@ export default {
             if (this.$route.query.publishDate) {
                 this.searchForm.publishDate = this.$route.query.publishDate;
             }
+            this.searchForm.limit = 20;
+
         },
         search: function (params) {
             this.searchForm = params;
@@ -298,7 +310,13 @@ export default {
             })
         }
     },
-    watch: {},
+    watch: {
+        '$route' (to, from) { //监听URL地址栏参数变化
+            this.clearParams();
+            this.initQueryParams();
+            this.getList();
+        }
+    },
 }
 </script>
 

@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 登出成功处理器
@@ -86,12 +87,12 @@ public class SecurityLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler 
             }
             return;
         }
-        jwCacheStore.put(loginIdCacheKey, false);
+        jwCacheStore.put(loginIdCacheKey, false, 7, TimeUnit.DAYS);
         response.getWriter().write(processSuccessMsg(Constants.SUCCESS_LOGOUT));
 
         //把token存放缓存，置以失效
         String invalidTokenKey = MessageFormat.format(CacheKeyConstants.INVALID_TOKEN, accessToken);
-        jwCacheStore.put(invalidTokenKey, accessToken);
+        jwCacheStore.put(invalidTokenKey, accessToken, 7, TimeUnit.DAYS);
 
         log.info("logout successfully: [id = {}]", uid);
         String accessCacheKey = MessageFormat.format(CacheKeyConstants.TOKEN_ACCESS_CACHE, uid);

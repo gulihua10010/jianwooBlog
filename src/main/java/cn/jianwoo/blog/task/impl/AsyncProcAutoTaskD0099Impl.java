@@ -34,7 +34,7 @@ public class AsyncProcAutoTaskD0099Impl implements AsyncAutoTaskService {
     @Override
     public JSONObject doProc(Long taskId, String taskData) throws JwBlogException {
 
-        log.info(">> start D0010 task({}) which data is {} <<", taskId, taskData);
+        log.info(">> start D0099 task({}) which data is {} <<", taskId, taskData);
 
         // read parameter taskData
         TaskDataD0099BO data = JSON.parseObject(taskData, TaskDataD0099BO.class);

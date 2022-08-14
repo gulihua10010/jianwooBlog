@@ -1,8 +1,11 @@
 <template>
     <div>
-        <el-card class="box-card">
+        <el-card class="box-card" id="comment">
             <div class="title">
                 用户信息
+                <span style="font-weight: 400;font-size: 12px;">(IP属地: {{
+                        !userInfo.userRegion ? '未知' : userInfo.userRegion
+                    }})</span>
             </div>
             <el-form :inline="true" :rules="rules"
                      :model="userInfo" ref="userInfo"
@@ -44,12 +47,15 @@
                         @click="showEmojiPanel"
                 />
                 <emoji-panel @emojiClick="appendEmoji" v-if="isShowEmojiPanel" @click.stop="() => {}"></emoji-panel>
-                <button @click="submitComment()">发表</button>
+                <button @click="submitComment()" class="comm-btn">发表</button>
             </div>
         </el-card>
         <el-card class="comment-content box-card" v-if="count > 0">
-            <span class="title">
+            <span class="title" v-if="!this.$route.query.commOid">
                 热门评论({{ count }})
+            </span>
+            <span class="title" v-else>
+                相关评论
             </span>
             <span>
                 <el-switch
@@ -57,6 +63,7 @@
                         style="float: right;--el-switch-on-color: #B40BB7; --el-switch-off-color: #ddd"
                         active-text="默认" active-value="10"
                         inactive-text="最新评论" inactive-value="20"
+                        v-if="!this.$route.query.commOid"
                 />
             </span>
 
@@ -73,7 +80,16 @@
                     <div class="pad-btm">
                     <span class="fontColor">
                         <a href="javascript:">{{ comm.userNick }}</a>
-                        &nbsp;&nbsp;<span v-if="comm.floorNumber">{{ comm.floorNumber }}楼</span>
+                         &nbsp;&nbsp;
+                        <span v-if="comm.floorNumber">{{ comm.floorNumber }}楼</span>
+                         &nbsp;&nbsp;
+                        <a href="javascript:" style="color:#777">
+                            <svg class="icon" aria-hidden="true">
+                                    <use xlink:href="#icon-position"></use>
+                            </svg>
+                            IP属地: {{ !comm.userRegion ? '未知' : comm.userRegion }}
+                        </a>
+
                     </span>
                         <span class="min-font comm-time">
                         <a href="javascript:">{{ comm.commentTimeDesc }}</a>
@@ -81,15 +97,17 @@
                     </div>
                     <div class="message-text">{{ this.entitiestoUtf16(comm.content) }}</div>
                     <div class="comment-footer fontColor">
-                    <span class="after-goods" @click="hasPraise" v-if="comm.isPraise"
-                          style="color:red">
+                        <span class="after-goods" @click="hasPraise" v-if="comm.isPraise"
+                              style="color:red">
                         <svg class="icon" aria-hidden="true">
                                     <use xlink:href="#icon-dianzan_kuai"></use>
-                        </svg>&nbsp;赞({{ comm.praiseCount }})</span>
+                        </svg>&nbsp;赞({{ comm.praiseCount }})
+                            </span>
                         <span class="before-goods jwhover" @click="doPraise(comm)" v-else>
                             <svg class="icon" aria-hidden="true">
                                     <use xlink:href="#icon-zan"></use>
-                            </svg>&nbsp;赞({{ comm.praiseCount }})</span>
+                            </svg>&nbsp;赞({{ comm.praiseCount }})
+                        </span>
                         &nbsp;&nbsp;
                         <span @click="replyClick(comm, index)" class="jwhover">
                             <svg class="icon" aria-hidden="true">
@@ -98,7 +116,26 @@
                                 this.showReply && this.showReplyOid === comm.oid
                                         ? "取消回复"
                                         : ("评论(" + comm.replyCount + ")")
-                            }}</span>
+                            }}
+                        </span>
+                        &nbsp;&nbsp;
+                        <span @click="editClick(comm, index)" class="jwhover" v-if="comm.flagEdit && !comm.flagDelete">
+                            <svg class="icon" aria-hidden="true">
+                                    <use xlink:href="#icon-bianji1"></use>
+                                </svg>&nbsp;{{
+                                this.showEdit && this.showEditOid === comm.oid
+                                        ? "取消编辑" : "编辑"
+                            }}
+                        </span>
+
+                        &nbsp;&nbsp;
+                        <span @click="delClick(comm, index, this.commentList, true)" class="jwhover" style="color:red"
+                              v-if="comm.flagEdit && !comm.flagDelete">
+                            <svg class="icon" aria-hidden="true">
+                                    <use xlink:href="#icon-shanchu"></use>
+                                </svg>&nbsp;删除
+                        </span>
+
                     </div>
                     <el-input
                             v-if="this.showReply && this.showReplyOid === comm.oid"
@@ -110,7 +147,6 @@
                             :rows="5"
                             type="textarea"
                     ></el-input>
-
                     <div v-if="this.showReply && this.showReplyOid === comm.oid" class="comment-reply-btns">
                         <img
                                 id="emoji-btn"
@@ -121,11 +157,33 @@
                         <emoji-panel @emojiClick="appendReplyEmoji($event, comm)"
                                      v-if="this.isShowReplyEmojiPanel && this.showReplyOid === comm.oid"
                                      @click.stop="() => {}"></emoji-panel>
-                        <button @click="submitReply(comm)">发表</button>
+                        <button @click="submitReply(comm)" class="comm-btn">发表</button>
+                    </div>
+                    <el-input
+                            v-if="this.showEdit && this.showEditOid === comm.oid"
+                            v-model="comm.editContent"
+                            :id="'edit-input-' + comm.oid"
+                            placeholder="编辑评论"
+                            class="comment-reply-input focused"
+                            @input="editInput(comm)"
+                            :rows="5"
+                            type="textarea"
+                    ></el-input>
+                    <div v-if="this.showEdit && this.showEditOid === comm.oid" class="comment-reply-btns">
+                        <img
+                                id="emoji-btn"
+                                style="width:20px;height:20px;cursor:pointer;margin:0 30px;"
+                                src="../static/img/emoji.png" @click.stop="() => {}"
+                                @click="showEditEmojiPanel"
+                        />
+                        <emoji-panel @emojiClick="appendEditEmoji($event, comm)"
+                                     v-if="this.isShowEditEmojiPanel && this.showEditOid === comm.oid"
+                                     @click.stop="() => {}"></emoji-panel>
+                        <button @click="submitEdit(comm)" class="comm-btn">更新</button>
                     </div>
                 </div>
                 <div class="comment-content-reply">
-                    <div v-for="(rep, index) in comm.replyList">
+                    <div v-for="(rep, repIndex) in comm.replyList">
                         <div :class="'media-body ' + (this.showComm && this.showCommOid === rep.oid ? showCommClass : '')"
                              :id="'rep-' + rep.oid">
                             <a href="javascript:" class="media-left" style="float: left;">
@@ -139,7 +197,13 @@
                             <span class="fontColor">
                                 <a href="javascript:">{{ rep.userNick }}</a>
                                 <a href="javascript:">&nbsp;回复&nbsp;@{{ rep.parentUserName }}</a>
-
+                                &nbsp;&nbsp;
+                                 <a href="javascript:" style="color:#777">
+                                    <svg class="icon" aria-hidden="true">
+                                            <use xlink:href="#icon-position"></use>
+                                    </svg>
+                                    IP属地: {{ !rep.userRegion ? '未知' : rep.userRegion }}
+                                </a>
                             </span>
                                 <span class="min-font comm-time">
                                 <a href="javascript:">{{ rep.commentTimeDesc }}</a>
@@ -147,25 +211,47 @@
                             </div>
                             <div class="message-text">{{ this.entitiestoUtf16(rep.content) }}</div>
                             <div class="comment-footer fontColor">
-                            <span class="after-goods" @click="hasPraise" v-if="rep.isPraise"
-                                  style="color:red">
+                                <span class="after-goods" @click="hasPraise" v-if="rep.isPraise"
+                                      style="color:red">
                                 <svg class="icon" aria-hidden="true">
                                     <use xlink:href="#icon-dianzan_kuai"></use>
                                 </svg>
-                                &nbsp;赞({{ rep.praiseCount }})</span>
+                                &nbsp;赞({{ rep.praiseCount }})
+                                </span>
                                 <span class="before-goods jwhover" @click="doPraise(rep)" v-else>
                                     <svg class="icon" aria-hidden="true">
                                     <use xlink:href="#icon-zan"></use>
-                                    </svg>&nbsp;赞({{ rep.praiseCount }})</span>
+                                    </svg>&nbsp;赞({{ rep.praiseCount }})
+                                </span>
                                 &nbsp;&nbsp;
-                                <span @click="replyClick(rep, index)" class="jwhover">
+                                <span @click="replyClick(rep, repIndex)" class="jwhover">
                                     <svg class="icon" aria-hidden="true">
                                     <use xlink:href="#icon-pinglunxiao"></use>
-                                </svg>&nbsp;{{
+                                    </svg>&nbsp;{{
                                         this.showReply && this.showReplyOid === rep.oid
                                                 ? "取消回复"
                                                 : ("评论(" + rep.replyCount + ")")
-                                    }}</span>
+                                    }}
+                                </span>
+                                &nbsp;&nbsp;
+                                <span @click="editClick(rep, repIndex)" class="jwhover"
+                                      v-if="rep.flagEdit && !rep.flagDelete">
+                                    <svg class="icon" aria-hidden="true">
+                                    <use xlink:href="#icon-bianji1"></use>
+                                    </svg>&nbsp;{{
+                                        this.showEdit && this.showEditOid === rep.oid
+                                                ? "取消编辑" : "编辑"
+                                    }}
+                                </span>
+                                &nbsp;&nbsp;
+                                <span @click="delClick(rep, repIndex, comm.replyList, false, comm)" class="jwhover"
+                                      style="color:red"
+                                      v-if="rep.flagEdit && !rep.flagDelete">
+                                    <svg class="icon" aria-hidden="true">
+                                         <use xlink:href="#icon-shanchu"></use>
+                                    </svg>&nbsp;删除
+                                </span>
+
                             </div>
 
                             <el-input
@@ -189,12 +275,34 @@
                                 <emoji-panel @emojiClick="appendReplyEmoji($event, rep)"
                                              v-if="this.isShowReplyEmojiPanel && this.showReplyOid === rep.oid"
                                              @click.stop="() => {}"></emoji-panel>
-                                <button @click="submitReply(rep)">发表</button>
+                                <button @click="submitReply(rep)" class="comm-btn">发表</button>
+                            </div>
+                            <el-input
+                                    v-if="this.showEdit && this.showEditOid === rep.oid"
+                                    v-model="rep.editContent"
+                                    :id="'edit-input-' + rep.oid"
+                                    placeholder="编辑评论"
+                                    class="comment-reply-input focused"
+                                    @input="editInput(rep)"
+                                    :rows="5"
+                                    type="textarea"
+                            ></el-input>
+                            <div v-if="this.showEdit && this.showEditOid === rep.oid" class="comment-reply-btns">
+                                <img
+                                        id="emoji-btn"
+                                        style="width:20px;height:20px;cursor:pointer;margin:0 30px;"
+                                        src="../static/img/emoji.png" @click.stop="() => {}"
+                                        @click="showEditEmojiPanel"
+                                />
+                                <emoji-panel @emojiClick="appendEditEmoji($event, rep)"
+                                             v-if="this.isShowEditEmojiPanel && this.showEditOid === rep.oid"
+                                             @click.stop="() => {}"></emoji-panel>
+                                <button @click="submitEdit(rep)" class="comm-btn">更新</button>
                             </div>
                         </div>
                     </div>
                     <div class="more-list" v-loading="comm.loading" @click="moreReply(comm)"
-                         v-if="comm.replyCount > (comm.replyList ? comm.replyList.length : 0)">
+                         v-if="(comm.replyCount > (comm.replyList ? comm.replyList.length : 0)) && this.showCommOid === -1">
                         <svg class="icon jwhover" aria-hidden="true">
                             <use xlink:href="#icon-gengduo"></use>
                         </svg>
@@ -202,7 +310,7 @@
                 </div>
             </div>
             <div class="more-list" v-loading="loading" @click="moreComm()"
-                 v-if="this.rootCommCount > (commentList ? commentList.length : 0)">
+                 v-if="(this.rootCommCount > (commentList ? commentList.length : 0)) && this.showCommOid === -1">
                 <svg class="icon jwhover" aria-hidden="true">
                     <use xlink:href="#icon-gengduo"></use>
                 </svg>
@@ -300,6 +408,7 @@ export default {
                 artOid: this.artOid,
                 parentOid: 0,
                 replyRootOid: null,
+                refOid: null,
                 page: 1,
                 orderWay: '10',
             },
@@ -312,6 +421,7 @@ export default {
             // thisArtCanBeComm: true,
             userInfo: {
                 userNick: '',
+                userRegion: '',
                 contactEmail: '',
                 contactQq: '',
                 contactWechat: '',
@@ -325,7 +435,9 @@ export default {
             showCommClass: '',
             showCommFirst: false,
             loading: false,
-
+            showEdit: false,
+            showEditOid: -1,
+            isShowEditEmojiPanel: false,
             rules: {
                 contactEmail: [
                     {validator: validateEmail, required: true, trigger: ['blur', 'change']},
@@ -379,6 +491,9 @@ export default {
                     if (this.isShowReplyEmojiPanel) {
                         this.isShowReplyEmojiPanel = false;
                     }
+                    if (this.isShowEditEmojiPanel) {
+                        this.isShowEditEmojiPanel = false;
+                    }
 
                 },
                 false
@@ -389,7 +504,7 @@ export default {
     },
     methods: {
         getCommentList: function (param, callback) {
-            postJson("/comment/query/page/article/list", param).then((res) => {
+            postJson("/comment/article/query/page/list", param).then((res) => {
                 if (param.parentOid === 0 && param.replyRootOid === null
                         && param.page === 1) {
                     this.commentList = res.commentList;
@@ -410,7 +525,7 @@ export default {
             });
         },
         getCanBeComment: function (param) {
-            postJson("/main/config/query", {key: 'GLOBAL_COMMENT_ALLOW'}).then((res) => {
+            postJson("/config/query", {key: 'GLOBAL_COMMENT_ALLOW'}).then((res) => {
                 this.canBeCommentGlobal = res.data.value === 'TRUE';
                 if (this.canBeComment) {
                     this.canBeComment = this.canBeCommentGlobal;
@@ -418,10 +533,18 @@ export default {
             });
         },
         replyClick: function (item) {
+            if (item.flagDelete) {
+                this.$message({
+                    showClose: true,
+                    message: '该评论已删除!',
+                    grouping: true,
+                    type: 'warning'
+                })
+                return;
+            }
             if (!this.canBeComment) {
                 var msg = "该文章已关闭评论!"
-                if (!this.canBeCommentGlobal)
-                {
+                if (!this.canBeCommentGlobal) {
                     msg = "网站的评论系统已经关闭!"
                 }
                 this.$message({
@@ -432,6 +555,10 @@ export default {
                 })
                 return;
             }
+            if (this.showEdit) {
+                this.showEdit = false;
+                this.showEditOid = -1;
+            }
             if (this.showReplyOid === item.oid || this.showReplyOid === -1) {
                 this.showReply = !this.showReply;
                 this.showReplyOid = this.showReplyOid === -1 ? item.oid : -1;
@@ -440,6 +567,74 @@ export default {
                 this.showReplyOid = item.oid;
 
             }
+
+
+        },
+        editClick: function (item) {
+            if (this.showReply) {
+                this.showReply = false;
+                this.showReplyOid = -1;
+            }
+            if (this.showEditOid === item.oid || this.showEditOid === -1) {
+                this.showEdit = !this.showEdit;
+                this.showEditOid = this.showEditOid === -1 ? item.oid : -1;
+            } else {
+                // this.showReply = true
+                this.showEditOid = item.oid;
+
+            }
+            item.editContent = item.content;
+
+
+        },
+        delClick: function (item, index, commList, isRootComm, comm) {
+            if (this.showEdit) {
+                this.showEdit = false;
+                this.showEditOid = -1;
+            }
+            if (this.showReply) {
+                this.showReply = false;
+                this.showReplyOid = -1;
+            }
+            this.$confirm(
+                    '确定要删除此条评论吗?',
+                    'Warning',
+                    {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning',
+                    }
+            ).then(() => {
+                let param = {};
+                param.commOid = item.oid
+                postJson("/comment/remove", param).then((res) => {
+                    if (res.status === '000000') {
+                        this.$message({
+                            showClose: true,
+                            message: '删除成功!',
+                            grouping: true,
+                            type: 'success'
+                        });
+                        if (isRootComm && item.replyList && item.replyList.length > 0) {
+                            item.content = '该评论已经删除';
+                            item.flagDelete = true;
+                        } else {
+                            commList.splice(index, 1);
+
+                        }
+                        if (isRootComm){
+                            this.count = this.count - 1
+                        }else {
+                            comm.replyCount = comm.replyCount - 1
+                            this.count = this.count - 1
+                        }
+                    }
+
+
+                });
+
+            }).catch(() => {
+            });
 
 
         },
@@ -468,6 +663,26 @@ export default {
             let oid = reply.oid;
             const currentLength = item.length;
             const el = document.getElementById("reply-input-" + oid);
+
+            // 判断字数如果比之前少了，说明内容正在减少，需要清除高度样式，重新获取
+            if (currentLength < this.lastLength) {
+                el.style.height = "";
+            }
+            const currentHeight = el.scrollHeight;
+            // 如果内容高度发生了变化，再去设置高度值
+            if (currentHeight > el.offsetHeight) {
+                el.style.height = currentHeight + "px";
+            }
+            this.lastLength = currentLength;
+        },
+        editInput(comm) {
+            if (!comm.content) {
+                return;
+            }
+            let item = comm.content;
+            let oid = comm.oid;
+            const currentLength = item.length;
+            const el = document.getElementById("edit-input-" + oid);
 
             // 判断字数如果比之前少了，说明内容正在减少，需要清除高度样式，重新获取
             if (currentLength < this.lastLength) {
@@ -565,7 +780,7 @@ export default {
             this.$refs['userInfo'].validate((valid) => {
                 if (valid) {
 
-                    if (reply.replyText === '') {
+                    if (!reply.replyText) {
                         this.$message({
                             showClose: true,
                             message: '请填写评论内容.',
@@ -600,9 +815,50 @@ export default {
                 }
             });
         },
+        submitEdit: function (comm) {
+            // console.log(reply)
+            this.$refs['userInfo'].validate((valid) => {
+                if (valid) {
+
+                    if (!comm.editContent) {
+                        this.$message({
+                            showClose: true,
+                            message: '请填写评论内容.',
+                            grouping: true,
+                            type: 'error'
+                        })
+                    } else {
+                        if (comm.editContent.length < 5 || comm.editContent.length > 200) {
+                            this.$message({
+                                showClose: true,
+                                message: '评论内容为5-200个字符.',
+                                grouping: true,
+                                type: 'error'
+                            })
+                        } else {
+                            let that = this;
+                            this.updateComment(comm.oid, this.utf16toEntities(comm.editContent), function () {
+                                that.showEdit = false;
+                                comm.content = comm.editContent;
+                                that.showEditOid = -1;
+                            })
+                        }
+                    }
+                } else {
+                    this.$message({
+                        showClose: true,
+                        message: '请填写用户基础信息.',
+                        grouping: true,
+                        type: 'error'
+                    })
+                    return false;
+                }
+            });
+        },
         showEmojiPanel() {
             this.isShowEmojiPanel = !this.isShowEmojiPanel;
             this.isShowReplyEmojiPanel = false;
+            this.isShowEditEmojiPanel = false;
         },
         appendEmoji(code) {
             this.commentText += this.entitiestoUtf16(code);
@@ -610,12 +866,24 @@ export default {
         showReplyEmojiPanel() {
             this.isShowReplyEmojiPanel = !this.isShowReplyEmojiPanel;
             this.isShowEmojiPanel = false;
+            this.isShowEditEmojiPanel = false;
         },
         appendReplyEmoji(code, comm) {
             if (comm.replyText === undefined) {
                 comm.replyText = ""
             }
             comm.replyText += this.entitiestoUtf16(code);
+        },
+        showEditEmojiPanel() {
+            this.isShowEditEmojiPanel = !this.isShowEditEmojiPanel;
+            this.isShowEmojiPanel = false;
+            this.isShowReplyEmojiPanel = false;
+        },
+        appendEditEmoji(code, comm) {
+            if (comm.content === undefined) {
+                comm.content = ""
+            }
+            comm.content += this.entitiestoUtf16(code);
         },
         postComment(text, pid, callback) {
             let param = {};
@@ -633,10 +901,33 @@ export default {
                         message: '评论成功!',
                         grouping: true,
                         type: 'success'
-                    })
+                    });
+                    this.getCommentList(this.commentQueryParam);
+                    typeof callback === 'function' && callback();
                 }
-                this.getCommentList(this.commentQueryParam);
-                typeof callback === 'function' && callback();
+
+
+            });
+        },
+        updateComment(oid, text, callback) {
+            let param = {};
+            param.oid = oid;
+            param.artId = this.artOid;
+            param.commentText = text;
+            param.userNick = this.userInfo.userNick;
+            param.contactQq = this.userInfo.contactQq;
+            param.contactWechat = this.userInfo.contactWechat;
+            param.contactEmail = this.userInfo.contactEmail;
+            postJson("/comment/update", param).then((res) => {
+                if (res.status === '000000') {
+                    this.$message({
+                        showClose: true,
+                        message: '评论更新成功!',
+                        grouping: true,
+                        type: 'success'
+                    });
+                    typeof callback === 'function' && callback();
+                }
 
 
             });
@@ -652,9 +943,19 @@ export default {
             }
             if (this.$route.query.commOid) {
                 this.showCommOid = Number(this.$route.query.commOid);
+                this.commentQueryParam.refOid = this.showCommOid;
             }
         },
         doPraise: function (item) {
+            if (item.flagDelete) {
+                this.$message({
+                    showClose: true,
+                    message: '该评论已删除!',
+                    grouping: true,
+                    type: 'warning'
+                })
+                return;
+            }
             postJson("/comment/praise/add", {commOid: item.oid}).then((res) => {
                 if (res.status === '000000') {
                     this.$message({
@@ -693,6 +994,9 @@ export default {
             replyParam.page = replyParam.page + 1;
             this.getCommentList(replyParam, (res) => {
                 if (res.commentList) {
+                    if (!comm.replyList) {
+                        comm.replyList = [];
+                    }
                     comm.replyList.push(...res.commentList);
 
                 }
@@ -726,9 +1030,9 @@ export default {
 <style lang="scss">
 
 .show-comm {
-    -webkit-animation: comm .5s;
-    -moz-animation: comm .5s;
-    animation: comm .5s;
+    -webkit-animation: comm 1s;
+    -moz-animation: comm 1s;
+    animation: comm 1s;
 
 }
 
@@ -778,9 +1082,9 @@ export default {
 
 
 .hidd-comm-backgroud {
-    -webkit-animation: hidd-comm .7s;
-    -moz-animation: hidd-comm .7s;
-    animation: hidd-comm .7s;
+    -webkit-animation: hidd-comm 1s;
+    -moz-animation: hidd-comm 1s;
+    animation: hidd-comm 1s;
 
 }
 
@@ -1010,4 +1314,10 @@ export default {
     text-align: center;
 }
 
+.comment-list {
+    margin-top: 10px;
+}
+.comm-btn {
+    height: 35px;
+}
 </style>

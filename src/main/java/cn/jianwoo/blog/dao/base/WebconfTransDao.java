@@ -16,7 +16,7 @@ public interface WebconfTransDao extends WebconfQueryDao {
     void doUpdateByPrimaryKeySelective(Webconf record) throws DaoException;
 
 
-    void doDeleteByPrimaryKey(Long oid) throws DaoException;
+    void doDeleteByPrimaryKey(String key) throws DaoException;
 
     /**
      * 通过KEY更新VALUE

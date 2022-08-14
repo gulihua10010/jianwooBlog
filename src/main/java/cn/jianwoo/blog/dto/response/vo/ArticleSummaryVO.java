@@ -23,8 +23,11 @@ import java.util.Date;
 @NoArgsConstructor
 public class ArticleSummaryVO implements Serializable {
     private static final long serialVersionUID = -8183712030536923735L;
-    private static final String TEMPLATE = "<span class=\"console-author\">%s</span> 在 " +
+    private static final String PUBLISHED_TEMPLATE = "<span class=\"console-author\">%s</span> 在 " +
             "<span class=\"console-time\">%s</span> 发表了 " +
+            "<span class=\"console-title\"><a href=\"%s\">%s</a></span>";
+    private static final String DRAFT_TEMPLATE = "<span class=\"console-author\">%s</span> 在 " +
+            "<span class=\"console-time\">%s</span> 保存了 " +
             "<span class=\"console-title\"><a href=\"%s\">%s</a></span>";
     /**
      * 文章OID
@@ -82,8 +85,19 @@ public class ArticleSummaryVO implements Serializable {
      */
     private Date removeRecycleTime;
 
+    /**
+     * 模板名称
+     */
+    private String template = "PUBLISHED_TEMPLATE";
+
     public String getDesc() {
-        return String.format(TEMPLATE, DomainUtil.format(this.author, Constants.ANAONYMOUS),
+        if ("DRAFT_TEMPLATE".equals(template)) {
+            return String.format(PUBLISHED_TEMPLATE, DomainUtil.format(this.author, Constants.ANAONYMOUS),
+                    this.getPublishTimeDesc(),
+                    CommAdminPageUrlConfig.URL_PREFIX + CommAdminPageUrlConfig.URL_ARTICLE_EDIT.replace("{id}", String.valueOf(this.oid)),
+                    this.title);
+        }
+        return String.format(PUBLISHED_TEMPLATE, DomainUtil.format(this.author, Constants.ANAONYMOUS),
                 this.getPublishTimeDesc(),
                 CommAdminPageUrlConfig.URL_PREFIX + CommAdminPageUrlConfig.URL_ARTICLE_EDIT.replace("{id}", String.valueOf(this.oid)),
                 this.title);

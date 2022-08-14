@@ -7,7 +7,7 @@ import cn.jianwoo.blog.exception.JwBlogException;
 import java.util.List;
 
 public interface WebconfQueryDao {
-    Webconf queryWebconfByPrimaryKey(Long oid) throws DaoException;
+    Webconf queryWebconfByPrimaryKey(String key) throws DaoException;
 
 
     /**

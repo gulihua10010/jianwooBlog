@@ -1,0 +1,144 @@
+<title>留言查看</title>
+<style>
+
+
+    input {
+        border: none !important;
+    }
+
+    .layui-card {
+        padding-left: 0 !important;
+        margin-left: 0 !important;
+    }
+
+</style>
+
+<script type="text/html" template>
+    <link rel="stylesheet" href="{{ layui.setter.base }}style/jw_admin.css?v={{ layui.admin.v }}-1" media="all">
+</script>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-card opt-history" style="display: none">
+            <div class="layui-card-body">
+                <button class="layui-btn opt-left"><i class="layui-icon layui-icon-left" style="font-size: 30px;"></i>
+                </button>
+                <button class="layui-btn opt-right"><i class="layui-icon layui-icon-right" style="font-size: 30px;"></i>
+                </button>
+            </div>
+        </div>
+        <script type="text/html" template lay-url="/api/admin/message/board/info/{{ d.params }}" lay-done="doView(d);">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">留言用户</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" disabled name="userName" value="{{d.data.userName}}" type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">留言用户昵称</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" disabled name="userNick" value="{{d.data.userNick}}" type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">留言者头像</label>
+                        <div class="layui-input-block">
+                            <img class="layui-upload-img" id="avatarSrc" style="margin-left: 5px"
+                                 src="{{d.data.avatarSrc}}"
+                                 width="50">
+
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">留言者地区</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" disabled name="userRegion" value="{{ d.data.userRegion }}"
+                                   type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">留言者IP</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" disabled name="clientIp" value="{{ d.data.clientIp }}"
+                                   type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">留言日期</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" disabled name="date"
+                                   value="{{d.data.pushTime}}"
+                                   type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">留言QQ</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" disabled name="contactQq" value="{{ d.data.contactQq}}"
+                                   type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">留言微信</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" disabled name="contactWechat" value="{{ d.data.contactWechat}}"
+                                   type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">留言微博</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" disabled name="contactWeibo" value="{{ d.data.contactWeibo}}"
+                                   type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">留言联系手机号</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" disabled name="contactTel" value="{{ d.data.contactTel}}"
+                                   type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">留言内容</label>
+                        <div class="layui-input-block">
+                        <textarea class="layui-textarea" disabled name="content" placeholder="">
+                            {{d.data.content}}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </script>
+
+    </div>
+</div>
+
+
+<script>
+
+    doView = function (d) {
+        layui.use('messageBoard', layui.factory('messageBoard')).use(['admin', 'form', 'table', 'element', 'messageBoard'], function () {
+            var $ = layui.jquery
+                , form = layui.form
+                , element = layui.element;
+            element.render();
+            form.render();
+
+
+            if (d.data.readStatus === '00') {
+                ajaxApiPost(
+                    "/api/admin/message/board/read",
+                    1,
+                    JSON.stringify({
+                        entityOid: d.data.oid,
+                    }),
+                );
+            }
+
+        })
+    }
+
+
+</script>

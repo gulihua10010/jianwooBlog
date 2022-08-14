@@ -106,6 +106,16 @@ public class ArticleBO implements Serializable {
      * 发布时间
      */
     private Date pushTime;
+
+    /**
+     * 文章发布的IP地址
+     */
+    private String pushIp;
+
+    /**
+     * 文章发布的地区
+     */
+    private String pushRegion;
     /**
      * 修改时间
      */

@@ -9,6 +9,6 @@ import cn.jianwoo.blog.config.router.UrlConfig;
  */
 public class MenuMainApiUrlConfig extends UrlConfig {
     public static final String URL_PREFIX = "/api/menu";
-    public static final String URL_QUERY_LIST = "/query/list";
+    public static final String URL_MENU_QUERY_LIST = "/query/list";
 
 }

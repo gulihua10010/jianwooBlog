@@ -16,10 +16,10 @@ public interface TempArticleBizService {
      * * 临时保存文章
      *
      * @param article 文章
-     * @return
+     * @return 保存数据的主键
      * @author gulihua
      */
-    void doSaveTempArticle(TempArticleBO article) throws JwBlogException;
+    Long doSaveTempArticle(TempArticleBO article) throws JwBlogException;
 
 
     /**

@@ -45,8 +45,8 @@ public class WebconfFacadeTransDaoImpl extends WebconfFacadeQueryDaoImpl impleme
     }
 
     @Override
-    public void doDeleteByPrimaryKey(Long oid) throws DaoException {
-        int delRlt = webconfFacadeMapper.deleteByPrimaryKey(oid);
+    public void doDeleteByPrimaryKey(String key) throws DaoException {
+        int delRlt = webconfFacadeMapper.deleteByPrimaryKey(key);
         if (1 != delRlt) {
             throw DaoException.DAO_DELETE_RESULT_0.print();
         }

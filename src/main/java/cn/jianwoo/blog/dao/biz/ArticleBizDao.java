@@ -116,10 +116,22 @@ public interface ArticleBizDao {
      *
      * @param param     参数
      * @param isPrivate 是否博主私有ip
+     * @param currentIp 当前访问者的ip
      * @return
      * @author gulihua
      */
-    List<ArticleExt> queryArticleListMain(ArticleQuery param, boolean isPrivate);
+    List<ArticleExt> queryArticleListMain(ArticleQuery param, boolean isPrivate, String currentIp);
+
+
+    /**
+     * 获取首页文章列表的数量
+     *
+     * @param param     参数
+     * @param isPrivate 是否博主私有ip
+     * @return
+     * @author gulihua
+     */
+    Long queryArticleListMainCount(ArticleQuery param, boolean isPrivate);
 
 
     /**
@@ -156,8 +168,21 @@ public interface ArticleBizDao {
      * 根据文章类别ID获取推荐文章列表
      *
      * @param categoryOid 类别id
+     * @param artOid 文章oid
      * @return ArticleExt
      * @author gulihua
      */
-    List<ArticleExt> queryRecommendArticleByCategoryOid(Integer categoryOid);
+    List<ArticleExt> queryRecommendArticleByCategoryOid(Integer categoryOid, Long artOid);
+
+
+
+    /**
+     * 更新文章中评论总数量
+     *
+     * @param oid 主键
+     * @param optType 评论操作类型(10:创建,40:删除)
+     * @return
+     * @author gulihua
+     */
+    void doUpdateArticleCommTotalCnt(Long oid, String optType) throws DaoException;
 }

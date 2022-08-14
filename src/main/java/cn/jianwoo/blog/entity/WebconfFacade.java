@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class WebconfFacade implements Serializable {
-    private Long oid;
-
     private String cfgKey;
 
     private String desc;
@@ -33,14 +31,6 @@ public class WebconfFacade implements Serializable {
     private Date updateTime;
 
     private static final long serialVersionUID = 1L;
-
-    public Long getOid() {
-        return oid;
-    }
-
-    public void setOid(Long oid) {
-        this.oid = oid;
-    }
 
     public String getCfgKey() {
         return cfgKey;
@@ -152,7 +142,6 @@ public class WebconfFacade implements Serializable {
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
-        sb.append(", oid=").append(oid);
         sb.append(", cfgKey=").append(cfgKey);
         sb.append(", desc=").append(desc);
         sb.append(", titleDsp=").append(titleDsp);

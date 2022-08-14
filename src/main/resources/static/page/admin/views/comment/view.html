@@ -24,6 +24,7 @@
 
     .comment-list {
         padding: 0;
+
     }
 
     .media-body {
@@ -97,7 +98,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">评论者地区</label>
                         <div class="layui-input-block">
-                            <input class="layui-input" disabled name="userArea" value="{{ d.data.userArea }}"
+                            <input class="layui-input" disabled name="userRegion" value="{{ d.data.userRegion }}"
                                    type="text">
                         </div>
                     </div>
@@ -324,7 +325,7 @@
                 console.log(index)
             }
 
-            if (d.data.read === 0) {
+            if (d.data.readStatus === '00') {
                 ajaxApiPost(
                     "/api/admin/comment/read",
                     1,

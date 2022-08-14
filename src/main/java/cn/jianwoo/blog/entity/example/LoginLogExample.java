@@ -595,73 +595,73 @@ public class LoginLogExample {
             return (Criteria) this;
         }
 
-        public Criteria andTriggerAreaIsNull() {
-            addCriterion("TRIGGER_AREA is null");
+        public Criteria andTriggerRegionIsNull() {
+            addCriterion("TRIGGER_REGION is null");
             return (Criteria) this;
         }
 
-        public Criteria andTriggerAreaIsNotNull() {
-            addCriterion("TRIGGER_AREA is not null");
+        public Criteria andTriggerRegionIsNotNull() {
+            addCriterion("TRIGGER_REGION is not null");
             return (Criteria) this;
         }
 
-        public Criteria andTriggerAreaEqualTo(String value) {
-            addCriterion("TRIGGER_AREA =", value, "triggerArea");
+        public Criteria andTriggerRegionEqualTo(String value) {
+            addCriterion("TRIGGER_REGION =", value, "triggerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andTriggerAreaNotEqualTo(String value) {
-            addCriterion("TRIGGER_AREA <>", value, "triggerArea");
+        public Criteria andTriggerRegionNotEqualTo(String value) {
+            addCriterion("TRIGGER_REGION <>", value, "triggerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andTriggerAreaGreaterThan(String value) {
-            addCriterion("TRIGGER_AREA >", value, "triggerArea");
+        public Criteria andTriggerRegionGreaterThan(String value) {
+            addCriterion("TRIGGER_REGION >", value, "triggerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andTriggerAreaGreaterThanOrEqualTo(String value) {
-            addCriterion("TRIGGER_AREA >=", value, "triggerArea");
+        public Criteria andTriggerRegionGreaterThanOrEqualTo(String value) {
+            addCriterion("TRIGGER_REGION >=", value, "triggerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andTriggerAreaLessThan(String value) {
-            addCriterion("TRIGGER_AREA <", value, "triggerArea");
+        public Criteria andTriggerRegionLessThan(String value) {
+            addCriterion("TRIGGER_REGION <", value, "triggerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andTriggerAreaLessThanOrEqualTo(String value) {
-            addCriterion("TRIGGER_AREA <=", value, "triggerArea");
+        public Criteria andTriggerRegionLessThanOrEqualTo(String value) {
+            addCriterion("TRIGGER_REGION <=", value, "triggerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andTriggerAreaLike(String value) {
-            addCriterion("TRIGGER_AREA like", value, "triggerArea");
+        public Criteria andTriggerRegionLike(String value) {
+            addCriterion("TRIGGER_REGION like", value, "triggerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andTriggerAreaNotLike(String value) {
-            addCriterion("TRIGGER_AREA not like", value, "triggerArea");
+        public Criteria andTriggerRegionNotLike(String value) {
+            addCriterion("TRIGGER_REGION not like", value, "triggerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andTriggerAreaIn(List<String> values) {
-            addCriterion("TRIGGER_AREA in", values, "triggerArea");
+        public Criteria andTriggerRegionIn(List<String> values) {
+            addCriterion("TRIGGER_REGION in", values, "triggerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andTriggerAreaNotIn(List<String> values) {
-            addCriterion("TRIGGER_AREA not in", values, "triggerArea");
+        public Criteria andTriggerRegionNotIn(List<String> values) {
+            addCriterion("TRIGGER_REGION not in", values, "triggerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andTriggerAreaBetween(String value1, String value2) {
-            addCriterion("TRIGGER_AREA between", value1, value2, "triggerArea");
+        public Criteria andTriggerRegionBetween(String value1, String value2) {
+            addCriterion("TRIGGER_REGION between", value1, value2, "triggerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andTriggerAreaNotBetween(String value1, String value2) {
-            addCriterion("TRIGGER_AREA not between", value1, value2, "triggerArea");
+        public Criteria andTriggerRegionNotBetween(String value1, String value2) {
+            addCriterion("TRIGGER_REGION not between", value1, value2, "triggerRegion");
             return (Criteria) this;
         }
 
@@ -1020,8 +1020,8 @@ public class LoginLogExample {
             return (Criteria) this;
         }
 
-        public Criteria andTriggerAreaLikeInsensitive(String value) {
-            addCriterion("upper(TRIGGER_AREA) like", value.toUpperCase(), "triggerArea");
+        public Criteria andTriggerRegionLikeInsensitive(String value) {
+            addCriterion("upper(TRIGGER_REGION) like", value.toUpperCase(), "triggerRegion");
             return (Criteria) this;
         }
 

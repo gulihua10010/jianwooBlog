@@ -3,6 +3,7 @@ package cn.jianwoo.blog.service.base.impl;
 import cn.jianwoo.blog.dao.base.ArticleTransDao;
 import cn.jianwoo.blog.entity.Article;
 import cn.jianwoo.blog.entity.ArticleWithBLOBs;
+import cn.jianwoo.blog.enums.ArticleStatusEnum;
 import cn.jianwoo.blog.exception.ArticleBizException;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
@@ -25,7 +26,11 @@ public class ArticleBaseServiceImpl implements ArticleBaseService {
     @Override
     public Article queryArticleByOid(Long artOid) throws JwBlogException {
         try {
-            return articleTransDao.queryArticleByOid(artOid);
+            Article article = articleTransDao.queryArticleByOid(artOid);
+            if (ArticleStatusEnum.DELETE.getValue().equals(article.getStatus())) {
+                throw ArticleBizException.HAS_DELETE_CN.format(article.getTitle()).print();
+            }
+            return article;
         } catch (DaoException e) {
             log.error("ArticleBaseService.queryArticleByOid exec failed, e:\n", e);
             throw ArticleBizException.NOT_EXIST_EXCEPTION_CN.format(artOid).print();

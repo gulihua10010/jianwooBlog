@@ -38,4 +38,24 @@ public class WebPageConfigVO implements Serializable {
      * 网站作者
      */
     private String author;
+
+    /**
+     * 网站页脚html信息
+     */
+    private String footHtml;
+
+    /**
+     * 网站域名备案
+     */
+    private String record;
+
+    /**
+     * 网站备案链接
+     */
+    private String recordUrl;
+
+    /**
+     * 网站域名
+     */
+    private String domain;
 }

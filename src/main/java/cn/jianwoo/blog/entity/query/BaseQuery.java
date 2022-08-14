@@ -46,6 +46,10 @@ public class BaseQuery implements Serializable {
 
     private Integer start;
     private Integer rows;
+    /**
+     * 是否限制记录数, 默认限制
+     */
+    private Boolean isLimit = true;
 
     public BaseQuery() {
     }
@@ -120,5 +124,13 @@ public class BaseQuery implements Serializable {
 
     public void setRows(Integer rows) {
         this.rows = rows;
+    }
+
+    public Boolean getIsLimit() {
+        return this.isLimit;
+    }
+
+    public void setIsLimit(Boolean limit) {
+        this.isLimit = limit;
     }
 }

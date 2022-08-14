@@ -106,8 +106,13 @@ public class ArticleBizDaoImpl implements ArticleBizDao {
     }
 
     @Override
-    public List<ArticleExt> queryArticleListMain(ArticleQuery param, boolean isPrivate) {
-        return articleBizMapper.selectArticleListMain(param, isPrivate);
+    public List<ArticleExt> queryArticleListMain(ArticleQuery param, boolean isPrivate, String currentIp) {
+        return articleBizMapper.selectArticleListMain(param, isPrivate, currentIp);
+    }
+
+    @Override
+    public Long queryArticleListMainCount(ArticleQuery param, boolean isPrivate) {
+        return articleBizMapper.selectArticleListMainCount(param, isPrivate);
     }
 
     @Override
@@ -128,8 +133,17 @@ public class ArticleBizDaoImpl implements ArticleBizDao {
     }
 
     @Override
-    public List<ArticleExt> queryRecommendArticleByCategoryOid(Integer categoryOid) {
-        return articleBizMapper.selectRecommendArticleByCategoryOid(categoryOid);
+    public List<ArticleExt> queryRecommendArticleByCategoryOid(Integer categoryOid, Long artOid) {
+        return articleBizMapper.selectRecommendArticleByCategoryOid(categoryOid, artOid);
+    }
+
+    @Override
+    public void doUpdateArticleCommTotalCnt(Long oid, String optType) throws DaoException {
+        int updRlt = articleBizMapper.updateArticleCommTotalCnt(oid, optType);
+        if (1 != updRlt) {
+            throw DaoException.DAO_UPDATE_RESULT_0.print();
+        }
+
     }
 
 

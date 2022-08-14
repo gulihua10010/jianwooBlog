@@ -1,8 +1,9 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
 import index from '@/views/index'
 import detail from '@/views/Detail'
-import {postJson} from "@/common/js/postJson";
+import NotFound from '@/views/404'
 import {getJson} from "@/common/js/getJson";
+import MessageBoard from "@/views/MessageBoard";
 
 const routes = [
     {
@@ -57,6 +58,22 @@ const routes = [
             ]
         }
     },
+    {
+        path: '/message/board',
+        name: 'MessageBoard',
+        component: MessageBoard,
+        metaInfo: {
+            title: '简窝博客',
+            meta: [
+                {charset: 'utf-8'},
+                {name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1'},
+            ]
+        }
+    },
+    {
+        path: "/:catchAll(.*)",
+        component: () => NotFound
+    }
 ]
 
 const router = createRouter({
@@ -66,7 +83,7 @@ const router = createRouter({
 
 
 router.beforeEach((to, from, next) => {
-    let webConfig = sessionStorage.getItem('webConfig')
+    let webConfig = localStorage.getItem('webConfig')
     let _json ;
     if (webConfig)
     {
@@ -74,10 +91,10 @@ router.beforeEach((to, from, next) => {
         setConfig(_json)
     }
     else {
-        getJson("/main/config/page/comm/query", {}).then((res) => {
+        getJson("/config/page/comm/query", {}).then((res) => {
             setConfig(res.data)
             let _jsonstr = JSON.stringify(res.data)
-            sessionStorage.setItem("webConfig", _jsonstr);
+            localStorage.setItem("webConfig", _jsonstr);
         })
     }
 

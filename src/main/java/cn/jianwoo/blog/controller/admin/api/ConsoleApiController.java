@@ -9,17 +9,21 @@ import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dto.response.ArticleSummaryResponse;
 import cn.jianwoo.blog.dto.response.CommentSummaryResponse;
 import cn.jianwoo.blog.dto.response.ConsoleCountResponse;
+import cn.jianwoo.blog.dto.response.MessageBoardSummaryResponse;
 import cn.jianwoo.blog.dto.response.vo.ArticleSummaryVO;
 import cn.jianwoo.blog.dto.response.vo.CommentSummaryVO;
-import cn.jianwoo.blog.dto.response.vo.CommentVO;
 import cn.jianwoo.blog.dto.response.vo.ConsoleCountVO;
+import cn.jianwoo.blog.dto.response.vo.MessageBoardSummaryVO;
 import cn.jianwoo.blog.service.biz.ArticleBizService;
 import cn.jianwoo.blog.service.biz.CommentBizService;
+import cn.jianwoo.blog.service.biz.MessagBoardBizService;
 import cn.jianwoo.blog.service.biz.TagsBizService;
 import cn.jianwoo.blog.service.bo.ArticleBO;
 import cn.jianwoo.blog.service.bo.CommentBO;
+import cn.jianwoo.blog.service.bo.MessageBoardBO;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +40,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping(ConsoleApiUrlConfig.URL_PREFIX)
+@Slf4j
 public class ConsoleApiController extends BaseController {
     @Autowired
     private CommentBizService commentBizService;
@@ -43,6 +48,8 @@ public class ConsoleApiController extends BaseController {
     private ArticleBizService articleBizService;
     @Autowired
     private TagsBizService tagsBizService;
+    @Autowired
+    private MessagBoardBizService messagBoardBizService;
     private final static String templateName = "CONSOLE_TEMPLATE";
 
     /**
@@ -77,6 +84,7 @@ public class ConsoleApiController extends BaseController {
                     vo.setPublishTime(data.getPushTime());
                     vo.setOid(data.getOid());
                     vo.setTitle(data.getTitle());
+                    vo.setTemplate("PUBLISHED_TEMPLATE");
                     return vo;
                 }).collect(Collectors.toList());
                 response.setData(articleSummaryVOList);
@@ -120,6 +128,7 @@ public class ConsoleApiController extends BaseController {
                     vo.setPublishTime(data.getPushTime());
                     vo.setOid(data.getOid());
                     vo.setTitle(data.getTitle());
+                    vo.setTemplate("DRAFT_TEMPLATE");
                     return vo;
                 }).collect(Collectors.toList());
                 response.setData(articleSummaryVOList);
@@ -149,7 +158,7 @@ public class ConsoleApiController extends BaseController {
      * --oid<br/>
      * --artOid<br/>
      * --ip<br/>
-     * --area<br/>
+     * --userRegion<br/>
      * --desc<br/>
      * @author gulihua
      */
@@ -167,6 +176,59 @@ public class ConsoleApiController extends BaseController {
                     vo.setCommentTimeStr(DateUtil.formatDateTime(domain.getCommentTime()));
                     vo.setCommentTime(domain.getCommentTime());
                     vo.setArtTitle(domain.getArticleTitle());
+                    vo.setUserNick(domain.getUserNick());
+                    vo.setClientIp(domain.getClientIp());
+                    vo.setTemplateName(templateName);
+                    String content = StringEscapeUtils.escapeHtml4(domain.getContent());
+                    if (content.length() > 50) {
+                        content.substring(0, 50).concat(Constants.ELLIPSIS);
+                    }
+                    vo.setContent(content);
+                    list.add(vo);
+                });
+                response.setData(list);
+            }
+            return super.responseToJSONString(response);
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+
+        }
+    }
+
+
+
+    /**
+     * 查詢最近10个留言列表(控制台首页)<br/>
+     * url:/api/admin/console/recent/message/board/query<br/>
+     *
+     * @return 返回响应 {@link MessageBoardSummaryResponse}<br/>
+     * code<br/>
+     * count<br/>
+     * data<br/>
+     * --seq<br/>
+     * --user<br/>
+     * --date<br/>
+     * --replyTo<br/>
+     * --content<br/>
+     * --replyOid<br/>
+     * --oid<br/>
+     * --ip<br/>
+     * --userRegion<br/>
+     * --desc<br/>
+     * @author gulihua
+     */
+    @ApiVersion()
+    @GetMapping(ConsoleApiUrlConfig.URL_RECENT_MESSAGE_BOARD_QUERY)
+    public String queryMessageBoardList() {
+        try {
+            List<MessageBoardBO> messageExtList = messagBoardBizService.queryRecentMessages(10);
+            MessageBoardSummaryResponse response = MessageBoardSummaryResponse.getInstance();
+            if (CollectionUtils.isNotEmpty(messageExtList)) {
+                List<MessageBoardSummaryVO> list = new ArrayList<>();
+                messageExtList.forEach(domain -> {
+                    MessageBoardSummaryVO vo = new MessageBoardSummaryVO();
+                    vo.setPushTimeStr(DateUtil.formatDateTime(domain.getPushTime()));
+                    vo.setPushTime(domain.getPushTime());
                     vo.setUserNick(domain.getUserNick());
                     vo.setClientIp(domain.getClientIp());
                     vo.setTemplateName(templateName);

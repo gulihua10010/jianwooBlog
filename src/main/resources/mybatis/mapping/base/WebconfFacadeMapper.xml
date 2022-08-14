@@ -2,8 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.jianwoo.blog.dao.base.mapper.WebconfFacadeMapper">
   <resultMap id="BaseResultMap" type="cn.jianwoo.blog.entity.WebconfFacade">
-    <id column="OID" jdbcType="BIGINT" property="oid" />
-    <result column="CFG_KEY" jdbcType="VARCHAR" property="cfgKey" />
+    <id column="CFG_KEY" jdbcType="VARCHAR" property="cfgKey" />
     <result column="DESC" jdbcType="VARCHAR" property="desc" />
     <result column="TITLE_DSP" jdbcType="VARCHAR" property="titleDsp" />
     <result column="TIPS_DSP" jdbcType="VARCHAR" property="tipsDsp" />
@@ -76,7 +75,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    OID, CFG_KEY, `DESC`, TITLE_DSP, TIPS_DSP, FORM_TYPE, TAB_TYPE, TAB_TYPE_DSP, REQUIRED, 
+    CFG_KEY, `DESC`, TITLE_DSP, TIPS_DSP, FORM_TYPE, TAB_TYPE, TAB_TYPE_DSP, REQUIRED, 
     VALIDATE_TYPE, VALIDATE_VALUE, `INDEX`, CREATE_TIME, UPDATE_TIME
   </sql>
   <select id="selectByExample" parameterType="cn.jianwoo.blog.entity.example.WebconfFacadeExample" resultMap="BaseResultMap">
@@ -85,7 +84,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from webconf_facade
+    from WEBCONF_FACADE
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -94,24 +93,24 @@
     </if>
     <include refid="MySQLDialectSuffix" />
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from webconf_facade
-    where OID = #{oid,jdbcType=BIGINT}
+    from WEBCONF_FACADE
+    where CFG_KEY = #{cfgKey,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from webconf_facade
-    where OID = #{oid,jdbcType=BIGINT}
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from WEBCONF_FACADE
+    where CFG_KEY = #{cfgKey,jdbcType=VARCHAR}
   </delete>
   <delete id="deleteByExample" parameterType="cn.jianwoo.blog.entity.example.WebconfFacadeExample">
-    delete from webconf_facade
+    delete from WEBCONF_FACADE
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.WebconfFacade" useGeneratedKeys="true">
-    insert into webconf_facade (CFG_KEY, `DESC`, TITLE_DSP, 
+  <insert id="insert" parameterType="cn.jianwoo.blog.entity.WebconfFacade">
+    insert into WEBCONF_FACADE (CFG_KEY, `DESC`, TITLE_DSP, 
       TIPS_DSP, FORM_TYPE, TAB_TYPE, 
       TAB_TYPE_DSP, REQUIRED, VALIDATE_TYPE, 
       VALIDATE_VALUE, `INDEX`, CREATE_TIME, 
@@ -122,8 +121,8 @@
       #{validateValue,jdbcType=VARCHAR}, #{index,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.WebconfFacade" useGeneratedKeys="true">
-    insert into webconf_facade
+  <insert id="insertSelective" parameterType="cn.jianwoo.blog.entity.WebconfFacade">
+    insert into WEBCONF_FACADE
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="cfgKey != null">
         CFG_KEY,
@@ -208,17 +207,14 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="cn.jianwoo.blog.entity.example.WebconfFacadeExample" resultType="java.lang.Long">
-    select count(*) from webconf_facade
+    select count(*) from WEBCONF_FACADE
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update webconf_facade
+    update WEBCONF_FACADE
     <set>
-      <if test="record.oid != null">
-        OID = #{record.oid,jdbcType=BIGINT},
-      </if>
       <if test="record.cfgKey != null">
         CFG_KEY = #{record.cfgKey,jdbcType=VARCHAR},
       </if>
@@ -264,9 +260,8 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update webconf_facade
-    set OID = #{record.oid,jdbcType=BIGINT},
-      CFG_KEY = #{record.cfgKey,jdbcType=VARCHAR},
+    update WEBCONF_FACADE
+    set CFG_KEY = #{record.cfgKey,jdbcType=VARCHAR},
       `DESC` = #{record.desc,jdbcType=VARCHAR},
       TITLE_DSP = #{record.titleDsp,jdbcType=VARCHAR},
       TIPS_DSP = #{record.tipsDsp,jdbcType=VARCHAR},
@@ -284,11 +279,8 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="cn.jianwoo.blog.entity.WebconfFacade">
-    update webconf_facade
+    update WEBCONF_FACADE
     <set>
-      <if test="cfgKey != null">
-        CFG_KEY = #{cfgKey,jdbcType=VARCHAR},
-      </if>
       <if test="desc != null">
         `DESC` = #{desc,jdbcType=VARCHAR},
       </if>
@@ -326,12 +318,11 @@
         UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where OID = #{oid,jdbcType=BIGINT}
+    where CFG_KEY = #{cfgKey,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.jianwoo.blog.entity.WebconfFacade">
-    update webconf_facade
-    set CFG_KEY = #{cfgKey,jdbcType=VARCHAR},
-      `DESC` = #{desc,jdbcType=VARCHAR},
+    update WEBCONF_FACADE
+    set `DESC` = #{desc,jdbcType=VARCHAR},
       TITLE_DSP = #{titleDsp,jdbcType=VARCHAR},
       TIPS_DSP = #{tipsDsp,jdbcType=VARCHAR},
       FORM_TYPE = #{formType,jdbcType=VARCHAR},
@@ -343,7 +334,7 @@
       `INDEX` = #{index,jdbcType=INTEGER},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
-    where OID = #{oid,jdbcType=BIGINT}
+    where CFG_KEY = #{cfgKey,jdbcType=VARCHAR}
   </update>
   <sql id="MySQLDialectSuffix">
     <if test="start != null and rows != null">

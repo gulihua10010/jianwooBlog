@@ -51,7 +51,7 @@ public class LogApiController extends BaseController {
      * --eventType<br/>
      * --triggerTime<br/>
      * --triggerIp<br/>
-     * --triggerArea<br/>
+     * --triggerRegion<br/>
      * --processStatus<br/>
      * --failedReason<br/>
      * @author gulihua
@@ -73,7 +73,7 @@ public class LogApiController extends BaseController {
                     vo.setEventType(LoginEventTypeEnum.descOfValue(bizLogBO.getEventType()));
                     vo.setTriggerTime(bizLogBO.getTriggerTime());
                     vo.setTriggerIp(bizLogBO.getTriggerIp());
-                    vo.setTriggerArea(bizLogBO.getTriggerArea());
+                    vo.setTriggerRegion(bizLogBO.getTriggerRegion());
                     vo.setProcessStatusStr(ProcessStatusEnum.descOfValue(bizLogBO.getProcessStatus()));
                     vo.setProcessStatus(bizLogBO.getProcessStatus());
                     vo.setFailedReason(bizLogBO.getFailedReason());

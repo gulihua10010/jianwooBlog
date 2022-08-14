@@ -20,8 +20,8 @@ public class WebconfQueryDaoImpl implements WebconfQueryDao {
     WebconfMapper webconfMapper;
 
     @Override
-    public Webconf queryWebconfByPrimaryKey(Long oid) throws DaoException {
-        Webconf record = webconfMapper.selectByPrimaryKey(oid);
+    public Webconf queryWebconfByPrimaryKey(String key) throws DaoException {
+        Webconf record = webconfMapper.selectByPrimaryKey(key);
         if (null == record) {
             throw DaoException.DAO_SELECTONE_IS_NULL.print();
         }

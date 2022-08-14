@@ -43,6 +43,12 @@ public enum BizEventTypeEnum {
      */
     ANNOUNCEMENT_TPL("70", "公告"),
 
+
+    /**
+     * 留言
+     */
+    MESSAGE_BOARD("80", "留言"),
+
     ;
 
     /**

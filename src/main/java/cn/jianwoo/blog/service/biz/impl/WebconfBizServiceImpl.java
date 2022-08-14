@@ -172,7 +172,7 @@ public class WebconfBizServiceImpl implements WebconfBizService {
                         o.setValue(Constants.BLANK);
                     }
                     String cacheKey = MessageFormat.format(CacheKeyConstants.WEBCONF_KEY, webconf.getKey());
-                    cacheStore.put(cacheKey, o.getValue(), 2, TimeUnit.HOURS);
+                    cacheStore.put(cacheKey, o.getValue(), 10, TimeUnit.HOURS);
                     registerBizEvent(webconf.getKey(), BizEventOptTypeEnum.UPDATE);
                 } catch (DaoException e) {
                     log.error("WebconfBizServiceImpl.doUpdateConfig exec failed, e:\n", e);
@@ -206,7 +206,7 @@ public class WebconfBizServiceImpl implements WebconfBizService {
         } else if (ValueTypeEnum.DATE.getValue().equals(webConf.getValueType())) {
             value = DateUtil.formatTimestamp(webConf.getDateValue());
         }
-        cacheStore.put(cacheKey, value, 2, TimeUnit.HOURS);
+        cacheStore.put(cacheKey, value, 10, TimeUnit.HOURS);
         return value;
     }
 
@@ -237,7 +237,7 @@ public class WebconfBizServiceImpl implements WebconfBizService {
         }
 
 
-        cacheStore.put(cacheKey, confMap);
+        cacheStore.put(cacheKey, confMap, 10, TimeUnit.HOURS);
         return confMap;
     }
 

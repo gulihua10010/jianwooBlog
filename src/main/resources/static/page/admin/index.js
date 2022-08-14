@@ -234,11 +234,12 @@ layui.extend({
 
             }
         }
+        , timer
         , callTimerMsgApi = function (loop)
         {
             timerMsgNotify();
             if (!loop) {
-                setInterval(function () {
+                timer = setInterval(function () {
                     callTimerMsgApi(true)
                 }, 10000);
             }
@@ -251,6 +252,22 @@ layui.extend({
 
 
     callTimerMsgApi();
+
+    // var hiddenProperty = 'hidden' in document ? 'hidden' :
+    //     'webkitHidden' in document ? 'webkitHidden' :
+    //         'mozHidden' in document ? 'mozHidden' :
+    //             null;
+    // var visibilityChangeEvent = hiddenProperty.replace(/hidden/i, 'visibilitychange');
+    // var onVisibilityChange = function(){
+    //     if (!document[hiddenProperty]) {
+    //         timer = setInterval(function () {
+    //             callTimerMsgApi(true);
+    //         }, 10000);
+    //     }else{
+    //         clearInterval(timer)
+    //     }
+    // }
+    // document.addEventListener(visibilityChangeEvent, onVisibilityChange);
 
     //初始主体结构
     layui.link(

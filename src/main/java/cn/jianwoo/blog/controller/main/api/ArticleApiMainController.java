@@ -32,6 +32,7 @@ import cn.jianwoo.blog.service.bo.ArticleBO;
 import cn.jianwoo.blog.service.bo.MenuBO;
 import cn.jianwoo.blog.service.bo.MonthPublishBO;
 import cn.jianwoo.blog.service.param.ArticleParam;
+import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.validation.BizValidation;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -112,7 +113,7 @@ public class ArticleApiMainController extends BaseController {
      * @author gulihua
      */
     @ApiVersion()
-    @PostMapping(ArticleMainApiUrlConfig.URL_QUERY_PAGE_LIST)
+    @PostMapping(ArticleMainApiUrlConfig.URL_ARTICLE_QUERY_PAGE_LIST)
     @IpLimit(key = "queryEffectiveArticlePage")
     public String queryEffectiveArticlePage(@RequestBody String param) {
 
@@ -154,7 +155,7 @@ public class ArticleApiMainController extends BaseController {
             artParam.processSortField(req.getSortField(), req.getSortOrder());
 
 
-            PageInfo<ArticleBO> pageInfo = articleBizService.queryMainArticleList(artParam, request.getRemoteAddr());
+            PageInfo<ArticleBO> pageInfo = articleBizService.queryMainArticleList(artParam, JwUtil.getRealIpAddress(request));
             List<ArticleMainPageVO> list = new ArrayList<>();
             ArticleMainPageResponse response = ArticleMainPageResponse.getInstance();
             for (ArticleBO articleBO : pageInfo.getList()) {
@@ -178,16 +179,7 @@ public class ArticleApiMainController extends BaseController {
                 if (TopPlaceEnum.TOP.getValue().equals(articleBO.getTopPlaceStatus())) {
                     vo.setTopPlaceFlag(true);
                 }
-                if (CollectionUtils.isNotEmpty(articleBO.getArtTagsList())) {
-                    List<TagsVO> tagsVOS = new ArrayList<>();
-                    articleBO.getArtTagsList().forEach(o -> {
-                        TagsVO tagsVO = new TagsVO();
-                        tagsVO.setId(o.getId());
-                        tagsVO.setName(o.getName());
-                        tagsVOS.add(tagsVO);
-                    });
-                    vo.setTags(tagsVOS);
-                }
+
                 list.add(vo);
             }
             if (req.getCategory1() != null || req.getCategory2() != null) {
@@ -237,6 +229,7 @@ public class ArticleApiMainController extends BaseController {
      * --title<br/>
      * --author<br/>
      * --publishDate<br/>
+     * --publishRegion<br/>
      * --modifiedDate<br/>
      * --content<br/>
      * --imgSrc<br/>
@@ -258,7 +251,7 @@ public class ArticleApiMainController extends BaseController {
      * @author gulihua
      */
     @ApiVersion()
-    @PostMapping(ArticleMainApiUrlConfig.URL_QUERY_DETAIL)
+    @PostMapping(ArticleMainApiUrlConfig.URL_ARTICLE_QUERY_DETAIL)
     @IpLimit(key = "queryArticleDetail")
     public String queryArticleDetail(@RequestBody String param) {
         ArticleMainInfoResponse response = ArticleMainInfoResponse.getInstance();
@@ -266,11 +259,12 @@ public class ArticleApiMainController extends BaseController {
             super.printRequestParams(param);
             EntityOidRequest req = this.convertParam(param, EntityOidRequest.class);
             BizValidation.paramValidate(req.getEntityOid(), "entityOid", "文章id不能为空!");
-            ArticleBO articleBO = articleBizService.queryArticleMainDetail(req.getEntityOid(), request.getRemoteAddr());
+            ArticleBO articleBO = articleBizService.queryArticleMainDetail(req.getEntityOid(), JwUtil.getRealIpAddress(request));
             if (articleBO != null) {
                 ArticleMainVO articleVO = new ArticleMainVO();
                 BeanUtils.copyProperties(articleBO, articleVO);
                 articleVO.setPublishTime(articleBO.getPushTime());
+                articleVO.setPublishRegion(articleBO.getPushRegion());
                 articleVO.setId(articleBO.getOid());
                 articleVO.setCategoryOid(articleBO.getCategoryId());
                 articleVO.setCategory(articleBO.getCategoryName());
@@ -317,7 +311,7 @@ public class ArticleApiMainController extends BaseController {
      * @author gulihua
      */
     @ApiVersion()
-    @PostMapping(ArticleMainApiUrlConfig.URL_QUERY_RECOMMEND_LIST)
+    @PostMapping(ArticleMainApiUrlConfig.URL_ARTICLE_QUERY_RECOMMEND_LIST)
     @IpLimit(key = "queryRecommendArticle")
     public String queryRecommendArticle(@RequestBody String param) {
 
@@ -380,7 +374,7 @@ public class ArticleApiMainController extends BaseController {
      * @author gulihua
      */
     @ApiVersion()
-    @PostMapping(ArticleMainApiUrlConfig.URL_QUERY_DETAIL_RECOMMEND_LIST)
+    @PostMapping(ArticleMainApiUrlConfig.URL_ARTICLE_QUERY_DETAIL_RECOMMEND_LIST)
     @IpLimit(key = "queryDetailRecommendArticle")
     public String queryDetailRecommendArticle(@RequestBody String param) {
 
@@ -427,7 +421,7 @@ public class ArticleApiMainController extends BaseController {
      * @author gulihua
      */
     @ApiVersion()
-    @PostMapping(ArticleMainApiUrlConfig.URL_MONTH_DATE_PUBLISH_QUERY)
+    @PostMapping(ArticleMainApiUrlConfig.URL_ARTICLE_MONTH_DATE_PUBLISH_QUERY)
     @IpLimit(key = "queryMonthDatePublish")
     public String queryMonthDatePublish(@RequestBody String param) {
 
@@ -437,7 +431,7 @@ public class ArticleApiMainController extends BaseController {
             BizValidation.paramValidate(req.getMonth(), "month", "月份不能为空!");
             BizValidation.paramMinLengthValidate(req.getMonth(), 7, "month", "月份格式(yyyy-MM)不正确!");
             MonthPublishResponse response = MonthPublishResponse.getInstance();
-            List<MonthPublishBO> data = articleBizService.queryMonthDatePublishList(req.getMonth(), request.getRemoteAddr());
+            List<MonthPublishBO> data = articleBizService.queryMonthDatePublishList(req.getMonth(), JwUtil.getRealIpAddress(request));
             if (CollectionUtils.isNotEmpty(data)) {
                 List<MonthPublishVO> voList = new ArrayList<>(data.size());
                 data.forEach(o -> {
@@ -471,15 +465,15 @@ public class ArticleApiMainController extends BaseController {
      * @author gulihua
      */
     @ApiVersion()
-    @PostMapping(ArticleMainApiUrlConfig.URL_PRAISE_ADD)
-    @IpLimit(key = "doAddPraise")
-    public String doAddPraise(@RequestBody String param) {
+    @PostMapping(ArticleMainApiUrlConfig.URL_ARTICLE_PRAISE_ADD)
+    @IpLimit(key = "doAddArticlePraise")
+    public String doAddArticlePraise(@RequestBody String param) {
         try {
             super.printRequestParams(param);
             ArticlePraiseRequest req = this.convertParam(param, ArticlePraiseRequest.class);
             BizValidation.paramValidate(req.getArtOid(), "artOid", "文章id不能为空!");
 
-            articleBizService.doAddPraise(req.getArtOid(), request.getRemoteAddr());
+            articleBizService.doAddPraise(req.getArtOid(), JwUtil.getRealIpAddress(request));
 
         } catch (Exception e) {
             return super.exceptionToString(e);
@@ -525,7 +519,7 @@ public class ArticleApiMainController extends BaseController {
      * @author gulihua
      */
     @ApiVersion()
-    @PostMapping(ArticleMainApiUrlConfig.URL_PASSWORD_VERIFY)
+    @PostMapping(ArticleMainApiUrlConfig.URL_ARTICLE_PASSWORD_VERIFY)
     @IpLimit(key = "doVerifyPasswordArticle")
     public String doVerifyPasswordArticle(@RequestBody String param) {
         ArticleMainInfoResponse response = ArticleMainInfoResponse.getInstance();
@@ -534,7 +528,7 @@ public class ArticleApiMainController extends BaseController {
             ArticlePassVerifyRequest req = this.convertParam(param, ArticlePassVerifyRequest.class);
             BizValidation.paramValidate(req.getArtOid(), "artOid", "文章id不能为空!");
             BizValidation.paramValidate(req.getPassword(), "password", "文章密码不能为空!");
-            ArticleBO articleBO = articleBizService.queryArticleMainDetail(req.getArtOid(), req.getPassword(), request.getRemoteAddr());
+            ArticleBO articleBO = articleBizService.queryArticleMainDetail(req.getArtOid(), req.getPassword(), JwUtil.getRealIpAddress(request));
             if (articleBO != null) {
                 ArticleMainVO articleVO = new ArticleMainVO();
                 BeanUtils.copyProperties(articleBO, articleVO);

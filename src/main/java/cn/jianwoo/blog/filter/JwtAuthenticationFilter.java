@@ -13,6 +13,8 @@ import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.biz.AdminBizService;
 import cn.jianwoo.blog.service.bo.AdminBO;
 import cn.jianwoo.blog.service.bo.UserBO;
+import cn.jianwoo.blog.util.ApplicationConfigUtil;
+import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.util.JwtUtils;
 import com.alibaba.fastjson.JSONObject;
 import io.jsonwebtoken.Claims;
@@ -42,7 +44,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.ResourceBundle;
 
 /**
  * @author GuLihua
@@ -54,10 +55,12 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     private static final PathMatcher pathMatcher = new AntPathMatcher();
     static final String USER_KEY = "USER_ID";
 
-    private final static ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("application");
-    private final static String accessTokenExpireSec = RESOURCE_BUNDLE.getString("access.token.expired.seconds");
     private final CacheStore<String, Object> jwCacheStore = SpringUtil.getBean(CacheStore.class);
     private final ApplicationContext applicationContext = SpringUtil.getApplicationContext();
+
+    private static final ApplicationConfigUtil applicationConfigUtil = SpringUtil.getBean(ApplicationConfigUtil.class);
+
+    private final static String accessTokenExpireSec = applicationConfigUtil.getAccessTokenExpiredSeconds();
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -137,10 +140,10 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 String loginIdCacheKey = MessageFormat.format(CacheKeyConstants.LOGIN_USER_STATUS, oid);
                 boolean isLogin = (Boolean) jwCacheStore.get(loginIdCacheKey).orElse(false);
                 // 解决服务器每次重启缓存失效，但是jwt有效的问题，调试时可以注释
-//                if (!Boolean.TRUE.equals(isLogin)) {
-//                    log.error("======>>user logout failed, user does not login.");
-//                    return null;
-//                }
+                if (!Boolean.TRUE.equals(isLogin)) {
+                    log.error("======>>user logout failed, user does not login.");
+                    return null;
+                }
                 // 验证是否失效
                 String invalidTokenKey = MessageFormat.format(CacheKeyConstants.INVALID_TOKEN, accessToken);
                 if (jwCacheStore.hasKey(invalidTokenKey)) {
@@ -187,7 +190,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 }
                 userBO.setName(admin.getUsername());
                 Map param = new HashMap();
-                param.put(Constants.LOGIN_IP, request.getRemoteAddr());
+                param.put(Constants.LOGIN_IP, JwUtil.getRealIpAddress(request));
 
                 authorities.add(
                         new SimpleGrantedAuthority(Constants.ROLE_PREFIX + Constants.ADMIN.toUpperCase(Locale.ROOT)));

@@ -48,20 +48,17 @@ import cn.jianwoo.blog.service.bo.UserInfoBO;
 import cn.jianwoo.blog.service.bo.UserTmpBO;
 import cn.jianwoo.blog.service.param.CommentMainParam;
 import cn.jianwoo.blog.service.param.CommentParam;
-import cn.jianwoo.blog.service.param.PageParam;
 import cn.jianwoo.blog.task.bo.TaskDataD0020BO;
 import cn.jianwoo.blog.util.DateUtil;
 import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.util.TransactionUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.Constant;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.Consts;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -85,8 +82,6 @@ public class CommentBizServiceImpl implements CommentBizService {
     @Autowired
     private CommentBizDao commentBizDao;
     @Autowired
-    private ArticleBizDao articleBizDao;
-    @Autowired
     private CommentTransDao commentTransDao;
 
     @Autowired
@@ -109,6 +104,8 @@ public class CommentBizServiceImpl implements CommentBizService {
     private MsgBaseService msgBaseService;
     @Autowired
     private ArticleTransDao articleTransDao;
+    @Autowired
+    private ArticleBizDao articleBizDao;
     @Autowired
     private UserProfileTransDao userProfileTransDao;
     @Autowired
@@ -142,8 +139,8 @@ public class CommentBizServiceImpl implements CommentBizService {
         List<CommentExt> commentExtList = commentBizDao.queryRecentComments(limit);
         List<CommentBO> list = new ArrayList<>();
         if (!CollectionUtils.isEmpty(commentExtList)) {
-            CommentBO bo = new CommentBO();
             commentExtList.forEach(o -> {
+                CommentBO bo = new CommentBO();
                 BeanUtils.copyProperties(o, bo);
                 list.add(bo);
             });
@@ -161,6 +158,20 @@ public class CommentBizServiceImpl implements CommentBizService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void doCreateComment(CommentBO bo, boolean isAdmin) throws JwBlogException {
+        String isCanComment = webconfBizService.queryWebconfByKey(WebConfDataConfig.GLOBAL_COMMENT_ALLOW);
+        if (Constants.FALSE.equals(isCanComment)) {
+            throw CommentBizException.BLOG_NOT_ALLOW_COMMENT_EXCEPTION_CN.print();
+        }
+        Article article = articleBaseService.queryArticleByOid(bo.getArticleOid());
+
+        if (!ArticleStatusEnum.PUBLISHED.getValue().equals(article.getStatus())) {
+            throw ArticleBizException.STATUS_NOT_PUBLISHED_CN.print();
+        }
+
+        if (!article.getIsComment()) {
+            throw ArticleBizException.ARTICLE_NOT_ALLOW_COMMENT_EXCEPTION_CN.print();
+        }
+
         Date now = DateUtil.getNow();
         String frequency = webconfBizService.queryWebconfByKey(WebConfDataConfig.COMMENT_ON_FREQUENCY);
         FrequencyBO frequencyBO = JwUtil.parseFrequency(frequency);
@@ -182,24 +193,16 @@ public class CommentBizServiceImpl implements CommentBizService {
         }
 
 
-        Article article = articleBaseService.queryArticleByOid(bo.getArticleOid());
-
-        if (!ArticleStatusEnum.PUBLISHED.getValue().equals(article.getStatus())) {
-            throw ArticleBizException.STATUS_NOT_PUBLISHED_CN.print();
-        }
-        String isCanComment = webconfBizService.queryWebconfByKey(WebConfDataConfig.GLOBAL_COMMENT_ALLOW);
-        if (Constants.FALSE.equals(isCanComment)) {
-            throw CommentBizException.BLOG_NOT_ALLOW_COMMENT_EXCEPTION_CN.print();
-        }
-        if (!article.getIsComment()) {
-            throw ArticleBizException.ARTICLE_NOT_ALLOW_COMMENT_EXCEPTION_CN.print();
-        }
         String replyToUserId = null;
         Comment replyComment = null;
         if (!TOP_PARENT_OID.equals(bo.getParentOid())) {
             replyComment = commentBaseService.queryCommentByOid(bo.getParentOid());
             if (null == replyComment) {
-                throw ArticleBizException.NOT_EXISTS_REPLY_COMMENT_CN.print();
+                throw CommentBizException.NOT_EXISTS_REPLY_COMMENT_CN.print();
+            }
+            if (replyComment.getIsDelete()) {
+                throw CommentBizException.HAS_DELETE_REPLY_COMMENT_CN.print();
+
             }
         }
         UserTmpBO tmpBO = new UserTmpBO();
@@ -233,7 +236,7 @@ public class CommentBizServiceImpl implements CommentBizService {
                 .with(Comment::setPraiseCount, 0L)
                 .with(Comment::setAvatarSrc, tmpBO.getAvatarSrc())
                 .with(Comment::setClientIp, bo.getClientIp())
-                .with(Comment::setUserArea, Constants.UNKNOW)
+                .with(Comment::setUserRegion, JwUtil.format(tmpBO.getUserRegion(), Constants.UNKNOW))
                 .with(Comment::setReadStatus, CommReadEnum.UNREAD.getValue())
                 .with(Comment::setParentOid, bo.getParentOid())
                 .with(Comment::setContactQq, bo.getContactQq())
@@ -283,20 +286,20 @@ public class CommentBizServiceImpl implements CommentBizService {
         //更新父级评论的回复评论数量
         if (!TOP_PARENT_OID.equals(bo.getParentOid())) {
             try {
-                commentBizDao.doUpdateCommentReplyCnt(comment.getParentOid());
+                commentBizDao.doUpdateCommentReplyCnt(comment.getParentOid(), BizEventOptTypeEnum.CREATE.getValue());
             } catch (DaoException e) {
                 log.error("CommentBizServiceImpl.doAddComment exec failed, e:\n", e);
-                throw CommentBizException.CREATE_FAILED_EXCEPTION_CN.print();
+                throw CommentBizException.MODIFY_FAILED_EXCEPTION.print();
 
             }
         }
         //更新根评论的总评论数量/更新时间
         if (null != comment.getReplyRootOid()) {
             try {
-                commentBizDao.doUpdateCommentTotalReplyCnt(comment.getReplyRootOid());
+                commentBizDao.doUpdateCommentTotalReplyCnt(comment.getReplyRootOid(), BizEventOptTypeEnum.CREATE.getValue());
             } catch (DaoException e) {
                 log.error("CommentBizServiceImpl.doAddComment exec failed, e:\n", e);
-                throw CommentBizException.CREATE_FAILED_EXCEPTION_CN.print();
+                throw CommentBizException.MODIFY_FAILED_EXCEPTION.print();
 
             }
         }
@@ -334,11 +337,11 @@ public class CommentBizServiceImpl implements CommentBizService {
         jsonObject.put("content", comment.getContent());
         jsonObject.put("artOid", comment.getArticleOid());
         jsonObject.put("commOid", comment.getOid());
-        msgBaseService.doCreateMsg(MsgTypeEnum.M101010.getValue(), article.getPushBy(), null, jsonObject, comment.getOid().toString());
+        msgBaseService.doCreateMsg(MsgTypeEnum.M10100002.getValue(), article.getPushBy(), null, jsonObject, comment.getOid().toString());
 
         if (StringUtils.isNotBlank(replyToUserId)) {
             //创建消息(用户)
-            msgBaseService.doCreateMsg(MsgTypeEnum.M101023.getValue(), null, replyToUserId, jsonObject, comment.getOid().toString());
+            msgBaseService.doCreateMsg(MsgTypeEnum.M20101004.getValue(), null, replyToUserId, jsonObject, comment.getOid().toString());
 
         }
     }
@@ -470,7 +473,7 @@ public class CommentBizServiceImpl implements CommentBizService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void doDelCommentById(Long oid, String ip) throws JwBlogException {
+    public void doDelCommentById(Long oid, String ip, boolean isAdmin) throws JwBlogException {
         List<Comment> commentList = new ArrayList<>();
 //       processCommentWithLevel(artComments);
         //2022-06-29 不删除子评论
@@ -484,11 +487,49 @@ public class CommentBizServiceImpl implements CommentBizService {
 //                }
 //            }
 //        }
+        Comment comment = commentBaseService.queryCommentByOid(oid);
+        if (!isAdmin && !comment.getClientIp().equals(ip)) {
+            throw CommentBizException.OPERATION_WITHOUT_PERMISSION.print();
+
+        }
+
+        //更新父级评论的回复评论数量
+        if (!TOP_PARENT_OID.equals(comment.getParentOid())) {
+            try {
+                commentBizDao.doUpdateCommentReplyCnt(comment.getParentOid(), BizEventOptTypeEnum.DELETE.getValue());
+            } catch (DaoException e) {
+                log.error("CommentBizServiceImpl.doDelCommentById exec failed, e:\n", e);
+                throw CommentBizException.MODIFY_FAILED_EXCEPTION.print();
+
+            }
+        }
+        //更新根评论的总评论数量/更新时间
+        if (null != comment.getReplyRootOid()) {
+            try {
+                commentBizDao.doUpdateCommentTotalReplyCnt(comment.getReplyRootOid(), BizEventOptTypeEnum.DELETE.getValue());
+            } catch (DaoException e) {
+                log.error("CommentBizServiceImpl.doDelCommentById exec failed, e:\n", e);
+                throw CommentBizException.MODIFY_FAILED_EXCEPTION.print();
+
+            }
+        }
+
+        try {
+            articleBizDao.doUpdateArticleCommTotalCnt(comment.getArticleOid(), BizEventOptTypeEnum.DELETE.getValue());
+        } catch (DaoException e) {
+            log.error("CommentBizServiceImpl.doDelCommentById exec failed, e:\n", e);
+            throw ArticleBizException.MODIFY_FAILED_EXCEPTION.format(comment.getArticleOid()).print();
+        }
+
         try {
             commentTransDao.doDeleteByPrimaryKey(oid);
         } catch (DaoException e) {
             log.warn("CommentBizServiceImpl.doDelCommentById deleted failed, oid={}", oid);
         }
+
+
+
+
         registerBizEvent(oid, null, BizEventOptTypeEnum.DELETE,
                 JwUtil.generateUsername(ip), ip);
 
@@ -557,7 +598,7 @@ public class CommentBizServiceImpl implements CommentBizService {
     @Transactional(rollbackFor = Exception.class)
     public void doDelCommentByListOid(List<Long> oidList, String ip) throws JwBlogException {
         for (Long oid : oidList) {
-            doDelCommentById(oid, ip);
+            doDelCommentById(oid, ip, true);
         }
 
     }
@@ -614,6 +655,7 @@ public class CommentBizServiceImpl implements CommentBizService {
         query.setArtOid(param.getArtOid());
         query.setParentOid(param.getParentOid());
         query.setReplyRootOid(param.getReplyRootOid());
+        query.setRefOid(param.getRefOid());
         query.setCurrentIp(param.getCurrentIp());
         query.setOrderWay(param.getOrderWay());
         query.setLimit(param.getPageSize());
@@ -621,63 +663,130 @@ public class CommentBizServiceImpl implements CommentBizService {
 
         CommentMainPageListBO resBO = new CommentMainPageListBO();
         log.info(">>>Query comment List, param:[{}]", JSONObject.toJSONString(query));
-
-        List<CommentExt> commentList = commentBizDao.queryCommentsPageListByArticleOid(query);
+        boolean enablePageQuery = true;
         List<CommentBO> list = new ArrayList<>();
-        // 如果评论删除,且有回复评论,显示:该评论已删除
-        if (!CollectionUtils.isEmpty(commentList)) {
-            for (CommentExt o : commentList) {
+        if (null != query.getRefOid()) {
+            try {
+                Comment refComm = commentTransDao.queryCommentByOidWithDel(query.getRefOid());
+                Long rootOid = TOP_PARENT_OID.equals(refComm.getParentOid()) ? refComm.getOid() : refComm.getReplyRootOid();
+                Comment rootComm = refComm;
+                if (rootOid.compareTo(refComm.getOid()) != 0) {
+                    rootComm = commentTransDao.queryCommentByOidWithDel(rootOid);
+                }
+                BizPraise bizPraise = bizPraiseTransDao.queryByBizOidAndIp(rootComm.getOid(), param.getCurrentIp(), PraiseTypeEnum.COMMENT.getValue());
                 CommentBO bo = new CommentBO();
-                BeanUtils.copyProperties(o, bo);
-
+                BeanUtils.copyProperties(rootComm, bo);
                 bo.setIsPraise(false);
-                if (o.getPraiseOid() != null) {
+                if (bizPraise != null) {
                     bo.setIsPraise(true);
                 }
                 bo.setFlagEdit(false);
-                if (param.getCurrentIp().equals(o.getClientIp())) {
+                if (param.getCurrentIp().equals(rootComm.getClientIp())) {
                     bo.setFlagEdit(true);
                 }
+                //分页查询回复评论
+                CommentPageQuery replyQuery = new CommentPageQuery();
+                replyQuery.setArtOid(param.getArtOid());
+                replyQuery.setReplyRootOid(rootOid);
+                replyQuery.setCurrentIp(param.getCurrentIp());
+                replyQuery.setIsLimit(false);
+                List<CommentExt> replyCommentList = commentBizDao.queryCommentsPageListByArticleOid(replyQuery);
                 List<CommentBO> replyCommentBOList = new ArrayList<>();
-                if (TOP_PARENT_OID.equals(query.getParentOid())) {
-                    //分页查询回复评论
-                    CommentPageQuery replyQuery = new CommentPageQuery();
-                    replyQuery.setArtOid(param.getArtOid());
-                    replyQuery.setReplyRootOid(o.getOid());
-                    replyQuery.setCurrentIp(param.getCurrentIp());
-                    replyQuery.setLimit(param.getReplyPageSize());
-                    replyQuery.setPage(param.getReplyPageNo());
-                    List<CommentExt> replyCommentList = commentBizDao.queryCommentsPageListByArticleOid(replyQuery);
 
-                    if (!CollectionUtils.isEmpty(replyCommentList)) {
-                        for (CommentExt reply : replyCommentList) {
-                            CommentBO replyBo = new CommentBO();
-                            BeanUtils.copyProperties(reply, replyBo);
+                if (!CollectionUtils.isEmpty(replyCommentList)) {
+                    for (CommentExt reply : replyCommentList) {
+                        CommentBO replyBo = new CommentBO();
+                        BeanUtils.copyProperties(reply, replyBo);
 
-                            replyBo.setIsPraise(false);
-                            if (reply.getPraiseOid() != null) {
-                                replyBo.setIsPraise(true);
-                            }
-                            replyBo.setFlagEdit(false);
-                            if (param.getCurrentIp().equals(reply.getClientIp())) {
-                                replyBo.setFlagEdit(true);
-                            }
-                            reply.setReplyCount(reply.getReplyCount());
-                            replyCommentBOList.add(replyBo);
+                        replyBo.setIsPraise(false);
+                        if (reply.getPraiseOid() != null) {
+                            replyBo.setIsPraise(true);
                         }
-                        bo.setReplyComments(replyCommentBOList);
+                        replyBo.setFlagEdit(false);
+                        if (param.getCurrentIp().equals(reply.getClientIp())) {
+                            replyBo.setFlagEdit(true);
+                        }
+                        reply.setReplyCount(reply.getReplyCount());
+                        replyCommentBOList.add(replyBo);
                     }
-                    bo.setReplyCount(o.getTotalReplyCount());
-
-
+                    bo.setReplyComments(replyCommentBOList);
                 }
-                if (o.getIsDelete()) {
+                bo.setReplyCount(rootComm.getTotalReplyCount());
+                if (rootComm.getIsDelete()) {
                     if (bo.getReplyCount() > 0L) {
                         bo.setContent(Constants.COMMENT_HAS_DELETE);
+                        bo.setFlagEdit(false);
                         list.add(bo);
+                        enablePageQuery = false;
                     }
                 } else {
                     list.add(bo);
+                    enablePageQuery = false;
+                }
+
+            } catch (DaoException ignore) {
+            }
+        }
+
+        if (enablePageQuery) {
+            List<CommentExt> commentList = commentBizDao.queryCommentsPageListByArticleOid(query);
+            // 如果评论删除,且有回复评论,显示:该评论已删除
+            if (!CollectionUtils.isEmpty(commentList)) {
+                for (CommentExt o : commentList) {
+                    CommentBO bo = new CommentBO();
+                    BeanUtils.copyProperties(o, bo);
+
+                    bo.setIsPraise(false);
+                    if (o.getPraiseOid() != null) {
+                        bo.setIsPraise(true);
+                    }
+                    bo.setFlagEdit(false);
+                    if (param.getCurrentIp().equals(o.getClientIp())) {
+                        bo.setFlagEdit(true);
+                    }
+                    List<CommentBO> replyCommentBOList = new ArrayList<>();
+                    if (TOP_PARENT_OID.equals(query.getParentOid())) {
+                        //分页查询回复评论
+                        CommentPageQuery replyQuery = new CommentPageQuery();
+                        replyQuery.setArtOid(param.getArtOid());
+                        replyQuery.setReplyRootOid(o.getOid());
+                        replyQuery.setCurrentIp(param.getCurrentIp());
+                        replyQuery.setLimit(param.getReplyPageSize());
+                        replyQuery.setPage(param.getReplyPageNo());
+                        replyQuery.setOrderWay(param.getOrderWay());
+                        List<CommentExt> replyCommentList = commentBizDao.queryCommentsPageListByArticleOid(replyQuery);
+
+                        if (!CollectionUtils.isEmpty(replyCommentList)) {
+                            for (CommentExt reply : replyCommentList) {
+                                CommentBO replyBo = new CommentBO();
+                                BeanUtils.copyProperties(reply, replyBo);
+
+                                replyBo.setIsPraise(false);
+                                if (reply.getPraiseOid() != null) {
+                                    replyBo.setIsPraise(true);
+                                }
+                                replyBo.setFlagEdit(false);
+                                if (param.getCurrentIp().equals(reply.getClientIp())) {
+                                    replyBo.setFlagEdit(true);
+                                }
+                                reply.setReplyCount(reply.getReplyCount());
+                                replyCommentBOList.add(replyBo);
+                            }
+                            bo.setReplyComments(replyCommentBOList);
+                        }
+                        bo.setReplyCount(o.getTotalReplyCount());
+
+
+                    }
+                    if (o.getIsDelete()) {
+                        if (bo.getReplyCount() > 0L) {
+                            bo.setContent(Constants.COMMENT_HAS_DELETE);
+                            bo.setFlagEdit(false);
+                            list.add(bo);
+                        }
+                    } else {
+                        list.add(bo);
+                    }
                 }
             }
         }
@@ -691,6 +800,7 @@ public class CommentBizServiceImpl implements CommentBizService {
                         .with(UserInfoBO::setUserId, userProfile.getUserId())
                         .with(UserInfoBO::setUserName, userProfile.getUsername())
                         .with(UserInfoBO::setUserNick, userProfile.getUserNick())
+                        .with(UserInfoBO::setUserRegion, userProfile.getRegisterRegion())
                         .with(UserInfoBO::setContactEmail, userProfile.getUserEmail())
                         .with(UserInfoBO::setContactQq, userProfile.getUserQq())
                         .with(UserInfoBO::setContactWechat, userProfile.getUserWechat()).build();
@@ -748,27 +858,29 @@ public class CommentBizServiceImpl implements CommentBizService {
         }
         //创建消息
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("title", comment.getArticleTitle());
-        jsonObject.put("ip", comment.getClientIp());
-        jsonObject.put("artOid", comment.getArticleOid());
-        jsonObject.put("commOid", comment.getOid());
-        msgBaseService.doCreateMsg(MsgTypeEnum.M101021.getValue(), comment.getArticlePushBy(), null, jsonObject, comment.getOid().toString());
+        JSONObject jsonObject4Admin = new JSONObject();
+        jsonObject4Admin.put("title", comment.getArticleTitle());
+        jsonObject4Admin.put("ip", comment.getClientIp());
+        jsonObject4Admin.put("artOid", comment.getArticleOid());
+        jsonObject4Admin.put("commOid", comment.getOid());
+        msgBaseService.doCreateMsg(MsgTypeEnum.M20100001.getValue(), comment.getArticlePushBy(), null, jsonObject4Admin, comment.getOid().toString());
 
-    }
 
-    @Override
-    public void doDelCommentByIdInMain(Long oid, String ip) throws JwBlogException {
-        Comment comment = commentBaseService.queryCommentByOid(oid);
-        if (!comment.getClientIp().equals(ip)) {
-            throw CommentBizException.OPERATION_WITHOUT_PERMISSION.print();
-
+        if (!comment.getArticlePushBy().equals(comment.getUserId())) {
+            JSONObject jsonObject4User = new JSONObject();
+            jsonObject4User.put("title", comment.getArticleTitle());
+            jsonObject4User.put("ip", comment.getClientIp());
+            jsonObject4User.put("artOid", comment.getArticleOid());
+            jsonObject4User.put("commOid", comment.getOid());
+            jsonObject4User.put("content", comment.getContent());
+            msgBaseService.doCreateMsg(MsgTypeEnum.M20101001.getValue(), null, comment.getUserId(), jsonObject4User, comment.getOid().toString());
         }
-        doDelCommentById(oid, ip);
-
     }
 
+
+
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void doUpdateComment(CommentBO bo) throws JwBlogException {
         Date now = DateUtil.getNow();
         Comment comment = commentBaseService.queryCommentByOid(bo.getOid());
@@ -815,7 +927,7 @@ public class CommentBizServiceImpl implements CommentBizService {
         }
 
 
-        registerBizEvent(comment.getOid(), comment.getContent(), BizEventOptTypeEnum.UPDATE,
+        registerBizEvent(comment.getOid(), newComment.getContent(), BizEventOptTypeEnum.UPDATE,
                 tmpBO.getUsername(), bo.getClientIp());
         //创建消息
 
@@ -825,7 +937,7 @@ public class CommentBizServiceImpl implements CommentBizService {
         jsonObject.put("content", comment.getContent());
         jsonObject.put("artOid", comment.getArticleOid());
         jsonObject.put("commOid", comment.getOid());
-        msgBaseService.doCreateMsg(MsgTypeEnum.M101022.getValue(), comment.getArticlePushBy(), null, jsonObject, comment.getOid().toString());
+        msgBaseService.doCreateMsg(MsgTypeEnum.M20100003.getValue(), comment.getArticlePushBy(), null, jsonObject, comment.getOid().toString());
 
     }
 

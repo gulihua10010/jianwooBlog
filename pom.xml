@@ -10,7 +10,7 @@
     </parent>
     <groupId>cn.jianwoo</groupId>
     <artifactId>blog</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>blog</name>
     <description>jianwoo.cn</description>
 
@@ -75,11 +75,11 @@
             <artifactId>pagehelper</artifactId>
             <version>4.2.1</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>log4j</groupId>-->
-<!--            <artifactId>log4j</artifactId>-->
-<!--            <version>1.2.17</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>log4j</groupId>-->
+        <!--            <artifactId>log4j</artifactId>-->
+        <!--            <version>1.2.17</version>-->
+        <!--        </dependency>-->
         <!--logback config tag -->
         <dependency>
             <groupId>org.codehaus.janino</groupId>
@@ -215,8 +215,33 @@
             <artifactId>qiniu-java-sdk</artifactId>
             <version>[7.7.0, 7.7.99]</version>
         </dependency>
-
+<!--        IP归属地-->
+        <dependency>
+            <groupId>org.lionsoul</groupId>
+            <artifactId>ip2region</artifactId>
+            <version>2.6.4</version>
+        </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <profileActive>dev</profileActive>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <profileActive>prod</profileActive>
+            </properties>
+        </profile>
+    </profiles>
+
+
     <!--    <repositories>-->
     <!--        <repository>-->
     <!--            <id>spring-milestones</id>-->
@@ -293,7 +318,28 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+            <!-- 不执行单元测试，但会编译测试类并在target/test-classes目录下生成相应的class -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <maven.test.skip>true</maven.test.skip>
+                </configuration>
+            </plugin>
         </plugins>
+        <resources>
+            <!-- 打包时手动排除下列文件 -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <!-- 相对路径 -->
+                    <exclude>static/page/main/jianwoo/dist/**</exclude>
+                    <exclude>static/page/main/jianwoo/node_modules/**</exclude>
+                </excludes>
+            </resource>
+        </resources>
     </build>
 
 </project>

@@ -113,8 +113,8 @@ public class MenuApiController extends BaseController {
             BizValidation.paramValidate(request.getParentOid(), "parentOid", "菜单父id不能为空!");
             BizValidation.paramValidate(request.getText(), "text", "菜单名字不能为空!");
             BizValidation.paramValidate(request.getName(), "name", "菜单名不能为空!");
-            BizValidation.paramLengthValidate(request.getName(), Constants.MENU_LENGTH, "name", "菜单名字不能大于10个字符!");
-            BizValidation.paramLengthValidate(request.getText(), Constants.MENU_LENGTH, "text", "菜单文本不能大于10个字符!");
+            BizValidation.paramLengthValidate(request.getName(), Constants.MENU_NAME_LENGTH, "name", "菜单名字不能大于20个字符!");
+            BizValidation.paramLengthValidate(request.getText(), Constants.MENU_TEXT_LENGTH, "text", "菜单文本不能大于10个字符!");
             BizValidation.paramRegexValidate(request.getName(), Constants.MENU_NAME_REGEX, "name", "菜单文本必须是字母、数字、符号\\'_#$@\\'，不能包含其他特殊字符!");
             if (!request.getFlagCategory()) {
                 BizValidation.paramValidate(request.getUrl(), "url", "当菜单不是文章类别时url不能为空!");
@@ -164,8 +164,8 @@ public class MenuApiController extends BaseController {
             BizValidation.paramValidate(request.getOid(), "oid", "菜单id不能为空!");
             BizValidation.paramValidate(request.getText(), "text", "菜单文本不能为空!");
             BizValidation.paramValidate(request.getName(), "name", "菜单名不能为空!");
-            BizValidation.paramLengthValidate(request.getName(), Constants.MENU_LENGTH, "name", "菜单名字不能大于10个字符!");
-            BizValidation.paramLengthValidate(request.getText(), Constants.MENU_LENGTH, "text", "菜单文本不能大于10个字符!");
+            BizValidation.paramLengthValidate(request.getName(), Constants.MENU_NAME_LENGTH, "name", "菜单名字不能大于20个字符!");
+            BizValidation.paramLengthValidate(request.getText(), Constants.MENU_TEXT_LENGTH, "text", "菜单文本不能大于10个字符!");
             BizValidation.paramRegexValidate(request.getName(), Constants.MENU_NAME_REGEX, "name", "菜单文本必须是字母、数字、符号\\'_#$@\\'，不能包含其他特殊字符!");
             if (!request.getFlagCategory()) {
                 BizValidation.paramValidate(request.getUrl(), "url", "当菜单不是文章类别时url不能为空!");

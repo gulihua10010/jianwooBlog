@@ -158,10 +158,10 @@ public class AdminBizServiceImpl implements AdminBizService {
         String accessCacheKey = MessageFormat.format(CacheKeyConstants.TOKEN_ACCESS_CACHE, user.getId());
         jwCacheStore.put(accessCacheKey, authToken.getAccessToken(), accessTokenExpiredSeconds, TimeUnit.SECONDS);
         String loginIdCacheKey = MessageFormat.format(CacheKeyConstants.LOGIN_USER_STATUS, user.getId());
-        jwCacheStore.put(loginIdCacheKey, true);
+        jwCacheStore.put(loginIdCacheKey, true, 7, TimeUnit.DAYS);
 
         String loginIDNameKey = MessageFormat.format(CacheKeyConstants.ADMIN_OID_NAME_KEY, user.getId());
-        jwCacheStore.put(loginIDNameKey, admin.getUsername());
+        jwCacheStore.put(loginIDNameKey, admin.getUsername(), 7, TimeUnit.DAYS);
 
         //执行异步任务
         TaskDataD0020BO taskDataD0020BO = new TaskDataD0020BO();
@@ -199,7 +199,7 @@ public class AdminBizServiceImpl implements AdminBizService {
             Admin admin = adminBaseService.queryAdminByLoginId(loginID);
             AdminBO adminBO = new AdminBO();
             BeanUtils.copyProperties(admin, adminBO);
-            jwCacheStore.put(cacheKey, adminBO);
+            jwCacheStore.put(cacheKey, adminBO, 2, TimeUnit.HOURS);
             return adminBO;
         }
 
@@ -220,7 +220,7 @@ public class AdminBizServiceImpl implements AdminBizService {
             AdminBO adminBO = JwBuilder.of(AdminBO::new)
                     .with(AdminBO::setOid, admin.getOid())
                     .with(AdminBO::setUsername, admin.getUsername()).build();
-            jwCacheStore.put(cacheKey, adminBO);
+            jwCacheStore.put(cacheKey, adminBO, 1, TimeUnit.DAYS);
             return adminBO;
 
         }

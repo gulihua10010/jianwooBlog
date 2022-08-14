@@ -8,6 +8,7 @@ import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.service.base.IpControlBaseService;
 import cn.jianwoo.blog.service.base.LoadingCacheIpService;
+import cn.jianwoo.blog.util.JwUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.util.concurrent.RateLimiter;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author gulihua
@@ -65,10 +67,10 @@ public class IPLimitAspect {
         IpLimit limit = method.getAnnotation(IpLimit.class);
         if (limit != null) {
             Object obj = null;
-            String ipAddr = request.getRemoteAddr();
+            String ipAddr = JwUtil.getRealIpAddress(request);
             String key = ipAddr.concat(Constants.IP_SPLIT).concat(limit.key());
             if (limit.limit() != -1) {
-                String cacheKey = MessageFormat.format(CacheKeyConstants.IIP_ACCESS_TRAFFIC_CTRL_KEY, limit.key());
+                String cacheKey = MessageFormat.format(CacheKeyConstants.IP_ACCESS_TRAFFIC_CTRL_KEY, limit.key());
                 cacheStore.put(cacheKey, limit.limit());
             }
 
@@ -88,7 +90,7 @@ public class IPLimitAspect {
                     ipControlBaseService.doCreateBlackRecord(ipAddr);
                 }
 
-                cacheStore.put(cacheKey, warnCnt + 1);
+                cacheStore.put(cacheKey, warnCnt + 1, 1, TimeUnit.DAYS);
 
                 responseFail();
             }

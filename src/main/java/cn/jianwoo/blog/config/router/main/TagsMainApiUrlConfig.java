@@ -9,6 +9,6 @@ import cn.jianwoo.blog.config.router.UrlConfig;
  */
 public class TagsMainApiUrlConfig extends UrlConfig {
     public static final String URL_PREFIX = "/api/tags";
-    public static final String URL_QUERY_ALL_LIST = "/query/all/list";
+    public static final String URL_TAGS_QUERY_ALL_LIST = "/query/all/list";
 
 }

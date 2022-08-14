@@ -211,13 +211,8 @@ public class AnnouncementBizServiceImpl implements AnnouncementBizService {
     }
 
     @Override
-    public PageInfo<AnnounceBO> queryUsefulAnnouncePage(AnnounceParam param) {
-        Page page = PageHelper.startPage(param.getPageNo(), param.getPageSize());
-        AnnounceQuery query = new AnnounceQuery();
-        if (StringUtils.isNotBlank(param.getTitle())) {
-            query.setTitle(param.getTitle());
-        }
-        List<AnnouncementMsg> announcementMsgList = announcementMsgTransDao.queryUsefulAnnounceList(query);
+    public List<AnnounceBO> queryUsefulAnnounce() {
+        List<AnnouncementMsg> announcementMsgList = announcementMsgTransDao.queryUsefulAnnounceList();
         List<AnnounceBO> list = new ArrayList<>();
         if (!CollectionUtils.isEmpty(announcementMsgList)) {
             announcementMsgList.forEach(o -> {
@@ -226,12 +221,10 @@ public class AnnouncementBizServiceImpl implements AnnouncementBizService {
                 list.add(bo);
             });
         }
-        PageInfo<AnnounceBO> pageInfo = new PageInfo<>(list);
-        //总页数
-        pageInfo.setPages(page.getPages());
-        //总条数
-        pageInfo.setTotal(page.getTotal());
-        return pageInfo;
+        if (list.size() > 4) {
+            return list.subList(0, 4);
+        }
+        return list;
     }
 
     private void registerBizEvent(Long oid, String desc, BizEventOptTypeEnum optTypeEnum) {

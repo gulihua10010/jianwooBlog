@@ -385,6 +385,146 @@ public class ArticleExample {
             return (Criteria) this;
         }
 
+        public Criteria andPushIpIsNull() {
+            addCriterion("PUSH_IP is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushIpIsNotNull() {
+            addCriterion("PUSH_IP is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushIpEqualTo(String value) {
+            addCriterion("PUSH_IP =", value, "pushIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushIpNotEqualTo(String value) {
+            addCriterion("PUSH_IP <>", value, "pushIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushIpGreaterThan(String value) {
+            addCriterion("PUSH_IP >", value, "pushIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushIpGreaterThanOrEqualTo(String value) {
+            addCriterion("PUSH_IP >=", value, "pushIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushIpLessThan(String value) {
+            addCriterion("PUSH_IP <", value, "pushIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushIpLessThanOrEqualTo(String value) {
+            addCriterion("PUSH_IP <=", value, "pushIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushIpLike(String value) {
+            addCriterion("PUSH_IP like", value, "pushIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushIpNotLike(String value) {
+            addCriterion("PUSH_IP not like", value, "pushIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushIpIn(List<String> values) {
+            addCriterion("PUSH_IP in", values, "pushIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushIpNotIn(List<String> values) {
+            addCriterion("PUSH_IP not in", values, "pushIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushIpBetween(String value1, String value2) {
+            addCriterion("PUSH_IP between", value1, value2, "pushIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushIpNotBetween(String value1, String value2) {
+            addCriterion("PUSH_IP not between", value1, value2, "pushIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushRegionIsNull() {
+            addCriterion("PUSH_REGION is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushRegionIsNotNull() {
+            addCriterion("PUSH_REGION is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushRegionEqualTo(String value) {
+            addCriterion("PUSH_REGION =", value, "pushRegion");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushRegionNotEqualTo(String value) {
+            addCriterion("PUSH_REGION <>", value, "pushRegion");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushRegionGreaterThan(String value) {
+            addCriterion("PUSH_REGION >", value, "pushRegion");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushRegionGreaterThanOrEqualTo(String value) {
+            addCriterion("PUSH_REGION >=", value, "pushRegion");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushRegionLessThan(String value) {
+            addCriterion("PUSH_REGION <", value, "pushRegion");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushRegionLessThanOrEqualTo(String value) {
+            addCriterion("PUSH_REGION <=", value, "pushRegion");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushRegionLike(String value) {
+            addCriterion("PUSH_REGION like", value, "pushRegion");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushRegionNotLike(String value) {
+            addCriterion("PUSH_REGION not like", value, "pushRegion");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushRegionIn(List<String> values) {
+            addCriterion("PUSH_REGION in", values, "pushRegion");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushRegionNotIn(List<String> values) {
+            addCriterion("PUSH_REGION not in", values, "pushRegion");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushRegionBetween(String value1, String value2) {
+            addCriterion("PUSH_REGION between", value1, value2, "pushRegion");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushRegionNotBetween(String value1, String value2) {
+            addCriterion("PUSH_REGION not between", value1, value2, "pushRegion");
+            return (Criteria) this;
+        }
+
         public Criteria andTitleIsNull() {
             addCriterion("TITLE is null");
             return (Criteria) this;
@@ -1692,6 +1832,16 @@ public class ArticleExample {
 
         public Criteria andPushByLikeInsensitive(String value) {
             addCriterion("upper(PUSH_BY) like", value.toUpperCase(), "pushBy");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushIpLikeInsensitive(String value) {
+            addCriterion("upper(PUSH_IP) like", value.toUpperCase(), "pushIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andPushRegionLikeInsensitive(String value) {
+            addCriterion("upper(PUSH_REGION) like", value.toUpperCase(), "pushRegion");
             return (Criteria) this;
         }
 

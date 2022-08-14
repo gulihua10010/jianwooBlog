@@ -6,6 +6,8 @@
     <result column="AUTHOR" jdbcType="VARCHAR" property="author" />
     <result column="PUSH_TIME" jdbcType="TIMESTAMP" property="pushTime" />
     <result column="PUSH_BY" jdbcType="VARCHAR" property="pushBy" />
+    <result column="PUSH_IP" jdbcType="VARCHAR" property="pushIp" />
+    <result column="PUSH_REGION" jdbcType="VARCHAR" property="pushRegion" />
     <result column="TITLE" jdbcType="VARCHAR" property="title" />
     <result column="MODIFIED_TIME" jdbcType="TIMESTAMP" property="modifiedTime" />
     <result column="CATEGORY_ID" jdbcType="INTEGER" property="categoryId" />
@@ -90,10 +92,10 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    OID, AUTHOR, PUSH_TIME, PUSH_BY, TITLE, MODIFIED_TIME, CATEGORY_ID, CATEGORY_NAME, 
-    READ_COUNT, PRAISE_COUNT, IS_COMMENT, FLAG_ORIGINAL, ORIGINAL_URL, IMG_SRC, ACCESS_TYPE, 
-    TOP_PLACE_STATUS, COMMENT_COUNT, TOTAL_COMMENT_FLOORS, `STATUS`, `PASSWORD`, DEL_TIME, 
-    REMOVE_RECYCLE_TIME, CREATE_TIME, UPDATE_TIME
+    OID, AUTHOR, PUSH_TIME, PUSH_BY, PUSH_IP, PUSH_REGION, TITLE, MODIFIED_TIME, CATEGORY_ID, 
+    CATEGORY_NAME, READ_COUNT, PRAISE_COUNT, IS_COMMENT, FLAG_ORIGINAL, ORIGINAL_URL, 
+    IMG_SRC, ACCESS_TYPE, TOP_PLACE_STATUS, COMMENT_COUNT, TOTAL_COMMENT_FLOORS, `STATUS`, 
+    `PASSWORD`, DEL_TIME, REMOVE_RECYCLE_TIME, CREATE_TIME, UPDATE_TIME
   </sql>
   <sql id="Blob_Column_List">
     CONTENT, `TEXT`
@@ -106,7 +108,7 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from article
+    from ARTICLE
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -120,7 +122,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from article
+    from ARTICLE
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -134,41 +136,43 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from article
+    from ARTICLE
     where OID = #{oid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from article
+    delete from ARTICLE
     where OID = #{oid,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="cn.jianwoo.blog.entity.example.ArticleExample">
-    delete from article
+    delete from ARTICLE
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="cn.jianwoo.blog.entity.ArticleWithBLOBs">
-    insert into article (OID, AUTHOR, PUSH_TIME, 
-      PUSH_BY, TITLE, MODIFIED_TIME, 
-      CATEGORY_ID, CATEGORY_NAME, READ_COUNT, 
-      PRAISE_COUNT, IS_COMMENT, FLAG_ORIGINAL, 
-      ORIGINAL_URL, IMG_SRC, ACCESS_TYPE, 
-      TOP_PLACE_STATUS, COMMENT_COUNT, TOTAL_COMMENT_FLOORS, 
-      `STATUS`, `PASSWORD`, DEL_TIME, 
-      REMOVE_RECYCLE_TIME, CREATE_TIME, UPDATE_TIME, 
-      CONTENT, `TEXT`)
+    insert into ARTICLE (OID, AUTHOR, PUSH_TIME, 
+      PUSH_BY, PUSH_IP, PUSH_REGION, 
+      TITLE, MODIFIED_TIME, CATEGORY_ID, 
+      CATEGORY_NAME, READ_COUNT, PRAISE_COUNT, 
+      IS_COMMENT, FLAG_ORIGINAL, ORIGINAL_URL, 
+      IMG_SRC, ACCESS_TYPE, TOP_PLACE_STATUS, 
+      COMMENT_COUNT, TOTAL_COMMENT_FLOORS, `STATUS`, 
+      `PASSWORD`, DEL_TIME, REMOVE_RECYCLE_TIME, 
+      CREATE_TIME, UPDATE_TIME, CONTENT, 
+      `TEXT`)
     values (#{oid,jdbcType=BIGINT}, #{author,jdbcType=VARCHAR}, #{pushTime,jdbcType=TIMESTAMP}, 
-      #{pushBy,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{modifiedTime,jdbcType=TIMESTAMP}, 
-      #{categoryId,jdbcType=INTEGER}, #{categoryName,jdbcType=VARCHAR}, #{readCount,jdbcType=BIGINT}, 
-      #{praiseCount,jdbcType=BIGINT}, #{isComment,jdbcType=CHAR}, #{flagOriginal,jdbcType=VARCHAR}, 
-      #{originalUrl,jdbcType=VARCHAR}, #{imgSrc,jdbcType=VARCHAR}, #{accessType,jdbcType=VARCHAR}, 
-      #{topPlaceStatus,jdbcType=VARCHAR}, #{commentCount,jdbcType=BIGINT}, #{totalCommentFloors,jdbcType=BIGINT}, 
-      #{status,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{delTime,jdbcType=TIMESTAMP}, 
-      #{removeRecycleTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{content,jdbcType=LONGVARCHAR}, #{text,jdbcType=LONGVARCHAR})
+      #{pushBy,jdbcType=VARCHAR}, #{pushIp,jdbcType=VARCHAR}, #{pushRegion,jdbcType=VARCHAR}, 
+      #{title,jdbcType=VARCHAR}, #{modifiedTime,jdbcType=TIMESTAMP}, #{categoryId,jdbcType=INTEGER}, 
+      #{categoryName,jdbcType=VARCHAR}, #{readCount,jdbcType=BIGINT}, #{praiseCount,jdbcType=BIGINT}, 
+      #{isComment,jdbcType=CHAR}, #{flagOriginal,jdbcType=VARCHAR}, #{originalUrl,jdbcType=VARCHAR}, 
+      #{imgSrc,jdbcType=VARCHAR}, #{accessType,jdbcType=VARCHAR}, #{topPlaceStatus,jdbcType=VARCHAR}, 
+      #{commentCount,jdbcType=BIGINT}, #{totalCommentFloors,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{delTime,jdbcType=TIMESTAMP}, #{removeRecycleTime,jdbcType=TIMESTAMP}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR}, 
+      #{text,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cn.jianwoo.blog.entity.ArticleWithBLOBs">
-    insert into article
+    insert into ARTICLE
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="oid != null">
         OID,
@@ -181,6 +185,12 @@
       </if>
       <if test="pushBy != null">
         PUSH_BY,
+      </if>
+      <if test="pushIp != null">
+        PUSH_IP,
+      </if>
+      <if test="pushRegion != null">
+        PUSH_REGION,
       </if>
       <if test="title != null">
         TITLE,
@@ -262,6 +272,12 @@
       <if test="pushBy != null">
         #{pushBy,jdbcType=VARCHAR},
       </if>
+      <if test="pushIp != null">
+        #{pushIp,jdbcType=VARCHAR},
+      </if>
+      <if test="pushRegion != null">
+        #{pushRegion,jdbcType=VARCHAR},
+      </if>
       <if test="title != null">
         #{title,jdbcType=VARCHAR},
       </if>
@@ -331,13 +347,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="cn.jianwoo.blog.entity.example.ArticleExample" resultType="java.lang.Long">
-    select count(*) from article
+    select count(*) from ARTICLE
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update article
+    update ARTICLE
     <set>
       <if test="record.oid != null">
         OID = #{record.oid,jdbcType=BIGINT},
@@ -350,6 +366,12 @@
       </if>
       <if test="record.pushBy != null">
         PUSH_BY = #{record.pushBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pushIp != null">
+        PUSH_IP = #{record.pushIp,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pushRegion != null">
+        PUSH_REGION = #{record.pushRegion,jdbcType=VARCHAR},
       </if>
       <if test="record.title != null">
         TITLE = #{record.title,jdbcType=VARCHAR},
@@ -423,11 +445,13 @@
     </if>
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
-    update article
+    update ARTICLE
     set OID = #{record.oid,jdbcType=BIGINT},
       AUTHOR = #{record.author,jdbcType=VARCHAR},
       PUSH_TIME = #{record.pushTime,jdbcType=TIMESTAMP},
       PUSH_BY = #{record.pushBy,jdbcType=VARCHAR},
+      PUSH_IP = #{record.pushIp,jdbcType=VARCHAR},
+      PUSH_REGION = #{record.pushRegion,jdbcType=VARCHAR},
       TITLE = #{record.title,jdbcType=VARCHAR},
       MODIFIED_TIME = #{record.modifiedTime,jdbcType=TIMESTAMP},
       CATEGORY_ID = #{record.categoryId,jdbcType=INTEGER},
@@ -455,11 +479,13 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update article
+    update ARTICLE
     set OID = #{record.oid,jdbcType=BIGINT},
       AUTHOR = #{record.author,jdbcType=VARCHAR},
       PUSH_TIME = #{record.pushTime,jdbcType=TIMESTAMP},
       PUSH_BY = #{record.pushBy,jdbcType=VARCHAR},
+      PUSH_IP = #{record.pushIp,jdbcType=VARCHAR},
+      PUSH_REGION = #{record.pushRegion,jdbcType=VARCHAR},
       TITLE = #{record.title,jdbcType=VARCHAR},
       MODIFIED_TIME = #{record.modifiedTime,jdbcType=TIMESTAMP},
       CATEGORY_ID = #{record.categoryId,jdbcType=INTEGER},
@@ -485,7 +511,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="cn.jianwoo.blog.entity.ArticleWithBLOBs">
-    update article
+    update ARTICLE
     <set>
       <if test="author != null">
         AUTHOR = #{author,jdbcType=VARCHAR},
@@ -495,6 +521,12 @@
       </if>
       <if test="pushBy != null">
         PUSH_BY = #{pushBy,jdbcType=VARCHAR},
+      </if>
+      <if test="pushIp != null">
+        PUSH_IP = #{pushIp,jdbcType=VARCHAR},
+      </if>
+      <if test="pushRegion != null">
+        PUSH_REGION = #{pushRegion,jdbcType=VARCHAR},
       </if>
       <if test="title != null">
         TITLE = #{title,jdbcType=VARCHAR},
@@ -566,10 +598,12 @@
     where OID = #{oid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.jianwoo.blog.entity.ArticleWithBLOBs">
-    update article
+    update ARTICLE
     set AUTHOR = #{author,jdbcType=VARCHAR},
       PUSH_TIME = #{pushTime,jdbcType=TIMESTAMP},
       PUSH_BY = #{pushBy,jdbcType=VARCHAR},
+      PUSH_IP = #{pushIp,jdbcType=VARCHAR},
+      PUSH_REGION = #{pushRegion,jdbcType=VARCHAR},
       TITLE = #{title,jdbcType=VARCHAR},
       MODIFIED_TIME = #{modifiedTime,jdbcType=TIMESTAMP},
       CATEGORY_ID = #{categoryId,jdbcType=INTEGER},
@@ -595,10 +629,12 @@
     where OID = #{oid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.jianwoo.blog.entity.Article">
-    update article
+    update ARTICLE
     set AUTHOR = #{author,jdbcType=VARCHAR},
       PUSH_TIME = #{pushTime,jdbcType=TIMESTAMP},
       PUSH_BY = #{pushBy,jdbcType=VARCHAR},
+      PUSH_IP = #{pushIp,jdbcType=VARCHAR},
+      PUSH_REGION = #{pushRegion,jdbcType=VARCHAR},
       TITLE = #{title,jdbcType=VARCHAR},
       MODIFIED_TIME = #{modifiedTime,jdbcType=TIMESTAMP},
       CATEGORY_ID = #{categoryId,jdbcType=INTEGER},

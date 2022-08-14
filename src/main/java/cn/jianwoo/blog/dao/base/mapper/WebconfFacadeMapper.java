@@ -10,7 +10,7 @@ public interface WebconfFacadeMapper {
 
     int deleteByExample(WebconfFacadeExample example);
 
-    int deleteByPrimaryKey(Long oid);
+    int deleteByPrimaryKey(String cfgKey);
 
     int insert(WebconfFacade record);
 
@@ -18,7 +18,7 @@ public interface WebconfFacadeMapper {
 
     List<WebconfFacade> selectByExample(WebconfFacadeExample example);
 
-    WebconfFacade selectByPrimaryKey(Long oid);
+    WebconfFacade selectByPrimaryKey(String cfgKey);
 
     int updateByExampleSelective(@Param("record") WebconfFacade record, @Param("example") WebconfFacadeExample example);
 

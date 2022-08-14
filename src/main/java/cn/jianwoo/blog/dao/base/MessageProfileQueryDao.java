@@ -3,6 +3,7 @@ package cn.jianwoo.blog.dao.base;
 import cn.jianwoo.blog.entity.MessageProfile;
 import cn.jianwoo.blog.entity.MessageProfileWithBLOBs;
 import cn.jianwoo.blog.entity.query.MsgQuery;
+import cn.jianwoo.blog.enums.ReceiverTypeEnum;
 import cn.jianwoo.blog.exception.DaoException;
 
 import java.util.List;
@@ -22,17 +23,21 @@ public interface MessageProfileQueryDao {
     /**
      * 页面定时获取最新消息
      *
-     * @param limit 消息条数
+     * @param receiverId   接收人
+     * @param receiverType 接收类型({@link ReceiverTypeEnum})
+     * @param limit        消息条数
      * @return
      * @author gulihua
      */
-    List<MessageProfileWithBLOBs> queryMessageProfileTimerList(Integer limit);
+    List<MessageProfileWithBLOBs> queryMessageProfileTimerList(String receiverId, String receiverType, Integer limit);
 
     /**
      * 获取未读消息数量
      *
+     * @param receiverId   接收人
+     * @param receiverType 接收类型({@link ReceiverTypeEnum})
      * @return Integer
      * @author gulihua
      */
-    Long queryUnreadMsgCount();
+    Long queryUnreadMsgCount(String receiverId, String receiverType);
 }

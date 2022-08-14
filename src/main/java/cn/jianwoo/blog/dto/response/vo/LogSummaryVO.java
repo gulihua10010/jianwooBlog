@@ -62,7 +62,7 @@ public class LogSummaryVO implements Serializable {
     /**
      * 触发地区
      */
-    private String triggerArea;
+    private String triggerRegion;
 
     /**
      * 处理状态(描述)

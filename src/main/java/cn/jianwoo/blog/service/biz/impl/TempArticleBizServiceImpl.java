@@ -38,9 +38,10 @@ public class TempArticleBizServiceImpl implements TempArticleBizService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void doSaveTempArticle(TempArticleBO articleBO) throws JwBlogException {
+    public Long doSaveTempArticle(TempArticleBO articleBO) throws JwBlogException {
 
         log.info("==========>Start insert Temp article,title = {}", articleBO.getTitle());
+        Long oid = articleBO.getOid();
         Date now = DateUtil.getNow();
         if (articleBO.getOid() != null) {
             TempArticle tempArticle = null;
@@ -103,6 +104,7 @@ public class TempArticleBizServiceImpl implements TempArticleBizService {
             try {
                 article.setCreateTime(now);
                 tempArticleTransDao.doInsertSelective(article);
+                oid = article.getOid();
             } catch (DaoException e) {
                 log.error("TempArticleBizServiceImpl.doSaveTempArticle exec failed, e:\n", e);
                 throw TempArticleBizException.CREATE_FAILED_EXCEPTION.format(articleBO.getTitle()).print();
@@ -111,6 +113,7 @@ public class TempArticleBizServiceImpl implements TempArticleBizService {
 
 
         log.info("==========>Insert Temp article successfully,title = {}", articleBO.getTitle());
+        return oid;
     }
 
     @Override

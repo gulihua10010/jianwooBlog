@@ -49,14 +49,14 @@ public class AccessVO implements Serializable {
     /**
      * IP所属地域
      */
-    private String accessArea;
+    private String accessRegion;
     /**
      * 显示描述
      */
     private String desc;
 
     public String getDesc() {
-        return String.format(TEMPLATE, DomainUtil.format(this.accessArea, Constants.UNKNOW),
+        return String.format(TEMPLATE, DomainUtil.format(this.accessRegion, Constants.UNKNOW),
                 DomainUtil.format(this.accessIp, Constants.UNKNOW), DateUtil.optimizeTimeDesc(this.accessTime),
                 CommAdminPageUrlConfig.URL_ARTICLE_EDIT.replace("{id}", String.valueOf(this.articleOid)),
                 this.articleTitle);

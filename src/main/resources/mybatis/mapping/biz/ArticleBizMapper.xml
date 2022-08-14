@@ -5,6 +5,8 @@
         <id column="OID" jdbcType="BIGINT" property="oid"/>
         <result column="AUTHOR" jdbcType="VARCHAR" property="author"/>
         <result column="PUSH_TIME" jdbcType="TIMESTAMP" property="pushTime"/>
+        <result column="PUSH_IP" jdbcType="VARCHAR" property="pushIp" />
+        <result column="PUSH_REGION" jdbcType="VARCHAR" property="pushRegion" />
         <result column="TITLE" jdbcType="VARCHAR" property="title"/>
         <result column="MODIFIED_TIME" jdbcType="TIMESTAMP" property="modifiedTime"/>
         <result column="CATEGORY_ID" jdbcType="INTEGER" property="categoryId"/>
@@ -31,10 +33,11 @@
         <result column="TITLE" jdbcType="LONGVARCHAR" property="title"/>
         <result column="PUSH_DATE_STR" jdbcType="VARCHAR" property="pushDateStr"/>
         <result column="COUNT" jdbcType="INTEGER" property="count"/>
+        <result column="PRAISE_OID" property="praiseOid" jdbcType="BIGINT" javaType="java.lang.Long"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        OID, AUTHOR, PUSH_TIME, TITLE, MODIFIED_TIME, CATEGORY_ID, READ_COUNT, PRAISE_COUNT,
+        OID, AUTHOR, PUSH_TIME, PUSH_IP, PUSH_REGION, TITLE, MODIFIED_TIME, CATEGORY_ID, READ_COUNT, PRAISE_COUNT,
     IS_COMMENT, IMG_SRC, ACCESS_TYPE, COMMENT_COUNT, `STATUS`, `PASSWORD`, DEL_TIME, REMOVE_RECYCLE_TIME,
     CREATE_TIME, UPDATE_TIME
     </sql>
@@ -43,7 +46,7 @@
     </sql>
 
     <select id="countArtsByStatus" resultType="int" parameterType="java.lang.String">
-        SELECT COUNT(1) FROM article WHERE STATUS IN
+        SELECT COUNT(1) FROM ARTICLE WHERE STATUS IN
         <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
@@ -54,7 +57,7 @@
         <include refid="Base_Column_List"/>
         <!--        ,-->
         <!--        <include refid="Blob_Column_List"/>-->
-        from article
+        from ARTICLE
         WHERE
         <if test="status != null">
             STATUS= #{status,jdbcType=INTEGER}
@@ -70,7 +73,7 @@
         <include refid="Base_Column_List"/>
         <!--        ,-->
         <!--        <include refid="Blob_Column_List"/>-->
-        FROM article WHERE STATUS= '90' AND (TEXT LIKE CONCAT('%',#{keyword,jdbcType=VARCHAR},'%') OR TITLE LIKE
+        FROM ARTICLE WHERE STATUS= '90' AND (TEXT LIKE CONCAT('%',#{keyword,jdbcType=VARCHAR},'%') OR TITLE LIKE
         CONCAT('%',#{keyword,jdbcType=VARCHAR},'%')) ORDER BY MODIFIED_TIME DESC ;
     </select>
 
@@ -79,7 +82,7 @@
         <include refid="Base_Column_List"/>
         <!--        ,-->
         <!--        <include refid="Blob_Column_List"/>-->
-        FROM article WHERE STATUS = '90' AND ACCESS_TYPE != '10' ORDER BY MODIFIED_TIME DESC LIMIT #{limit,jdbcType=INTEGER}
+        FROM ARTICLE WHERE STATUS = '90' AND ACCESS_TYPE != '10' ORDER BY MODIFIED_TIME DESC LIMIT #{limit,jdbcType=INTEGER}
     </select>
 
     <select id="selectPublishedHotArts" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -87,7 +90,7 @@
         <include refid="Base_Column_List"/>
         <!--        ,-->
         <!--        <include refid="Blob_Column_List"/>-->
-        FROM article WHERE STATUS = '90' AND ACCESS_TYPE != '10' ORDER BY COMMENT_COUNT,PRAISE_COUNT DESC LIMIT #{limit,jdbcType=INTEGER}
+        FROM ARTICLE WHERE STATUS = '90' AND ACCESS_TYPE != '10' ORDER BY COMMENT_COUNT,PRAISE_COUNT DESC LIMIT #{limit,jdbcType=INTEGER}
     </select>
 
     <select id="selectArticleListByStatus" parameterType="cn.jianwoo.blog.entity.query.ArticleQuery"
@@ -140,7 +143,7 @@
 
 
     <update id="restoreFromRecycle" parameterType="cn.jianwoo.blog.entity.Article">
-        update article
+        update ARTICLE
         <set>
             <if test="status != null">
                 `STATUS` = #{status,jdbcType=VARCHAR},
@@ -158,8 +161,10 @@
     <select id="selectArticleListMain" parameterType="map"
             resultMap="ResultMapWithExt">
         SELECT A.TITLE,A.AUTHOR,A.OID,A.ACCESS_TYPE,A.PUSH_TIME,A.COMMENT_COUNT,A.TEXT,A.IMG_SRC,
-               A.PRAISE_COUNT,A.READ_COUNT,A.MODIFIED_TIME,A.CATEGORY_NAME,A.TOP_PLACE_STATUS
-        FROM ARTICLE A
+               A.PRAISE_COUNT,A.READ_COUNT,A.MODIFIED_TIME,A.CATEGORY_NAME,A.TOP_PLACE_STATUS,
+               P.OID AS PRAISE_OID
+
+        FROM ARTICLE A LEFT JOIN BIZ_PRAISE P ON P.TYPE = '10' AND P.BIZ_OID = A.OID AND P.USER_IP = #{currentIp}
         WHERE STATUS = '90'
         <if test="param.keywords != null">
             AND (A.TITLE LIKE CONCAT('%',#{param.keywords,jdbcType=VARCHAR},'%')
@@ -180,11 +185,15 @@
             AND A.CATEGORY_ID = #{param.category2, jdbcType=INTEGER}
         </if>
         <if test="param.category1 != null">
-            AND A.CATEGORY_ID IN (
-            <foreach item="item" collection="param.categorys" separator="," open="(" close=")" index="">
-                #{item, jdbcType=INTEGER}
-            </foreach>
-            )
+            AND A.CATEGORY_ID IN
+            <if test="param.categorys != null">
+                <foreach item="item" collection="param.categorys" separator="," open="(" close=")" index="">
+                    #{item, jdbcType=INTEGER}
+                </foreach>
+            </if>
+            <if test="param.categorys == null">
+                (-1)
+            </if>
         </if>
         <if test="param.tags != null">
         AND A.OID IN (
@@ -209,7 +218,63 @@
         <if test="param.orderByClause != null">
             ORDER BY A.TOP_PLACE_STATUS DESC, #{param.orderByClause}
         </if>
+        LIMIT #{param.start}, #{param.rows}
 
+    </select>
+
+
+
+    <select id="selectArticleListMainCount" parameterType="map"
+            resultType="java.lang.Long">
+        SELECT COUNT(A.OID)
+        FROM ARTICLE A
+        WHERE STATUS = '90'
+        <if test="param.keywords != null">
+            AND (A.TITLE LIKE CONCAT('%',#{param.keywords,jdbcType=VARCHAR},'%')
+            OR
+            A.TEXT LIKE CONCAT('%',#{param.keywords,jdbcType=VARCHAR},'%'))
+        </if>
+        <if test="param.keywords == null">
+            <if test="param.title != null">
+                AND A.TITLE LIKE CONCAT('%',#{param.title,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="param.text != null">
+                AND A.TEXT LIKE CONCAT('%',#{param.text,jdbcType=VARCHAR},'%')
+            </if>
+        </if>
+
+
+        <if test="param.category2 != null">
+            AND A.CATEGORY_ID = #{param.category2, jdbcType=INTEGER}
+        </if>
+        <if test="param.category1 != null">
+            AND A.CATEGORY_ID IN
+            <if test="param.categorys != null">
+                <foreach item="item" collection="param.categorys" separator="," open="(" close=")" index="">
+                    #{item, jdbcType=INTEGER}
+                </foreach>
+            </if>
+            <if test="param.categorys == null">
+                (-1)
+            </if>
+        </if>
+        <if test="param.tags != null">
+            AND A.OID IN (
+            SELECT T.ARTICLE_OID FROM ARTICLE_TAGS T WHERE T.TAGS_OID IN
+            <foreach item="item" collection="param.tags" separator="," open="(" close=")" index="">
+                #{item, jdbcType=INTEGER}
+            </foreach>
+            )
+        </if>
+        <if test="!isPrivate">
+            AND A.ACCESS_TYPE != '10'
+        </if>
+        <if test="param.publishDateStart != null">
+            AND A.PUSH_TIME &gt;= #{param.publishDateStart,jdbcType=TIMESTAMP}
+        </if>
+        <if test="param.publishDateEnd != null">
+            AND A.PUSH_TIME &lt;= #{param.publishDateEnd,jdbcType=TIMESTAMP}
+        </if>
     </select>
 
 
@@ -251,16 +316,29 @@
     <select id="selectRecommendArticleByArtOid" parameterType="java.lang.Long"
             resultMap="ResultMapWithExt">
                 SELECT DISTINCT ARTICLE_OID AS OID, A.TITLE, A.AUTHOR
-                FROM article_tags T LEFT JOIN ARTICLE A ON A.OID=T.ARTICLE_OID
+                FROM ARTICLE_TAGS T LEFT JOIN ARTICLE A ON A.OID=T.ARTICLE_OID
                 WHERE ARTICLE_OID != #{oid} AND TAGS_OID IN
-                      (SELECT TAGS_OID FROM article_tags  WHERE ARTICLE_OID = #{oid})
+                      (SELECT TAGS_OID FROM ARTICLE_TAGS  WHERE ARTICLE_OID = #{oid})
                 AND ART_FLAG_ACTIVITY = TRUE AND ART_FLAG_PRIVATE = 0 ORDER BY READ_COUNT DESC LIMIT 5
     </select>
 
-    <select id="selectRecommendArticleByCategoryOid" parameterType="Integer"
+    <select id="selectRecommendArticleByCategoryOid" parameterType="map"
             resultMap="ResultMapWithExt">
         SELECT OID, TITLE, AUTHOR FROM ARTICLE
-        WHERE OID != #{oid} AND CATEGORY_ID = #{oid} AND ACCESS_TYPE = '20' AND STATUS = '90'
+        WHERE OID != #{artOid,jdbcType=BIGINT} AND CATEGORY_ID = #{categoryOid,jdbcType=INTEGER} AND ACCESS_TYPE = '20' AND STATUS = '90'
         ORDER BY READ_COUNT DESC LIMIT 5
     </select>
+
+
+    <update id="updateArticleCommTotalCnt">
+        UPDATE ARTICLE
+        <if test="optType == '10'">
+            SET COMMENT_COUNT = COMMENT_COUNT + 1
+        </if>
+        <if test="optType == '40'">
+            SET COMMENT_COUNT = COMMENT_COUNT - 1
+        </if>
+        WHERE OID = #{oid,jdbcType=BIGINT}
+        AND STATUS = '90';
+    </update>
 </mapper>

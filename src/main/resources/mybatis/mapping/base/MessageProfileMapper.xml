@@ -6,6 +6,8 @@
     <result column="BUSI_SCENE_CODE" jdbcType="VARCHAR" property="busiSceneCode" />
     <result column="BUSI_TYPE" jdbcType="VARCHAR" property="busiType" />
     <result column="MSG_TYPE" jdbcType="VARCHAR" property="msgType" />
+    <result column="OPT_TYPE" jdbcType="VARCHAR" property="optType" />
+    <result column="RECEIVER_TYPE" jdbcType="VARCHAR" property="receiverType" />
     <result column="MSG_TITLE" jdbcType="VARCHAR" property="msgTitle" />
     <result column="MSG_LINK" jdbcType="VARCHAR" property="msgLink" />
     <result column="BIZ_ID" jdbcType="VARCHAR" property="bizId" />
@@ -18,6 +20,7 @@
     <result column="EMAIL_SEND_RESULT" jdbcType="VARCHAR" property="emailSendResult" />
     <result column="FLAG_READ" jdbcType="VARCHAR" property="flagRead" />
     <result column="FLAG_POPUP" jdbcType="VARCHAR" property="flagPopup" />
+    <result column="FLAG_POPUP_MAIN" jdbcType="VARCHAR" property="flagPopupMain" />
     <result column="READ_TIME" jdbcType="TIMESTAMP" property="readTime" />
     <result column="PROC_RSLT" jdbcType="VARCHAR" property="procRslt" />
     <result column="PROC_TIME" jdbcType="TIMESTAMP" property="procTime" />
@@ -88,10 +91,10 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    OID, BUSI_SCENE_CODE, BUSI_TYPE, MSG_TYPE, MSG_TITLE, MSG_LINK, BIZ_ID, RECEIVER_ID, 
-    RECEIVER_NAME, RECEIVER_EMAIL, RECEIVER_MOBILE_NO, EMAIL_NOTIFY, EMAIL_TPL_CODE, 
-    EMAIL_SEND_RESULT, FLAG_READ, FLAG_POPUP, READ_TIME, PROC_RSLT, PROC_TIME, SEND_TIME, 
-    CREATE_TIME, UPDATE_TIME
+    OID, BUSI_SCENE_CODE, BUSI_TYPE, MSG_TYPE, OPT_TYPE, RECEIVER_TYPE, MSG_TITLE, MSG_LINK, 
+    BIZ_ID, RECEIVER_ID, RECEIVER_NAME, RECEIVER_EMAIL, RECEIVER_MOBILE_NO, EMAIL_NOTIFY, 
+    EMAIL_TPL_CODE, EMAIL_SEND_RESULT, FLAG_READ, FLAG_POPUP, FLAG_POPUP_MAIN, READ_TIME, 
+    PROC_RSLT, PROC_TIME, SEND_TIME, CREATE_TIME, UPDATE_TIME
   </sql>
   <sql id="Blob_Column_List">
     MSG_CONTENT, BIZ_PARAM
@@ -147,18 +150,20 @@
   </delete>
   <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.MessageProfileWithBLOBs" useGeneratedKeys="true">
     insert into MESSAGE_PROFILE (BUSI_SCENE_CODE, BUSI_TYPE, MSG_TYPE, 
-      MSG_TITLE, MSG_LINK, BIZ_ID, 
-      RECEIVER_ID, RECEIVER_NAME, RECEIVER_EMAIL, 
-      RECEIVER_MOBILE_NO, EMAIL_NOTIFY, EMAIL_TPL_CODE, 
-      EMAIL_SEND_RESULT, FLAG_READ, FLAG_POPUP, 
+      OPT_TYPE, RECEIVER_TYPE, MSG_TITLE, 
+      MSG_LINK, BIZ_ID, RECEIVER_ID, 
+      RECEIVER_NAME, RECEIVER_EMAIL, RECEIVER_MOBILE_NO, 
+      EMAIL_NOTIFY, EMAIL_TPL_CODE, EMAIL_SEND_RESULT, 
+      FLAG_READ, FLAG_POPUP, FLAG_POPUP_MAIN, 
       READ_TIME, PROC_RSLT, PROC_TIME, 
       SEND_TIME, CREATE_TIME, UPDATE_TIME, 
       MSG_CONTENT, BIZ_PARAM)
     values (#{busiSceneCode,jdbcType=VARCHAR}, #{busiType,jdbcType=VARCHAR}, #{msgType,jdbcType=VARCHAR}, 
-      #{msgTitle,jdbcType=VARCHAR}, #{msgLink,jdbcType=VARCHAR}, #{bizId,jdbcType=VARCHAR}, 
-      #{receiverId,jdbcType=VARCHAR}, #{receiverName,jdbcType=VARCHAR}, #{receiverEmail,jdbcType=VARCHAR}, 
-      #{receiverMobileNo,jdbcType=VARCHAR}, #{emailNotify,jdbcType=VARCHAR}, #{emailTplCode,jdbcType=VARCHAR}, 
-      #{emailSendResult,jdbcType=VARCHAR}, #{flagRead,jdbcType=VARCHAR}, #{flagPopup,jdbcType=VARCHAR}, 
+      #{optType,jdbcType=VARCHAR}, #{receiverType,jdbcType=VARCHAR}, #{msgTitle,jdbcType=VARCHAR}, 
+      #{msgLink,jdbcType=VARCHAR}, #{bizId,jdbcType=VARCHAR}, #{receiverId,jdbcType=VARCHAR}, 
+      #{receiverName,jdbcType=VARCHAR}, #{receiverEmail,jdbcType=VARCHAR}, #{receiverMobileNo,jdbcType=VARCHAR}, 
+      #{emailNotify,jdbcType=VARCHAR}, #{emailTplCode,jdbcType=VARCHAR}, #{emailSendResult,jdbcType=VARCHAR}, 
+      #{flagRead,jdbcType=VARCHAR}, #{flagPopup,jdbcType=VARCHAR}, #{flagPopupMain,jdbcType=VARCHAR}, 
       #{readTime,jdbcType=TIMESTAMP}, #{procRslt,jdbcType=VARCHAR}, #{procTime,jdbcType=TIMESTAMP}, 
       #{sendTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{msgContent,jdbcType=LONGVARBINARY}, #{bizParam,jdbcType=LONGVARBINARY})
@@ -174,6 +179,12 @@
       </if>
       <if test="msgType != null">
         MSG_TYPE,
+      </if>
+      <if test="optType != null">
+        OPT_TYPE,
+      </if>
+      <if test="receiverType != null">
+        RECEIVER_TYPE,
       </if>
       <if test="msgTitle != null">
         MSG_TITLE,
@@ -211,6 +222,9 @@
       <if test="flagPopup != null">
         FLAG_POPUP,
       </if>
+      <if test="flagPopupMain != null">
+        FLAG_POPUP_MAIN,
+      </if>
       <if test="readTime != null">
         READ_TIME,
       </if>
@@ -245,6 +259,12 @@
       </if>
       <if test="msgType != null">
         #{msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="optType != null">
+        #{optType,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverType != null">
+        #{receiverType,jdbcType=VARCHAR},
       </if>
       <if test="msgTitle != null">
         #{msgTitle,jdbcType=VARCHAR},
@@ -281,6 +301,9 @@
       </if>
       <if test="flagPopup != null">
         #{flagPopup,jdbcType=VARCHAR},
+      </if>
+      <if test="flagPopupMain != null">
+        #{flagPopupMain,jdbcType=VARCHAR},
       </if>
       <if test="readTime != null">
         #{readTime,jdbcType=TIMESTAMP},
@@ -329,6 +352,12 @@
       <if test="record.msgType != null">
         MSG_TYPE = #{record.msgType,jdbcType=VARCHAR},
       </if>
+      <if test="record.optType != null">
+        OPT_TYPE = #{record.optType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.receiverType != null">
+        RECEIVER_TYPE = #{record.receiverType,jdbcType=VARCHAR},
+      </if>
       <if test="record.msgTitle != null">
         MSG_TITLE = #{record.msgTitle,jdbcType=VARCHAR},
       </if>
@@ -365,6 +394,9 @@
       <if test="record.flagPopup != null">
         FLAG_POPUP = #{record.flagPopup,jdbcType=VARCHAR},
       </if>
+      <if test="record.flagPopupMain != null">
+        FLAG_POPUP_MAIN = #{record.flagPopupMain,jdbcType=VARCHAR},
+      </if>
       <if test="record.readTime != null">
         READ_TIME = #{record.readTime,jdbcType=TIMESTAMP},
       </if>
@@ -400,6 +432,8 @@
       BUSI_SCENE_CODE = #{record.busiSceneCode,jdbcType=VARCHAR},
       BUSI_TYPE = #{record.busiType,jdbcType=VARCHAR},
       MSG_TYPE = #{record.msgType,jdbcType=VARCHAR},
+      OPT_TYPE = #{record.optType,jdbcType=VARCHAR},
+      RECEIVER_TYPE = #{record.receiverType,jdbcType=VARCHAR},
       MSG_TITLE = #{record.msgTitle,jdbcType=VARCHAR},
       MSG_LINK = #{record.msgLink,jdbcType=VARCHAR},
       BIZ_ID = #{record.bizId,jdbcType=VARCHAR},
@@ -412,6 +446,7 @@
       EMAIL_SEND_RESULT = #{record.emailSendResult,jdbcType=VARCHAR},
       FLAG_READ = #{record.flagRead,jdbcType=VARCHAR},
       FLAG_POPUP = #{record.flagPopup,jdbcType=VARCHAR},
+      FLAG_POPUP_MAIN = #{record.flagPopupMain,jdbcType=VARCHAR},
       READ_TIME = #{record.readTime,jdbcType=TIMESTAMP},
       PROC_RSLT = #{record.procRslt,jdbcType=VARCHAR},
       PROC_TIME = #{record.procTime,jdbcType=TIMESTAMP},
@@ -430,6 +465,8 @@
       BUSI_SCENE_CODE = #{record.busiSceneCode,jdbcType=VARCHAR},
       BUSI_TYPE = #{record.busiType,jdbcType=VARCHAR},
       MSG_TYPE = #{record.msgType,jdbcType=VARCHAR},
+      OPT_TYPE = #{record.optType,jdbcType=VARCHAR},
+      RECEIVER_TYPE = #{record.receiverType,jdbcType=VARCHAR},
       MSG_TITLE = #{record.msgTitle,jdbcType=VARCHAR},
       MSG_LINK = #{record.msgLink,jdbcType=VARCHAR},
       BIZ_ID = #{record.bizId,jdbcType=VARCHAR},
@@ -442,6 +479,7 @@
       EMAIL_SEND_RESULT = #{record.emailSendResult,jdbcType=VARCHAR},
       FLAG_READ = #{record.flagRead,jdbcType=VARCHAR},
       FLAG_POPUP = #{record.flagPopup,jdbcType=VARCHAR},
+      FLAG_POPUP_MAIN = #{record.flagPopupMain,jdbcType=VARCHAR},
       READ_TIME = #{record.readTime,jdbcType=TIMESTAMP},
       PROC_RSLT = #{record.procRslt,jdbcType=VARCHAR},
       PROC_TIME = #{record.procTime,jdbcType=TIMESTAMP},
@@ -463,6 +501,12 @@
       </if>
       <if test="msgType != null">
         MSG_TYPE = #{msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="optType != null">
+        OPT_TYPE = #{optType,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverType != null">
+        RECEIVER_TYPE = #{receiverType,jdbcType=VARCHAR},
       </if>
       <if test="msgTitle != null">
         MSG_TITLE = #{msgTitle,jdbcType=VARCHAR},
@@ -500,6 +544,9 @@
       <if test="flagPopup != null">
         FLAG_POPUP = #{flagPopup,jdbcType=VARCHAR},
       </if>
+      <if test="flagPopupMain != null">
+        FLAG_POPUP_MAIN = #{flagPopupMain,jdbcType=VARCHAR},
+      </if>
       <if test="readTime != null">
         READ_TIME = #{readTime,jdbcType=TIMESTAMP},
       </if>
@@ -532,6 +579,8 @@
     set BUSI_SCENE_CODE = #{busiSceneCode,jdbcType=VARCHAR},
       BUSI_TYPE = #{busiType,jdbcType=VARCHAR},
       MSG_TYPE = #{msgType,jdbcType=VARCHAR},
+      OPT_TYPE = #{optType,jdbcType=VARCHAR},
+      RECEIVER_TYPE = #{receiverType,jdbcType=VARCHAR},
       MSG_TITLE = #{msgTitle,jdbcType=VARCHAR},
       MSG_LINK = #{msgLink,jdbcType=VARCHAR},
       BIZ_ID = #{bizId,jdbcType=VARCHAR},
@@ -544,6 +593,7 @@
       EMAIL_SEND_RESULT = #{emailSendResult,jdbcType=VARCHAR},
       FLAG_READ = #{flagRead,jdbcType=VARCHAR},
       FLAG_POPUP = #{flagPopup,jdbcType=VARCHAR},
+      FLAG_POPUP_MAIN = #{flagPopupMain,jdbcType=VARCHAR},
       READ_TIME = #{readTime,jdbcType=TIMESTAMP},
       PROC_RSLT = #{procRslt,jdbcType=VARCHAR},
       PROC_TIME = #{procTime,jdbcType=TIMESTAMP},
@@ -559,6 +609,8 @@
     set BUSI_SCENE_CODE = #{busiSceneCode,jdbcType=VARCHAR},
       BUSI_TYPE = #{busiType,jdbcType=VARCHAR},
       MSG_TYPE = #{msgType,jdbcType=VARCHAR},
+      OPT_TYPE = #{optType,jdbcType=VARCHAR},
+      RECEIVER_TYPE = #{receiverType,jdbcType=VARCHAR},
       MSG_TITLE = #{msgTitle,jdbcType=VARCHAR},
       MSG_LINK = #{msgLink,jdbcType=VARCHAR},
       BIZ_ID = #{bizId,jdbcType=VARCHAR},
@@ -571,6 +623,7 @@
       EMAIL_SEND_RESULT = #{emailSendResult,jdbcType=VARCHAR},
       FLAG_READ = #{flagRead,jdbcType=VARCHAR},
       FLAG_POPUP = #{flagPopup,jdbcType=VARCHAR},
+      FLAG_POPUP_MAIN = #{flagPopupMain,jdbcType=VARCHAR},
       READ_TIME = #{readTime,jdbcType=TIMESTAMP},
       PROC_RSLT = #{procRslt,jdbcType=VARCHAR},
       PROC_TIME = #{procTime,jdbcType=TIMESTAMP},

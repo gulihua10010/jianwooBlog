@@ -19,7 +19,7 @@
 
 <style>
     body{
-        background: url("/static/comm/img/admin_bg.jpeg") no-repeat fixed center;
+        background: url("https://cdn.jianwoo.cn/static%2Fjianwoo%2Fadmin_bg.jpeg") no-repeat fixed center;
         background-size: 100% 100%;
         position: center
     }
@@ -129,7 +129,7 @@
 </div>
 <script type="text/html" id="FORGET-CAPTCHA" lay-url="/api/passport/fetch/captcha"
         lay-data="{key: 'IS_FORGET_NEED_CAPTCHA'}" lay-type="post">
-    {{# if(d.flag === 'TRUE'){ }}
+    {{# if(d.flag === 'true' || d.flag === 'TRUE'){ }}
     <div class="layui-form-item inputs" id="captcha-block">
         <div id="embed-captcha" style="margin-right: 15px"></div>
         <p id="wait" class="show">正在加载验证码......</p>
@@ -176,7 +176,7 @@
                     });
 
 
-                    if (d.flag === 'TRUE') {
+                    if (d.flag === 'true' || d.flag === 'TRUE') {
                         var handlerEmbed = function (captchaObj) {
                             layui.form.on('submit(LAY-user-forget-submit)', function (formData) {
                                 captchaForget(captchaObj, formData);

@@ -13,5 +13,5 @@ public interface NetWorkService {
      * @return
      * @author gulihua
      */
-    String getIpArea(String ip);
+    String getIpRegion(String ip);
 }

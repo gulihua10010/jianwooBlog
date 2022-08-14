@@ -5,6 +5,7 @@ import cn.jianwoo.blog.exception.ControllerBizException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.exception.ValidationException;
 import cn.jianwoo.blog.util.DomainUtil;
+import cn.jianwoo.blog.util.JwUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +39,7 @@ public class BaseController implements Serializable {
     protected void printRequestParams(String param) {
         String clazzName = Thread.currentThread().getStackTrace()[2].getClassName();
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(">> [IP:{}] receive the request in method [{}.{}] with param :: {}", request.getRemoteAddr(),
+        log.info(">> [IP:{}] receive the request in method [{}.{}] with param :: {}", JwUtil.getRealIpAddress(request),
                 clazzName, methodName, param);
     }
 
@@ -57,7 +58,7 @@ public class BaseController implements Serializable {
         try {
             DomainUtil.fillStringValue(result, "requestId", getRequestId());
             DomainUtil.fillStringValue(result, "actor", request.getRemoteUser());
-            DomainUtil.fillStringValue(result, "clientIp", request.getRemoteAddr());
+            DomainUtil.fillStringValue(result, "clientIp", JwUtil.getRealIpAddress(request));
             DomainUtil.fillStringValue(result, "sessionId", request.getRequestedSessionId());
             DomainUtil.fillDateValue(result, "requestDate", new Date());
         } catch (Exception e) {

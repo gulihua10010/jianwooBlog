@@ -39,6 +39,11 @@ public class ArticleMainVO implements Serializable {
      * 文章发布时间
      */
     private Date publishTime;
+
+    /**
+     * 文章发布的地区
+     */
+    private String publishRegion;
     /**
      * 文章发布时间 yyyy-MM-dd HH:mm:ss格式
      */

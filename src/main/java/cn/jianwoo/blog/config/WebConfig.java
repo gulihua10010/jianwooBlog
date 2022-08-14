@@ -21,6 +21,12 @@ public class WebConfig implements WebMvcConfigurer {
             + Constants.ASTERISK;
     @Value("${file.upload.path}")
     private String uploadPath;
+
+    @Value("${vue.cursor.icon}")
+    private String cursorIcon;
+    @Value("${vue.favicon.icon}")
+    private String faviconIcon;
+
     private static final String[] EXCLUDE_PATH = {
             CommAdminPageUrlConfig.URL_PREFIX + CommAdminPageUrlConfig.URL_LOGIN,
             PassportApiUrlConfig.URL_PREFIX + PassportApiUrlConfig.URL_PREFIX,
@@ -36,6 +42,23 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler(res)
                 .addResourceLocations(Constants.FILE_PROTOCOL + uploadPath + Constants.URL_SEPARATOR);
+
+        registry.addResourceHandler("/static/**")
+                .addResourceLocations("classpath:static/");
+
+        registry.addResourceHandler("/css/**")
+                .addResourceLocations("classpath:templates/main/dist/css/");
+        registry.addResourceHandler("/fonts/**")
+                .addResourceLocations("classpath:templates/main/dist/fonts/");
+        registry.addResourceHandler("/img/**")
+                .addResourceLocations("classpath:templates/main/dist/img/");
+        registry.addResourceHandler("/js/**")
+                .addResourceLocations("classpath:templates/main/dist/js/");
+
+        registry.addResourceHandler(cursorIcon)
+                .addResourceLocations("classpath:templates/main/dist" + cursorIcon);
+        registry.addResourceHandler(faviconIcon)
+                .addResourceLocations("classpath:templates/main/dist" + faviconIcon);
     }
 
 
@@ -53,7 +76,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     }
 
-    @Bean
+//    @Bean
     public LoginHandleInterceptor loginHandleInterceptor() {
         return new LoginHandleInterceptor();
     }

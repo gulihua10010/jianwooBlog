@@ -85,7 +85,7 @@ public final class CacheKeyConstants {
     /**
      * IP限流控制
      */
-    public final static String IIP_ACCESS_TRAFFIC_CTRL_KEY = "jianwoo:ip:access:traffic:ctrl::{0}";
+    public final static String IP_ACCESS_TRAFFIC_CTRL_KEY = "jianwoo:ip:access:traffic:ctrl::{0}";
 
     /**
      * IP黑名单预警

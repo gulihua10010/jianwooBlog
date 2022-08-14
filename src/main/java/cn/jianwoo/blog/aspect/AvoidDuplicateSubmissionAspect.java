@@ -11,6 +11,7 @@ import cn.jianwoo.blog.util.ProcessTokenUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -59,15 +60,30 @@ public class AvoidDuplicateSubmissionAspect {
         if (pageId != null) {
             page = pageId.value().getValue();
         }
+        String key = processTokenUtil.getSubTokenKey(request, page);
+        key = key.concat(Constants.SEPARATE_HYPHEN).concat(clientToken);
+
         if (null != subToken) {
             if (subToken.validateToken()) {
-                boolean isDuplicate = isRepeatSubmit(clientToken, request, page);
+                boolean isDuplicate = isRepeatSubmit(key);
                 if (isDuplicate) {
                     return processException(FormDuplicateSubmitException.FORM_DUPLICATE_SUBMIT_EXCEPTION);
                 }
             }
         }
         String responseDto = (String) joinPoint.proceed();
+        if (StringUtils.isNotBlank(responseDto)) {
+            try {
+                BaseResponseDto result = JSONObject.parseObject(responseDto, BaseResponseDto.class);
+                if (!result.isSuccess()) {
+                    if (cacheStore.hasKey(key)) {
+                        cacheStore.delete(key);
+                    }
+                }
+            } catch (Exception e) {
+                log.error("Parameter conversion failed, JSON string exception: e" + e.getMessage(), e);
+            }
+        }
 
         return responseDto;
     }
@@ -78,9 +94,7 @@ public class AvoidDuplicateSubmissionAspect {
     }
 
 
-    private boolean isRepeatSubmit(String clientToken, HttpServletRequest request, String pageId) {
-        String key = processTokenUtil.getSubTokenKey(request, pageId);
-        key = key.concat(Constants.SEPARATE_HYPHEN).concat(clientToken);
+    private boolean isRepeatSubmit(String key) {
 
         if (cacheStore.hasKey(key)) {
             return true;

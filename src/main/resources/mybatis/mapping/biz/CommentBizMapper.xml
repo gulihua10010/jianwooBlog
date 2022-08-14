@@ -9,7 +9,7 @@
         <result column="USER_NAME" jdbcType="VARCHAR" property="userName"/>
         <result column="USER_NICK" jdbcType="VARCHAR" property="userNick"/>
         <result column="CLIENT_IP" jdbcType="VARCHAR" property="clientIp"/>
-        <result column="USER_AREA" jdbcType="VARCHAR" property="userArea"/>
+        <result column="USER_REGION" jdbcType="VARCHAR" property="userRegion"/>
         <result column="COMMENT_TIME" jdbcType="TIMESTAMP" property="commentTime"/>
         <result column="PARENT_OID" jdbcType="BIGINT" property="parentOid"/>
         <result column="REPLY_ROOT_OID" jdbcType="BIGINT" property="replyRootOid"/>
@@ -38,7 +38,7 @@
     </resultMap>
     <sql id="Base_Column_List">
         OID
-                , ARTICLE_OID, USER_NAME, CLIENT_IP, USER_AREA, COMMENT_TIME, PARENT_OID, PRAISE_COUNT,
+                , ARTICLE_OID, USER_NAME, CLIENT_IP, USER_REGION, COMMENT_TIME, PARENT_OID, PRAISE_COUNT,
     CONTACT_QQ, CONTACT_WECHAT, CONTACT_WEIBO, CONTACT_TEL, AVATAR_SRC, ART_DEL_STATUS,
     READ_STATUS, CREATE_TIME, UPDATE_TIME
     </sql>
@@ -49,7 +49,7 @@
         C
                 .
                 OID
-                , C.ARTICLE_OID, C.USER_ID, C.USER_NAME, C.USER_NICK, C.CLIENT_IP, C.USER_AREA, C.COMMENT_TIME,
+                , C.ARTICLE_OID, C.USER_ID, C.USER_NAME, C.USER_NICK, C.CLIENT_IP, C.USER_REGION, C.COMMENT_TIME,
         C.PARENT_OID, C.PRAISE_COUNT, C.FLOOR_NUMBER, C.REPLY_COUNT, C.TOTAL_REPLY_COUNT, C.REPLY_ROOT_OID, C.REPLY_TO_USER_ID,C.REPLY_TO_USER_NAME,
         C.REPLY_TO_USER_NICK, C.CONTACT_QQ, C.CONTACT_WECHAT, C.CONTACT_WEIBO,
         C.CONTACT_TEL, C.CONTACT_EMAIL, C.AVATAR_SRC, C.ART_DEL_STATUS, C.READ_STATUS, C.CREATE_TIME, C.UPDATE_TIME,
@@ -60,7 +60,7 @@
         <include refid="Base_Column_List"/>
         ,
         <include refid="Blob_Column_List"/>
-        from comments
+        from COMMENTS
         ORDER BY OID DESC LIMIT 1;
     </select>
 
@@ -87,14 +87,14 @@
 
     <select id="countWithCommentByArt" resultType="int" parameterType="java.lang.Long">
         select count(1)
-        from comments
+        from COMMENTS
         WHERE IS_DELETE = '0'
           AND ARTICLE_OID = #{articleOid,jdbcType=BIGINT}
     </select>
 
     <select id="countAllComments" resultType="int">
         select count(1)
-        from comments
+        from COMMENTS
         WHERE IS_DELETE = '0'
     </select>
 
@@ -134,7 +134,9 @@
             C.COMMENT_TIME ASC
         </if>
 
-        LIMIT #{start}, #{rows}
+        <if test="isLimit == true">
+            LIMIT #{start}, #{rows}
+        </if>
     </select>
 
 
@@ -205,6 +207,10 @@
             <if test="readStatus != null">
                 AND C.READ_STATUS = #{readStatus}
             </if>
+
+            <if test="oid != null">
+                AND C.OID = #{oid}
+            </if>
             AND C.IS_DELETE = '0'
         </where>
 
@@ -235,15 +241,25 @@
 
     <update id="updateCommentReplyCnt">
         UPDATE COMMENTS
-        SET REPLY_COUNT = REPLY_COUNT + 1
+        <if test="optType == '10'">
+            SET REPLY_COUNT = REPLY_COUNT + 1
+        </if>
+        <if test="optType == '40'">
+            SET REPLY_COUNT = REPLY_COUNT - 1
+        </if>
         WHERE OID = #{oid,jdbcType=BIGINT}
-          AND IS_DELETE = '0';
+<!--          AND IS_DELETE = '0';-->
     </update>
 
     <update id="updateCommentTotalReplyCnt">
         UPDATE COMMENTS
-        SET TOTAL_REPLY_COUNT = TOTAL_REPLY_COUNT + 1
+        <if test="optType == '10'">
+            SET TOTAL_REPLY_COUNT = TOTAL_REPLY_COUNT + 1
+        </if>
+        <if test="optType == '40'">
+            SET TOTAL_REPLY_COUNT = TOTAL_REPLY_COUNT - 1
+        </if>
         WHERE OID = #{oid,jdbcType=BIGINT}
-          AND IS_DELETE = '0';
+<!--          AND IS_DELETE = '0';-->
     </update>
 </mapper>

@@ -11,8 +11,6 @@ import cn.jianwoo.blog.dto.response.AnnounceSummaryResponse;
 import cn.jianwoo.blog.dto.response.vo.AnnounceSummaryVO;
 import cn.jianwoo.blog.service.biz.AnnouncementBizService;
 import cn.jianwoo.blog.service.bo.AnnounceBO;
-import cn.jianwoo.blog.service.param.AnnounceParam;
-import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,52 +35,48 @@ public class AnnounceMainApiController extends BaseController {
 
 
     /**
-     * 查询可用公告(首页)<br/>
-     * url:/api/announce/query/useful/page/list<br/>
+     * 查询可用公告, 最多4条(首页)<br/>
+     * url:/api/announce/query/useful/list<br/>
      *
      * @param param JSON 参数({@link AnnouncePageRequest})
      * @return 返回响应 {@link AnnounceSummaryResponse}
      * status<br/>
-     * count<br/>
      * data<br/>
      * --oid<br/>
      * --title<br/>
      * --pushBy<br/>
      * --pushTime<br/>
+     * --content<br/>
+     * --createTime<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)<br/>
      * msg<br/>
      * @author gulihua
      */
-    @PostMapping(AnnounceMainApiUrlConfig.URL_QUERY_USEFUL_PAGE_LIST)
+    @PostMapping(AnnounceMainApiUrlConfig.URL_ANNOUNCE_QUERY_USEFUL_LIST)
     @ApiVersion()
     @IpLimit(key = "queryAnnounceList")
     public String queryAnnounceList(@RequestBody String param) {
 
         try {
             super.printRequestParams(param);
-            AnnouncePageRequest request = this.convertParam(param, AnnouncePageRequest.class);
-            AnnounceParam announceParam = new AnnounceParam();
-            announceParam.setPageNo(request.getPage());
-            announceParam.setPageSize(request.getLimit());
-            PageInfo<AnnounceBO> pageInfo = announcementBizService.queryUsefulAnnouncePage(announceParam);
+            List<AnnounceBO> announceList = announcementBizService.queryUsefulAnnounce();
 
             AnnounceSummaryResponse response = AnnounceSummaryResponse.getInstance();
             List<AnnounceSummaryVO> list = new ArrayList<>();
-            for (AnnounceBO emailTplBO : pageInfo.getList()) {
+            for (AnnounceBO announceBO : announceList) {
                 AnnounceSummaryVO vo = JwBuilder.of(AnnounceSummaryVO::new)
-                        .with(AnnounceSummaryVO::setOid, emailTplBO.getOid())
-                        .with(AnnounceSummaryVO::setTitle, emailTplBO.getTitle())
-                        .with(AnnounceSummaryVO::setExpiationTime, DateUtil.formatDateTime(emailTplBO.getExpiationTime()))
-                        .with(AnnounceSummaryVO::setCreateTime, DateUtil.formatDateTime(emailTplBO.getCreateTime()))
-                        .with(AnnounceSummaryVO::setPushTimeStr, DateUtil.formatDateTime(emailTplBO.getPushTime()))
-                        .with(AnnounceSummaryVO::setPushTime, emailTplBO.getPushTime())
-                        .with(AnnounceSummaryVO::setPushBy, emailTplBO.getPushBy())
+                        .with(AnnounceSummaryVO::setOid, announceBO.getOid())
+                        .with(AnnounceSummaryVO::setTitle, announceBO.getTitle())
+                        .with(AnnounceSummaryVO::setExpiationTime, DateUtil.formatDateTime(announceBO.getExpiationTime()))
+                        .with(AnnounceSummaryVO::setCreateTime, DateUtil.formatDateTime(announceBO.getCreateTime()))
+                        .with(AnnounceSummaryVO::setPushTimeStr, DateUtil.formatDateTime(announceBO.getPushTime()))
+                        .with(AnnounceSummaryVO::setPushTime, announceBO.getPushTime())
+                        .with(AnnounceSummaryVO::setPushBy, announceBO.getPushBy())
+                        .with(AnnounceSummaryVO::setContent, announceBO.getContent())
                         .build();
                 list.add(vo);
             }
             response.setData(list);
-
-            response.setCount(pageInfo.getTotal());
             return super.responseToJSONString(response);
         } catch (Exception e) {
             return super.exceptionToString(e);

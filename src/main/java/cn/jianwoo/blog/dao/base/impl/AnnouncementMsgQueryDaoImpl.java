@@ -54,14 +54,14 @@ public class AnnouncementMsgQueryDaoImpl implements AnnouncementMsgQueryDao {
     }
 
     @Override
-    public List<AnnouncementMsg> queryUsefulAnnounceList(AnnounceQuery query) {
+    public List<AnnouncementMsg> queryUsefulAnnounceList() {
         AnnouncementMsgExample example = new AnnouncementMsgExample();
         AnnouncementMsgExample.Criteria criteria = example.createCriteria();
-        if (StringUtils.isNotBlank(query.getTitle())) {
-            criteria.andTitleLike(query.getTitle());
-        }
+
         criteria.andStatusEqualTo(AnnounceStatusEnum.VALID.getValue()).andExpiationTimeGreaterThan(DateUtil.getNow());
         example.setOrderByClause("CREATE_TIME DESC");
-        return announcementMsgMapper.selectByExample(example);
+        example.setStart(0);
+        example.setRows(4);
+        return announcementMsgMapper.selectByExampleWithBLOBs(example);
     }
 }

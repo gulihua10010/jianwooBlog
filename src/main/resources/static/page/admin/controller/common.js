@@ -338,7 +338,7 @@ layui.extend({
                 return false;
             }
             var patt = /^(((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3},)+$/;
-            if (!patt.test(value+",")) {
+            if (!patt.test(value + ",")) {
                 return 'Ipv4格式不正确';
             }
         },
@@ -450,6 +450,53 @@ layui.extend({
     }
 
 
+    // 表情转码
+    utf16toEntities = function (str) {
+        const patt = /[\ud800-\udbff][\udc00-\udfff]/g; // 检测utf16字符正则
+        str = str.replace(patt, char => {
+            let H;
+            let L;
+            let code;
+            let s;
+            if (char.length === 2) {
+                H = char.charCodeAt(0); // 取出高位
+                L = char.charCodeAt(1); // 取出低位
+                code = (H - 0xd800) * 0x400 + 0x10000 + L - 0xdc00; // 转换算法
+                s = `&amp;#${code};`;
+            } else {
+                s = char;
+            }
+            return s;
+        });
+        return str;
+    }
+    // 表情解码
+    entitiestoUtf16 = function (strObj) {
+        const patt = /&amp;#\d+;/g;
+        const arr = strObj.match(patt) || [];
+        let H;
+        let L;
+        let code;
+        for (let i = 0; i < arr.length; i += 1) {
+            code = arr[i];
+            code = code.replace("&amp;#", "").replace(";", "");
+            // 高位
+            H = Math.floor((code - 0x10000) / 0x400) + 0xd800;
+            // 低位
+            L = ((code - 0x10000) % 0x400) + 0xdc00;
+            code = `&amp;#${code};`;
+            const s = String.fromCharCode(H, L);
+            strObj = strObj.replace(code, s);
+        }
+        return strObj;
+    }
+
+    format = function (s) {
+        if (!s) {
+            return "";
+        }
+        return s.trim();
+    }
     //退出
     admin.events.logout = function () {
         var headers = {};

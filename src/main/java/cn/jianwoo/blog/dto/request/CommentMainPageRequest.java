@@ -29,6 +29,11 @@ public class CommentMainPageRequest extends BasePageRequestDto {
      * 回复评论根oid
      */
     private Long replyRootOid;
+
+    /**
+     * 评论oid, 用于消息跳转上下文
+     */
+    private Long refOid;
     /**
      * 当前ip
      */

@@ -675,73 +675,73 @@ public class AdminExample {
             return (Criteria) this;
         }
 
-        public Criteria andRegisterAreaIsNull() {
-            addCriterion("REGISTER_AREA is null");
+        public Criteria andRegisterRegionIsNull() {
+            addCriterion("REGISTER_REGION is null");
             return (Criteria) this;
         }
 
-        public Criteria andRegisterAreaIsNotNull() {
-            addCriterion("REGISTER_AREA is not null");
+        public Criteria andRegisterRegionIsNotNull() {
+            addCriterion("REGISTER_REGION is not null");
             return (Criteria) this;
         }
 
-        public Criteria andRegisterAreaEqualTo(String value) {
-            addCriterion("REGISTER_AREA =", value, "registerArea");
+        public Criteria andRegisterRegionEqualTo(String value) {
+            addCriterion("REGISTER_REGION =", value, "registerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andRegisterAreaNotEqualTo(String value) {
-            addCriterion("REGISTER_AREA <>", value, "registerArea");
+        public Criteria andRegisterRegionNotEqualTo(String value) {
+            addCriterion("REGISTER_REGION <>", value, "registerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andRegisterAreaGreaterThan(String value) {
-            addCriterion("REGISTER_AREA >", value, "registerArea");
+        public Criteria andRegisterRegionGreaterThan(String value) {
+            addCriterion("REGISTER_REGION >", value, "registerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andRegisterAreaGreaterThanOrEqualTo(String value) {
-            addCriterion("REGISTER_AREA >=", value, "registerArea");
+        public Criteria andRegisterRegionGreaterThanOrEqualTo(String value) {
+            addCriterion("REGISTER_REGION >=", value, "registerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andRegisterAreaLessThan(String value) {
-            addCriterion("REGISTER_AREA <", value, "registerArea");
+        public Criteria andRegisterRegionLessThan(String value) {
+            addCriterion("REGISTER_REGION <", value, "registerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andRegisterAreaLessThanOrEqualTo(String value) {
-            addCriterion("REGISTER_AREA <=", value, "registerArea");
+        public Criteria andRegisterRegionLessThanOrEqualTo(String value) {
+            addCriterion("REGISTER_REGION <=", value, "registerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andRegisterAreaLike(String value) {
-            addCriterion("REGISTER_AREA like", value, "registerArea");
+        public Criteria andRegisterRegionLike(String value) {
+            addCriterion("REGISTER_REGION like", value, "registerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andRegisterAreaNotLike(String value) {
-            addCriterion("REGISTER_AREA not like", value, "registerArea");
+        public Criteria andRegisterRegionNotLike(String value) {
+            addCriterion("REGISTER_REGION not like", value, "registerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andRegisterAreaIn(List<String> values) {
-            addCriterion("REGISTER_AREA in", values, "registerArea");
+        public Criteria andRegisterRegionIn(List<String> values) {
+            addCriterion("REGISTER_REGION in", values, "registerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andRegisterAreaNotIn(List<String> values) {
-            addCriterion("REGISTER_AREA not in", values, "registerArea");
+        public Criteria andRegisterRegionNotIn(List<String> values) {
+            addCriterion("REGISTER_REGION not in", values, "registerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andRegisterAreaBetween(String value1, String value2) {
-            addCriterion("REGISTER_AREA between", value1, value2, "registerArea");
+        public Criteria andRegisterRegionBetween(String value1, String value2) {
+            addCriterion("REGISTER_REGION between", value1, value2, "registerRegion");
             return (Criteria) this;
         }
 
-        public Criteria andRegisterAreaNotBetween(String value1, String value2) {
-            addCriterion("REGISTER_AREA not between", value1, value2, "registerArea");
+        public Criteria andRegisterRegionNotBetween(String value1, String value2) {
+            addCriterion("REGISTER_REGION not between", value1, value2, "registerRegion");
             return (Criteria) this;
         }
 
@@ -885,73 +885,73 @@ public class AdminExample {
             return (Criteria) this;
         }
 
-        public Criteria andLastLoginAreaIsNull() {
-            addCriterion("LAST_LOGIN_AREA is null");
+        public Criteria andLastLoginRegionIsNull() {
+            addCriterion("LAST_LOGIN_REGION is null");
             return (Criteria) this;
         }
 
-        public Criteria andLastLoginAreaIsNotNull() {
-            addCriterion("LAST_LOGIN_AREA is not null");
+        public Criteria andLastLoginRegionIsNotNull() {
+            addCriterion("LAST_LOGIN_REGION is not null");
             return (Criteria) this;
         }
 
-        public Criteria andLastLoginAreaEqualTo(String value) {
-            addCriterion("LAST_LOGIN_AREA =", value, "lastLoginArea");
+        public Criteria andLastLoginRegionEqualTo(String value) {
+            addCriterion("LAST_LOGIN_REGION =", value, "lastLoginRegion");
             return (Criteria) this;
         }
 
-        public Criteria andLastLoginAreaNotEqualTo(String value) {
-            addCriterion("LAST_LOGIN_AREA <>", value, "lastLoginArea");
+        public Criteria andLastLoginRegionNotEqualTo(String value) {
+            addCriterion("LAST_LOGIN_REGION <>", value, "lastLoginRegion");
             return (Criteria) this;
         }
 
-        public Criteria andLastLoginAreaGreaterThan(String value) {
-            addCriterion("LAST_LOGIN_AREA >", value, "lastLoginArea");
+        public Criteria andLastLoginRegionGreaterThan(String value) {
+            addCriterion("LAST_LOGIN_REGION >", value, "lastLoginRegion");
             return (Criteria) this;
         }
 
-        public Criteria andLastLoginAreaGreaterThanOrEqualTo(String value) {
-            addCriterion("LAST_LOGIN_AREA >=", value, "lastLoginArea");
+        public Criteria andLastLoginRegionGreaterThanOrEqualTo(String value) {
+            addCriterion("LAST_LOGIN_REGION >=", value, "lastLoginRegion");
             return (Criteria) this;
         }
 
-        public Criteria andLastLoginAreaLessThan(String value) {
-            addCriterion("LAST_LOGIN_AREA <", value, "lastLoginArea");
+        public Criteria andLastLoginRegionLessThan(String value) {
+            addCriterion("LAST_LOGIN_REGION <", value, "lastLoginRegion");
             return (Criteria) this;
         }
 
-        public Criteria andLastLoginAreaLessThanOrEqualTo(String value) {
-            addCriterion("LAST_LOGIN_AREA <=", value, "lastLoginArea");
+        public Criteria andLastLoginRegionLessThanOrEqualTo(String value) {
+            addCriterion("LAST_LOGIN_REGION <=", value, "lastLoginRegion");
             return (Criteria) this;
         }
 
-        public Criteria andLastLoginAreaLike(String value) {
-            addCriterion("LAST_LOGIN_AREA like", value, "lastLoginArea");
+        public Criteria andLastLoginRegionLike(String value) {
+            addCriterion("LAST_LOGIN_REGION like", value, "lastLoginRegion");
             return (Criteria) this;
         }
 
-        public Criteria andLastLoginAreaNotLike(String value) {
-            addCriterion("LAST_LOGIN_AREA not like", value, "lastLoginArea");
+        public Criteria andLastLoginRegionNotLike(String value) {
+            addCriterion("LAST_LOGIN_REGION not like", value, "lastLoginRegion");
             return (Criteria) this;
         }
 
-        public Criteria andLastLoginAreaIn(List<String> values) {
-            addCriterion("LAST_LOGIN_AREA in", values, "lastLoginArea");
+        public Criteria andLastLoginRegionIn(List<String> values) {
+            addCriterion("LAST_LOGIN_REGION in", values, "lastLoginRegion");
             return (Criteria) this;
         }
 
-        public Criteria andLastLoginAreaNotIn(List<String> values) {
-            addCriterion("LAST_LOGIN_AREA not in", values, "lastLoginArea");
+        public Criteria andLastLoginRegionNotIn(List<String> values) {
+            addCriterion("LAST_LOGIN_REGION not in", values, "lastLoginRegion");
             return (Criteria) this;
         }
 
-        public Criteria andLastLoginAreaBetween(String value1, String value2) {
-            addCriterion("LAST_LOGIN_AREA between", value1, value2, "lastLoginArea");
+        public Criteria andLastLoginRegionBetween(String value1, String value2) {
+            addCriterion("LAST_LOGIN_REGION between", value1, value2, "lastLoginRegion");
             return (Criteria) this;
         }
 
-        public Criteria andLastLoginAreaNotBetween(String value1, String value2) {
-            addCriterion("LAST_LOGIN_AREA not between", value1, value2, "lastLoginArea");
+        public Criteria andLastLoginRegionNotBetween(String value1, String value2) {
+            addCriterion("LAST_LOGIN_REGION not between", value1, value2, "lastLoginRegion");
             return (Criteria) this;
         }
 
@@ -1170,8 +1170,8 @@ public class AdminExample {
             return (Criteria) this;
         }
 
-        public Criteria andRegisterAreaLikeInsensitive(String value) {
-            addCriterion("upper(REGISTER_AREA) like", value.toUpperCase(), "registerArea");
+        public Criteria andRegisterRegionLikeInsensitive(String value) {
+            addCriterion("upper(REGISTER_REGION) like", value.toUpperCase(), "registerRegion");
             return (Criteria) this;
         }
 
@@ -1185,8 +1185,8 @@ public class AdminExample {
             return (Criteria) this;
         }
 
-        public Criteria andLastLoginAreaLikeInsensitive(String value) {
-            addCriterion("upper(LAST_LOGIN_AREA) like", value.toUpperCase(), "lastLoginArea");
+        public Criteria andLastLoginRegionLikeInsensitive(String value) {
+            addCriterion("upper(LAST_LOGIN_REGION) like", value.toUpperCase(), "lastLoginRegion");
             return (Criteria) this;
         }
 

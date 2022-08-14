@@ -10,7 +10,7 @@ public interface WebconfMapper {
 
     int deleteByExample(WebconfExample example);
 
-    int deleteByPrimaryKey(Long oid);
+    int deleteByPrimaryKey(String key);
 
     int insert(Webconf record);
 
@@ -18,7 +18,7 @@ public interface WebconfMapper {
 
     List<Webconf> selectByExample(WebconfExample example);
 
-    Webconf selectByPrimaryKey(Long oid);
+    Webconf selectByPrimaryKey(String key);
 
     int updateByExampleSelective(@Param("record") Webconf record, @Param("example") WebconfExample example);
 

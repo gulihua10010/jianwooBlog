@@ -29,8 +29,12 @@ public class CommentBizException extends JwBlogException {
     public static final CommentBizException MORE_THAN_MAX_COMMENTS_ONE_DAY = new CommentBizException(
             ExceptionConstants.BIZ_OPERATION_FAILED, "您今天最多可以发%s条评论, 请明天再试!");
 
-    public static final ArticleBizException BLOG_NOT_ALLOW_COMMENT_EXCEPTION_CN = new ArticleBizException(
+    public static final CommentBizException BLOG_NOT_ALLOW_COMMENT_EXCEPTION_CN = new CommentBizException(
             ExceptionConstants.BIZ_NOT_EXIST, "网站的评论系统已经关闭!");
+    public static final CommentBizException NOT_EXISTS_REPLY_COMMENT_CN = new CommentBizException(
+            ExceptionConstants.BIZ_NOT_EXIST, "所回复的评论不存在!");
+    public static final CommentBizException HAS_DELETE_REPLY_COMMENT_CN = new CommentBizException(
+            ExceptionConstants.BIZ_NOT_EXIST, "所回复的评论已经删除!");
 
     public static final CommentBizException CREATE_FAILED_EXCEPTION = new CommentBizException(
             ExceptionConstants.BIZ_CREATE_FAIL, "The comment[%s] creation is failed.");
@@ -38,6 +42,8 @@ public class CommentBizException extends JwBlogException {
             ExceptionConstants.BIZ_CREATE_FAIL, "评论发表失败!");
     public static final CommentBizException MODIFY_FAILED_EXCEPTION = new CommentBizException(
             ExceptionConstants.BIZ_MODIFY_FAIL, "The comment[%s] modification is failed.");
+    public static final CommentBizException MODIFY_FAILED_EXCEPTION_CN = new CommentBizException(
+            ExceptionConstants.BIZ_MODIFY_FAIL, "评论修改失败");
     public static final CommentBizException DELETE_FAILED_EXCEPTION = new CommentBizException(
             ExceptionConstants.BIZ_DELETE_FAIL, "The comment[%s] deletion is failed.");
     private static final long serialVersionUID = -4477787493913372810L;

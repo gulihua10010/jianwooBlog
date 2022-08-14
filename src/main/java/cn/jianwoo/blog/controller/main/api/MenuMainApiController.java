@@ -56,7 +56,7 @@ public class MenuMainApiController extends BaseController {
      * @author gulihua
      */
     @ApiVersion()
-    @GetMapping(MenuMainApiUrlConfig.URL_QUERY_LIST)
+    @GetMapping(MenuMainApiUrlConfig.URL_MENU_QUERY_LIST)
     @IpLimit(key = "queryMenuList")
     public String queryMenuList() {
         MainHomeMenuResponse response = MainHomeMenuResponse.getInstance();

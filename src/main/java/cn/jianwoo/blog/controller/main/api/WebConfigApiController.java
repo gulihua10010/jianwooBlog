@@ -39,7 +39,7 @@ public class WebConfigApiController extends BaseController {
 
     /**
      * 查询网站配置<br/>
-     * url:/api/main/config/query<br/>
+     * url:/api/config/query<br/>
      *
      * @param param JSON 参数({@link WebconfRequest})<br/>
      *              key
@@ -70,9 +70,10 @@ public class WebConfigApiController extends BaseController {
         return super.responseToJSONString(response);
 
     }
+
     /**
      * 查询基础网站配置<br/>
-     * url:/api/main/config/page/comm/query<br/>
+     * url:/api/config/page/comm/query<br/>
      *
      * @return 返回响应 {@link WebConfigCommResponse}<br/>
      * status<br/>
@@ -86,7 +87,7 @@ public class WebConfigApiController extends BaseController {
     @GetMapping(WebConfigApiUrlConfig.URL_CONFIG_PAGE_COMM_QUERY)
     @ApiVersion()
     @IpLimit(key = "getWebConfigPage")
-    public String getWebConfigPage() {
+    public String getWebCommConfigPage() {
         WebConfigPageResponse response = WebConfigPageResponse.getInstance();
         try {
             WebPageConfigVO webConfigVO = new WebPageConfigVO();
@@ -94,6 +95,44 @@ public class WebConfigApiController extends BaseController {
             webConfigVO.setKeywords(webconfBizService.queryWebconfByKey(WebConfDataConfig.KEYWORDS));
             webConfigVO.setDesc(webconfBizService.queryWebconfByKey(WebConfDataConfig.DESCRIPTION));
             webConfigVO.setAuthor(webconfBizService.queryWebconfByKey(WebConfDataConfig.AUTHOR));
+            response.setData(webConfigVO);
+
+        } catch (Exception e) {
+            return super.exceptionToString(e);
+
+        }
+
+        return super.responseToJSONString(response);
+
+    }
+
+
+    /**
+     * 查询网站页脚配置<br/>
+     * url:/api/config/page/footer/query<br/>
+     *
+     * @return 返回响应 {@link WebConfigCommResponse}<br/>
+     * status<br/>
+     * data<br/>
+     * --footHtml<br/>
+     * --record<br/>
+     * --recordUrl<br/>
+     * --domain<br/>
+     * --title<br/>
+     * @author gulihua
+     */
+    @GetMapping(WebConfigApiUrlConfig.URL_CONFIG_PAGE_FOOTER_QUERY)
+    @ApiVersion()
+    @IpLimit(key = "getWebFooterConfigPage")
+    public String getWebFooterConfigPage() {
+        WebConfigPageResponse response = WebConfigPageResponse.getInstance();
+        try {
+            WebPageConfigVO webConfigVO = new WebPageConfigVO();
+            webConfigVO.setFootHtml(webconfBizService.queryWebconfByKey(WebConfDataConfig.FOOT_HTML));
+            webConfigVO.setRecord(webconfBizService.queryWebconfByKey(WebConfDataConfig.RECORD));
+            webConfigVO.setRecordUrl(webconfBizService.queryWebconfByKey(WebConfDataConfig.RECORD_URL));
+            webConfigVO.setDomain(webconfBizService.queryWebconfByKey(WebConfDataConfig.DOMAIN));
+            webConfigVO.setTitle(webconfBizService.queryWebconfByKey(WebConfDataConfig.TITLE));
             response.setData(webConfigVO);
 
         } catch (Exception e) {

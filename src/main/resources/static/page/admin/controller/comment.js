@@ -11,7 +11,7 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
 
     table.render({
         elem: '#comment-table'
-        , url: "/api/admin/comment/query?v=1"
+        , url: "/api/admin/comment/query/list?v=1"
         , cols: [[
             {type: 'checkbox', fixed: 'right'}
             , {type: 'numbers', width: 40, title: 'SEQ',}
@@ -23,7 +23,11 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
             , {field: 'userNick', width: 80, title: '用户', align: 'center'}
             , {field: 'commentTimeDesc', width: 200, title: '时间', sort: true, align: 'center'}
             , {field: 'replyTo', title: '回复至', width: 80, align: 'center'}
-            , {field: 'content', title: '内容', align: 'left'}
+            , {
+                field: 'content', title: '内容', align: 'left', templet: function (d) {
+                    return format(d)
+                }
+            }
             , {title: '操作', width: 300, align: 'center', fixed: 'right', toolbar: '#table-content-com'}
 
         ]]
@@ -31,11 +35,18 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
             statusName: 'status'
             , statusCode: '000000'
         }
+        , where: {
+            oid : layui.router().search.oid
+        }
         , page: true
         , autoSort: false //禁用前端自动排序。
         , text: {none: '无数据'}
 
     });
+
+    function format(d) {
+        return entitiestoUtf16(d.content)
+    }
 
     var formatTitle = function (d) {
         if (!d.artTitle) {
@@ -89,6 +100,9 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
 
     });
 
+
+
+
     //点击事件
     var active = {
         batchdel: function () {
@@ -103,7 +117,7 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
                 entityOidArr.push(checkData[i].oid);
             }
 
-            layer.confirm('确定删除吗，将删除全部评论和回复评论？', function (index) {
+            layer.confirm('确定删除这些勾选的评论吗?', function (index) {
                 ajaxPost(
                     "/api/admin/comment/remove/list",
                     1,
@@ -372,7 +386,7 @@ layui.define(['laytable', 'form', 'laytpl', 'element'], function (exports) {
     $('#commentView').on('click', '.del', function (e) {
         stopBubble(e)
         var oid = $(this).attr('data-id');
-        alertAsk('确定要删除此评论(所有回复评论也将会全部删除)?', function () {
+        alertAsk('确定要删除此评论?', function () {
             ajaxPost(
                 "/api/admin/comment/remove",
                 1,

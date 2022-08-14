@@ -10,6 +10,16 @@ public class CommentParam extends PageParam {
     private String title;
     private String readStatus;
 
+    private Long oid;
+
+    public Long getOid() {
+        return this.oid;
+    }
+
+    public void setOid(Long oid) {
+        this.oid = oid;
+    }
+
     public String getReadStatus() {
         return this.readStatus;
     }

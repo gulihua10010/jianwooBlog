@@ -1,9 +1,11 @@
 package cn.jianwoo.blog.enums;
 
 import cn.jianwoo.blog.entity.Admin;
+import cn.jianwoo.blog.entity.Article;
 import cn.jianwoo.blog.entity.ArticleAccess;
 import cn.jianwoo.blog.entity.Comment;
 import cn.jianwoo.blog.entity.LoginLog;
+import cn.jianwoo.blog.entity.MessageBoard;
 import cn.jianwoo.blog.entity.UserProfile;
 
 public enum AsyncIpEnum {
@@ -11,32 +13,43 @@ public enum AsyncIpEnum {
     /**
      * 评论
      */
-    COMMENT("Comment", "commentTransDao", "oid", "userArea", Comment.class),
+    COMMENT("Comment", "commentTransDao", "oid", "userRegion", Comment.class),
 
     /**
      * 访问
      */
-    ACCESS("ArticleAccess", "articleAccessTransDao", "oid", "accessArea", ArticleAccess.class),
+    ACCESS("ArticleAccess", "articleAccessTransDao", "oid", "accessRegion", ArticleAccess.class),
 
     /**
      * 管理员注册
      */
-    ADMIN_REG("Admin", "adminTransDao", "oid", "registerArea", Admin.class),
+    ADMIN_REG("Admin", "adminTransDao", "oid", "registerRegion", Admin.class),
 
     /**
      * 管理员登录
      */
-    ADMIN_LOGIN("Admin", "adminTransDao", "oid", "lastLoginArea", Admin.class),
+    ADMIN_LOGIN("Admin", "adminTransDao", "oid", "lastLoginRegion", Admin.class),
 
     /**
      * 登录日志
      */
-    LOGIN_LOG("LoginLog", "loginLogTransDao", "oid", "triggerArea", LoginLog.class),
+    LOGIN_LOG("LoginLog", "loginLogTransDao", "oid", "triggerRegion", LoginLog.class),
 
     /**
      * 用户注册
      */
-    USER_REG("UserProfile", "userProfileTransDao", "oid", "registerArea", UserProfile.class),
+    USER_REG("UserProfile", "userProfileTransDao", "oid", "registerRegion", UserProfile.class),
+
+
+    /**
+     * 留言
+     */
+    MESSAGE_BOARD("MessageBoard", "messageBoardTransDao", "oid", "userRegion", MessageBoard.class),
+
+    /**
+     * 文章
+     */
+    ARTICLE("Article", "articleTransDao", "oid", "pushRegion", Article.class),
 
     ;
 

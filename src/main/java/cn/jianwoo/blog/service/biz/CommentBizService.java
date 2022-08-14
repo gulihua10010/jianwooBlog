@@ -93,10 +93,11 @@ public interface CommentBizService {
      *
      * @param oid 主键[COMMENTS.OID]
      * @param ip  ip地址
+     * @param isAdmin  是否是管理员
      * @return
      * @author gulihua
      */
-    void doDelCommentById(Long oid, String ip) throws JwBlogException;
+    void doDelCommentById(Long oid, String ip, boolean isAdmin) throws JwBlogException;
 
 
     /**
@@ -179,17 +180,6 @@ public interface CommentBizService {
      * @author gulihua
      */
     void doAddPraise(String commOid, String ip) throws JwBlogException;
-
-
-    /**
-     * 通过oid删除评论
-     *
-     * @param oid 主键[COMMENTS.OID]
-     * @param ip  IP地址
-     * @return
-     * @author gulihua
-     */
-    void doDelCommentByIdInMain(Long oid, String ip) throws JwBlogException;
 
 
     /**

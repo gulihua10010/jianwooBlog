@@ -4,6 +4,9 @@ import cn.jianwoo.blog.config.router.main.AnnounceMainApiUrlConfig;
 import cn.jianwoo.blog.config.router.main.ArticleMainApiUrlConfig;
 import cn.jianwoo.blog.config.router.main.CommentMainApiUrlConfig;
 import cn.jianwoo.blog.config.router.main.AccessMainApiUrlConfig;
+import cn.jianwoo.blog.config.router.main.MenuMainApiUrlConfig;
+import cn.jianwoo.blog.config.router.main.MsgMainApiUrlConfig;
+import cn.jianwoo.blog.config.router.main.TagsMainApiUrlConfig;
 import cn.jianwoo.blog.config.router.main.WebConfigApiUrlConfig;
 import cn.jianwoo.blog.filter.IpControlFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -27,6 +30,9 @@ public class IpControlFilterConfig {
             CommentMainApiUrlConfig.URL_PREFIX + CommentMainApiUrlConfig.ALL_PATTERNS,
             AccessMainApiUrlConfig.URL_PREFIX + AccessMainApiUrlConfig.ALL_PATTERNS,
             WebConfigApiUrlConfig.URL_PREFIX + WebConfigApiUrlConfig.ALL_PATTERNS,
+            TagsMainApiUrlConfig.URL_PREFIX + TagsMainApiUrlConfig.ALL_PATTERNS,
+            MenuMainApiUrlConfig.URL_PREFIX + MenuMainApiUrlConfig.ALL_PATTERNS,
+            MsgMainApiUrlConfig.URL_PREFIX + MsgMainApiUrlConfig.ALL_PATTERNS,
     };
 
 

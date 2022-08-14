@@ -12,6 +12,7 @@ public class ConsoleApiUrlConfig extends UrlConfig {
     public static final String URL_RECENT_ARTICLE_PUBLISHED_QUERY = "/recent/article/published/query";
     public static final String URL_RECENT_ARTICLE_DRAFT_QUERY = "/recent/article/draft/query";
     public static final String URL_RECENT_COMMENT_QUERY = "/recent/comment/query";
+    public static final String URL_RECENT_MESSAGE_BOARD_QUERY = "/recent/message/board/query";
     public static final String URL_PUBLISHED_ARTICLES_COUNT = "/published/articles/count";
     public static final String URL_DRAFT_ARTICLES_COUNT = "/draft/articles/count";
     public static final String URL_COMMENT_COUNT = "/comment/count";

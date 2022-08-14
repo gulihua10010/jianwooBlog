@@ -23,17 +23,20 @@ import cn.jianwoo.blog.enums.CaptchaTypeEnum;
 import cn.jianwoo.blog.enums.GtCaptchaEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.security.token.AuthToken;
+import cn.jianwoo.blog.service.base.IpControlBaseService;
 import cn.jianwoo.blog.service.biz.AdminBizService;
 import cn.jianwoo.blog.service.biz.WebconfBizService;
 import cn.jianwoo.blog.service.bo.ForgetPwdResBO;
 import cn.jianwoo.blog.util.GeetestLibUtil;
 import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.validation.BizValidation;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,6 +59,8 @@ public class PassportApiController extends BaseController {
     private CacheStore<String, String> cacheStore;
     @Autowired
     private WebconfBizService webconfBizService;
+    @Autowired
+    private IpControlBaseService ipControlBaseService;
 
     public static final String LOGIN_SESSION = "JIANWOO.LOGIN.SESSION";
 
@@ -98,8 +103,8 @@ public class PassportApiController extends BaseController {
 //        request.getSession().setAttribute("userid", userid);
             String statusKey = MessageFormat.format(CacheKeyConstants.GT_SERVER_STATUS, guid);
             String userKey = MessageFormat.format(CacheKeyConstants.GT_SERVER_USER, guid);
-            cacheStore.put(statusKey, isGtServiceSucc ? Constants.YES : Constants.NO);
-            cacheStore.put(userKey, userKey);
+            cacheStore.put(statusKey, isGtServiceSucc ? Constants.YES : Constants.NO, 2, TimeUnit.HOURS);
+            cacheStore.put(userKey, userKey, 2, TimeUnit.HOURS);
             GeetestResponse resStr = gtSdk.getResponse();
             logger.info("==>> LoginController.startCaptcha, call sdk res :{}", resStr);
             return super.responseToJSONString(resStr);
@@ -219,6 +224,11 @@ public class PassportApiController extends BaseController {
                     throw new JwBlogException(ExceptionConstants.LOGIN_CAPTCHA_AUTH_INVALID,
                             ExceptionConstants.LOGIN_CAPTCHA_AUTH_INVALID_DESC);
                 }
+            }
+
+            if (ipControlBaseService.isIpInBlackList(JwUtil.getRealIpAddress(request))) {
+                throw new JwBlogException(ExceptionConstants.BIZ_ACCESS_REFUSED,
+                        ExceptionConstants.ACCESS_REFUSED_DESC);
             }
 
 

@@ -28,10 +28,10 @@ public interface AnnouncementMsgQueryDao {
 
 
     /**
-     * 查询可用公告
+     * 查询可用公告(最多4条)
      *
      * @return
      * @author gulihua
      */
-    List<AnnouncementMsg> queryUsefulAnnounceList(AnnounceQuery query);
+    List<AnnouncementMsg> queryUsefulAnnounceList();
 }

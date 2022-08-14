@@ -4,6 +4,7 @@ import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
 import cn.jianwoo.blog.service.base.IpControlBaseService;
+import cn.jianwoo.blog.util.JwUtil;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class IpControlFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        String ip = request.getRemoteAddr();
+        String ip = JwUtil.getRealIpAddress(httpServletRequest);
         String url = httpServletRequest.getRequestURI();
         log.info("IpControlFilter::IP={}, URI={}", ip, url);
 

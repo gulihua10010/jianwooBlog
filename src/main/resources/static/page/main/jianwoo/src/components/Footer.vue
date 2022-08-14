@@ -1,116 +1,73 @@
 <template>
     <div>
         <div v-html="footHtml"></div>
-        <br/>
-        <span id="copyright">Copyright © 2018-{{year}}<span></span></span>
+        <span id="copyright">Copyright © 2018-{{ year }}<span></span></span>
         <span><a :href="domain">{{ name }}</a> </span>
-        <span><a :href="recordUrl"> {{record}}</a></span>
+        <br/>
+        <span>
+                <a target="_blank" :href="recordUrl"
+                   style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                    <img src="/static/comm/img/beian.png" style="float:left;"/>{{ record }}</a>
+        </span>
     </div>
 </template>
 
 <script>
-import {postJson} from "@/common/js/postJson";
+import {getJson} from "@/common/js/getJson";
 
 export default {
     name: "Footer",
     data() {
         return {
-            footHtml:'',
-            record:'',
-            recordUrl:'',
-            domain:'',
-            name:'',
-            year:new Date().getFullYear(),
+            footHtml: '',
+            record: '',
+            recordUrl: '',
+            domain: '',
+            name: '',
+            year: new Date().getFullYear(),
 
         }
     },
     mounted() {
-        this.getFootHtml();
-        this.getRecord();
-        this.getRecordUrl();
-        this.getDomain();
-        this.getWebName();
+        this.getFootInfo();
     },
     created() {
 
     },
     methods: {
-        getFootHtml: function (param) {
+        getFootInfo: function (param) {
             let webInfo = this.getWebInfoCache();
-            if (webInfo.footHtml){
+            if (webInfo.cache) {
                 this.footHtml = webInfo.footHtml;
-            }else {
-                postJson("/main/config/query", {key: 'FOOT_HTML'}).then((res) => {
-                    this.footHtml = res.data.value;
-                    webInfo.footHtml = this.footHtml;
-                    let _jsonstr = JSON.stringify(webInfo);
-                    sessionStorage.setItem("webInfo", _jsonstr);
-                });
-            }
-
-        },
-        getRecord: function (param) {
-            let webInfo = this.getWebInfoCache();
-
-            if (webInfo.record){
                 this.record = webInfo.record;
-            }else {
-                postJson("/main/config/query", {key: 'RECORD'}).then((res) => {
-                    this.record = res.data.value;
-                    webInfo.record = this.record;
-                    let _jsonstr = JSON.stringify(webInfo);
-                    sessionStorage.setItem("webInfo", _jsonstr);
-                });
-            }
-        },
-        getRecordUrl: function (param) {
-            let webInfo = this.getWebInfoCache();
-
-            if (webInfo.recordUrl){
                 this.recordUrl = webInfo.recordUrl;
-            }else {
-                postJson("/main/config/query", {key: 'RECORD_URL'}).then((res) => {
-                    this.recordUrl = res.data.value;
-                    webInfo.recordUrl = this.recordUrl;
-                    let _jsonstr = JSON.stringify(webInfo);
-                    sessionStorage.setItem("webInfo", _jsonstr);
-                });
-            }
-        },
-
-        getDomain: function (param) {
-            let webInfo = this.getWebInfoCache();
-
-            if (webInfo.domain){
                 this.domain = webInfo.domain;
-            }else {
-                postJson("/main/config/query", {key: 'DOMAIN'}).then((res) => {
-                    this.domain = res.data.value;
-                    webInfo.domain = this.domain;
-                    let _jsonstr = JSON.stringify(webInfo);
-                    sessionStorage.setItem("webInfo", _jsonstr);
-                });
-            }
-        },
-        getWebName: function (param) {
-            let webInfo = this.getWebInfoCache();
-
-            if (webInfo.name){
                 this.name = webInfo.name;
-            }else {
-                postJson("/main/config/query", {key: 'TITLE'}).then((res) => {
-                    this.name = res.data.value;
+            } else {
+                getJson("/config/page/footer/query", {}).then((res) => {
+                    this.footHtml = res.data.footHtml;
+                    this.record = res.data.record;
+                    this.recordUrl = res.data.recordUrl;
+                    this.domain = res.data.domain;
+                    this.name = res.data.title;
+                    webInfo.footHtml = this.footHtml;
+                    webInfo.record = this.record;
+                    webInfo.recordUrl = this.recordUrl;
+                    webInfo.domain = this.domain;
                     webInfo.name = this.name;
                     let _jsonstr = JSON.stringify(webInfo);
-                    sessionStorage.setItem("webInfo", _jsonstr);
+                    localStorage.setItem("webInfo", _jsonstr);
                 });
             }
+
         },
-        getWebInfoCache:function () {
-            let webInfoStr = sessionStorage.getItem('webInfo');
+        getWebInfoCache: function () {
+            let webInfoStr = localStorage.getItem('webInfo');
             let webInfo = {};
+            webInfo.cache = false;
             if (webInfoStr) {
                 webInfo = JSON.parse(webInfoStr);
+                webInfo.cache = true;
             }
             return webInfo;
         }

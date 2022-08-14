@@ -121,9 +121,19 @@
                 </div>
                 <div class="layui-col-md6">
                     <div class="layui-card">
-                        <div class="layui-card-header">最近评论</div>
-                        <div class="layui-card-body">
-                            <table id="comment-table" lay-filter="comment-data"></table>
+                        <div class="layui-tab layui-tab-brief layadmin-latestData">
+                            <ul class="layui-tab-title">
+                                <li class="layui-this">最近评论</li>
+                                <li>最近留言</li>
+                            </ul>
+                            <div class="layui-tab-content">
+                                <div class="layui-tab-item layui-show">
+                                    <table id="comment-table" lay-filter="comment-data"></table>
+                                </div>
+                                <div class="layui-tab-item">
+                                    <table id="message-board-table" lay-filter="message-board-data"></table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

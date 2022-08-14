@@ -11,6 +11,7 @@ public class DynamicApiUrlConfig extends UrlConfig {
     public static final String URL_PREFIX = "/api/admin/dynamic";
     public static final String URL_ACCESS_QUERY = "/access/query";
     public static final String URL_COMMENT_QUERY = "/comment/query";
+    public static final String URL_MESSAGE_BOARD_QUERY = "/message/board/query";
 
 
     /**

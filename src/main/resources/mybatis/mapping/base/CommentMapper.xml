@@ -11,7 +11,7 @@
     <result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
     <result column="USER_NICK" jdbcType="VARCHAR" property="userNick" />
     <result column="CLIENT_IP" jdbcType="VARCHAR" property="clientIp" />
-    <result column="USER_AREA" jdbcType="VARCHAR" property="userArea" />
+    <result column="USER_REGION" jdbcType="VARCHAR" property="userRegion" />
     <result column="COMMENT_TIME" jdbcType="TIMESTAMP" property="commentTime" />
     <result column="PARENT_OID" jdbcType="BIGINT" property="parentOid" />
     <result column="REPLY_ROOT_OID" jdbcType="BIGINT" property="replyRootOid" />
@@ -97,7 +97,7 @@
   </sql>
   <sql id="Base_Column_List">
     OID, ARTICLE_OID, ARTICLE_TITLE, ARTICLE_AUTHOR, ARTICLE_PUSH_BY, USER_ID, USER_NAME, 
-    USER_NICK, CLIENT_IP, USER_AREA, COMMENT_TIME, PARENT_OID, REPLY_ROOT_OID, REPLY_TO_USER_ID, 
+    USER_NICK, CLIENT_IP, USER_REGION, COMMENT_TIME, PARENT_OID, REPLY_ROOT_OID, REPLY_TO_USER_ID, 
     REPLY_TO_USER_NAME, REPLY_TO_USER_NICK, PRAISE_COUNT, CONTACT_QQ, CONTACT_WECHAT, 
     CONTACT_WEIBO, CONTACT_TEL, CONTACT_EMAIL, AVATAR_SRC, ART_DEL_STATUS, READ_STATUS, 
     FLOOR_NUMBER, REPLY_COUNT, TOTAL_REPLY_COUNT, IS_DELETE, CREATE_TIME, UPDATE_TIME
@@ -113,7 +113,7 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from comments
+    from COMMENTS
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -127,7 +127,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from comments
+    from COMMENTS
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -141,23 +141,23 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from comments
+    from COMMENTS
     where OID = #{oid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from comments
+    delete from COMMENTS
     where OID = #{oid,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="cn.jianwoo.blog.entity.example.CommentExample">
-    delete from comments
+    delete from COMMENTS
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.Comment" useGeneratedKeys="true">
-    insert into comments (ARTICLE_OID, ARTICLE_TITLE, ARTICLE_AUTHOR, 
+    insert into COMMENTS (ARTICLE_OID, ARTICLE_TITLE, ARTICLE_AUTHOR, 
       ARTICLE_PUSH_BY, USER_ID, USER_NAME, 
-      USER_NICK, CLIENT_IP, USER_AREA, 
+      USER_NICK, CLIENT_IP, USER_REGION, 
       COMMENT_TIME, PARENT_OID, REPLY_ROOT_OID, 
       REPLY_TO_USER_ID, REPLY_TO_USER_NAME, REPLY_TO_USER_NICK, 
       PRAISE_COUNT, CONTACT_QQ, CONTACT_WECHAT, 
@@ -168,7 +168,7 @@
       CONTENT)
     values (#{articleOid,jdbcType=BIGINT}, #{articleTitle,jdbcType=VARCHAR}, #{articleAuthor,jdbcType=VARCHAR}, 
       #{articlePushBy,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
-      #{userNick,jdbcType=VARCHAR}, #{clientIp,jdbcType=VARCHAR}, #{userArea,jdbcType=VARCHAR}, 
+      #{userNick,jdbcType=VARCHAR}, #{clientIp,jdbcType=VARCHAR}, #{userRegion,jdbcType=VARCHAR}, 
       #{commentTime,jdbcType=TIMESTAMP}, #{parentOid,jdbcType=BIGINT}, #{replyRootOid,jdbcType=BIGINT}, 
       #{replyToUserId,jdbcType=VARCHAR}, #{replyToUserName,jdbcType=VARCHAR}, #{replyToUserNick,jdbcType=VARCHAR}, 
       #{praiseCount,jdbcType=BIGINT}, #{contactQq,jdbcType=VARCHAR}, #{contactWechat,jdbcType=VARCHAR}, 
@@ -179,7 +179,7 @@
       #{content,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.Comment" useGeneratedKeys="true">
-    insert into comments
+    insert into COMMENTS
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="articleOid != null">
         ARTICLE_OID,
@@ -205,8 +205,8 @@
       <if test="clientIp != null">
         CLIENT_IP,
       </if>
-      <if test="userArea != null">
-        USER_AREA,
+      <if test="userRegion != null">
+        USER_REGION,
       </if>
       <if test="commentTime != null">
         COMMENT_TIME,
@@ -300,8 +300,8 @@
       <if test="clientIp != null">
         #{clientIp,jdbcType=VARCHAR},
       </if>
-      <if test="userArea != null">
-        #{userArea,jdbcType=VARCHAR},
+      <if test="userRegion != null">
+        #{userRegion,jdbcType=VARCHAR},
       </if>
       <if test="commentTime != null">
         #{commentTime,jdbcType=TIMESTAMP},
@@ -372,13 +372,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="cn.jianwoo.blog.entity.example.CommentExample" resultType="java.lang.Long">
-    select count(*) from comments
+    select count(*) from COMMENTS
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update comments
+    update COMMENTS
     <set>
       <if test="record.oid != null">
         OID = #{record.oid,jdbcType=BIGINT},
@@ -407,8 +407,8 @@
       <if test="record.clientIp != null">
         CLIENT_IP = #{record.clientIp,jdbcType=VARCHAR},
       </if>
-      <if test="record.userArea != null">
-        USER_AREA = #{record.userArea,jdbcType=VARCHAR},
+      <if test="record.userRegion != null">
+        USER_REGION = #{record.userRegion,jdbcType=VARCHAR},
       </if>
       <if test="record.commentTime != null">
         COMMENT_TIME = #{record.commentTime,jdbcType=TIMESTAMP},
@@ -482,7 +482,7 @@
     </if>
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
-    update comments
+    update COMMENTS
     set OID = #{record.oid,jdbcType=BIGINT},
       ARTICLE_OID = #{record.articleOid,jdbcType=BIGINT},
       ARTICLE_TITLE = #{record.articleTitle,jdbcType=VARCHAR},
@@ -492,7 +492,7 @@
       USER_NAME = #{record.userName,jdbcType=VARCHAR},
       USER_NICK = #{record.userNick,jdbcType=VARCHAR},
       CLIENT_IP = #{record.clientIp,jdbcType=VARCHAR},
-      USER_AREA = #{record.userArea,jdbcType=VARCHAR},
+      USER_REGION = #{record.userRegion,jdbcType=VARCHAR},
       COMMENT_TIME = #{record.commentTime,jdbcType=TIMESTAMP},
       PARENT_OID = #{record.parentOid,jdbcType=BIGINT},
       REPLY_ROOT_OID = #{record.replyRootOid,jdbcType=BIGINT},
@@ -520,7 +520,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update comments
+    update COMMENTS
     set OID = #{record.oid,jdbcType=BIGINT},
       ARTICLE_OID = #{record.articleOid,jdbcType=BIGINT},
       ARTICLE_TITLE = #{record.articleTitle,jdbcType=VARCHAR},
@@ -530,7 +530,7 @@
       USER_NAME = #{record.userName,jdbcType=VARCHAR},
       USER_NICK = #{record.userNick,jdbcType=VARCHAR},
       CLIENT_IP = #{record.clientIp,jdbcType=VARCHAR},
-      USER_AREA = #{record.userArea,jdbcType=VARCHAR},
+      USER_REGION = #{record.userRegion,jdbcType=VARCHAR},
       COMMENT_TIME = #{record.commentTime,jdbcType=TIMESTAMP},
       PARENT_OID = #{record.parentOid,jdbcType=BIGINT},
       REPLY_ROOT_OID = #{record.replyRootOid,jdbcType=BIGINT},
@@ -557,7 +557,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="cn.jianwoo.blog.entity.Comment">
-    update comments
+    update COMMENTS
     <set>
       <if test="articleOid != null">
         ARTICLE_OID = #{articleOid,jdbcType=BIGINT},
@@ -583,8 +583,8 @@
       <if test="clientIp != null">
         CLIENT_IP = #{clientIp,jdbcType=VARCHAR},
       </if>
-      <if test="userArea != null">
-        USER_AREA = #{userArea,jdbcType=VARCHAR},
+      <if test="userRegion != null">
+        USER_REGION = #{userRegion,jdbcType=VARCHAR},
       </if>
       <if test="commentTime != null">
         COMMENT_TIME = #{commentTime,jdbcType=TIMESTAMP},
@@ -656,7 +656,7 @@
     where OID = #{oid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.jianwoo.blog.entity.Comment">
-    update comments
+    update COMMENTS
     set ARTICLE_OID = #{articleOid,jdbcType=BIGINT},
       ARTICLE_TITLE = #{articleTitle,jdbcType=VARCHAR},
       ARTICLE_AUTHOR = #{articleAuthor,jdbcType=VARCHAR},
@@ -665,7 +665,7 @@
       USER_NAME = #{userName,jdbcType=VARCHAR},
       USER_NICK = #{userNick,jdbcType=VARCHAR},
       CLIENT_IP = #{clientIp,jdbcType=VARCHAR},
-      USER_AREA = #{userArea,jdbcType=VARCHAR},
+      USER_REGION = #{userRegion,jdbcType=VARCHAR},
       COMMENT_TIME = #{commentTime,jdbcType=TIMESTAMP},
       PARENT_OID = #{parentOid,jdbcType=BIGINT},
       REPLY_ROOT_OID = #{replyRootOid,jdbcType=BIGINT},
@@ -691,7 +691,7 @@
     where OID = #{oid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.jianwoo.blog.entity.Comment">
-    update comments
+    update COMMENTS
     set ARTICLE_OID = #{articleOid,jdbcType=BIGINT},
       ARTICLE_TITLE = #{articleTitle,jdbcType=VARCHAR},
       ARTICLE_AUTHOR = #{articleAuthor,jdbcType=VARCHAR},
@@ -700,7 +700,7 @@
       USER_NAME = #{userName,jdbcType=VARCHAR},
       USER_NICK = #{userNick,jdbcType=VARCHAR},
       CLIENT_IP = #{clientIp,jdbcType=VARCHAR},
-      USER_AREA = #{userArea,jdbcType=VARCHAR},
+      USER_REGION = #{userRegion,jdbcType=VARCHAR},
       COMMENT_TIME = #{commentTime,jdbcType=TIMESTAMP},
       PARENT_OID = #{parentOid,jdbcType=BIGINT},
       REPLY_ROOT_OID = #{replyRootOid,jdbcType=BIGINT},

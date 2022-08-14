@@ -3,18 +3,18 @@
         <div class="index-main">
             <div class="detail">
                 <div class="position">
-            <span>当前位置:<a
-                    href="/index">首页>></a>
-                <span v-if="article.parentCategoryOid">
-                    <a :href="'#/index?category1=' + article.parentCategoryOid"
-                    >{{ article.parentCategory }}</a>>>
-                </span>
-                <span v-if="article.categoryOid">
-                    <a :href="'#/index?category2=' + article.categoryOid"
-                    >{{ article.category }}</a>>>
-                </span>
-                {{ article.title }}
-            </span>
+                    <span>当前位置:<a
+                        href="/index">首页>></a>
+                        <span v-if="article.parentCategoryOid">
+                             <a :href="'#/index?category1=' + article.parentCategoryOid"
+                             >{{ article.parentCategory }}</a>>>
+                        </span>
+                        <span v-if="article.categoryOid">
+                            <a :href="'#/index?category2=' + article.categoryOid"
+                            >{{ article.category }}</a>>>
+                        </span>
+                        {{ article.title }}
+                    </span>
                 </div>
                 <el-card class="art-con lock-box" v-if="article.isLock">
                     <div class="lock-panel">
@@ -33,20 +33,25 @@
                                 </svg>:{{ article.author }}
                             </span>
                                 <span class="art-date">
-                                <svg class="icon" aria-hidden="true">
-                                    <use xlink:href="#icon-24gl-calendar"></use>
-                                </svg>:{{ article.publishTimeDesc }}
-                            </span>
+                                    <svg class="icon" aria-hidden="true">
+                                        <use xlink:href="#icon-24gl-calendar"></use>
+                                    </svg>:{{ article.publishTimeDesc }}
+                                </span>
+                                <span class="art-region">
+                                    <svg class="icon" aria-hidden="true">
+                                        <use xlink:href="#icon-position"></use>
+                                    </svg>:{{ article.publishRegion }}
+                                </span>
                                 <span class="art-type">
-                                <svg class="icon" aria-hidden="true">
-                                    <use xlink:href="#icon-leibie"></use>
-                                </svg>:{{ article.category }}
-                            </span>
+                                    <svg class="icon" aria-hidden="true">
+                                        <use xlink:href="#icon-leibie"></use>
+                                    </svg>:{{ article.category }}
+                                </span>
                                 <span class="art-readers">
-                                <svg class="icon" aria-hidden="true">
-                                    <use xlink:href="#icon-yuedu1"></use>
-                                </svg>:{{ article.readCount }}
-                            </span>
+                                    <svg class="icon" aria-hidden="true">
+                                        <use xlink:href="#icon-yuedu1"></use>
+                                    </svg>:{{ article.readCount }}
+                                </span>
 
                             </div>
                         </div>
@@ -71,6 +76,11 @@
                                     <use xlink:href="#icon-24gl-calendar"></use>
                                 </svg>:{{ article.publishTimeDesc }}
                             </span>
+                            <span class="art-region">
+                                    <svg class="icon" aria-hidden="true">
+                                        <use xlink:href="#icon-position"></use>
+                                    </svg>:{{ !article.publishRegion ? '未知' : article.publishRegion}}
+                                </span>
                             <span class="art-type">
                                 <svg class="icon" aria-hidden="true">
                                     <use xlink:href="#icon-leibie"></use>
@@ -85,7 +95,7 @@
                         </div>
                     </div>
 
-                    <div class="art-txt" v-html="article.content">
+                    <div class="art-txt" v-highlight v-html="article.content">
                     </div>
                 </el-card>
             </div>
@@ -147,7 +157,7 @@
             <template #footer>
                 <span class="dialog-footer">
                 <el-button @click="showVerifyDialog = false">取消</el-button>
-                <el-button type="primary" @click="doVerify">验证</el-button>
+                <el-button type="primary" class="primary" @click="doVerify">验证</el-button>
                 </span>
             </template>
         </el-dialog>
@@ -203,29 +213,33 @@ export default {
         this.getArticle();
         this.getRecommendList();
         this.registerAccessIp();
+        var that = this;
+        if (this.$route.query.jump) {
+            that.$nextTick(function () {
+                if (document.getElementById('comment')) {
+                    document.getElementById('comment').scrollIntoView()
+                }
+
+            })
+        }
     },
     created() {
 
-        window.addEventListener(
-                'hashchange',
-                () => {
-                    this.initParam();
-                    this.getArticle();
-                    this.getRecommendList();
 
-                },
-                false
-        );
     },
     methods: {
         initParam: function () {
-
+            var isSameId = true;
             if (this.$route.query.id) {
+                if (this.$route.query.id != this.entityOid){
+                    isSameId = false;
+                }
                 this.entityOid = this.$route.query.id;
             } else {
                 this.$router.push("/index");
                 return;
             }
+            return isSameId;
         },
         getArticle: function () {
             postJson("/article/query/detail", {entityOid: this.entityOid}).then((res) => {
@@ -368,7 +382,16 @@ export default {
             }
         }
     },
-    watch: {}
+    watch: {
+        '$route' (to, from) { //监听URL地址栏参数变化
+            var isSameId = this.initParam();
+            console.log(isSameId)
+            if (!isSameId) {
+                this.getArticle();
+                this.getRecommendList();
+            }
+        }
+    }
 }
 </script>
 <style>
@@ -381,4 +404,23 @@ export default {
 </style>
 
 <style scoped>
+.dialog-footer .primary {
+    background-color: rgba(166, 10, 169, .98);
+    border: none;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 8%;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.dialog-footer .primary:hover {
+    background-color: #A52581;
+    border-color: #A52581;
+}
+
+.dialog-footer .primary:active {
+    background-color: #A52581;
+    border-color: #A52581;
+}
 </style>

@@ -76,7 +76,7 @@ public class MsgBaseServiceImpl implements MsgBaseService {
             userTels.add(JwUtil.format(admin.getUserPhone()));
             receives.add(loginId);
         }
-        if (StringUtils.isNotBlank(userId)){
+        if (StringUtils.isNotBlank(userId)) {
             UserProfile userProfile = userBaseService.queryUserByUserId(userId);
             if (null != userProfile) {
                 emails.add(JwUtil.format(userProfile.getUserEmail()));
@@ -91,6 +91,8 @@ public class MsgBaseServiceImpl implements MsgBaseService {
                 .with(MessageProfileWithBLOBs::setBusiSceneCode, busiSceneCode)
                 .with(MessageProfileWithBLOBs::setBusiType, messageTemplate.getBusiType())
                 .with(MessageProfileWithBLOBs::setMsgType, messageTemplate.getMsgType())
+                .with(MessageProfileWithBLOBs::setReceiverType, messageTemplate.getReceiverType())
+                .with(MessageProfileWithBLOBs::setOptType, messageTemplate.getOptType())
                 .with(MessageProfileWithBLOBs::setMsgTitle, JwUtil.doRenderTpl(messageTemplate.getMsgTitleTemplate(), msgData.toString()))
                 .with(MessageProfileWithBLOBs::setMsgLink, JwUtil.doRenderTpl(messageTemplate.getMsgLinkTemplate(), msgData.toString()))
                 .with(MessageProfileWithBLOBs::setMsgContent, JwUtil.doRenderTpl(new String(messageTemplate.getMsgContentTemplate()), msgData.toString()).getBytes(StandardCharsets.UTF_8))

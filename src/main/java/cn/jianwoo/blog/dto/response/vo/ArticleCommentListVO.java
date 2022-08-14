@@ -28,6 +28,12 @@ public class ArticleCommentListVO implements Serializable {
      * 用户昵称
      */
     private String userNick;
+
+    /**
+     * 用户IP所在区域
+     */
+    private String userRegion;
+
     /**
      * 用户名
      */
@@ -95,6 +101,10 @@ public class ArticleCommentListVO implements Serializable {
      * 是否可以编辑
      */
     private Boolean flagEdit;
+    /**
+     * 是否已经删除
+     */
+    private Boolean flagDelete;
     /**
      * 赞数量
      */

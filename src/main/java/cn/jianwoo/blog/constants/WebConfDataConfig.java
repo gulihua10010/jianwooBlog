@@ -33,6 +33,11 @@ public final class WebConfDataConfig {
     public static final String RECORD = "RECORD";
 
     /**
+     * 网站备案链接
+     */
+    public static final String RECORD_URL = "RECORD_URL";
+
+    /**
      * 网站域名
      */
     public static final String DOMAIN = "DOMAIN";
@@ -165,7 +170,7 @@ public final class WebConfDataConfig {
     public static final String IS_UPLOAD_TO_QINIU_CDN = "IS_UPLOAD_TO_QINIU_CDN";
 
     /**
-     * 异常邮件通知, 发送给管理员的邮箱
+     * 异常邮件通知, 是否发送给管理员的邮箱
      */
     public static final String EXCEPTION_EMAIL_NOTIFY = "EXCEPTION_EMAIL_NOTIFY";
 
@@ -174,4 +179,21 @@ public final class WebConfDataConfig {
      */
     public static final String MAX_COMMENTS_ONE_DAY_ONE_IP = "MAX_COMMENTS_ONE_DAY_ONE_IP";
 
+
+
+    /**
+     * 留言频率表达式, 数字1:次数,*代表不限<br> 数字2:时间<br>后面是时间单位,支持['Second(s)','Minutes(s)','Hour(s)']
+     */
+    public static final String MESSAGE_ON_FREQUENCY = "MESSAGE_ON_FREQUENCY";
+
+
+    /**
+     * 博客是否开启留言(全局), 如果关闭,所有文章将不能被评论
+     */
+    public static final String GLOBAL_MESSAGE_ALLOW = "GLOBAL_MESSAGE_ALLOW";
+
+    /**
+     * 一天内同一IP最多可以发多少条留言, -1为不限制
+     */
+    public static final String MAX_MESSAGES_ONE_DAY_ONE_IP = "MAX_MESSAGES_ONE_DAY_ONE_IP";
 }

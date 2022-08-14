@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -113,7 +114,7 @@ public class NotifiyUtil {
         if (StringUtils.isNotBlank(connectionTimeout)) {
             account.setConnectionTimeout(new BigDecimal(connectionTimeout).longValue());
         }
-        cacheStore.put(CacheKeyConstants.EMAIL_CFG, account);
+        cacheStore.put(CacheKeyConstants.EMAIL_CFG, account, 7, TimeUnit.DAYS);
         return account;
 
     }

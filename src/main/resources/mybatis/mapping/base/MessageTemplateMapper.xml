@@ -5,6 +5,8 @@
     <id column="BUSI_SCENE_CODE" jdbcType="VARCHAR" property="busiSceneCode" />
     <result column="BUSI_TYPE" jdbcType="VARCHAR" property="busiType" />
     <result column="MSG_TYPE" jdbcType="VARCHAR" property="msgType" />
+    <result column="OPT_TYPE" jdbcType="VARCHAR" property="optType" />
+    <result column="RECEIVER_TYPE" jdbcType="VARCHAR" property="receiverType" />
     <result column="MSG_DESC" jdbcType="VARCHAR" property="msgDesc" />
     <result column="MSG_TITLE_TEMPLATE" jdbcType="VARCHAR" property="msgTitleTemplate" />
     <result column="MSG_LINK_TEMPLATE" jdbcType="VARCHAR" property="msgLinkTemplate" />
@@ -78,9 +80,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    BUSI_SCENE_CODE, BUSI_TYPE, MSG_TYPE, MSG_DESC, MSG_TITLE_TEMPLATE, MSG_LINK_TEMPLATE, 
-    STATUS_USED, EMAIL_NOTIFY, EMAIL_TPL_CODE, CREATE_TIME, CREATED_BY, UPDATE_TIME, 
-    UPDATE_BY
+    BUSI_SCENE_CODE, BUSI_TYPE, MSG_TYPE, OPT_TYPE, RECEIVER_TYPE, MSG_DESC, MSG_TITLE_TEMPLATE, 
+    MSG_LINK_TEMPLATE, STATUS_USED, EMAIL_NOTIFY, EMAIL_TPL_CODE, CREATE_TIME, CREATED_BY, 
+    UPDATE_TIME, UPDATE_BY
   </sql>
   <sql id="Blob_Column_List">
     MSG_CONTENT_TEMPLATE
@@ -136,15 +138,17 @@
   </delete>
   <insert id="insert" parameterType="cn.jianwoo.blog.entity.MessageTemplate">
     insert into MESSAGE_TEMPLATE (BUSI_SCENE_CODE, BUSI_TYPE, MSG_TYPE, 
-      MSG_DESC, MSG_TITLE_TEMPLATE, MSG_LINK_TEMPLATE, 
-      STATUS_USED, EMAIL_NOTIFY, EMAIL_TPL_CODE, 
-      CREATE_TIME, CREATED_BY, UPDATE_TIME, 
-      UPDATE_BY, MSG_CONTENT_TEMPLATE)
+      OPT_TYPE, RECEIVER_TYPE, MSG_DESC, 
+      MSG_TITLE_TEMPLATE, MSG_LINK_TEMPLATE, STATUS_USED, 
+      EMAIL_NOTIFY, EMAIL_TPL_CODE, CREATE_TIME, 
+      CREATED_BY, UPDATE_TIME, UPDATE_BY, 
+      MSG_CONTENT_TEMPLATE)
     values (#{busiSceneCode,jdbcType=VARCHAR}, #{busiType,jdbcType=VARCHAR}, #{msgType,jdbcType=VARCHAR}, 
-      #{msgDesc,jdbcType=VARCHAR}, #{msgTitleTemplate,jdbcType=VARCHAR}, #{msgLinkTemplate,jdbcType=VARCHAR}, 
-      #{statusUsed,jdbcType=VARCHAR}, #{emailNotify,jdbcType=VARCHAR}, #{emailTplCode,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{updateBy,jdbcType=VARCHAR}, #{msgContentTemplate,jdbcType=LONGVARBINARY})
+      #{optType,jdbcType=VARCHAR}, #{receiverType,jdbcType=VARCHAR}, #{msgDesc,jdbcType=VARCHAR}, 
+      #{msgTitleTemplate,jdbcType=VARCHAR}, #{msgLinkTemplate,jdbcType=VARCHAR}, #{statusUsed,jdbcType=VARCHAR}, 
+      #{emailNotify,jdbcType=VARCHAR}, #{emailTplCode,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createdBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
+      #{msgContentTemplate,jdbcType=LONGVARBINARY})
   </insert>
   <insert id="insertSelective" parameterType="cn.jianwoo.blog.entity.MessageTemplate">
     insert into MESSAGE_TEMPLATE
@@ -157,6 +161,12 @@
       </if>
       <if test="msgType != null">
         MSG_TYPE,
+      </if>
+      <if test="optType != null">
+        OPT_TYPE,
+      </if>
+      <if test="receiverType != null">
+        RECEIVER_TYPE,
       </if>
       <if test="msgDesc != null">
         MSG_DESC,
@@ -201,6 +211,12 @@
       </if>
       <if test="msgType != null">
         #{msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="optType != null">
+        #{optType,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverType != null">
+        #{receiverType,jdbcType=VARCHAR},
       </if>
       <if test="msgDesc != null">
         #{msgDesc,jdbcType=VARCHAR},
@@ -255,6 +271,12 @@
       <if test="record.msgType != null">
         MSG_TYPE = #{record.msgType,jdbcType=VARCHAR},
       </if>
+      <if test="record.optType != null">
+        OPT_TYPE = #{record.optType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.receiverType != null">
+        RECEIVER_TYPE = #{record.receiverType,jdbcType=VARCHAR},
+      </if>
       <if test="record.msgDesc != null">
         MSG_DESC = #{record.msgDesc,jdbcType=VARCHAR},
       </if>
@@ -298,6 +320,8 @@
     set BUSI_SCENE_CODE = #{record.busiSceneCode,jdbcType=VARCHAR},
       BUSI_TYPE = #{record.busiType,jdbcType=VARCHAR},
       MSG_TYPE = #{record.msgType,jdbcType=VARCHAR},
+      OPT_TYPE = #{record.optType,jdbcType=VARCHAR},
+      RECEIVER_TYPE = #{record.receiverType,jdbcType=VARCHAR},
       MSG_DESC = #{record.msgDesc,jdbcType=VARCHAR},
       MSG_TITLE_TEMPLATE = #{record.msgTitleTemplate,jdbcType=VARCHAR},
       MSG_LINK_TEMPLATE = #{record.msgLinkTemplate,jdbcType=VARCHAR},
@@ -318,6 +342,8 @@
     set BUSI_SCENE_CODE = #{record.busiSceneCode,jdbcType=VARCHAR},
       BUSI_TYPE = #{record.busiType,jdbcType=VARCHAR},
       MSG_TYPE = #{record.msgType,jdbcType=VARCHAR},
+      OPT_TYPE = #{record.optType,jdbcType=VARCHAR},
+      RECEIVER_TYPE = #{record.receiverType,jdbcType=VARCHAR},
       MSG_DESC = #{record.msgDesc,jdbcType=VARCHAR},
       MSG_TITLE_TEMPLATE = #{record.msgTitleTemplate,jdbcType=VARCHAR},
       MSG_LINK_TEMPLATE = #{record.msgLinkTemplate,jdbcType=VARCHAR},
@@ -340,6 +366,12 @@
       </if>
       <if test="msgType != null">
         MSG_TYPE = #{msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="optType != null">
+        OPT_TYPE = #{optType,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverType != null">
+        RECEIVER_TYPE = #{receiverType,jdbcType=VARCHAR},
       </if>
       <if test="msgDesc != null">
         MSG_DESC = #{msgDesc,jdbcType=VARCHAR},
@@ -381,6 +413,8 @@
     update MESSAGE_TEMPLATE
     set BUSI_TYPE = #{busiType,jdbcType=VARCHAR},
       MSG_TYPE = #{msgType,jdbcType=VARCHAR},
+      OPT_TYPE = #{optType,jdbcType=VARCHAR},
+      RECEIVER_TYPE = #{receiverType,jdbcType=VARCHAR},
       MSG_DESC = #{msgDesc,jdbcType=VARCHAR},
       MSG_TITLE_TEMPLATE = #{msgTitleTemplate,jdbcType=VARCHAR},
       MSG_LINK_TEMPLATE = #{msgLinkTemplate,jdbcType=VARCHAR},
@@ -398,6 +432,8 @@
     update MESSAGE_TEMPLATE
     set BUSI_TYPE = #{busiType,jdbcType=VARCHAR},
       MSG_TYPE = #{msgType,jdbcType=VARCHAR},
+      OPT_TYPE = #{optType,jdbcType=VARCHAR},
+      RECEIVER_TYPE = #{receiverType,jdbcType=VARCHAR},
       MSG_DESC = #{msgDesc,jdbcType=VARCHAR},
       MSG_TITLE_TEMPLATE = #{msgTitleTemplate,jdbcType=VARCHAR},
       MSG_LINK_TEMPLATE = #{msgLinkTemplate,jdbcType=VARCHAR},

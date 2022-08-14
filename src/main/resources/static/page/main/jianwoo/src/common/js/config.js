@@ -4,7 +4,7 @@ const TIME_OUT = '401001'
 const API_FAILED = '000009'
 const VALIDATE_ERROR = '200001'
 const DOMAIN_URI = 'https://127.0.0.1:8000'
-const API_URI = 'http://localhost:8080'
+const API_URI = process.env.VUE_APP_API_URI
 
 
 export default {

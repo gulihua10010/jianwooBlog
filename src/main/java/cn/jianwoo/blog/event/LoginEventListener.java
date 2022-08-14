@@ -11,6 +11,7 @@ import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.base.AsyncAutoTaskBaseService;
 import cn.jianwoo.blog.task.bo.TaskDataD0020BO;
 import cn.jianwoo.blog.util.DateUtil;
+import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.util.TransactionUtils;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +49,7 @@ public class LoginEventListener implements ApplicationListener<LoginLogEvent> {
         if (StringUtils.isNotBlank(userAgent) && userAgent.length() > 200) {
             userAgent = userAgent.substring(0, 200);
         }
-        String ip = request.getRemoteAddr();
+        String ip = JwUtil.getRealIpAddress(request);
         Date now = DateUtil.getNow();
         LoginLog loginLog = JwBuilder.of(LoginLog::new)
                 .with(LoginLog::setLoginId, loginLogEvent.getUsername())

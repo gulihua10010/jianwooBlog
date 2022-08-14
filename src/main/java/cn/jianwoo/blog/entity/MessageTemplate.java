@@ -10,6 +10,10 @@ public class MessageTemplate implements Serializable {
 
     private String msgType;
 
+    private String optType;
+
+    private String receiverType;
+
     private String msgDesc;
 
     private String msgTitleTemplate;
@@ -56,6 +60,22 @@ public class MessageTemplate implements Serializable {
 
     public void setMsgType(String msgType) {
         this.msgType = msgType == null ? null : msgType.trim();
+    }
+
+    public String getOptType() {
+        return optType;
+    }
+
+    public void setOptType(String optType) {
+        this.optType = optType == null ? null : optType.trim();
+    }
+
+    public String getReceiverType() {
+        return receiverType;
+    }
+
+    public void setReceiverType(String receiverType) {
+        this.receiverType = receiverType == null ? null : receiverType.trim();
     }
 
     public String getMsgDesc() {
@@ -155,6 +175,8 @@ public class MessageTemplate implements Serializable {
         sb.append(", busiSceneCode=").append(busiSceneCode);
         sb.append(", busiType=").append(busiType);
         sb.append(", msgType=").append(msgType);
+        sb.append(", optType=").append(optType);
+        sb.append(", receiverType=").append(receiverType);
         sb.append(", msgDesc=").append(msgDesc);
         sb.append(", msgTitleTemplate=").append(msgTitleTemplate);
         sb.append(", msgLinkTemplate=").append(msgLinkTemplate);

@@ -2,7 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.jianwoo.blog.dao.biz.mapper.WebconfBizMapper">
     <resultMap id="BaseResultMap" type="cn.jianwoo.blog.entity.extension.WebconfExt">
-        <id column="OID" jdbcType="BIGINT" property="oid"/>
         <result column="KEY" jdbcType="VARCHAR" property="key"/>
         <result column="DESC" jdbcType="VARCHAR" property="desc"/>
         <result column="VALUE_TYPE" jdbcType="VARCHAR" property="valueType"/>
@@ -24,18 +23,18 @@
     </resultMap>
 
     <sql id="Ext_Column_List">
-        W.OID, `KEY`, W.`DESC`, VALUE_TYPE, STRING_VALUE, FLOAT_VALUE, INT_VALUE, BOOLEAN_VALUE, DATE_VALUE,
+        `KEY`, W.`DESC`, VALUE_TYPE, STRING_VALUE, FLOAT_VALUE, INT_VALUE, BOOLEAN_VALUE, DATE_VALUE,
     `INDEX`, `VALID`,TITLE_DSP, TIPS_DSP, FORM_TYPE, TAB_TYPE, TAB_TYPE_DSP, REQUIRED,
     VALIDATE_TYPE, VALIDATE_VALUE
     </sql>
     <sql id="Base_Column_List">
-        OID, `KEY`, `DESC`, VALUE_TYPE, STRING_VALUE, FLOAT_VALUE, INT_VALUE, BOOLEAN_VALUE, DATE_VALUE,
+        `KEY`, `DESC`, VALUE_TYPE, STRING_VALUE, FLOAT_VALUE, INT_VALUE, BOOLEAN_VALUE, DATE_VALUE,
     `INDEX`, `VALID`, CREATE_TIME, UPDATE_TIME
     </sql>
     <select id="selectAllWebconf" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM webconf
+        FROM WEBCONF
     </select>
     <select id="selectEffectiveWebconf" resultMap="BaseResultMap">
         SELECT

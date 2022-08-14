@@ -19,7 +19,7 @@ public class ProcessTokenUtil {
     public static final String REQUEST_ID = "requestId";
 
     public String getSubTokenKey(HttpServletRequest request, String pageId) {
-        String suffix = request.getRemoteAddr().replace(".", "_");
+        String suffix = JwUtil.getRealIpAddress(request).replace(".", "_");
 
         StringBuilder key = new StringBuilder(TOKEN_KEY);
         key.append(Constants.SEPARATE_HYPHEN).append(suffix)

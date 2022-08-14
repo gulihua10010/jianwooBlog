@@ -328,11 +328,6 @@
                                     {{#  } }}
                                    </span>
                             </div>
-                            <div class="btns-opt">
-                                <button class="layui-btn layui-btn-primary layui-btn-sm wd30p wdmin70"
-                                        id="articlePreview">文章预览
-                                </button>
-                            </div>
                             <div class="separation-line"></div>
                             <a><i class="iconfont">&#xe606;</i> 公开度：
                                 <span id="published-public">
@@ -482,7 +477,7 @@
             <div class="comment-content-reply">
                 {{# layui.each(comm.replyList, function(index, rep){ }}
                 <div>
-                    <div class="media-body" id="comm-{{comm.oid}}">
+                    <div class="media-body" id="comm-{{rep.oid}}">
                         <a href="javascript:" class="media-left" style="float: left;">
                             <img src="{{rep.avatarSrc}}" height="46px"
                                  width="46px">
@@ -604,8 +599,13 @@
                             $('#'+cid).addClass('hidd-comm-backgroud')
 
                     }, 500);
+
                         var cid=layui.router().search.c;
-                        document.getElementById(cid).scrollIntoView()
+
+                        var commEl = document.getElementById(cid);
+                        if (commEl) {
+                            commEl.scrollIntoView()
+                        }
                         $('#'+cid).addClass('show-comm')
                     }
 

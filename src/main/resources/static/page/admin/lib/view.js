@@ -48,6 +48,10 @@ layui.define(['laytpl', 'layer'], function (exports) {
             , remove: true
         });
         layui.data(setter.tableName, {
+            key: setter.request.refreshTokenName
+            , remove: true
+        });
+        layui.data(setter.tableName, {
             key: setter.request.loginIdSecret
             , remove: true
         });

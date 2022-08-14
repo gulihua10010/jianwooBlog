@@ -21,15 +21,15 @@ import java.io.Serializable;
 public class ConditionVO implements Serializable {
     private static final long serialVersionUID = -6622957226309536544L;
     /**
-     * 搜索条件
+     * 搜索条件值
      */
     private String condition;
     /**
-     * 搜索条件Id
+     * 查询条件Id
      */
     private Integer conditionId;
     /**
-     * 搜索类型
+     * 查询条件类型
      */
     private String conditionType;
 

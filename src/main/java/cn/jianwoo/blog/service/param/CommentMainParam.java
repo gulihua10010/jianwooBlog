@@ -25,6 +25,10 @@ public class CommentMainParam extends PageParam {
      */
     private Long replyRootOid;
     /**
+     * 评论oid, 用于消息跳转上下文
+     */
+    private Long refOid;
+    /**
      * 当前ip
      */
     private String currentIp;
@@ -80,6 +84,14 @@ public class CommentMainParam extends PageParam {
 
     public void setReplyRootOid(Long replyRootOid) {
         this.replyRootOid = replyRootOid;
+    }
+
+    public Long getRefOid() {
+        return this.refOid;
+    }
+
+    public void setRefOid(Long refOid) {
+        this.refOid = refOid;
     }
 
     public String getCurrentIp() {

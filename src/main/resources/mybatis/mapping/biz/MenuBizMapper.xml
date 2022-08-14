@@ -23,8 +23,8 @@
         from MENU
         where TYPE = #{type,jdbcType=VARCHAR}
     </select>
-    <select id="countMenuWithSameLevel" resultType="int" parameterType="java.util.Map">
-        select count(1)
+    <select id="selectMaxIndexMenuWithSameLevel" resultType="int" parameterType="java.util.Map">
+        select IF(MAX(`INDEX`) IS NULL ,0,MAX(`INDEX`) )
         from MENU
         where TYPE = #{type,jdbcType=VARCHAR}
           AND PARENT_OID = #{parentOid,jdbcType=BIGINT}

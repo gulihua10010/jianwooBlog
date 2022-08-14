@@ -9,7 +9,6 @@ import cn.jianwoo.blog.config.apiversion.ApiVersion;
 import cn.jianwoo.blog.config.router.main.CommentMainApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.ExceptionConstants;
-import cn.jianwoo.blog.dto.request.ArticlePraiseRequest;
 import cn.jianwoo.blog.dto.request.CommentMainPageRequest;
 import cn.jianwoo.blog.dto.request.CommentPraiseRequest;
 import cn.jianwoo.blog.dto.request.CommentRemoveRequest;
@@ -23,9 +22,8 @@ import cn.jianwoo.blog.service.bo.CommentBO;
 import cn.jianwoo.blog.service.bo.CommentMainPageListBO;
 import cn.jianwoo.blog.service.bo.UserInfoBO;
 import cn.jianwoo.blog.service.param.CommentMainParam;
-import cn.jianwoo.blog.service.param.PageParam;
+import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.validation.BizValidation;
-import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,13 +51,14 @@ public class CommentMainApiController extends BaseController {
 
     /**
      * 根据文章oid查询文章评论(文章详情页面)<br/>
-     * url:/api/comment/query/page/article/list<br/>
+     * url:/api/comment/article/query/page/list<br/>
      *
      * @param param JSON 参数({@link CommentMainPageRequest})<br/>
      *              artOid<br/>
      *              parentOid<br/>
      *              replyRootOid<br/>
      *              orderWay<br/>
+     *              refOid<br/>
      * @return 返回响应 {@link CommentListResponse}<br/>
      * count<br/>
      * rootCommCount<br/>
@@ -68,6 +67,7 @@ public class CommentMainApiController extends BaseController {
      * --userId<br/>
      * --userName<br/>
      * --userNick<br/>
+     * --userRegion<br/>
      * --avatarSrc<br/>
      * --contactQq<br/>
      * --contactWechat<br/>
@@ -78,6 +78,7 @@ public class CommentMainApiController extends BaseController {
      * --userId<br/>
      * --userName<br/>
      * --userNick<br/>
+     * --userRegion<br/>
      * --contactQq<br/>
      * --contactWechat<br/>
      * --contactWeibo<br/>
@@ -96,6 +97,7 @@ public class CommentMainApiController extends BaseController {
      * ----userId<br/>
      * ----userName<br/>
      * ----userNick<br/>
+     * ----userRegion<br/>
      * ----contactQq<br/>
      * ----contactWechat<br/>
      * ----contactWeibo<br/>
@@ -108,13 +110,14 @@ public class CommentMainApiController extends BaseController {
      * ----replyToUserNick<br/>
      * ----isPraise<br/>
      * ----flagEdit<br/>
+     * ----flagDelete<br/>
      * ----praiseCount<br/>
      * ----oid<br/>
      * status(000000-SUCCESS,999999-SYSTEM ERROR)<br/>
      * msg<br/>
      * @author gulihua
      */
-    @PostMapping(CommentMainApiUrlConfig.URL_QUERY_PAGE_ARTICLE_LIST)
+    @PostMapping(CommentMainApiUrlConfig.URL_COMMENT_ARTICLE_QUERY_PAGE_LIST)
     @ApiVersion()
     @IpLimit(key = "queryCommentListByArticle")
     public String queryCommentListByArticle(@RequestBody String param) {
@@ -130,8 +133,9 @@ public class CommentMainApiController extends BaseController {
             commentParam.setArtOid(Long.valueOf(req.getArtOid()));
             commentParam.setParentOid(req.getParentOid());
             commentParam.setReplyRootOid(req.getReplyRootOid());
+            commentParam.setRefOid(req.getRefOid());
             commentParam.setOrderWay(req.getOrderWay());
-            commentParam.setCurrentIp(request.getRemoteAddr());
+            commentParam.setCurrentIp(JwUtil.getRealIpAddress(request));
             commentParam.setPageNo(req.getPage());
             commentParam.setPageSize(req.getLimit());
             CommentMainPageListBO commentResBO = commentBizService.queryCommentsMainPageByArtOid(commentParam);
@@ -144,6 +148,7 @@ public class CommentMainApiController extends BaseController {
                     vo.setUserId(commentBO.getUserId());
                     vo.setUserName(commentBO.getUserName());
                     vo.setUserNick(commentBO.getUserNick());
+                    vo.setUserRegion(commentBO.getUserRegion());
                     vo.setContactWeibo(commentBO.getContactWeibo());
                     vo.setContactWechat(commentBO.getContactWechat());
                     vo.setContactQq(commentBO.getContactQq());
@@ -157,6 +162,7 @@ public class CommentMainApiController extends BaseController {
                     vo.setIsPraise(commentBO.getIsPraise());
                     vo.setPraiseCount(commentBO.getPraiseCount());
                     vo.setFlagEdit(commentBO.getFlagEdit());
+                    vo.setFlagDelete(commentBO.getIsDelete());
                     vo.setReplyCount(commentBO.getReplyCount());
                     List<ArticleCommentListVO> replyList = new ArrayList<>();
                     if (CollectionUtils.isNotEmpty(commentBO.getReplyComments())) {
@@ -165,6 +171,7 @@ public class CommentMainApiController extends BaseController {
                             replyVo.setUserId(rep.getUserId());
                             replyVo.setUserName(rep.getUserName());
                             replyVo.setUserNick(rep.getUserNick());
+                            replyVo.setUserRegion(rep.getUserRegion());
                             replyVo.setContactWeibo(rep.getContactWeibo());
                             replyVo.setContactWechat(rep.getContactWechat());
                             replyVo.setContactQq(rep.getContactQq());
@@ -181,6 +188,7 @@ public class CommentMainApiController extends BaseController {
                             replyVo.setPraiseCount(rep.getPraiseCount());
                             replyVo.setReplyCount(rep.getReplyCount());
                             replyVo.setFlagEdit(rep.getFlagEdit());
+                            replyVo.setFlagDelete(rep.getIsDelete());
                             replyList.add(replyVo);
                         }
                         vo.setReplyList(replyList);
@@ -196,6 +204,7 @@ public class CommentMainApiController extends BaseController {
                 userInfoVO.setUserId(userInfoBO.getUserId());
                 userInfoVO.setUserName(userInfoBO.getUserName());
                 userInfoVO.setUserNick(userInfoBO.getUserNick());
+                userInfoVO.setUserRegion(userInfoBO.getUserRegion());
                 userInfoVO.setContactEmail(userInfoBO.getContactEmail());
                 userInfoVO.setContactQq(userInfoBO.getContactQq());
                 userInfoVO.setContactWechat(userInfoBO.getContactWechat());
@@ -220,7 +229,7 @@ public class CommentMainApiController extends BaseController {
      * 文章评论添加(文章详情页面)<br/>
      * url:/api/comment/create<br/>
      *
-     * @param param JSON 参数({@link CommentRequest})
+     * @param param JSON 参数({@link CommentRequest})<br/>
      *              commentText<br/>
      *              userNick<br/>
      *              contactQq<br/>
@@ -235,7 +244,7 @@ public class CommentMainApiController extends BaseController {
      */
     @ApiVersion()
     @IpLimit(key = "doCreateComment")
-    @PostMapping(CommentMainApiUrlConfig.URL_CREATE_COMMENT)
+    @PostMapping(CommentMainApiUrlConfig.URL_COMMENT_CREATE)
     public String doCreateComment(@RequestBody String param) {
         try {
             super.printRequestParams(param);
@@ -254,7 +263,7 @@ public class CommentMainApiController extends BaseController {
             CommentBO commentBO = JwBuilder.of(CommentBO::new)
                     .with(CommentBO::setArticleOid, req.getArtId())
                     .with(CommentBO::setUserNick, req.getUserNick())
-                    .with(CommentBO::setClientIp, request.getRemoteAddr())
+                    .with(CommentBO::setClientIp, JwUtil.getRealIpAddress(request))
                     .with(CommentBO::setContactQq, req.getContactQq())
                     .with(CommentBO::setContactWechat, req.getContactWechat())
                     .with(CommentBO::setContactWeibo, req.getContactWeibo())
@@ -279,7 +288,7 @@ public class CommentMainApiController extends BaseController {
      * 文章评论更新(文章详情页面)<br/>
      * url:/api/comment/update<br/>
      *
-     * @param param JSON 参数({@link CommentRequest})
+     * @param param JSON 参数({@link CommentRequest})<br/>
      *              oid<br/>
      *              commentText<br/>
      *              userNick<br/>
@@ -294,7 +303,7 @@ public class CommentMainApiController extends BaseController {
      * @author gulihua
      */
     @ApiVersion()
-    @PostMapping(CommentMainApiUrlConfig.URL_UPDATE_COMMENT)
+    @PostMapping(CommentMainApiUrlConfig.URL_COMMENT_UPDATE)
     @IpLimit(key = "doUpdateComment")
     public String doUpdateComment(@RequestBody String param) {
         try {
@@ -302,7 +311,6 @@ public class CommentMainApiController extends BaseController {
             CommentRequest req = this.convertParam(param, CommentRequest.class);
             BizValidation.paramValidate(req.getOid(), "oid", "评论oid不能为空!");
             BizValidation.paramValidate(req.getArtId(), "artId", "文章id不能为空!");
-            BizValidation.paramValidate(req.getCommentParentId(), "commentParentId", "评论父id不能为空!");
             BizValidation.paramValidate(req.getCommentText(), "commentText", "评论内容不能为空!");
             BizValidation.paramValidate(req.getUserNick(), "userNick", "用户昵称不能为空!");
             BizValidation.paramValidate(req.getContactEmail(), "contactEmail", "用户邮箱不能为空!");
@@ -316,13 +324,12 @@ public class CommentMainApiController extends BaseController {
                     .with(CommentBO::setOid, req.getOid())
                     .with(CommentBO::setArticleOid, req.getArtId())
                     .with(CommentBO::setUserName, req.getUserNick())
-                    .with(CommentBO::setClientIp, request.getRemoteAddr())
+                    .with(CommentBO::setClientIp, JwUtil.getRealIpAddress(request))
                     .with(CommentBO::setContactQq, req.getContactQq())
                     .with(CommentBO::setContactWechat, req.getContactWechat())
                     .with(CommentBO::setContactWeibo, req.getContactWeibo())
                     .with(CommentBO::setContactEmail, req.getContactEmail())
                     .with(CommentBO::setContent, req.getCommentText())
-                    .with(CommentBO::setParentOid, req.getCommentParentId())
                     .with(CommentBO::setAvatarSrc, req.getAvatarSrc())
                     .build();
 
@@ -341,7 +348,7 @@ public class CommentMainApiController extends BaseController {
      * 文章评论赞(文章详情页面)<br/>
      * url:/api/comment/praise/add<br/>
      *
-     * @param param JSON 参数({@link ArticlePraiseRequest})
+     * @param param JSON 参数({@link CommentPraiseRequest})<br/>
      *              commOid<br/>
      * @return 返回响应 {@link BaseResponseDto}
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
@@ -350,14 +357,14 @@ public class CommentMainApiController extends BaseController {
      */
     @ApiVersion()
     @PostMapping(CommentMainApiUrlConfig.URL_COMMENT_PRAISE_ADD)
-    @IpLimit(key = "doAddPraise2")
-    public String doAddPraise(@RequestBody String param) {
+    @IpLimit(key = "doAddCommentPraise")
+    public String doAddCommentPraise(@RequestBody String param) {
         try {
             super.printRequestParams(param);
             CommentPraiseRequest req = this.convertParam(param, CommentPraiseRequest.class);
             BizValidation.paramValidate(req.getCommOid(), "commOid", "评论id不能为空!");
 
-            commentBizService.doAddPraise(req.getCommOid(), request.getRemoteAddr());
+            commentBizService.doAddPraise(req.getCommOid(), JwUtil.getRealIpAddress(request));
 
         } catch (Exception e) {
             return super.exceptionToString(e);
@@ -372,7 +379,7 @@ public class CommentMainApiController extends BaseController {
      * 文章评论删除(文章详情页面)<br/>
      * url:/api/comment/remove<br/>
      *
-     * @param param JSON 参数({@link ArticlePraiseRequest})
+     * @param param JSON 参数({@link CommentRemoveRequest})<br/>
      *              commOid<br/>
      * @return 返回响应 {@link BaseResponseDto}
      * status(000000-SUCCESS,999999-SYSTEM ERROR)
@@ -380,7 +387,7 @@ public class CommentMainApiController extends BaseController {
      * @author gulihua
      */
     @ApiVersion()
-    @PostMapping(CommentMainApiUrlConfig.URL_REMOVE_COMMENT)
+    @PostMapping(CommentMainApiUrlConfig.URL_COMMENT_REMOVE)
     @IpLimit(key = "doRemoveComment")
     public String doRemoveComment(@RequestBody String param) {
         try {
@@ -388,7 +395,7 @@ public class CommentMainApiController extends BaseController {
             CommentRemoveRequest req = this.convertParam(param, CommentRemoveRequest.class);
             BizValidation.paramValidate(req.getCommOid(), "commOid", "评论id不能为空!");
 
-            commentBizService.doDelCommentById(Long.parseLong(req.getCommOid()), request.getRemoteAddr());
+            commentBizService.doDelCommentById(Long.parseLong(req.getCommOid()), JwUtil.getRealIpAddress(request), false);
 
         } catch (Exception e) {
             return super.exceptionToString(e);

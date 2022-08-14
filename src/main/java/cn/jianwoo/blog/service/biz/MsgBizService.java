@@ -55,4 +55,14 @@ public interface MsgBizService {
      * @author gulihua
      */
     Long queryUnreadMsgCount();
+
+    /**
+     * 页面定时获取最新消息(首页)
+     *
+     * @param limit     消息条数
+     * @param currentIp 当前ip
+     * @return List<MsgProfileBO>
+     * @author gulihua
+     */
+    List<MsgProfileBO> queryMsgTimerMainList(Integer limit, String currentIp);
 }

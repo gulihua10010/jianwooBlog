@@ -4,7 +4,7 @@
     <resultMap id="BaseResultMap" type="cn.jianwoo.blog.entity.ArticleAccess">
         <id column="OID" jdbcType="BIGINT" property="oid" />
         <result column="ACCESS_IP" jdbcType="VARCHAR" property="accessIp" />
-        <result column="ACCESS_AREA" jdbcType="VARCHAR" property="accessArea" />
+        <result column="ACCESS_REGION" jdbcType="VARCHAR" property="accessRegion" />
         <result column="ARTICLE_OID" jdbcType="BIGINT" property="articleOid" />
         <result column="ARTICLE_TITLE" jdbcType="VARCHAR" property="articleTitle" />
         <result column="ACCESS_TIME" jdbcType="TIMESTAMP" property="accessTime" />
@@ -19,15 +19,15 @@
         <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" javaType="java.util.Date"/>
         <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" javaType="java.util.Date"/>
         <result column="ARTICLE_TITLE" property="articleTitle" jdbcType="VARCHAR" javaType="java.lang.String"/>
-        <result column="ACCESS_AREA" jdbcType="VARCHAR" property="accessArea" javaType="java.lang.String"/>
+        <result column="ACCESS_REGION" jdbcType="VARCHAR" property="accessRegion" javaType="java.lang.String"/>
 
 
     </resultMap>
     <sql id="Base_Column_List">
-        OID , ACCESS_IP, ACCESS_AREA, ARTICLE_OID, ACCESS_TIME, CREATE_TIME, UPDATE_TIME
+        OID , ACCESS_IP, ACCESS_REGION, ARTICLE_OID, ACCESS_TIME, CREATE_TIME, UPDATE_TIME
     </sql>
     <sql id="Ext_Column_List">
-        A.OID , A.ACCESS_IP, A.ACCESS_AREA, A.ARTICLE_OID, A.ACCESS_TIME, A.CREATE_TIME, A.UPDATE_TIME
+        A.OID , A.ACCESS_IP, A.ACCESS_REGION, A.ARTICLE_OID, A.ACCESS_TIME, A.CREATE_TIME, A.UPDATE_TIME
     </sql>
     <select id="selectRecentAccess" resultMap="ResultResultMapWithExt" parameterType="java.lang.Integer">
         SELECT

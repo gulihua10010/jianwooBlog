@@ -4,6 +4,7 @@ import cn.jianwoo.blog.entity.Comment;
 import cn.jianwoo.blog.entity.extension.CommentExt;
 import cn.jianwoo.blog.entity.query.CommentPageQuery;
 import cn.jianwoo.blog.entity.query.CommentQuery;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -127,17 +128,19 @@ public interface CommentBizMapper {
      * 更新评论回复数量
      *
      * @param oid 主键
+     * @param optType 操作类型(10:创建,40:删除)
      * @return
      * @author gulihua
      */
-    int updateCommentReplyCnt(Long oid);
+    int updateCommentReplyCnt(@Param("oid") Long oid, @Param("optType") String optType);
 
     /**
      * 更新评论回复总数量
      *
      * @param oid 主键
+     * @param optType 操作类型(10:创建,40:删除)
      * @return
      * @author gulihua
      */
-    int updateCommentTotalReplyCnt(Long oid);
+    int updateCommentTotalReplyCnt(@Param("oid") Long oid, @Param("optType") String optType);
 }

@@ -100,16 +100,16 @@ public class CommentBizDaoImpl implements CommentBizDao {
     }
 
     @Override
-    public void doUpdateCommentReplyCnt(Long oid) throws DaoException {
-        int updRlt = commentBizMapper.updateCommentReplyCnt(oid);
+    public void doUpdateCommentReplyCnt(Long oid, String optType) throws DaoException {
+        int updRlt = commentBizMapper.updateCommentReplyCnt(oid, optType);
         if (1 != updRlt) {
             throw DaoException.DAO_UPDATE_RESULT_0.print();
         }
     }
 
     @Override
-    public void doUpdateCommentTotalReplyCnt(Long oid) throws DaoException {
-        int updRlt = commentBizMapper.updateCommentTotalReplyCnt(oid);
+    public void doUpdateCommentTotalReplyCnt(Long oid, String optType) throws DaoException {
+        int updRlt = commentBizMapper.updateCommentTotalReplyCnt(oid, optType);
         if (1 != updRlt) {
             throw DaoException.DAO_UPDATE_RESULT_0.print();
         }

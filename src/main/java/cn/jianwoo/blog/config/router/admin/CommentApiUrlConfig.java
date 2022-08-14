@@ -12,7 +12,7 @@ public class CommentApiUrlConfig extends UrlConfig {
     public static final String URL_COMMENT_CREATE = "/create";
     public static final String URL_COMMENT_REMOVE = "/remove";
     public static final String URL_COMMENT_REMOVE_LIST = "/remove/list";
-    public static final String URL_COMMENT_QUERY = "/query";
+    public static final String URL_COMMENT_QUERY_LIST = "/query/list";
     public static final String URL_COMMENT_QUERY_SEARCH = "/query/search";
     public static final String URL_COMMENT_QUERY_ARTICLE_LIST = "/query/article/list";
     public static final String URL_COMMENT_REPLY = "/reply";

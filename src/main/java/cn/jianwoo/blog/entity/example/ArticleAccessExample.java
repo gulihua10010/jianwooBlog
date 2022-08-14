@@ -255,73 +255,73 @@ public class ArticleAccessExample {
             return (Criteria) this;
         }
 
-        public Criteria andAccessAreaIsNull() {
-            addCriterion("ACCESS_AREA is null");
+        public Criteria andAccessRegionIsNull() {
+            addCriterion("ACCESS_REGION is null");
             return (Criteria) this;
         }
 
-        public Criteria andAccessAreaIsNotNull() {
-            addCriterion("ACCESS_AREA is not null");
+        public Criteria andAccessRegionIsNotNull() {
+            addCriterion("ACCESS_REGION is not null");
             return (Criteria) this;
         }
 
-        public Criteria andAccessAreaEqualTo(String value) {
-            addCriterion("ACCESS_AREA =", value, "accessArea");
+        public Criteria andAccessRegionEqualTo(String value) {
+            addCriterion("ACCESS_REGION =", value, "accessRegion");
             return (Criteria) this;
         }
 
-        public Criteria andAccessAreaNotEqualTo(String value) {
-            addCriterion("ACCESS_AREA <>", value, "accessArea");
+        public Criteria andAccessRegionNotEqualTo(String value) {
+            addCriterion("ACCESS_REGION <>", value, "accessRegion");
             return (Criteria) this;
         }
 
-        public Criteria andAccessAreaGreaterThan(String value) {
-            addCriterion("ACCESS_AREA >", value, "accessArea");
+        public Criteria andAccessRegionGreaterThan(String value) {
+            addCriterion("ACCESS_REGION >", value, "accessRegion");
             return (Criteria) this;
         }
 
-        public Criteria andAccessAreaGreaterThanOrEqualTo(String value) {
-            addCriterion("ACCESS_AREA >=", value, "accessArea");
+        public Criteria andAccessRegionGreaterThanOrEqualTo(String value) {
+            addCriterion("ACCESS_REGION >=", value, "accessRegion");
             return (Criteria) this;
         }
 
-        public Criteria andAccessAreaLessThan(String value) {
-            addCriterion("ACCESS_AREA <", value, "accessArea");
+        public Criteria andAccessRegionLessThan(String value) {
+            addCriterion("ACCESS_REGION <", value, "accessRegion");
             return (Criteria) this;
         }
 
-        public Criteria andAccessAreaLessThanOrEqualTo(String value) {
-            addCriterion("ACCESS_AREA <=", value, "accessArea");
+        public Criteria andAccessRegionLessThanOrEqualTo(String value) {
+            addCriterion("ACCESS_REGION <=", value, "accessRegion");
             return (Criteria) this;
         }
 
-        public Criteria andAccessAreaLike(String value) {
-            addCriterion("ACCESS_AREA like", value, "accessArea");
+        public Criteria andAccessRegionLike(String value) {
+            addCriterion("ACCESS_REGION like", value, "accessRegion");
             return (Criteria) this;
         }
 
-        public Criteria andAccessAreaNotLike(String value) {
-            addCriterion("ACCESS_AREA not like", value, "accessArea");
+        public Criteria andAccessRegionNotLike(String value) {
+            addCriterion("ACCESS_REGION not like", value, "accessRegion");
             return (Criteria) this;
         }
 
-        public Criteria andAccessAreaIn(List<String> values) {
-            addCriterion("ACCESS_AREA in", values, "accessArea");
+        public Criteria andAccessRegionIn(List<String> values) {
+            addCriterion("ACCESS_REGION in", values, "accessRegion");
             return (Criteria) this;
         }
 
-        public Criteria andAccessAreaNotIn(List<String> values) {
-            addCriterion("ACCESS_AREA not in", values, "accessArea");
+        public Criteria andAccessRegionNotIn(List<String> values) {
+            addCriterion("ACCESS_REGION not in", values, "accessRegion");
             return (Criteria) this;
         }
 
-        public Criteria andAccessAreaBetween(String value1, String value2) {
-            addCriterion("ACCESS_AREA between", value1, value2, "accessArea");
+        public Criteria andAccessRegionBetween(String value1, String value2) {
+            addCriterion("ACCESS_REGION between", value1, value2, "accessRegion");
             return (Criteria) this;
         }
 
-        public Criteria andAccessAreaNotBetween(String value1, String value2) {
-            addCriterion("ACCESS_AREA not between", value1, value2, "accessArea");
+        public Criteria andAccessRegionNotBetween(String value1, String value2) {
+            addCriterion("ACCESS_REGION not between", value1, value2, "accessRegion");
             return (Criteria) this;
         }
 
@@ -640,8 +640,8 @@ public class ArticleAccessExample {
             return (Criteria) this;
         }
 
-        public Criteria andAccessAreaLikeInsensitive(String value) {
-            addCriterion("upper(ACCESS_AREA) like", value.toUpperCase(), "accessArea");
+        public Criteria andAccessRegionLikeInsensitive(String value) {
+            addCriterion("upper(ACCESS_REGION) like", value.toUpperCase(), "accessRegion");
             return (Criteria) this;
         }
 

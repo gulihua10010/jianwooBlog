@@ -11,6 +11,11 @@ public enum PraiseTypeEnum {
      * 评论
      */
     COMMENT("20"),
+
+    /**
+     * 留言
+     */
+    MESSAGE_BOARD("30"),
     ;
 
     /**

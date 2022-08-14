@@ -49,7 +49,7 @@ public class AsyncProcAutoTaskD0020Impl implements AsyncAutoTaskService {
                 Pattern r = Pattern.compile(IP_REX_PATTERN);
                 Matcher m = r.matcher(data.getIp().trim());
                 if (m.matches()) {
-                    String area = netWorkService.getIpArea(data.getIp().trim());
+                    String area = netWorkService.getIpRegion(data.getIp().trim());
                     Object o = asyncIpEnum.getClazz().newInstance();
                     BeanUtil.setFieldValue(o, asyncIpEnum.getPrimaryKey(), data.getOid());
                     BeanUtil.setFieldValue(o, asyncIpEnum.getField(), area);

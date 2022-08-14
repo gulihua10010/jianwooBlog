@@ -9,6 +9,6 @@ import cn.jianwoo.blog.config.router.UrlConfig;
  */
 public class AnnounceMainApiUrlConfig extends UrlConfig {
     public static final String URL_PREFIX = "/api/announce";
-    public static final String URL_QUERY_USEFUL_PAGE_LIST = "/query/useful/page/list";
+    public static final String URL_ANNOUNCE_QUERY_USEFUL_LIST = "/query/useful/list";
 
 }

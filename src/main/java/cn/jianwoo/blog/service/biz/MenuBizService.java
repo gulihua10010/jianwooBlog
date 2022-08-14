@@ -65,14 +65,14 @@ public interface MenuBizService {
 
 
     /**
-     * 根据类型和父oid统计菜单数量
+     * 根据类型和父oid获取菜单最大索引
      *
      * @param type      类型 [MENU.TYPE] {@link MenuTypeEnum}
      * @param parentOid 菜单父oid
      * @return
      * @author gulihua
      */
-    int countMenuWithSameLevel(String type, Long parentOid);
+    int queryMaxIndexMenuWithSameLevel(String type, Long parentOid);
 
 
     /**

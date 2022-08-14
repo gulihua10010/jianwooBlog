@@ -65,7 +65,7 @@ public class AdminBO implements Serializable {
     /**
      * 注册地区
      */
-    private String registerArea;
+    private String registerRegion;
 
     /**
      * 最后登录IP
@@ -75,7 +75,7 @@ public class AdminBO implements Serializable {
     /**
      * 最后登录地区
      */
-    private String lastLoginArea;
+    private String lastLoginRegion;
 
     /**
      * 最后登录时间

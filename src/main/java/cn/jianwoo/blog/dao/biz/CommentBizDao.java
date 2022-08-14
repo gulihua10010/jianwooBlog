@@ -128,17 +128,19 @@ public interface CommentBizDao {
      * 更新评论回复数量
      *
      * @param oid 主键
+     * @param optType 操作类型(10:创建,40:删除)
      * @return
      * @author gulihua
      */
-    void doUpdateCommentReplyCnt(Long oid) throws DaoException;
+    void doUpdateCommentReplyCnt(Long oid, String optType) throws DaoException;
 
     /**
      * 更新评论回复总数量
      *
-     * @param artOid 主键
+     * @param oid 主键
+     * @param optType 操作类型(10:创建,40:删除)
      * @return
      * @author gulihua
      */
-    void doUpdateCommentTotalReplyCnt(Long oid) throws DaoException;
+    void doUpdateCommentTotalReplyCnt(Long oid, String optType) throws DaoException;
 }

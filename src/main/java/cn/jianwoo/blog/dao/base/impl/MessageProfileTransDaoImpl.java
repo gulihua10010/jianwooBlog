@@ -88,4 +88,16 @@ public class MessageProfileTransDaoImpl extends MessageProfileQueryDaoImpl imple
         newMessage.setUpdateTime(DateUtil.getNow());
         messageProfileMapper.updateByExampleSelective(newMessage, example);
     }
+
+    @Override
+    public void doUpdateFlagPopupMainByOidList(List<Long> oidList) {
+        MessageProfileExample example = new MessageProfileExample();
+        MessageProfileExample.Criteria criteria = example.createCriteria();
+        criteria.andOidIn(oidList);
+        MessageProfileWithBLOBs newMessage = new MessageProfileWithBLOBs();
+        newMessage.setFlagPopupMain(true);
+        newMessage.setUpdateTime(DateUtil.getNow());
+        messageProfileMapper.updateByExampleSelective(newMessage, example);
+
+    }
 }

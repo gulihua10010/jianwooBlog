@@ -18,7 +18,7 @@ public class LoginLog implements Serializable {
 
     private String triggerIp;
 
-    private String triggerArea;
+    private String triggerRegion;
 
     private String triggerDevice;
 
@@ -88,12 +88,12 @@ public class LoginLog implements Serializable {
         this.triggerIp = triggerIp == null ? null : triggerIp.trim();
     }
 
-    public String getTriggerArea() {
-        return triggerArea;
+    public String getTriggerRegion() {
+        return triggerRegion;
     }
 
-    public void setTriggerArea(String triggerArea) {
-        this.triggerArea = triggerArea == null ? null : triggerArea.trim();
+    public void setTriggerRegion(String triggerRegion) {
+        this.triggerRegion = triggerRegion == null ? null : triggerRegion.trim();
     }
 
     public String getTriggerDevice() {
@@ -149,7 +149,7 @@ public class LoginLog implements Serializable {
         sb.append(", triggerTime=").append(triggerTime);
         sb.append(", triggerDesc=").append(triggerDesc);
         sb.append(", triggerIp=").append(triggerIp);
-        sb.append(", triggerArea=").append(triggerArea);
+        sb.append(", triggerRegion=").append(triggerRegion);
         sb.append(", triggerDevice=").append(triggerDevice);
         sb.append(", processStatus=").append(processStatus);
         sb.append(", failedReason=").append(failedReason);

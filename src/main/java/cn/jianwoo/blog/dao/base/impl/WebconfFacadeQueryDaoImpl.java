@@ -13,8 +13,8 @@ public class WebconfFacadeQueryDaoImpl implements WebconfFacadeQueryDao {
     WebconfFacadeMapper webconfFacadeMapper;
 
     @Override
-    public WebconfFacade queryWebconfFacadeByPrimaryKey(Long oid) throws DaoException {
-        WebconfFacade record = webconfFacadeMapper.selectByPrimaryKey(oid);
+    public WebconfFacade queryWebconfFacadeByPrimaryKey(String key) throws DaoException {
+        WebconfFacade record = webconfFacadeMapper.selectByPrimaryKey(key);
         if(null == record){
             throw DaoException.DAO_SELECTONE_IS_NULL.print();
         }

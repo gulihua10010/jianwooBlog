@@ -91,6 +91,10 @@ public enum PageIdEnum {
     ANNOUNCEMENT_UPDATE("AN11"),
 
     BLACK_IP_CREATE("BI10"),
+    /**
+     * 留言
+     */
+    MESSAGE_BOARD_REPLY("MB10"),
 
     ;
     private String value;

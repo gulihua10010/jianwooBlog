@@ -104,7 +104,7 @@ public class CommentVO implements Serializable {
     /**
      * ip所属地域
      */
-    private String userArea;
+    private String userRegion;
     /**
      * 是否以读
      */

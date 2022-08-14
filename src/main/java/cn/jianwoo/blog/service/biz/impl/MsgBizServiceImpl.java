@@ -2,8 +2,11 @@ package cn.jianwoo.blog.service.biz.impl;
 
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.dao.base.MessageProfileTransDao;
+import cn.jianwoo.blog.dao.biz.MsgBizDao;
+import cn.jianwoo.blog.entity.MessageProfile;
 import cn.jianwoo.blog.entity.MessageProfileWithBLOBs;
 import cn.jianwoo.blog.entity.query.MsgQuery;
+import cn.jianwoo.blog.enums.ReceiverTypeEnum;
 import cn.jianwoo.blog.exception.DaoException;
 import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.exception.MsgProfileBizException;
@@ -17,6 +20,7 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -35,14 +39,19 @@ public class MsgBizServiceImpl implements MsgBizService {
 
     @Autowired
     private MessageProfileTransDao messageProfileTransDao;
+    @Autowired
+    private MsgBizDao msgBizDao;
 
     @Override
     public PageInfo<MsgProfileBO> queryMsgPageList(MsgParam param) {
+        String loginId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Page page = PageHelper.startPage(param.getPageNo(), param.getPageSize());
         MsgQuery query = new MsgQuery();
         if (Constants.TRUE_1.equals(param.getIsRead())) {
             query.setIsRead(param.getIsRead());
         }
+        query.setReceiverId(loginId);
+        query.setReceiverType(ReceiverTypeEnum.ADMIN.getValue());
         List<MessageProfileWithBLOBs> messageProfileList = messageProfileTransDao.queryMessageProfilePageList(query);
         List<MsgProfileBO> list = new ArrayList<>();
         if (!CollectionUtils.isEmpty(messageProfileList)) {
@@ -83,7 +92,8 @@ public class MsgBizServiceImpl implements MsgBizService {
 
     @Override
     public List<MsgProfileBO> queryMsgTimerList(Integer limit) {
-        List<MessageProfileWithBLOBs> messageProfileList = messageProfileTransDao.queryMessageProfileTimerList(limit);
+        String loginId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<MessageProfileWithBLOBs> messageProfileList = messageProfileTransDao.queryMessageProfileTimerList(loginId,ReceiverTypeEnum.ADMIN.getValue(), limit);
         List<MsgProfileBO> list = new ArrayList<>();
         if (!CollectionUtils.isEmpty(messageProfileList)) {
             messageProfileList.forEach(o -> {
@@ -100,7 +110,25 @@ public class MsgBizServiceImpl implements MsgBizService {
 
     @Override
     public Long queryUnreadMsgCount() {
-        return messageProfileTransDao.queryUnreadMsgCount();
+        String loginId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return messageProfileTransDao.queryUnreadMsgCount(loginId, ReceiverTypeEnum.ADMIN.getValue());
+    }
+
+    @Override
+    public List<MsgProfileBO> queryMsgTimerMainList(Integer limit, String currentIp) {
+        List<MessageProfileWithBLOBs> messageProfileList = msgBizDao.queryMsgTimerMainList(limit, currentIp);
+        List<MsgProfileBO> list = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(messageProfileList)) {
+            messageProfileList.forEach(o -> {
+                MsgProfileBO bo = new MsgProfileBO();
+                BeanUtils.copyProperties(o, bo, "msgContent");
+                bo.setMsgContent(new String(o.getMsgContent()));
+                list.add(bo);
+            });
+            messageProfileTransDao.doUpdateFlagPopupMainByOidList(list.stream().map(MsgProfileBO::getOid).collect(Collectors.toList()));
+        }
+
+        return list;
     }
 }
 

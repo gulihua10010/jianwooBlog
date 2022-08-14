@@ -22,7 +22,7 @@ public class Comment implements Serializable {
 
     private String clientIp;
 
-    private String userArea;
+    private String userRegion;
 
     private Date commentTime;
 
@@ -142,12 +142,12 @@ public class Comment implements Serializable {
         this.clientIp = clientIp == null ? null : clientIp.trim();
     }
 
-    public String getUserArea() {
-        return userArea;
+    public String getUserRegion() {
+        return userRegion;
     }
 
-    public void setUserArea(String userArea) {
-        this.userArea = userArea == null ? null : userArea.trim();
+    public void setUserRegion(String userRegion) {
+        this.userRegion = userRegion == null ? null : userRegion.trim();
     }
 
     public Date getCommentTime() {
@@ -341,7 +341,7 @@ public class Comment implements Serializable {
         sb.append(", userName=").append(userName);
         sb.append(", userNick=").append(userNick);
         sb.append(", clientIp=").append(clientIp);
-        sb.append(", userArea=").append(userArea);
+        sb.append(", userRegion=").append(userRegion);
         sb.append(", commentTime=").append(commentTime);
         sb.append(", parentOid=").append(parentOid);
         sb.append(", replyRootOid=").append(replyRootOid);

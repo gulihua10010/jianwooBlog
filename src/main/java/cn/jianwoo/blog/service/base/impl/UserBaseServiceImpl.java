@@ -143,6 +143,7 @@ public class UserBaseServiceImpl implements UserBaseService {
         userTmpBO.setUserId(userProfile.getUserId());
         userTmpBO.setUsername(userProfile.getUsername());
         userTmpBO.setAvatarSrc(userProfile.getAvatarSrc());
+        userTmpBO.setUserRegion(userProfile.getRegisterRegion());
         UserProfile newUserProfile = JwBuilder.of(UserProfile::new)
                 .with(UserProfile::setOid, userProfile.getOid())
                 .with(UserProfile::setUserNick, userTmpBO.getNickname())

@@ -8,7 +8,7 @@ public class ArticleAccess implements Serializable {
 
     private String accessIp;
 
-    private String accessArea;
+    private String accessRegion;
 
     private Long articleOid;
 
@@ -38,12 +38,12 @@ public class ArticleAccess implements Serializable {
         this.accessIp = accessIp == null ? null : accessIp.trim();
     }
 
-    public String getAccessArea() {
-        return accessArea;
+    public String getAccessRegion() {
+        return accessRegion;
     }
 
-    public void setAccessArea(String accessArea) {
-        this.accessArea = accessArea == null ? null : accessArea.trim();
+    public void setAccessRegion(String accessRegion) {
+        this.accessRegion = accessRegion == null ? null : accessRegion.trim();
     }
 
     public Long getArticleOid() {
@@ -94,7 +94,7 @@ public class ArticleAccess implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", oid=").append(oid);
         sb.append(", accessIp=").append(accessIp);
-        sb.append(", accessArea=").append(accessArea);
+        sb.append(", accessRegion=").append(accessRegion);
         sb.append(", articleOid=").append(articleOid);
         sb.append(", articleTitle=").append(articleTitle);
         sb.append(", accessTime=").append(accessTime);

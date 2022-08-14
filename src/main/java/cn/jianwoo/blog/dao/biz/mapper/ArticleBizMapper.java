@@ -107,10 +107,23 @@ public interface ArticleBizMapper {
      *
      * @param param     参数
      * @param isPrivate 是否博主私有ip
+     * @param currentIp 当前访问者的ip
      * @return
      * @author gulihua
      */
-    List<ArticleExt> selectArticleListMain(@Param("param") ArticleQuery param, @Param("isPrivate") boolean isPrivate);
+    List<ArticleExt> selectArticleListMain(@Param("param") ArticleQuery param, @Param("isPrivate") boolean isPrivate,
+                                           @Param("currentIp") String currentIp);
+
+
+    /**
+     * 获取首页文章列表的数量
+     *
+     * @param param     参数
+     * @param isPrivate 是否博主私有ip
+     * @return
+     * @author gulihua
+     */
+    Long selectArticleListMainCount(@Param("param") ArticleQuery param, @Param("isPrivate") boolean isPrivate);
 
     /**
      * 获取某月的文章列表
@@ -150,6 +163,17 @@ public interface ArticleBizMapper {
      * @return
      * @author gulihua
      */
-    List<ArticleExt> selectRecommendArticleByCategoryOid(Integer categoryOid);
+    List<ArticleExt> selectRecommendArticleByCategoryOid(@Param("categoryOid") Integer categoryOid, @Param("artOid") Long artOid);
 
+
+
+    /**
+     * 更新文章中评论总数量
+     *
+     * @param oid 主键
+     * @param optType 评论操作类型(10:创建,40:删除)
+     * @return
+     * @author gulihua
+     */
+    int updateArticleCommTotalCnt(@Param("oid") Long oid, @Param("optType") String optType);
 }

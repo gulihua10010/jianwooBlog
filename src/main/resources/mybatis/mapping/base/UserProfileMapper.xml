@@ -11,9 +11,9 @@
     <result column="USER_EMAIL" jdbcType="VARCHAR" property="userEmail" />
     <result column="USER_SEX" jdbcType="VARCHAR" property="userSex" />
     <result column="REGISTER_IP" jdbcType="VARCHAR" property="registerIp" />
-    <result column="REGISTER_AREA" jdbcType="VARCHAR" property="registerArea" />
+    <result column="REGISTER_REGION" jdbcType="VARCHAR" property="registerRegion" />
     <result column="LAST_LOGIN_IP" jdbcType="VARCHAR" property="lastLoginIp" />
-    <result column="LAST_LOGIN_AREA" jdbcType="VARCHAR" property="lastLoginArea" />
+    <result column="LAST_LOGIN_REGION" jdbcType="VARCHAR" property="lastLoginRegion" />
     <result column="LAST_LOGIN_TIME" jdbcType="TIMESTAMP" property="lastLoginTime" />
     <result column="USER_QQ" jdbcType="VARCHAR" property="userQq" />
     <result column="USER_WECHAT" jdbcType="VARCHAR" property="userWechat" />
@@ -83,8 +83,8 @@
   </sql>
   <sql id="Base_Column_List">
     OID, USER_ID, USERNAME, `PASSWORD`, USER_NICK, USER_PHONE, USER_EMAIL, USER_SEX, 
-    REGISTER_IP, REGISTER_AREA, LAST_LOGIN_IP, LAST_LOGIN_AREA, LAST_LOGIN_TIME, USER_QQ, 
-    USER_WECHAT, USER_WEIBO, USER_TEL, AVATAR_SRC, CREATE_TIME, UPDATE_TIME
+    REGISTER_IP, REGISTER_REGION, LAST_LOGIN_IP, LAST_LOGIN_REGION, LAST_LOGIN_TIME, 
+    USER_QQ, USER_WECHAT, USER_WEIBO, USER_TEL, AVATAR_SRC, CREATE_TIME, UPDATE_TIME
   </sql>
   <select id="selectByExample" parameterType="cn.jianwoo.blog.entity.example.UserProfileExample" resultMap="BaseResultMap">
     select
@@ -120,15 +120,15 @@
   <insert id="insert" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.UserProfile" useGeneratedKeys="true">
     insert into USER_PROFILE (USER_ID, USERNAME, `PASSWORD`, 
       USER_NICK, USER_PHONE, USER_EMAIL, 
-      USER_SEX, REGISTER_IP, REGISTER_AREA, 
-      LAST_LOGIN_IP, LAST_LOGIN_AREA, LAST_LOGIN_TIME, 
+      USER_SEX, REGISTER_IP, REGISTER_REGION, 
+      LAST_LOGIN_IP, LAST_LOGIN_REGION, LAST_LOGIN_TIME, 
       USER_QQ, USER_WECHAT, USER_WEIBO, 
       USER_TEL, AVATAR_SRC, CREATE_TIME, 
       UPDATE_TIME)
     values (#{userId,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{userNick,jdbcType=VARCHAR}, #{userPhone,jdbcType=VARCHAR}, #{userEmail,jdbcType=VARCHAR}, 
-      #{userSex,jdbcType=VARCHAR}, #{registerIp,jdbcType=VARCHAR}, #{registerArea,jdbcType=VARCHAR}, 
-      #{lastLoginIp,jdbcType=VARCHAR}, #{lastLoginArea,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=TIMESTAMP}, 
+      #{userSex,jdbcType=VARCHAR}, #{registerIp,jdbcType=VARCHAR}, #{registerRegion,jdbcType=VARCHAR}, 
+      #{lastLoginIp,jdbcType=VARCHAR}, #{lastLoginRegion,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=TIMESTAMP}, 
       #{userQq,jdbcType=VARCHAR}, #{userWechat,jdbcType=VARCHAR}, #{userWeibo,jdbcType=VARCHAR}, 
       #{userTel,jdbcType=VARCHAR}, #{avatarSrc,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP})
@@ -160,14 +160,14 @@
       <if test="registerIp != null">
         REGISTER_IP,
       </if>
-      <if test="registerArea != null">
-        REGISTER_AREA,
+      <if test="registerRegion != null">
+        REGISTER_REGION,
       </if>
       <if test="lastLoginIp != null">
         LAST_LOGIN_IP,
       </if>
-      <if test="lastLoginArea != null">
-        LAST_LOGIN_AREA,
+      <if test="lastLoginRegion != null">
+        LAST_LOGIN_REGION,
       </if>
       <if test="lastLoginTime != null">
         LAST_LOGIN_TIME,
@@ -219,14 +219,14 @@
       <if test="registerIp != null">
         #{registerIp,jdbcType=VARCHAR},
       </if>
-      <if test="registerArea != null">
-        #{registerArea,jdbcType=VARCHAR},
+      <if test="registerRegion != null">
+        #{registerRegion,jdbcType=VARCHAR},
       </if>
       <if test="lastLoginIp != null">
         #{lastLoginIp,jdbcType=VARCHAR},
       </if>
-      <if test="lastLoginArea != null">
-        #{lastLoginArea,jdbcType=VARCHAR},
+      <if test="lastLoginRegion != null">
+        #{lastLoginRegion,jdbcType=VARCHAR},
       </if>
       <if test="lastLoginTime != null">
         #{lastLoginTime,jdbcType=TIMESTAMP},
@@ -290,14 +290,14 @@
       <if test="record.registerIp != null">
         REGISTER_IP = #{record.registerIp,jdbcType=VARCHAR},
       </if>
-      <if test="record.registerArea != null">
-        REGISTER_AREA = #{record.registerArea,jdbcType=VARCHAR},
+      <if test="record.registerRegion != null">
+        REGISTER_REGION = #{record.registerRegion,jdbcType=VARCHAR},
       </if>
       <if test="record.lastLoginIp != null">
         LAST_LOGIN_IP = #{record.lastLoginIp,jdbcType=VARCHAR},
       </if>
-      <if test="record.lastLoginArea != null">
-        LAST_LOGIN_AREA = #{record.lastLoginArea,jdbcType=VARCHAR},
+      <if test="record.lastLoginRegion != null">
+        LAST_LOGIN_REGION = #{record.lastLoginRegion,jdbcType=VARCHAR},
       </if>
       <if test="record.lastLoginTime != null">
         LAST_LOGIN_TIME = #{record.lastLoginTime,jdbcType=TIMESTAMP},
@@ -339,9 +339,9 @@
       USER_EMAIL = #{record.userEmail,jdbcType=VARCHAR},
       USER_SEX = #{record.userSex,jdbcType=VARCHAR},
       REGISTER_IP = #{record.registerIp,jdbcType=VARCHAR},
-      REGISTER_AREA = #{record.registerArea,jdbcType=VARCHAR},
+      REGISTER_REGION = #{record.registerRegion,jdbcType=VARCHAR},
       LAST_LOGIN_IP = #{record.lastLoginIp,jdbcType=VARCHAR},
-      LAST_LOGIN_AREA = #{record.lastLoginArea,jdbcType=VARCHAR},
+      LAST_LOGIN_REGION = #{record.lastLoginRegion,jdbcType=VARCHAR},
       LAST_LOGIN_TIME = #{record.lastLoginTime,jdbcType=TIMESTAMP},
       USER_QQ = #{record.userQq,jdbcType=VARCHAR},
       USER_WECHAT = #{record.userWechat,jdbcType=VARCHAR},
@@ -381,14 +381,14 @@
       <if test="registerIp != null">
         REGISTER_IP = #{registerIp,jdbcType=VARCHAR},
       </if>
-      <if test="registerArea != null">
-        REGISTER_AREA = #{registerArea,jdbcType=VARCHAR},
+      <if test="registerRegion != null">
+        REGISTER_REGION = #{registerRegion,jdbcType=VARCHAR},
       </if>
       <if test="lastLoginIp != null">
         LAST_LOGIN_IP = #{lastLoginIp,jdbcType=VARCHAR},
       </if>
-      <if test="lastLoginArea != null">
-        LAST_LOGIN_AREA = #{lastLoginArea,jdbcType=VARCHAR},
+      <if test="lastLoginRegion != null">
+        LAST_LOGIN_REGION = #{lastLoginRegion,jdbcType=VARCHAR},
       </if>
       <if test="lastLoginTime != null">
         LAST_LOGIN_TIME = #{lastLoginTime,jdbcType=TIMESTAMP},
@@ -427,9 +427,9 @@
       USER_EMAIL = #{userEmail,jdbcType=VARCHAR},
       USER_SEX = #{userSex,jdbcType=VARCHAR},
       REGISTER_IP = #{registerIp,jdbcType=VARCHAR},
-      REGISTER_AREA = #{registerArea,jdbcType=VARCHAR},
+      REGISTER_REGION = #{registerRegion,jdbcType=VARCHAR},
       LAST_LOGIN_IP = #{lastLoginIp,jdbcType=VARCHAR},
-      LAST_LOGIN_AREA = #{lastLoginArea,jdbcType=VARCHAR},
+      LAST_LOGIN_REGION = #{lastLoginRegion,jdbcType=VARCHAR},
       LAST_LOGIN_TIME = #{lastLoginTime,jdbcType=TIMESTAMP},
       USER_QQ = #{userQq,jdbcType=VARCHAR},
       USER_WECHAT = #{userWechat,jdbcType=VARCHAR},

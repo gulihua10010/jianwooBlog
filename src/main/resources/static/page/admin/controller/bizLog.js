@@ -27,7 +27,7 @@ layui.define(['laytable', 'form'], function (exports) {
                 }
             },
             {
-                field: 'triggerArea', title: '触发地区', align: 'left', templet: function (d) {
+                field: 'triggerRegion', title: '触发地区', align: 'left', templet: function (d) {
                     return format(d)
                 }
             },

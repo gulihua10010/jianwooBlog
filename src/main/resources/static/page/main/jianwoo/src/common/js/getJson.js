@@ -3,9 +3,13 @@ import CONFIG from './config.js'
 import {ElMessage} from "element-plus";
 
 
-export function getJson(str, p) {
+export function getJson(str, p, v) {
 
     const url = CONFIG.API_URI + '/api' + str;
+    if (!v) {
+        v = 1;
+    }
+    p.v = v;
 
     var instance = axios.create({
         baseURL: url,
