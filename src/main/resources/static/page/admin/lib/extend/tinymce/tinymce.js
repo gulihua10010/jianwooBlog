@@ -211,13 +211,13 @@ layui.define(['jquery'], function (exports) {
 
         option.codesample_languages = isset(option.codesample_languages) ? option.codesample_languages :
             [
-                {text: 'HTML/XML', value: 'markup'},
+                {text: 'Java', value: 'java'},
                 {text: 'JavaScript', value: 'javascript'},
+                {text: 'HTML/XML', value: 'markup'},
                 {text: 'CSS', value: 'css'},
                 {text: 'PHP', value: 'php'},
-                {text: 'Ruby', value: 'ruby'},
+                {text: 'Bash', value: 'bash'},
                 {text: 'Python', value: 'python'},
-                {text: 'Java', value: 'java'},
                 {text: 'C', value: 'c'},
                 {text: 'C#', value: 'csharp'},
                 {text: 'C++', value: 'cpp'}

@@ -56,11 +56,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         e.printStackTrace(pw);
+        StringBuilder sb = new StringBuilder();
+        sb.append("url:").append(request.getContextPath())
+                .append("<br/>").append(sw);
         try {
             String isExceptionEmailNotify = webconfBizService.queryWebconfByKey(WebConfDataConfig.EXCEPTION_EMAIL_NOTIFY);
             if (Constants.TRUE.equals(isExceptionEmailNotify)) {
                 TaskDataD0099BO taskDataD0099BO = new TaskDataD0099BO();
-                taskDataD0099BO.setExcepionMsg(sw.toString());
+                taskDataD0099BO.setExcepionMsg(sb.toString());
                 createTask(taskDataD0099BO);
             }
         } catch (JwBlogException ex) {

@@ -179,7 +179,7 @@
                         {{# if(d.data.status !== '91'){ }}
                         <div class="layui-form-item">
                             <input autocomplete="off" class="layui-input" id="art-title" name="title" placeholder="键入标题"
-                                   type="text" lay-verify="required|maxLength" lay-max="50"
+                                   type="text" lay-verify="required|maxLength" lay-max="100"
                                    value="{{ d.data.title }}">
                         </div>
                         <div class="layui-form-item">
@@ -284,10 +284,15 @@
                                 <select lay-search lay-verify="required" name="categoryId" id="categoryId">
                                     <option style="font-weight: bold;color: black" value="-1"></option>
                                     {{# layui.each(d.data.categoryList, function(index, item){ }}
-                                    <option style="color: #777" value="{{ item.id }}" {{# if(item.id=== d.data.categoryId){
-                                            }} selected {{# } }}>{{ item.name }}
-                                    </option>
+                                    <optgroup label="{{ item.name }}"/>
+                                        {{# layui.each(item.subCategoryList, function(subIdx, sub){ }}
+                                        <option style="color: #777" value="{{ sub.id }}" {{# if(sub.id=== d.data.categoryId){
+                                                }} selected {{# } }}>{{ sub.name }}
+                                        </option>
+                                        {{# }); }}
                                     {{# }); }}
+
+
                                 </select>
                             </div>
                         </div>
@@ -527,6 +532,7 @@
                 var isChange = false;
                 element.render()
                 form.render()
+                var tempOid = null;
                 //回收站view
                 if (d.data.status === "91") {
                     console.log("===回收站===")
@@ -612,6 +618,7 @@
 
 
                 });
+
                 if (d.data.tempArticle && d.data.tempArticle.oid) {
                     alertAsk('系统存在之前未完成的临时文章，是否恢复?', function () {
                         var tmpData = d.data.tempArticle;
@@ -685,6 +692,10 @@
                             JSON.stringify({
                                 entityOid: d.data.tempArticle.oid
                             }));
+                        d.data.tempArticle.oid = null;
+                        tempOid = null;
+                        $('#tempData').val(null);
+
                     })
 
                 }
@@ -726,16 +737,15 @@
                         flagOriginal = 1;
 
                     }
-                    var oid = null;
                     if (d.data.tempArticle && d.data.tempArticle.oid) {
-                        oid = d.data.tempArticle.oid;
+                        tempOid = d.data.tempArticle.oid;
                     }
 
                     ajaxPost('/api/admin/article/temp/save',
                         1,
                         JSON.stringify({
                             requestId: subToken,
-                            oid: oid,
+                            oid: tempOid,
                             oldArticleOid: artOid,
                             title: title,
                             author: author,
@@ -751,7 +761,14 @@
                             topPlaceFlag: topPlaceFlag,
                             pageType: "20",
 
-                        }));
+                        }),
+                        null,
+                        function (res) {
+                            if (!tempOid) {
+                                tempOid = res.oid;
+                                $('#tempData').val(tempOid);
+                            }
+                        });
                 }
 
 

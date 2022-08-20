@@ -1197,7 +1197,7 @@ export default {
 }
 
 .comment-footer {
-    padding: 0.5rem 0rem;
+    padding: 5px 0px;
     padding-left: calc(40px + 1em);
     display: flex;
     align-items: center;
@@ -1215,7 +1215,7 @@ export default {
     width: 100%;
     /*min-height: 100px;*/
     /*height: 10rem;*/
-    padding: 0.5rem;
+    padding: 5px;
 
 }
 
@@ -1231,7 +1231,7 @@ export default {
     background-color: rgba(166, 10, 169, .98);
     border: none;
     color: white;
-    padding: 0.5rem 1.5rem;
+    padding: 5px 15px;
     border-radius: 8%;
     cursor: pointer;
 }
@@ -1256,12 +1256,12 @@ export default {
 }
 
 .comment-reply-input {
-    min-height: 2rem;
+    min-height: 20px;
     width: 95% !important;
     //height: 4rem;
     //margin: 0.5rem 0rem;
-    padding: 0.5rem;
-    margin-left: calc(40px + 1em);
+    padding: 5px;
+    margin-left: 50px;
     //resize: both;
     overflow: hidden;
 }
@@ -1284,7 +1284,7 @@ export default {
 }
 
 .comment-reply-btns .emoji-btn {
-    margin-left: calc(40px + 1em);
+    margin-left: 50px
 }
 
 .comment-reply-btns button {
@@ -1292,7 +1292,7 @@ export default {
     background-color: rgba(166, 10, 169, .98);
     border: none;
     color: white;
-    padding: 0.5rem 1.5rem;
+    padding: 5px 15px;
     border-radius: 8%;
     cursor: pointer;
 }

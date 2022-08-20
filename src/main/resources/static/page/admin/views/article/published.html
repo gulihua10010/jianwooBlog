@@ -58,7 +58,7 @@
                 <div class="layui-card-body">
                     <div class="layui-form-item">
                         <input autocomplete="off" class="layui-input" id="art-title" name="title" placeholder="键入标题"
-                               type="text" lay-verify="required|maxLength" lay-max="50"
+                               type="text" lay-verify="required|maxLength" lay-max="100"
                                value="">
                     </div>
                     <div class="layui-form-item">
@@ -113,8 +113,13 @@
                                 <select lay-search lay-verify="required" name="categoryId" id="categoryId">
                                     <option style="font-weight: bold;color: black" value="-1"></option>
                                     {{# layui.each(d.data, function(index, item){ }}
-                                    <option style="color: #777" value="{{ item.id }}">{{ item.name }}</option>
+                                    <optgroup label="{{ item.name }}"/>
+                                        {{# layui.each(item.subCategoryList, function(subIdx, sub){ }}
+                                        <option style="color: #777" value="{{ sub.id }}">{{ sub.name }}</option>
+                                        {{# }); }}
                                     {{# }); }}
+
+
                                 </select>
                             </div>
                         </script>
@@ -369,6 +374,8 @@
                             entityOid: d.data.oid
                         }));
                     d.data.oid = null;
+                    tempOid = null;
+                    $('#tempData').val(null);
                 })
 
             }
@@ -437,6 +444,7 @@
                 function (res) {
                     if (!tempOid) {
                         tempOid = res.oid;
+                        $('#tempData').val(tempOid);
                     }
                 });
             }

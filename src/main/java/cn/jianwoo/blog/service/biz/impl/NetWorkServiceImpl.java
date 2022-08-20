@@ -121,7 +121,7 @@ public class NetWorkServiceImpl implements NetWorkService {
         }
 
         String[] arr = region.split(" ");
-        List<String> list = Arrays.asList(arr).stream().filter(StringUtils::isNotBlank).collect(Collectors.toList());
+        List<String> list = Arrays.stream(arr).filter(StringUtils::isNotBlank).collect(Collectors.toList());
         if (region.startsWith("中国")) {
             if (list.size() > 2) {
                 return list.get(1) + list.get(2);

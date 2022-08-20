@@ -50,9 +50,9 @@ public final class Constants {
     public static final String ANAONYMOUS = "匿名";
 
     //validate length
-    public static final Integer TITLE_LENGTH = 50;
+    public static final Integer TITLE_LENGTH = 100;
     public static final Integer AUTHOR_LENGTH = 10;
-    public static final Integer TAGS_LENGTH = 10;
+    public static final Integer TAGS_LENGTH = 15;
 
     public static final Integer MENU_TEXT_LENGTH = 10;
     public static final Integer MENU_NAME_LENGTH = 20;

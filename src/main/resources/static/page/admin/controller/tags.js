@@ -116,10 +116,10 @@ layui.define(['form', 'mouseRightMenu'], function (exports) {
             computeInputWidth()
             isBr = true;
         }
-        //解决复制粘贴大于10个字符,并且最后一个字符是','的问题
-        if (validVal.length == 11 && lastVal != ',' || validVal.length > 11) {
-            alertFail("提示", "标签最大支持10个字符！");
-            $('#tags-add-text').val(validVal.substr(0, 10));
+        //解决复制粘贴大于15个字符,并且最后一个字符是','的问题
+        if (validVal.length == 16 && lastVal != ',' || validVal.length > 16) {
+            alertFail("提示", "标签最大支持15个字符！");
+            $('#tags-add-text').val(validVal.substr(0, 15));
             return;
         }
 

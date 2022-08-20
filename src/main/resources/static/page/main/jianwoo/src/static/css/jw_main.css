@@ -22,7 +22,7 @@
     margin: 0;
 }
 
-* {
+*:not(.art-con *) {
     font-family: "Microsoft Yahei", "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 14px
 }
@@ -388,26 +388,34 @@ div.index-main > div.article-list > div.article-breviary > div.art-bre-tit {
     padding: 10px 20px;
     text-align: left;
     cursor: pointer;
-    position: relative
-}
+    position: relative;
 
+}
+.art-bre-tit-info{
+    width: 100%;
+    height: 35px;
+    overflow: hidden;
+    display: inline-block;
+    text-overflow: ellipsis;
+}
 .bordertest {
     border: 1px solid #000;
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-tit > .art-title {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-tit  .art-title {
     font-size: 22px;
     font-weight: 700;
     margin: auto 10px;
     color: #B40BB7;
-    text-decoration: none
+    text-decoration: none;
+    text-overflow: ellipsis;
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-tit > .art-title:hover {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-tit  .art-title:hover {
     color: #940BB7
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-tit > .art-type {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-tit  .art-type {
     font-size: 14px;
     font-weight: 700;
     color: #fff;
@@ -418,7 +426,7 @@ div.index-main > div.article-list > div.article-breviary > div.art-bre-tit > .ar
     margin: 5px auto
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-tit > .art-top {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-tit  .art-top {
     font-size: 14px;
     font-weight: 700;
     color: #fff;
@@ -430,7 +438,7 @@ div.index-main > div.article-list > div.article-breviary > div.art-bre-tit > .ar
     border-radius: 3px;
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-tit > .art-type:after {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-tit  .art-type:after {
     content: '';
     border: solid transparent;
     height: 0;
@@ -442,11 +450,11 @@ div.index-main > div.article-list > div.article-breviary > div.art-bre-tit > .ar
     border-left-color: #ec3645
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-tit > .art-type:hover {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-tit  .art-type:hover {
     background-color: #cc3645
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-tit > .art-type:after:hover {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-tit  .art-type:after:hover {
     border-left-color: #cc3645
 }
 
@@ -461,7 +469,7 @@ div.index-main > div.article-list > div.article-breviary > div.art-bre-top {
     padding: 10px 20px
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-top > div.art-bre-left {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-top  div.art-bre-left {
     width: 200px;
     height: 125px;
     float: left;
@@ -470,7 +478,7 @@ div.index-main > div.article-list > div.article-breviary > div.art-bre-top > div
     overflow: hidden
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-top > div.art-bre-left img {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-top  div.art-bre-left img {
     width: 200px;
     height: 125px;
     cursor: pointer;
@@ -486,7 +494,7 @@ div.index-main > div.article-list > div.article-breviary > div.art-bre-top > div
     -moz-transition: -moz-transform .3s
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-top > div.art-bre-left img:hover {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-top  div.art-bre-left img:hover {
     transform: scale(1.3);
     -webkit-transform: scale(1.3);
     -o-transform: scale(1.3);
@@ -494,7 +502,7 @@ div.index-main > div.article-list > div.article-breviary > div.art-bre-top > div
     -moz-transform: scale(1.3)
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-top > div.art-bre-right {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-top  div.art-bre-right {
     height: 100%;
     padding: 5px 20px;
     text-indent: 30px;
@@ -1413,4 +1421,37 @@ div.comment div.comment-unit span.after-goods {
 /* for block of code */
 .hljs-ln-code {
     padding-left: 5px !important;
+}
+.copy-to-clipboard-button{
+    background-color: #B40BB7!important;
+    color: white!important;
+}
+.pre-mac {
+    position: relative;
+    margin-top: -7px;
+    top: 10px;
+    left: 60px;
+    width: 100px;
+    z-index: 99;
+}
+.pre-mac > span {
+    float: left;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+.pre-mac > span:nth-child(1) {
+    background: red;
+}
+.pre-mac > span:nth-child(2) {
+    background: sandybrown;
+}
+.pre-mac > span:nth-child(3) {
+    background: limegreen;
+}
+
+pre[class*="language-"]{
+    border-radius: 10px;
+    padding-top: 30px;
 }

@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author GuLihua
@@ -24,6 +25,9 @@ public class ArticleCategoryVO implements Serializable {
      * 菜单名
      */
     private String name;
+
+    /** 子类别*/
+    private List<ArticleCategoryVO> subCategoryList;
 
 
 }

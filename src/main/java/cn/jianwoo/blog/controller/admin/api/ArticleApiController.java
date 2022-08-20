@@ -996,6 +996,9 @@ public class ArticleApiController extends BaseController {
      * --categoryList<br/>
      * ----id<br/>
      * ----name<br/>
+     * ----subCategoryList<br/>
+     * ------id<br/>
+     * ------name<br/>
      * --categoryName<br/>
      * --tempArticle
      * ----oid<br/>
@@ -1048,6 +1051,15 @@ public class ArticleApiController extends BaseController {
                     articleBO.getCategoryList().forEach(o -> {
                         ArticleCategoryVO categoryVO = new ArticleCategoryVO();
                         BeanUtils.copyProperties(o, categoryVO);
+                        List<ArticleCategoryVO> subCategoryList = new ArrayList<>();
+                        if (CollectionUtils.isNotEmpty(o.getSubCategoryList())) {
+                            o.getSubCategoryList().forEach(sub -> {
+                                ArticleCategoryVO subCategoryVO = new ArticleCategoryVO();
+                                BeanUtils.copyProperties(sub, subCategoryVO);
+                                subCategoryList.add(subCategoryVO);
+                            });
+                        }
+                        categoryVO.setSubCategoryList(subCategoryList);
                         categoryVOList.add(categoryVO);
                     });
                     articleVO.setCategoryList(categoryVOList);
@@ -1109,6 +1121,10 @@ public class ArticleApiController extends BaseController {
      * --categoryList<br/>
      * ----id<br/>
      * ----name<br/>
+     * ----subCategoryList<br/>
+     * ------id<br/>
+     * ------name<br/>
+     *
      * @author gulihua
      */
     @ApiVersion()
@@ -1147,6 +1163,15 @@ public class ArticleApiController extends BaseController {
                     articleBO.getCategoryList().forEach(o -> {
                         ArticleCategoryVO categoryVO = new ArticleCategoryVO();
                         BeanUtils.copyProperties(o, categoryVO);
+                        List<ArticleCategoryVO> subCategoryList = new ArrayList<>();
+                        if (CollectionUtils.isNotEmpty(o.getSubCategoryList())) {
+                            o.getSubCategoryList().forEach(sub -> {
+                                ArticleCategoryVO subCategoryVO = new ArticleCategoryVO();
+                                BeanUtils.copyProperties(sub, subCategoryVO);
+                                subCategoryList.add(subCategoryVO);
+                            });
+                        }
+                        categoryVO.setSubCategoryList(subCategoryList);
                         categoryVOList.add(categoryVO);
                     });
                     articleVO.setCategoryList(categoryVOList);

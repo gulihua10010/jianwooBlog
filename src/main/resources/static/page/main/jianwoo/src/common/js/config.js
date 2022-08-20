@@ -5,6 +5,7 @@ const API_FAILED = '000009'
 const VALIDATE_ERROR = '200001'
 const DOMAIN_URI = 'https://127.0.0.1:8000'
 const API_URI = process.env.VUE_APP_API_URI
+const API_URI_PROTOCOL = process.env.VUE_APP_API_URI_PROTOCOL
 
 
 export default {
@@ -15,4 +16,5 @@ export default {
   VALIDATE_ERROR,
   DOMAIN_URI,
   API_URI,
+  API_URI_PROTOCOL,
 }

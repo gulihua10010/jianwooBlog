@@ -4,10 +4,9 @@ import {ElMessage} from 'element-plus'
 
 export function postJson(str, p) {
 
-    var url = CONFIG.API_URI + '/api' + str;
+    var url = location.protocol + '//' + location.host + '/api' + str;
 
     url = doAddUrlVersion(url);
-
     var instance = axios.create({
 
         baseURL: url,

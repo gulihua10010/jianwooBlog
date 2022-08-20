@@ -4,7 +4,7 @@
             <div class="detail">
                 <div class="position">
                     <span>当前位置:<a
-                        href="/index">首页>></a>
+                            href="/index">首页>></a>
                         <span v-if="article.parentCategoryOid">
                              <a :href="'#/index?category1=' + article.parentCategoryOid"
                              >{{ article.parentCategory }}</a>>>
@@ -79,7 +79,7 @@
                             <span class="art-region">
                                     <svg class="icon" aria-hidden="true">
                                         <use xlink:href="#icon-position"></use>
-                                    </svg>:{{ !article.publishRegion ? '未知' : article.publishRegion}}
+                                    </svg>:{{ !article.publishRegion ? '未知' : article.publishRegion }}
                                 </span>
                             <span class="art-type">
                                 <svg class="icon" aria-hidden="true">
@@ -95,7 +95,7 @@
                         </div>
                     </div>
 
-                    <div class="art-txt" v-highlight v-html="article.content">
+                    <div class="art-txt" id="container" v-html="article.content">
                     </div>
                 </el-card>
             </div>
@@ -167,6 +167,7 @@
 <script>
 import {postJson} from "@/common/js/postJson";
 import Comment from "@/components/Comment";
+import Prism from 'prismjs'
 
 export default {
     name: "Detail",
@@ -222,16 +223,16 @@ export default {
 
             })
         }
+
     },
     created() {
-
 
     },
     methods: {
         initParam: function () {
             var isSameId = true;
             if (this.$route.query.id) {
-                if (this.$route.query.id != this.entityOid){
+                if (this.$route.query.id != this.entityOid) {
                     isSameId = false;
                 }
                 this.entityOid = this.$route.query.id;
@@ -264,6 +265,8 @@ export default {
                         this.tagsList.push(tag);
                     }
                 }
+
+                this.renderCode();
 
             });
         },
@@ -343,6 +346,8 @@ export default {
                     artVerifies.push(verifyInfo);
                     let _jsonstr = JSON.stringify(artVerifies);
                     sessionStorage.setItem("verifyInfo", _jsonstr);
+                    this.renderCode();
+
 
                     if (res.data && res.data.tags && res.data.tags.length > 0) {
                         for (let i = 0; i < res.data.tags.length; i++) {
@@ -359,6 +364,7 @@ export default {
                             this.tagsList.push(tag);
                         }
                     }
+
                 }
 
 
@@ -380,12 +386,48 @@ export default {
             if (this.isVerify) {
                 this.doVerifyQuery();
             }
+        },
+        renderCode: function () {
+            setTimeout(() => {
+                        Prism.highlightAll()
+                    }
+                    , 0);
+            this.$nextTick(function () {
+                const container = document?.getElementById('container')
+                const codeBlocks = container?.getElementsByTagName('pre')
+                if (codeBlocks && codeBlocks.length > 0) {
+                    for (let i = 0; i < codeBlocks.length; i++) {
+                        let item = codeBlocks[i];
+                        item.style.whiteSpace = 'pre-wrap'
+                        // Add pre-mac element for Mac Style UI
+                        const preMac = document.createElement('div')
+                        preMac.classList.add('pre-mac')
+                        preMac.innerHTML = '<span></span><span></span><span></span>'
+                        item.parentElement.insertBefore(preMac, item)
+                    }
+                }
+                var that = this;
+                container.addEventListener('click', function (ev) {
+                    var target = ev.target || ev.srcElement;
+                    console.log(target.parentNode.className)
+                    if (target.parentNode.className === 'copy-to-clipboard-button') {
+                        that.$message({
+                            showClose: true,
+                            message: '复制成功!',
+                            grouping: true,
+                            type: 'success'
+                        })
+                    }
+                });
+
+
+            })
+
         }
     },
     watch: {
-        '$route' (to, from) { //监听URL地址栏参数变化
+        '$route'(to, from) { //监听URL地址栏参数变化
             var isSameId = this.initParam();
-            console.log(isSameId)
             if (!isSameId) {
                 this.getArticle();
                 this.getRecommendList();

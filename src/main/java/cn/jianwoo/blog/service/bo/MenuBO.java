@@ -74,6 +74,11 @@ public class MenuBO implements Serializable {
      */
     private List<MenuBO> subMenuList;
 
+    /**
+     * 是否是父菜单
+     */
+    private Boolean flagParentMenu;
+
 
 
 }

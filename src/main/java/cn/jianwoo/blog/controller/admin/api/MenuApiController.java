@@ -22,7 +22,6 @@ import cn.jianwoo.blog.dto.response.vo.BackendSubMenuVO;
 import cn.jianwoo.blog.dto.response.vo.HomeMenuVO;
 import cn.jianwoo.blog.dto.response.vo.HomeSubMenuVO;
 import cn.jianwoo.blog.dto.response.vo.MenuVO;
-import cn.jianwoo.blog.entity.Menu;
 import cn.jianwoo.blog.enums.MenuTypeEnum;
 import cn.jianwoo.blog.enums.PageIdEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
@@ -346,6 +345,9 @@ public class MenuApiController extends BaseController {
      * data<br/>
      * --id<br/>
      * --name<br/>
+     * --subCategoryList<br/>
+     * ----id<br/>
+     * ----name<br/>
      * @author gulihua
      */
     @ApiVersion()
@@ -354,12 +356,22 @@ public class MenuApiController extends BaseController {
         try {
             ArticleMenuResponse response = ArticleMenuResponse.getInstance();
             List<ArticleCategoryVO> list = new ArrayList<>();
-            List<Menu> categoryList = menuBizService.querySubMenuCategoryList();
+            List<MenuBO> categoryList = menuBizService.querySubMenuCategoryList();
             if (CollectionUtils.isNotEmpty(categoryList)) {
-                for (Menu category : categoryList) {
+                for (MenuBO category : categoryList) {
                     ArticleCategoryVO vo = JwBuilder.of(ArticleCategoryVO::new)
                             .with(ArticleCategoryVO::setId, category.getOid())
                             .with(ArticleCategoryVO::setName, StringEscapeUtils.escapeHtml4(category.getText())).build();
+                    List<ArticleCategoryVO> subCategoryList = new ArrayList<>();
+                    if (CollectionUtils.isNotEmpty(category.getSubMenuList())){
+                        category.getSubMenuList().forEach(o->{
+                            ArticleCategoryVO subVo = JwBuilder.of(ArticleCategoryVO::new)
+                                    .with(ArticleCategoryVO::setId, o.getOid())
+                                    .with(ArticleCategoryVO::setName, StringEscapeUtils.escapeHtml4(o.getText())).build();
+                            subCategoryList.add(subVo);
+                        });
+                        vo.setSubCategoryList(subCategoryList);
+                    }
                     list.add(vo);
                 }
             }

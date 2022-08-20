@@ -18,5 +18,6 @@ module.exports = {
         "vue/no-unused-vars":"off",
         "vue/require-v-for-key":"off",
         "no-self-assign":"off",
+        "no-tabs": "off",
     }
 }

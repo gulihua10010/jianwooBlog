@@ -1916,10 +1916,14 @@
             var node = getSelectedCodeSample(editor);
             code = global$1.DOM.encode(code);
             return node.fold(function () {
-                editor.insertContent('<pre id="__new" class="language-' + language + '">' + code + '</pre>');
+                editor.insertContent('<pre id="__new" class="language-' + language + ' line-numbers" data-prismjs-copy="复制文本" data-prismjs-copy-error="按Ctrl+C复制" data-prismjs-copy-success="文本已复制!">' + code + '</pre>');
                 editor.selection.select(editor.$('#__new').removeAttr('id')[0]);
             }, function (n) {
                 editor.dom.setAttrib(n, 'class', 'language-' + language);
+                editor.dom.setAttrib(n, 'class', 'line-numbers');
+                editor.dom.setAttrib(n, 'data-prismjs-copy', '复制文本');
+                editor.dom.setAttrib(n, 'data-prismjs-copy-error', '按Ctrl+C复制');
+                editor.dom.setAttrib(n, 'data-prismjs-copy-success', '文本已复制!');
                 n.innerHTML = code;
                 get$1(editor).highlightElement(n);
                 editor.selection.select(n);
@@ -1976,6 +1980,11 @@
             {
                 text: 'C++',
                 value: 'cpp'
+            },
+
+            {
+                text: 'Bash',
+                value: 'bash'
             }
         ];
         var customLanguages = getLanguages(editor);

@@ -23,11 +23,13 @@
             <div class="article-list">
                 <div class="article-breviary" v-for="(item,idx) in this.articleList">
                     <div class="art-bre-tit">
-                        <span class="art-top" v-if="item.topPlaceFlag === true">置顶</span>
-                        <span class="art-type" v-if="item.category">{{ item.category }}</span>
-                        <span class="art-password" v-if="item.permission === '11'">需要密码</span>
-                        <a class="art-title" :href="'/#/detail?id=' + item.oid" @mousemove="mousemove($event,item.oid)"
-                           @mouseleave="mouseleave($event,item.oid)"> {{ item.title }}</a>
+                        <div class="art-bre-tit-info">
+                            <span class="art-top" v-if="item.topPlaceFlag === true">置顶</span>
+                            <span class="art-type" v-if="item.category">{{ item.category }}</span>
+                            <span class="art-password" v-if="item.permission === '11'">需要密码</span>
+                            <a class="art-title" :href="'/#/detail?id=' + item.oid" @mousemove="mousemove($event,item.oid)"
+                               @mouseleave="mouseleave($event,item.oid)"> {{ item.title }}</a>
+                        </div>
                         <span v-if="showTitleAlt === item.oid"
                               :style="'color:red;left:' + titleAltLeft + 'px;top:' + titleAltTop + 'px;'"
                               class="tit_alt">{{ item.title }}</span>

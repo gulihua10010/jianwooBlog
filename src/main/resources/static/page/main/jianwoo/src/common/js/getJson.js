@@ -5,7 +5,7 @@ import {ElMessage} from "element-plus";
 
 export function getJson(str, p, v) {
 
-    const url = CONFIG.API_URI + '/api' + str;
+    const url = location.protocol + '//' + location.host + '/api' + str;
     if (!v) {
         v = 1;
     }

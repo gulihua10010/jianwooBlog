@@ -148,10 +148,11 @@ public interface MenuBizService {
 
     /**
      * 获取绑定文章类型的子菜单
+     *
      * @return
      * @author gulihua
      */
-    List<Menu> querySubMenuCategoryList();
+    List<MenuBO> querySubMenuCategoryList() throws JwBlogException;
 
 
     /**
@@ -212,7 +213,7 @@ public interface MenuBizService {
     MenuBO queryMenuByOid(String oid) throws JwBlogException;
 
     /**
-     * 通过oid查询级联菜单
+     * 通过子菜单 oid查询级联菜单
      *
      * @param oid 菜单主键
      * @return MenuBO

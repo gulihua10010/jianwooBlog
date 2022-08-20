@@ -14,6 +14,7 @@
 
 <script>
 import {getJson} from "@/common/js/getJson";
+import {postJson} from "@/common/js/postJson";
 
 export default {
     name: "Footer",
@@ -30,12 +31,13 @@ export default {
     },
     mounted() {
         this.getFootInfo();
+        this.getRecord();
     },
     created() {
 
     },
     methods: {
-        getFootInfo: function (param) {
+        getFootInfo: function () {
             let webInfo = this.getWebInfoCache();
             if (webInfo.cache) {
                 this.footHtml = webInfo.footHtml;
@@ -57,6 +59,21 @@ export default {
                     webInfo.name = this.name;
                     let _jsonstr = JSON.stringify(webInfo);
                     localStorage.setItem("webInfo", _jsonstr);
+                });
+            }
+
+        },
+        getRecord: function () {
+            let record = localStorage.getItem('record');
+            if (record){
+                this.record = record;
+            }else {
+                let key = location.host.toUpperCase().replaceAll(/[.|:]/g,"_");
+                postJson("/config/query", {key: key + "_" + "RECORD"}).then((res) => {
+                    if (res.data && res.data.value) {
+                        this.record = res.data.value;
+                        localStorage.setItem("record", this.record);
+                    }
                 });
             }
 

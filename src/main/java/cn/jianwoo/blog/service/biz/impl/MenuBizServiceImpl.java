@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -192,6 +193,9 @@ public class MenuBizServiceImpl implements MenuBizService {
             log.error("MenuBizServiceImpl.doAddMenu exec failed, e:\n", e);
             throw MenuBizException.CREATE_FAILED_EXCEPTION.format(menuBO.getName()).print();
         }
+        String cacheKey = CacheKeyConstants.HOME_MENU_KEY;
+        cacheStore.delete(cacheKey);
+
         registerBizEvent(menu.getOid(), menu.getText(), BizEventOptTypeEnum.CREATE);
     }
 
@@ -239,6 +243,9 @@ public class MenuBizServiceImpl implements MenuBizService {
             log.error("MenuBizServiceImpl.doUpdateMenuName exec failed, e:\n", e);
             throw MenuBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
         }
+        String cacheKey = CacheKeyConstants.HOME_MENU_KEY;
+        cacheStore.delete(cacheKey);
+
         registerBizEvent(menu.getOid(), menu.getText(), BizEventOptTypeEnum.UPDATE);
     }
 
@@ -323,22 +330,25 @@ public class MenuBizServiceImpl implements MenuBizService {
 
 
     @Override
-    public List<Menu> querySubMenuCategoryList() {
-        final List<Menu> menuList = menuTransDao.queryEffectiveMenuByType(MenuTypeEnum.FRONTEND.getValue());
-        List<Menu> newMenuList = menuList.stream().filter(menu -> (menu.getParentOid().compareTo(TOP_LEVEL_MENU_OID) != 0))
-                .filter(Menu::getFlagCategory).collect(Collectors.toList());
-//        Map<Long, List<Menu>> menuMap = menuList.stream().collect(Collectors.groupingBy(Menu::getParentOid));
-//        List<Menu> newMenuList = new ArrayList<>();
-//        for (Menu menu : parentMenu)
-//        {
-//            newMenuList.add(menu);
-//            List<Menu> subMenu = menuMap.get(menu.getOid());
-//            if (CollectionUtils.isNotEmpty(subMenu))
-//            {
-//                newMenuList.addAll(subMenu);
-//            }
-//        }
-        return newMenuList;
+    public List<MenuBO> querySubMenuCategoryList() throws JwBlogException {
+        List<Menu> menus = menuTransDao.queryEffectiveMenuByType(MenuTypeEnum.FRONTEND.getValue());
+        List<MenuBO> menuList = queryMenuWithLevel(menus);
+        Iterator<MenuBO> iterator = menuList.iterator();
+        while (iterator.hasNext()) {
+            MenuBO pMenu = iterator.next();
+
+            if (CollectionUtils.isEmpty(pMenu.getSubMenuList())){
+                iterator.remove();
+                continue;
+            }
+            pMenu.getSubMenuList().removeIf(subMenu -> !subMenu.getFlagCategory());
+            if (CollectionUtils.isEmpty(pMenu.getSubMenuList())){
+                iterator.remove();
+                continue;
+            }
+            pMenu.setFlagParentMenu(true);
+        }
+        return menuList;
     }
 
 
@@ -360,6 +370,10 @@ public class MenuBizServiceImpl implements MenuBizService {
                 throw MenuBizException.MODIFY_FAILED_EXCEPTION.format(oid).print();
             }
         }
+
+        String cacheKey = CacheKeyConstants.HOME_MENU_KEY;
+        cacheStore.delete(cacheKey);
+
     }
 
 
@@ -397,6 +411,9 @@ public class MenuBizServiceImpl implements MenuBizService {
             log.error("MenuBizServiceImpl.doRemoveMenuById exec failed, e:\n", e);
             throw MenuBizException.DELETE_FAILED_EXCEPTION.format(oid).print();
         }
+        String cacheKey = CacheKeyConstants.HOME_MENU_KEY;
+        cacheStore.delete(cacheKey);
+
         registerBizEvent(oid, null, BizEventOptTypeEnum.DELETE);
 
     }

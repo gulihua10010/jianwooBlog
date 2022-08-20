@@ -354,6 +354,13 @@ public class JwUtil {
         if (StringUtils.isBlank(ip) || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getRemoteAddr();
         }
-        return ip;
+        if (StringUtils.isNotBlank(ip)) {
+            String[] ipArr = ip.split(Constants.COMMA_SEPARATOR);
+            if (ipArr.length > 1){
+                return ipArr[ipArr.length - 1].trim();
+            }
+
+        }
+        return ip.trim();
     }
 }

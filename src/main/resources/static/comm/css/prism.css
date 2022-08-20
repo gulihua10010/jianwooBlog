@@ -197,7 +197,7 @@ pre[id].linkable-line-numbers span.line-numbers-rows > span:hover:before {
 
 pre[class*="language-"].line-numbers {
     position: relative;
-    padding-left: 3.8em;
+    /*padding-left: 3.8em;*/
     counter-reset: linenumber;
 }
 

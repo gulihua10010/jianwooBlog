@@ -4,7 +4,7 @@
 prohibitOpenConsole.js
 */
 
-! function () {
+!function () {
     function ProhibitOpenConsole() {}
 
     ProhibitOpenConsole.prototype.keyF12 = function () {
@@ -25,6 +25,7 @@ prohibitOpenConsole.js
 
     ProhibitOpenConsole.prototype.debuggerOpen = function () {
         var timer = setInterval(() => {
+
             var before = new Date().getTime();
             debugger;
             var after = new Date().getTime();
@@ -42,7 +43,8 @@ prohibitOpenConsole.js
     }
 
     if (['production', 'prod'].includes(process.env.NODE_ENV)) {
-        var check = new ProhibitOpenConsole();
-        check.init();
+    console.warn('禁止用户查看源码!!!!')
+    var check = new ProhibitOpenConsole();
+    check.init();
     }
 }()

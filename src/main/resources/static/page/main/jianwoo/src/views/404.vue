@@ -30,7 +30,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 /*=================404=========================*/
 .not-found-main {
