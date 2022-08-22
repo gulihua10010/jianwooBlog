@@ -45,6 +45,7 @@ public class ExceptionAOPHandler {
             "execution(* cn.jianwoo.blog.service.base.impl.*.*(..))||" +
             "execution(* cn.jianwoo.blog.service.notify.impl.*.*(..))||" +
             "execution(* cn.jianwoo.blog.task.impl.*.*(..))) " +
+            "execution(* cn.jianwoo.blog.util.*.*(..))) " +
             "&& !execution(* cn.jianwoo.blog.service.base.impl.AsyncAutoTaskBaseServiceImpl.*(..))" +
             "&& !execution(* cn.jianwoo.blog.service.biz.impl.EmailBizServiceImpl.*(..))")
     public void servicePointCut() {

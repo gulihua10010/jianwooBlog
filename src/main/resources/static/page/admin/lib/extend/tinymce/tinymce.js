@@ -26,6 +26,8 @@ layui.define(['jquery'], function (exports) {
         , resize: true
         , paste_merge_formats: true
         , paste_data_images: true
+        , toolbar_mode: 'floating'
+        , toolbar_sticky: true
         , powerpaste_word_import: 'propmt'
         , powerpaste_html_import: 'propmt'
         , content_css: '/static/comm/css/prism.css'
@@ -172,6 +174,8 @@ layui.define(['jquery'], function (exports) {
         option.typeahead_urls = isset(option.typeahead_urls) ? option.typeahead_urls : true
 
         option.toolbar_mode = isset(option.toolbar_mode) ? option.toolbar_mode : 'sliding'
+
+        option.toolbar_sticky = isset(option.toolbar_sticky) ? option.toolbar_sticky : false
 
         option.quickbars_selection_toolbar = isset(option.quickbars_selection_toolbar) ? option.quickbars_selection_toolbar : 'cut copy | bold italic underline strikethrough '
 

@@ -196,4 +196,32 @@ public final class WebConfDataConfig {
      * 一天内同一IP最多可以发多少条留言, -1为不限制
      */
     public static final String MAX_MESSAGES_ONE_DAY_ONE_IP = "MAX_MESSAGES_ONE_DAY_ONE_IP";
+
+
+
+    /**
+     * 访问key
+     */
+    public static final String QINIUYUN_ACCESS_KEY = "QINIUYUN_ACCESS_KEY";
+
+    /**
+     * 访问secret
+     */
+    public static final String QINIUYUN_SECRET_KEY = "QINIUYUN_SECRET_KEY";
+
+    /**
+     * 存储空间名称
+     */
+    public static final String QINIUYUN_BUCKET_NAME = "QINIUYUN_BUCKET_NAME";
+
+    /**
+     * 绑定域名
+     */
+    public static final String QINIUYUN_DOMAIN = "QINIUYUN_DOMAIN";
+
+    /**
+     * 上传目录
+     */
+    public static final String QINIUYUN_CONTEXT = "QINIUYUN_CONTEXT";
+
 }

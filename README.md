@@ -9,7 +9,7 @@
    简窝博客，一个基于SpringBoot+Vue的前后端分离博客系统
 </p>
 <p align="center">
-<a target="_blank" href="https://gitee.com/moxi159753/mogu_blog_v2">
+<a target="_blank" href="https://github.com/gulihua10010/jianwooBlog">
     	<img src="https://img.shields.io/hexpm/l/plug.svg" ></img>
 		<img src="https://img.shields.io/badge/JDK-1.8+-green.svg" ></img>
         <img src="https://img.shields.io/badge/nodejs-14.x-green" ></img>
@@ -108,7 +108,7 @@
 |        创建服务端渲染 (SSR) 应用        |                    https://zh.nuxtjs.org/                    |
 |               前端ui框架                |    [ https://element.eleme.io](https://element.eleme.io/)    |
 |              前端HTTP框架               | [ https://github.com/axios/axios](https://github.com/axios/axios) |
-|              富文本编辑器               |                    https://ckeditor.com/                     |
+|              富文本编辑器               |                    http://tinymce.ax-z.cn                    |
 |            代码语法高亮插件             |       [https://*prism*js.com/](https://*prism*js.com/)       |
 |             Markdown编辑器              |                    http://tinymce.ax-z.cn                    |
 |              图片裁剪组件               |           https://github.com/xyxiao001/vue-cropper           |
@@ -141,8 +141,8 @@ nohup java -jar /www/application/blog-1.0.0-SNAPSHOT.jar --spring.profiles.activ
 |    WebStorm     |    前端开发IDE    |             https://www.jetbrains.com/webstorm/              |
 |  RedisDesktop   |  Redis可视化工具  | [ https://redisdesktop.com/download](https://redisdesktop.com/download) |
 |   SwitchHosts   |   本地Host管理    |             https://oldj.github.io/SwitchHosts/              |
-|     X-shell     | Linux远程连接工具 |               https://xshell.en.softonic.com/                |
-|      X-ftp      | Linux文件传输工具 |         https://www.netsarang.com/zh/all-downloads/          |
+|     Termius     | Linux远程连接工具 |                   https://www.termius.com/                   |
+|    Transmit     | Linux文件传输工具 |               https://www.panic.com/transmit/                |
 | Navicat Premium |  数据库连接工具   |               https://sqlyog.en.softonic.com/                |
 |   ScreenToGif   |    Gif录制工具    | [ https://www.screentogif.com/](https://www.screentogif.com/) |
 
@@ -156,6 +156,14 @@ nohup java -jar /www/application/blog-1.0.0-SNAPSHOT.jar --spring.profiles.activ
 | MySQL |  8.0   |                    https://www.mysql.com/                    |
 | Nginx |  1.10  |              http://nginx.org/en/download.html               |
 | Redis | 3.3.0  |                  https://redis.io/download                   |
+
+
+
+### 部署平台
+
+|   平台   |           说明           |               官网               |
+| :------: | :----------------------: | :------------------------------: |
+| 宝塔面板 | 安全高效的服务器运维面板 | https://www.bt.cn/new/index.html |
 
 
 

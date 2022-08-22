@@ -10,6 +10,10 @@ public enum CfgTypeEnum {
      * system
      */
     SYS("SYS"),
+    /**
+     * 七牛云
+     */
+    QINIUYUN("QINIUYUN"),
 
     ;
 

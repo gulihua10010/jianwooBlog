@@ -391,18 +391,20 @@ div.index-main > div.article-list > div.article-breviary > div.art-bre-tit {
     position: relative;
 
 }
-.art-bre-tit-info{
+
+.art-bre-tit-info {
     width: 100%;
     height: 35px;
     overflow: hidden;
     display: inline-block;
     text-overflow: ellipsis;
 }
+
 .bordertest {
     border: 1px solid #000;
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-tit  .art-title {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-tit .art-title {
     font-size: 22px;
     font-weight: 700;
     margin: auto 10px;
@@ -411,11 +413,11 @@ div.index-main > div.article-list > div.article-breviary > div.art-bre-tit  .art
     text-overflow: ellipsis;
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-tit  .art-title:hover {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-tit .art-title:hover {
     color: #940BB7
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-tit  .art-type {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-tit .art-type {
     font-size: 14px;
     font-weight: 700;
     color: #fff;
@@ -426,7 +428,7 @@ div.index-main > div.article-list > div.article-breviary > div.art-bre-tit  .art
     margin: 5px auto
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-tit  .art-top {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-tit .art-top {
     font-size: 14px;
     font-weight: 700;
     color: #fff;
@@ -438,7 +440,7 @@ div.index-main > div.article-list > div.article-breviary > div.art-bre-tit  .art
     border-radius: 3px;
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-tit  .art-type:after {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-tit .art-type:after {
     content: '';
     border: solid transparent;
     height: 0;
@@ -450,11 +452,11 @@ div.index-main > div.article-list > div.article-breviary > div.art-bre-tit  .art
     border-left-color: #ec3645
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-tit  .art-type:hover {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-tit .art-type:hover {
     background-color: #cc3645
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-tit  .art-type:after:hover {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-tit .art-type:after:hover {
     border-left-color: #cc3645
 }
 
@@ -469,7 +471,7 @@ div.index-main > div.article-list > div.article-breviary > div.art-bre-top {
     padding: 10px 20px
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-top  div.art-bre-left {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-top div.art-bre-left {
     width: 200px;
     height: 125px;
     float: left;
@@ -478,7 +480,7 @@ div.index-main > div.article-list > div.article-breviary > div.art-bre-top  div.
     overflow: hidden
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-top  div.art-bre-left img {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-top div.art-bre-left img {
     width: 200px;
     height: 125px;
     cursor: pointer;
@@ -494,7 +496,7 @@ div.index-main > div.article-list > div.article-breviary > div.art-bre-top  div.
     -moz-transition: -moz-transform .3s
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-top  div.art-bre-left img:hover {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-top div.art-bre-left img:hover {
     transform: scale(1.3);
     -webkit-transform: scale(1.3);
     -o-transform: scale(1.3);
@@ -502,7 +504,7 @@ div.index-main > div.article-list > div.article-breviary > div.art-bre-top  div.
     -moz-transform: scale(1.3)
 }
 
-div.index-main > div.article-list > div.article-breviary > div.art-bre-top  div.art-bre-right {
+div.index-main > div.article-list > div.article-breviary > div.art-bre-top div.art-bre-right {
     height: 100%;
     padding: 5px 20px;
     text-indent: 30px;
@@ -1379,12 +1381,14 @@ div.comment div.comment-unit span.after-goods {
 .lock-box {
     position: relative;
 }
-.announce-footer{
+
+.announce-footer {
     display: inline-block;
     text-align: center;
 
 }
-.footer-page-no{
+
+.footer-page-no {
     display: inline-block;
     border: #ccc solid 1px;
     width: 30px;
@@ -1401,11 +1405,10 @@ div.comment div.comment-unit span.after-goods {
 }
 
 
-.page-active{
-    background-color:rgba(166, 10, 169, 1);
+.page-active {
+    background-color: rgba(166, 10, 169, 1);
     color: white;
 }
-
 
 
 .hljs-ln-numbers {
@@ -1422,10 +1425,12 @@ div.comment div.comment-unit span.after-goods {
 .hljs-ln-code {
     padding-left: 5px !important;
 }
-.copy-to-clipboard-button{
-    background-color: #B40BB7!important;
-    color: white!important;
+
+.copy-to-clipboard-button {
+    background-color: #B40BB7 !important;
+    color: white !important;
 }
+
 .pre-mac {
     position: relative;
     margin-top: -7px;
@@ -1434,6 +1439,7 @@ div.comment div.comment-unit span.after-goods {
     width: 100px;
     z-index: 99;
 }
+
 .pre-mac > span {
     float: left;
     width: 10px;
@@ -1441,17 +1447,36 @@ div.comment div.comment-unit span.after-goods {
     border-radius: 50%;
     margin-right: 5px;
 }
+
 .pre-mac > span:nth-child(1) {
     background: red;
 }
+
 .pre-mac > span:nth-child(2) {
     background: sandybrown;
 }
+
 .pre-mac > span:nth-child(3) {
     background: limegreen;
 }
 
-pre[class*="language-"]{
+pre[class*="language-"] {
     border-radius: 10px;
     padding-top: 30px;
+}
+
+blockquote {
+    border-left: 5px #ccc solid;
+}
+
+.art-txt table, .art-txt table tr, .art-txt table td, .art-txt table thead, .art-txt table tbody {
+    border: #E0E2E5 solid 1px;
+}
+
+.art-txt table tr:nth-child(2n) {
+    background: #fff;
+}
+
+.art-txt table tr:nth-child(2n+1) {
+    background: #f8f8f9
 }

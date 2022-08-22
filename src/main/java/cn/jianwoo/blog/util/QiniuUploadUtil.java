@@ -1,6 +1,9 @@
 package cn.jianwoo.blog.util;
 
+import cn.jianwoo.blog.constants.WebConfDataConfig;
+import cn.jianwoo.blog.enums.CfgTypeEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.service.biz.WebconfBizService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.qiniu.common.QiniuException;
@@ -10,10 +13,12 @@ import com.qiniu.storage.Configuration;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 /**
  * @author GuLihua
@@ -23,20 +28,30 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class QiniuUploadUtil {
-    @Value("${qiniuyun.access.key}")
+
+    /**访问key*/
     private String accessKey;
-    @Value("${qiniuyun.secret.key}")
+    /**访问secret*/
     private String secretKey;
-    @Value("${qiniuyun.bucketname}")
+    /**存储空间名称*/
     private String bucketname;
-    @Value("${qiniuyun.domain}")
+    /**绑定域名*/
     private String domain;
     private Auth auth;
     private UploadManager uploadManager;
 
+    @Autowired
+    private WebconfBizService webconfBizService;
     @Bean
     @ConditionalOnMissingBean
-    public UploadManager init() {
+    public UploadManager init() throws JwBlogException{
+        Map<String, String> cfgMap = webconfBizService.queryWebconfByType(CfgTypeEnum.QINIUYUN.getValue());
+        accessKey = cfgMap.get(WebConfDataConfig.QINIUYUN_ACCESS_KEY);
+        secretKey = cfgMap.get(WebConfDataConfig.QINIUYUN_SECRET_KEY);
+        bucketname = cfgMap.get(WebConfDataConfig.QINIUYUN_BUCKET_NAME);
+        domain = cfgMap.get(WebConfDataConfig.QINIUYUN_DOMAIN);
+
+
         auth = Auth.create(accessKey, secretKey);
         Zone z = Zone.autoZone();
         Configuration c = new Configuration(z);

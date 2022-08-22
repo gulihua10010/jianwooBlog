@@ -47,7 +47,9 @@ import java.util.Date;
 public class FileUploadServiceImpl implements FileUploadService {
     @Value("${file.upload.path}")
     private String uploadPath;
-    @Value("${qiniuyun.context}")
+    /**
+     * 上传目录
+     */
     private String cdnContext;
     @Autowired
     private FileUploadTransDao fileUploadTransDao;
@@ -128,6 +130,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         FileUpload fileUpload = new FileUpload();
         String isUpload2Cdn = webconfBizService.queryWebconfByKey(WebConfDataConfig.IS_UPLOAD_TO_QINIU_CDN);
         if (Constants.TRUE.equals(isUpload2Cdn)) {
+            cdnContext = webconfBizService.queryWebconfByKey(WebConfDataConfig.QINIUYUN_CONTEXT);
             String cdnUrl = qiniuUploadUtil.upload(filePath, cdnContext + File.separator + yyyyMM, newFile.getName());
             fileUpload.setCdnUrl(cdnUrl);
         }
