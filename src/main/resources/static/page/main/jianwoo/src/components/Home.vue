@@ -140,6 +140,7 @@ export default {
             titleAltTop: 0,
             showTitleAlt: 0,
             paginationShow: true,
+            title:  window.document.title,
 
         }
     },
@@ -162,7 +163,7 @@ export default {
         // }
         this.initQueryParams();
         this.getList();
-
+        window.document.title = localStorage.getItem('title');
 
 
 

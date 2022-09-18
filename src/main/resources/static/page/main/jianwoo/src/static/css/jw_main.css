@@ -1480,3 +1480,8 @@ blockquote {
 .art-txt table tr:nth-child(2n+1) {
     background: #f8f8f9
 }
+.art-txt p, .art-txt span, .art-txt a {
+    font-size: 16px;
+    color: #4d4d4d;
+    font-family: -apple-system, 'SF UI Text', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif, SimHei, SimSun;
+}

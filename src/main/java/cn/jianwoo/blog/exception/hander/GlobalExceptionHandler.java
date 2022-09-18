@@ -8,6 +8,7 @@ import cn.jianwoo.blog.exception.JwBlogException;
 import cn.jianwoo.blog.service.base.AsyncAutoTaskBaseService;
 import cn.jianwoo.blog.service.biz.WebconfBizService;
 import cn.jianwoo.blog.task.bo.TaskDataD0099BO;
+import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.util.TransactionUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -41,7 +43,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private AsyncAutoTaskBaseService asyncAutoTaskBaseService;
     @Autowired
     private TransactionUtils transactionUtils;
-
+    @Autowired
+    protected HttpServletRequest httpServletRequest;
     @Autowired
     private WebconfBizService webconfBizService;
 
@@ -56,8 +59,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         e.printStackTrace(pw);
+        if (e instanceof HttpRequestMethodNotSupportedException) {
+            return new ResponseEntity<>(JSONObject.toJSONString(BaseResponseDto.SYSTEM_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         StringBuilder sb = new StringBuilder();
-        sb.append("url:").append(request.getContextPath())
+        sb.append("url:[").append(request.getContextPath()).append("]")
+                .append("<br/>")
+                .append("ip:[").append(JwUtil.getRealIpAddress(httpServletRequest)).append("]")
                 .append("<br/>").append(sw);
         try {
             String isExceptionEmailNotify = webconfBizService.queryWebconfByKey(WebConfDataConfig.EXCEPTION_EMAIL_NOTIFY);

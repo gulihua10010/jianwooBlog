@@ -213,7 +213,7 @@
             AND A.PUSH_TIME &lt;= #{param.publishDateEnd,jdbcType=TIMESTAMP}
         </if>
         <if test="param.orderByClause == null">
-            ORDER BY A.TOP_PLACE_STATUS DESC, MODIFIED_TIME DESC
+            ORDER BY A.TOP_PLACE_STATUS DESC, PUSH_TIME DESC
         </if>
         <if test="param.orderByClause != null">
             ORDER BY A.TOP_PLACE_STATUS DESC, #{param.orderByClause}

@@ -479,7 +479,7 @@ export default {
 
         });
 
-
+        this.getCanBeMessage();
         window.addEventListener(
                 'click',
                 () => {
@@ -522,7 +522,7 @@ export default {
 
             });
         },
-        getcanBeMessage: function (param) {
+        getCanBeMessage: function (param) {
             postJson("/config/query", {key: 'GLOBAL_MESSAGE_ALLOW'}).then((res) => {
                 this.canBeMessageGlobal = res.data.value === 'TRUE';
                 if (this.canBeMessage) {
@@ -541,7 +541,7 @@ export default {
                 return;
             }
             if (!this.canBeMessage) {
-                var msg = "该文章已关闭留言!"
+                var msg = ""
                 if (!this.canBeMessageGlobal) {
                     msg = "网站的留言系统已经关闭!"
                 }

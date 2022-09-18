@@ -245,6 +245,7 @@ export default {
         getArticle: function () {
             postJson("/article/query/detail", {entityOid: this.entityOid}).then((res) => {
                 this.article = res.data || {};
+                window.document.title = this.article.title;
                 if (res.data.isLock === true) {
                     this.getVerifyCache();
                     if (!this.isVerify) {
@@ -334,6 +335,7 @@ export default {
                         type: 'success'
                     })
                     this.article = res.data || {};
+                    window.document.title = this.article.title;
                     this.showVerifyDialog = false;
                     let artList = sessionStorage.getItem('verifyInfo');
                     let artVerifies = [];
@@ -407,7 +409,7 @@ export default {
                     }
                 }
                 var that = this;
-                container.addEventListener('click', function (ev) {
+                container?.addEventListener('click', function (ev) {
                     var target = ev.target || ev.srcElement;
                     console.log(target.parentNode.className)
                     if (target.parentNode.className === 'copy-to-clipboard-button') {
@@ -428,7 +430,7 @@ export default {
     watch: {
         '$route'(to, from) { //监听URL地址栏参数变化
             var isSameId = this.initParam();
-            if (!isSameId) {
+            if (to.name === 'name' && !isSameId) {
                 this.getArticle();
                 this.getRecommendList();
             }

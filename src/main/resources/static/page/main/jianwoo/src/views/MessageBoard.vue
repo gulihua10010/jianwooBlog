@@ -81,6 +81,7 @@ export default {
             }
         }
         document.addEventListener(visibilityChangeEvent, onVisibilityChange);
+        window.document.title = localStorage.getItem('title');
 
 
 

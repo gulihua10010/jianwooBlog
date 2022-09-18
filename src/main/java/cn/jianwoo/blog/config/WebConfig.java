@@ -6,7 +6,6 @@ import cn.jianwoo.blog.config.router.admin.PassportApiUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.interceptor.LoginHandleInterceptor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -76,9 +75,10 @@ public class WebConfig implements WebMvcConfigurer {
 
     }
 
-//    @Bean
+    //    @Bean
     public LoginHandleInterceptor loginHandleInterceptor() {
         return new LoginHandleInterceptor();
     }
+
 
 }
