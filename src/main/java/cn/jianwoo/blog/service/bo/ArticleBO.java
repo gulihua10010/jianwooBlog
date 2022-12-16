@@ -195,6 +195,11 @@ public class ArticleBO implements Serializable {
      */
     private Boolean isLock;
 
+    /**
+     * 文章描述
+     */
+    private String description;
+
     public void setCategoryId(Integer categoryId) {
         if (!Constants.CATEGORY_NULL.equals(categoryId)) {
             this.categoryId = categoryId;

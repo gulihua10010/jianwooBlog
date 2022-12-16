@@ -168,6 +168,11 @@ public class CommentBO implements Serializable {
     private Boolean flagEdit;
 
     /**
+     * 是否是管理员发布
+     */
+    private Boolean flagAdmin;
+
+    /**
      * 评论是否删除
      */
     private Boolean isDelete;

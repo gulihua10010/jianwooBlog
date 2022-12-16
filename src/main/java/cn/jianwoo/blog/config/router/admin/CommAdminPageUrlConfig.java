@@ -19,6 +19,7 @@ public class CommAdminPageUrlConfig extends UrlConfig {
     public static final String URL_PASSWORD_CHANGE = "/passport/password/change";
     public static final String URL_PASSPORT= "/passport";
     public static final String URL_ERROR = "/error";
+    public static final String URL_NOT_FOUND = "/404";
     public static final String PAGE_ADMIN_LOGIN = "/passport#login";
 
 

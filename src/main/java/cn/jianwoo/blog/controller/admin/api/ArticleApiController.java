@@ -1362,8 +1362,8 @@ public class ArticleApiController extends BaseController {
             if (null != article) {
                 TempArticleVO vo = JwBuilder.of(TempArticleVO::new)
                         .with(TempArticleVO::setOid, article.getOid())
-                        .with(TempArticleVO::setTitle, StringEscapeUtils.escapeHtml4(article.getTitle()))
-                        .with(TempArticleVO::setAuthor, StringEscapeUtils.escapeHtml4(article.getAuthor()))
+                        .with(TempArticleVO::setTitle, article.getTitle())
+                        .with(TempArticleVO::setAuthor, article.getAuthor())
                         .with(TempArticleVO::setContent, article.getContent())
                         .with(TempArticleVO::setCategoryId, article.getCategoryId())
                         .with(TempArticleVO::setImgSrc, article.getImgSrc())

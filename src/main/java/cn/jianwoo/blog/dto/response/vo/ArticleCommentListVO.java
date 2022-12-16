@@ -109,6 +109,10 @@ public class ArticleCommentListVO implements Serializable {
      * 赞数量
      */
     private Long praiseCount;
+    /**
+     * 是否是管理员发布
+     */
+    private Boolean flagAdmin;
 
     /**
      * 回复记录数

@@ -6,18 +6,28 @@ import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
 import cn.hutool.crypto.symmetric.SymmetricCrypto;
 import cn.hutool.extra.spring.SpringUtil;
+import cn.jianwoo.blog.base.BaseResponseDto;
 import cn.jianwoo.blog.dao.base.EmailTemplateTransDao;
+import cn.jianwoo.blog.entity.Article;
+import cn.jianwoo.blog.entity.ArticleWithBLOBs;
 import cn.jianwoo.blog.enums.AsyncIpEnum;
 import cn.jianwoo.blog.service.biz.NetWorkService;
+import cn.jianwoo.blog.service.biz.impl.NetWorkServiceImpl;
+import cn.jianwoo.blog.util.HttpClientUtil;
 import cn.jianwoo.blog.util.JwUtil;
 import cn.jianwoo.blog.util.NotifiyUtil;
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+
+import org.junit.runner.RunWith;
 import org.lionsoul.ip2region.xdb.Searcher;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
 
 import java.io.File;
@@ -28,10 +38,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @MapperScan(basePackages = {"cn.jianwoo.blog.dao.base.mapper", "cn.jianwoo.blog.dao.biz.mapper", "com.baidu.fsg.uid.worker.dao"})
-@SpringBootTest()
-class BlogApplicationTests {
+@SpringBootTest(classes = BlogApplication.class)
+@ActiveProfiles("dev")
+public class BlogApplicationTests {
     //    @Autowired
 //    CommentBizService commentBizService;
 //    @Autowired
@@ -46,7 +57,7 @@ class BlogApplicationTests {
 //    private TempArticleTransDao tempArticleTransDao;
 
     @Test
-    void contextLoads() {
+    public void contextLoads() {
         ////        DomainUtil.printLog(commentBizService.queryAllCommentPage(1, 2));
         //        DomainUtil.printLog(webconfBizService.queryConfigWithMap());
         //        System.out.println(JSON.toJSONString(webconfBizService.queryConfigWithMap()));
@@ -126,14 +137,14 @@ class BlogApplicationTests {
     private NotifiyUtil notifiyUtil;
     @Autowired
     private EmailTemplateTransDao emailTemplateTransDao;
+
     @Test
-     void EmailTEst() throws Exception
-    {//gulh+unit-error<gulh+unit-error@plbizgp.com>
-        notifiyUtil.sendEmail("1729846470@qq.com,gulh+unit-error<gulh+unit-error@plbizgp.com>","test1","test content");
+    public void EmailTEst() throws Exception {//gulh+unit-error<gulh+unit-error@plbizgp.com>
+        notifiyUtil.sendEmail("1729846470@qq.com,gulh+unit-error<gulh+unit-error@plbizgp.com>", "test1", "test content");
     }
+
     @Test
-    void Test1()
-    {
+    public void Test1() {
 //        System.out.println(JSON.toJSONString(emailTemplateTransDao.queryAllEmailTplList()));
         //构建
 //        String pwd = new String(Base64.decode("RmVqazZjTUxFNVVnQmpRaW04TXNuUT09"));
@@ -158,11 +169,12 @@ class BlogApplicationTests {
 
     @Autowired
     private NetWorkService netWorkService;
+
     @Test
-    void Test2()
-    {
-         execIpAreaTask(10L,"127.0.0.1", AsyncIpEnum.COMMENT);
+    public void Test2() {
+        execIpAreaTask(10L, "127.0.0.1", AsyncIpEnum.COMMENT);
     }
+
     private static final String IP_REX_PATTERN = "((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}";
 
     public void execIpAreaTask(Long oid, String ip, AsyncIpEnum asyncIpEnum) {
@@ -189,11 +201,10 @@ class BlogApplicationTests {
         System.out.println(">> End async task execIpAreaTask");
 
 
-
     }
 
     @Test
-    public void test() throws Exception{
+    public void test1() throws Exception {
         File f = ResourceUtils.getFile("classpath:ip/ip2region.xdb");
         System.out.println(f.exists());
 
@@ -210,22 +221,41 @@ class BlogApplicationTests {
         // 2、查询
         try {
 //            String ip = "114.222.63.185";
-            String ip = "1.2.3.4";
+//            String ip = "1.2.3.4";
 //            String ip = "0.0.0.2";
 //            String ip = "164.92.77.168";
 //            String ip = "114.0.63.185";
 //            String ip = "223.104.21.43";
+            String ip = "127.0.0.1";
             long sTime = System.nanoTime();
             String region = searcher.search(ip);
             long cost = TimeUnit.NANOSECONDS.toMicros((long) (System.nanoTime() - sTime));
             System.out.printf("{region: %s, ioCount: %d, took: %d μs}\n", region, searcher.getIOCount(), cost);
         } catch (Exception e) {
-            System.out.printf("failed to search : %s\n",   e);
+            System.out.printf("failed to search : %s\n", e);
         }
     }
 
-    public void stst1(){
+
+    @Autowired
+    NetWorkServiceImpl netWorkServiceImpl;
+
+    @Test
+    public void doTest() {
+        String area = netWorkServiceImpl.getRegionFromApi("127.0.0.1");
+        System.out.println(area);
 
 
+    }
+
+    @Test
+    public void stst1() throws Exception {
+
+        String ulr = "https://cat-match.easygame2021.com/sheep/v1/user/login_oppo";
+
+//        BaseResponseDto responseDto =   HttpClientUtil.doPost())
+        Article article = new Article();
+        ArticleWithBLOBs articlew = new ArticleWithBLOBs();
+        article = articlew;
     }
 }

@@ -1,36 +1,57 @@
 <template>
     <div>
-        <div class="topimg" style="min-width: 1250px;" v-if="topImg !== '' && topImg !== undefined">
-            <img :src=" topImg " style="width: 100%;height: 200px;">
-
-        </div>
-        <div class="menu">
-            <Menu/>
-        </div>
-        <div class="main">
-            <div class="main-content">
-                <Home ref="home" :searchParams="searchForm"/>
-                <div class="usermodel">
-                    <RightModel/>
+        <el-container v-if="width > minWidth"
+                      style="display: none"
+                      class="main-app"
+                      @dragover="dragOver($event)">
+            <el-header height="auto">
+                <div class="topimg" v-if="topImg !== '' && topImg !== undefined">
+                    <img :src=" topImg ">
                 </div>
-                <div class="clear"></div>
-            </div>
-        </div>
-        <div class="footer">
-            <Footer/>
-        </div>
+                <div class="menu">
+                    <Menu/>
+                </div>
+            </el-header>
+            <el-container style="justify-content: center" id="container-app">
+                <el-main style="flex-grow: 0;overflow: hidden;">
+                    <App></App>
+                </el-main>
+                <el-aside class="aside-right" style="overflow: hidden">
+                    <RightModel/>
+                </el-aside>
+            </el-container>
 
-        <el-dialog v-model="showAnnounce" title="公告" width="70%" height="60%">
+            <el-footer>
+                <Footer/>
+            </el-footer>
+        </el-container>
+        <!--        适配手机设备-->
+        <el-container v-else>
+            <el-container style="justify-content: center">
+                <el-aside class="mobile-menu">
+                    <MenuMobile/>
+                </el-aside>
+
+                <el-main style="flex-grow: 0;overflow: hidden;word-break: break-word;">
+                    <App></App>
+                </el-main>
+                <el-footer>
+                    <Footer/>
+                </el-footer>
+            </el-container>
+        </el-container>
+
+        <el-dialog v-model="showAnnounce" custom-class="announce" title="公告" width="70%" height="60%">
             <div>
                 <div class="art-det-info" id="art-det-info">
-                    <div><span>{{ announce.title }}</span></div>
+                    <div><strong>{{ announce.title }}</strong></div>
                     <div>
 
                             <span class="art-author">
                                 <svg class="icon" aria-hidden="true">
                                     <use xlink:href="#icon-zuozhe"></use>
                                 </svg>:{{ announce.pushBy }}
-                            </span>
+                            </span>&nbsp;
                         <span class="art-date">
                                 <svg class="icon" aria-hidden="true">
                                     <use xlink:href="#icon-24gl-calendar"></use>
@@ -55,21 +76,27 @@
                 </span>
             </template>
         </el-dialog>
+        <meting-js server="netease" type="playlist" id="7813663401" fixed="true" autoplay="true" loop="all" order="list"
+                   preload="auto" list-folded="true" list-max-height="500px" lrc-type="1">
+        </meting-js>
     </div>
 </template>
 
 <script>
 import Menu from '@/components/Menu.vue'
-import Home from '@/components/Home.vue'
+import MenuMobile from '@/components/MenuMobile.vue'
 import Footer from '@/components/Footer.vue'
 import RightModel from '@/components/RightModel.vue'
 import {postJson} from "@/common/js/postJson";
+import App from '@/App.vue'
+import router from "@/router";
 
 export default {
-    name: "index",
+    name: "layout",
     components: {
         Menu,
-        Home,
+        MenuMobile,
+        App,
         RightModel,
         Footer,
     },
@@ -92,33 +119,71 @@ export default {
             pages: [],
             announce: {},
             announceCache: '',
-            msg:[],
-            notifyPromise:Promise.resolve(),
+            msg: [],
+            notifyPromise: Promise.resolve(),
+            minWidth: 768,
+            width: document.documentElement.clientWidth,
         }
     },
     mounted() {
+        window.onresize = () => {
+            return (() => {
+                this.width = document.body.clientWidth
+            })()
 
+        }
+        document.addEventListener("click", this.bodyCloseMenus);
     },
     created() {
         this.getTopImg();
-        this.getAnnounce();
+        if (router.currentRoute.value.path === '/' || router.currentRoute.value.path === 'index' || router.currentRoute.value.path === 'home') {
+            this.getAnnounce();
+        }
         var that = this;
         that.queryMsgTimer();
         var timer = setInterval(function () {
             that.queryMsgTimer();
         }, 10000);
 
+        this.$nextTick(function () {
+
+
+            setTimeout(function () {
+                window.L2Dwidget
+                        .init({
+                            model: {
+                                jsonPath: 'https://unpkg.com/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json',
+                            },
+                            mobile: {"show": true, "scale": 0.5},
+                            dialog: {
+                                // 开启对话框
+                                enable: true,
+                                script: {
+                                    // 每空闲 10 秒钟，显示一条一言
+                                    'every idle 10s': '$hitokoto$',
+                                    // 当触摸到星星图案
+                                    'hover .topimg': '欢迎来到简窝博客~ (*/ω＼*)',
+                                    // 当触摸到角色身体
+                                    'tap body': '哎呀！别碰我！',
+                                    // 当触摸到角色头部
+                                    'tap face': '人家已经不是小孩子了！'
+                                }
+                            }
+                        });
+            }, 3000)
+        })
+
         var hiddenProperty = 'hidden' in document ? 'hidden' :
                 'webkitHidden' in document ? 'webkitHidden' :
                         'mozHidden' in document ? 'mozHidden' :
                                 null;
         var visibilityChangeEvent = hiddenProperty.replace(/hidden/i, 'visibilitychange');
-        var onVisibilityChange = function(){
+        var onVisibilityChange = function () {
             if (!document[hiddenProperty]) {
                 timer = setInterval(function () {
                     that.queryMsgTimer();
                 }, 10000);
-            }else{
+            } else {
                 clearInterval(timer)
             }
         }
@@ -128,6 +193,14 @@ export default {
         getTopImg: function () {
             postJson("/config/query", this.topImgParam).then((res) => {
                 this.topImg = res.data.value;
+                this.$nextTick(function () {
+                    var app = document.querySelector('#container-app');
+                    if (app) {
+                        var elTop = app.offsetTop
+                        this.$store.commit("changeTop", elTop);
+                    }
+
+                })
 
             });
         },
@@ -170,16 +243,16 @@ export default {
         },
         queryMsgTimer: function () {
             postJson("/msg/timer/newest/query/list", {}).then((res) => {
-                if (res.data && res.data.length > 0){
-                    this.msg= res.data;
+                if (res.data && res.data.length > 0) {
+                    this.msg = res.data;
                     var that = this;
-                    for (let i = 0;i < this.msg.length; i++) {
-                        this.notifyPromise = this.notifyPromise.then(this.$nextTick).then(()=>{
+                    for (let i = 0; i < this.msg.length; i++) {
+                        this.notifyPromise = this.notifyPromise.then(this.$nextTick).then(() => {
                             this.$notify({
                                 title: this.msg[i].title,
                                 message: this.msg[i].content,
-                                'on-click':function () {
-                                    window.open(that.msg[i].link,'_blank')
+                                'on-click': function () {
+                                    window.open(that.msg[i].link, '_blank')
 
                                 }
                             })
@@ -189,6 +262,10 @@ export default {
                 }
 
             });
+        },
+        //阻止回弹
+        dragOver(e) {
+            e.preventDefault();
         }
     },
     watch: {}
@@ -197,12 +274,16 @@ export default {
 
 
 <style scoped>
+.main-app {
+    display: block !important;
+}
+
 .dialog-footer .primary {
     margin-left: auto;
     background-color: rgba(166, 10, 169, .98);
     border: none;
     color: white;
-    padding: 0.5rem 1.5rem;
+    padding: 0.5px 1.5px;
     border-radius: 8%;
     cursor: pointer;
 }
@@ -215,5 +296,12 @@ export default {
 .dialog-footer .primary:active {
     background-color: #A52581;
     border-color: #A52581;
+}
+
+</style>
+
+<style>
+.announce .el-dialog__title {
+    font-size: 24px !important;
 }
 </style>

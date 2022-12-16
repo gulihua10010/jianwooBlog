@@ -24,6 +24,7 @@
         <result column="READ_STATUS" jdbcType="VARCHAR" property="readStatus" />
         <result column="REPLY_COUNT" jdbcType="BIGINT" property="replyCount" />
         <result column="TOTAL_REPLY_COUNT" jdbcType="BIGINT" property="totalReplyCount" />
+        <result column="FLAG_ADMIN" jdbcType="VARCHAR" property="flagAdmin" />
         <result column="IS_DELETE" jdbcType="CHAR" property="isDelete" />
         <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
         <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
@@ -46,7 +47,7 @@
     M.REPLY_ROOT_OID, M.REPLY_TO_USER_ID, M.REPLY_TO_USER_NAME, M.REPLY_TO_USER_NICK, M.PRAISE_COUNT,
     M.CONTACT_QQ, M.CONTACT_WECHAT, M.CONTACT_WEIBO, M.CONTACT_TEL, M.CONTACT_EMAIL, M.AVATAR_SRC,
     M.READ_STATUS, M.REPLY_COUNT, M.TOTAL_REPLY_COUNT, M.IS_DELETE, M.CREATE_TIME, M.UPDATE_TIME,
-    M.CONTENT
+    M.CONTENT,M.FLAG_ADMIN
     </sql>
 
     <select id="selectRecentMessage" parameterType="java.lang.Integer" resultMap="ResultMapWithExt">
@@ -94,9 +95,9 @@
         ORDER BY
         <if test="parentOid == 0">
             <if test="orderWay == 10">
+                M.PUSH_TIME ASC,
                 M.TOTAL_REPLY_COUNT DESC,
-                M.PRAISE_COUNT DESC,
-                M.PUSH_TIME ASC
+                M.PRAISE_COUNT DESC
             </if>
             <if test="orderWay == 20">
                 M.PUSH_TIME DESC,
@@ -169,7 +170,7 @@
             M.PUSH_TIME DESC
         </if>
         <if test="orderByClause != null">
-            ORDER BY #{orderByClause}
+            ORDER BY ${orderByClause}
         </if>
     </select>
 

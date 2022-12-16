@@ -1,5 +1,5 @@
 <template>
-    <div class="timeball">
+    <div class="timeball right-side">
         <canvas id="timeball" ref="myCanvas" width="310" height="200"></canvas>
     </div>
 </template>
@@ -25,7 +25,7 @@ export default {
             ],
             date: [],
             balls: [],
-            color: '#940BB7',
+            color: '#B40BB7',
             canvas: null,
             ctx: null,
             H: null,
@@ -53,7 +53,9 @@ export default {
         }
     },
     created() {
-
+        const styles = getComputedStyle(document.documentElement)
+        const value = String(styles.getPropertyValue('--theme_color')).trim()
+        this.color = value;
     },
     methods: {
         render: function () {

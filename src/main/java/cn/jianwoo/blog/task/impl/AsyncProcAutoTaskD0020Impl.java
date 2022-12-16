@@ -5,6 +5,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import cn.jianwoo.blog.constants.TaskConstants;
 import cn.jianwoo.blog.enums.AsyncIpEnum;
 import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.exception.JwBlogTaskException;
 import cn.jianwoo.blog.service.biz.NetWorkService;
 import cn.jianwoo.blog.service.notify.NotifyMsgService;
 import cn.jianwoo.blog.task.AsyncAutoTaskService;
@@ -36,7 +37,7 @@ public class AsyncProcAutoTaskD0020Impl implements AsyncAutoTaskService {
     private NetWorkService netWorkService;
 
     @Override
-    public JSONObject doProc(Long taskId, String taskData) throws JwBlogException {
+    public JSONObject doProc(Long taskId, String taskData) throws JwBlogTaskException {
 
         log.info(">> start D0020 task({}) which data is {} <<", taskId, taskData);
 
@@ -60,8 +61,8 @@ public class AsyncProcAutoTaskD0020Impl implements AsyncAutoTaskService {
             }
 
         } catch (Exception e) {
-            log.error("jianwooTaskExecutor.execIpAreaTask exec failed, e:", e);
-            throw new JwBlogException(TaskConstants.FAILED_CODE, e.getMessage());
+            log.error("AsyncProcAutoTaskD0020Impl.doProc exec failed, e:", e);
+            throw new JwBlogTaskException(TaskConstants.FAILED_CODE, e.getMessage());
         }
         return returnSuccessJsonResult();
     }

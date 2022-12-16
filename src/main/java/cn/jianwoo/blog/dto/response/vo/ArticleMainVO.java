@@ -136,6 +136,11 @@ public class ArticleMainVO implements Serializable {
      */
     private Boolean isLock;
 
+    /**
+     * 文章描述
+     */
+    private String description;
+
     public String getPublishTimeDesc() {
         return DateUtil.optimizeTimeDesc(this.getPublishTime());
     }

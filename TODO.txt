@@ -125,4 +125,10 @@ ice123 备案信息差异化✔
 前端高亮度✔
 文章草稿/temp 评论等CheckBox 没选的问题
 table img插入  图片放文件复制
-detail页面的title
+detail页面的title✔
+
+适配手机✔
+目录✔
+后台编辑器的操作按钮的悬浮窗✔
+音乐播放器✔
+

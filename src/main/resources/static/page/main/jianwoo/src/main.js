@@ -11,14 +11,20 @@ import 'babel-polyfill'
 import Es6Promise from 'es6-promise'
 import MetaInfo from 'vue-meta-info'
 import 'amfe-flexible/index.js'
-
+// import './common/js/rem'
+import './common/js/cursor'
+import './common/js/canvas-nest.min.js'
 const app = createApp(App)
 installElementPlus(app)
 app.use(store)
     .use(router)
     .mount('#app')
 
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+    app.component(key, component)
+}
 
 app.use(MetaInfo)
 

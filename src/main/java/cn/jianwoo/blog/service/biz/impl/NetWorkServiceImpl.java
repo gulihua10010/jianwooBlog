@@ -5,19 +5,20 @@ import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.service.biz.NetWorkService;
 import cn.jianwoo.blog.util.HttpClientUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.lionsoul.ip2region.xdb.Searcher;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * @author GuLihua
@@ -48,7 +49,7 @@ public class NetWorkServiceImpl implements NetWorkService {
             if (responseDto.isSuccess()) {
                 JSONObject jsonObject = JSON.parseObject(responseDto.getMsg());
                 if (null != jsonObject) {
-                    return format4Api(jsonObject.getString("address"));
+                    return format4Api(ip, jsonObject);
 
                 }
 
@@ -62,14 +63,20 @@ public class NetWorkServiceImpl implements NetWorkService {
 
     public String getRegionFromXdb(String ip) {
         try {
-            ClassPathResource classPathResource = new ClassPathResource("classpath:ip/ip2region.xdb");
-            String dbPath = classPathResource.getPath();
-            log.info("getRegionFromXdb path :{}", dbPath);
+            ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+            org.springframework.core.io.Resource[] resources = resolver.getResources("ip/ip2region.xdb");
+            InputStream inputStream = resources[0].getInputStream();
+            ByteArrayOutputStream result = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) != -1) {
+                result.write(buffer, 0, length);
+            }
             Searcher searcher = null;
             try {
-                searcher = Searcher.newWithFileOnly(dbPath);
+                searcher = Searcher.newWithBuffer(result.toByteArray());
             } catch (IOException e) {
-                log.error(String.format("failed to create searcher with `%s`: %s\n", dbPath, e));
+                log.error(String.format("failed to create searcher with `ip/ip2region.xdb`: %s\n", e));
                 return Constants.UNKNOW;
 
             }
@@ -112,26 +119,27 @@ public class NetWorkServiceImpl implements NetWorkService {
         return region;
     }
 
-    private String format4Api(String region) {
-        if (StringUtils.isBlank(region)) {
-            return Constants.UNKNOW;
-        }
-        if (region.contains("内网")) {
-            return "内网IP";
-        }
-
-        String[] arr = region.split(" ");
-        List<String> list = Arrays.stream(arr).filter(StringUtils::isNotBlank).collect(Collectors.toList());
-        if (region.startsWith("中国")) {
-            if (list.size() > 2) {
-                return list.get(1) + list.get(2);
-            }
+    private String format4Api(String ip, JSONObject regionJson) {
+        String region = Constants.UNKNOW;
+        if (null == regionJson) {
             return region;
         }
-
-        if (list.size() > 1) {
-            return list.get(0);
+        if (ip.equals("127.0.0.1")) {
+            return "内网IP";
         }
+        JSONArray data = regionJson.getJSONArray("data");
+        if (data != null && data.size() > 0) {
+            JSONObject data0 = data.getJSONObject(0);
+            if (null != data0) {
+                region = data0.getString("location");
+                String[] arr = region.split(" ");
+                if (arr.length > 0) {
+                    return arr[0];
+                }
+
+            }
+        }
+
 
         return region;
     }

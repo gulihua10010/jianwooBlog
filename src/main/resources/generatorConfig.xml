@@ -20,19 +20,19 @@
         <plugin type="org.mybatis.generator.plugins.CaseInsensitiveLikePlugin"></plugin>
         <!--        &lt;!&ndash; 覆盖原mapper.xml&ndash;&gt;-->
         <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"></plugin>
-<!--                第一次生成mapper时打开-->
-                <plugin type="cn.jianwoo.dev.plugin.BaseDaoPlugin">
-                    <!--                    //重要！！项目第一次生成时启用，会自动生成ExceptionConstants和DaoException，
-                                            后续生成不需要，关闭既可-->
-                    <property name="isProjectFirstGenerate" value="false"/>
-                    <property name="targetProject" value="src/main/java"/>
-                    <property name="daoPackage" value="cn.jianwoo.blog.dao"/>
-                    <property name="daoExceptionPackage" value="cn.jianwoo.blog.exception"/>
-                    <property name="entityPackage" value="cn.jianwoo.blog.entity"/>
-                    <property name="constantsPackage" value="cn.jianwoo.blog.constants"/>
-                    <property name="examplePackage" value="cn.jianwoo.blog.entity.example"/>
-                    <property name="mapperPackage" value="cn.jianwoo.blog.dao.base.mapper"/>
-                </plugin>
+<!--&lt;!&ndash;                第一次生成mapper时打开&ndash;&gt;-->
+<!--                <plugin type="cn.jianwoo.dev.plugin.BaseDaoPlugin">-->
+<!--                    &lt;!&ndash;                    //重要！！项目第一次生成时启用，会自动生成ExceptionConstants和DaoException，-->
+<!--                                            后续生成不需要，关闭既可&ndash;&gt;-->
+<!--                    <property name="isProjectFirstGenerate" value="false"/>-->
+<!--                    <property name="targetProject" value="src/main/java"/>-->
+<!--                    <property name="daoPackage" value="cn.jianwoo.blog.dao"/>-->
+<!--                    <property name="daoExceptionPackage" value="cn.jianwoo.blog.exception"/>-->
+<!--                    <property name="entityPackage" value="cn.jianwoo.blog.entity"/>-->
+<!--                    <property name="constantsPackage" value="cn.jianwoo.blog.constants"/>-->
+<!--                    <property name="examplePackage" value="cn.jianwoo.blog.entity.example"/>-->
+<!--                    <property name="mapperPackage" value="cn.jianwoo.blog.dao.base.mapper"/>-->
+<!--                </plugin>-->
         <plugin type="cn.jianwoo.dev.plugin.ExampleTargetPlugin">
             <property name="targetPackage" value="cn.jianwoo.blog.entity.example"/>
         </plugin>
@@ -212,6 +212,7 @@
 <!--                    <property name="useActualColumnNames" value="false"/>-->
 <!--                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
 <!--                                <columnOverride column="IS_DELETE" javaType="Boolean"/>-->
+<!--                                <columnOverride column="FLAG_ADMIN" javaType="Boolean"/>-->
 <!--                </table>-->
 <!--        <table tableName="ANNOUNCEMENT_MSG" domainObjectName="AnnouncementMsg">-->
 <!--            <property name="useActualColumnNames" value="false"/>-->
@@ -255,6 +256,7 @@
 <!--                            <property name="useActualColumnNames" value="false"/>-->
 <!--                            <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>-->
 <!--                                        <columnOverride column="IS_DELETE" javaType="Boolean"/>-->
+<!--                                        <columnOverride column="FLAG_ADMIN" javaType="Boolean"/>-->
 <!--                        </table>-->
 
 
@@ -266,9 +268,8 @@
 <!--            <property name="useActualColumnNames" value="false"/>-->
 <!--            <generatedKey column="TASK_ID" sqlStatement="JDBC" identity="false"/>-->
 <!--        </table>-->
-        <table tableName="SHEEP" domainObjectName="Sheep">
-                    <property name="useActualColumnNames" value="false"/>
-                    <generatedKey column="OID" sqlStatement="JDBC" identity="false"/>
-                </table>
+
+
+
                 </context>
             </generatorConfiguration>

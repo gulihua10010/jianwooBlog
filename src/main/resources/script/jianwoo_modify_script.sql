@@ -1,3 +1,7 @@
+-- 这是测试时的脚本，线上无需执行!!!!!!!!!!!!!!!!
+-- 这是测试时的脚本，线上无需执行!!!!!!!!!!!!!!!!
+-- 这是测试时的脚本，线上无需执行!!!!!!!!!!!!!!!!
+
 ALTER TABLE COMMENTS
     ADD COLUMN AREA VARCHAR(100) AFTER IP
 ALTER TABLE VISIT

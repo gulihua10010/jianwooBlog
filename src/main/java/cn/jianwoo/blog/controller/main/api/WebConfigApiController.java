@@ -5,7 +5,6 @@ import cn.jianwoo.blog.base.BaseController;
 import cn.jianwoo.blog.config.apiversion.ApiVersion;
 import cn.jianwoo.blog.config.router.main.WebConfigApiUrlConfig;
 import cn.jianwoo.blog.constants.WebConfDataConfig;
-import cn.jianwoo.blog.dao.base.WebconfTransDao;
 import cn.jianwoo.blog.dto.request.WebConfigCommRequest;
 import cn.jianwoo.blog.dto.request.WebconfRequest;
 import cn.jianwoo.blog.dto.response.WebConfigCommResponse;
@@ -33,8 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class WebConfigApiController extends BaseController {
     @Autowired
     private WebconfBizService webconfBizService;
-    @Autowired
-    private WebconfTransDao webconfTransDao;
 
 
     /**

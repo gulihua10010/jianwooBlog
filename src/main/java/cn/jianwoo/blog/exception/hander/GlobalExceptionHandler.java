@@ -1,6 +1,7 @@
 package cn.jianwoo.blog.exception.hander;
 
 import cn.jianwoo.blog.base.BaseResponseDto;
+import cn.jianwoo.blog.config.router.admin.CommAdminPageUrlConfig;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.WebConfDataConfig;
 import cn.jianwoo.blog.enums.TaskTypeEnum;
@@ -14,17 +15,20 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Enumeration;
@@ -36,9 +40,9 @@ import java.util.Enumeration;
  * @Description
  * @date 2022-05-09 16:18
  */
-@ControllerAdvice
+@RestControllerAdvice
 @Slf4j
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+public class GlobalExceptionHandler {
     @Autowired
     private AsyncAutoTaskBaseService asyncAutoTaskBaseService;
     @Autowired
@@ -48,37 +52,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Autowired
     private WebconfBizService webconfBizService;
 
-    @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception e, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        if (status != null && status.equals(HttpStatus.NOT_FOUND)) {
-            log.info("404错误" + request.getContextPath());
-            return new ResponseEntity<>(new BaseResponseDto(String.valueOf(HttpStatus.NOT_FOUND.value()), "资源不存在"), HttpStatus.NOT_FOUND);
-        }
-        log(e, request, body);
-
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        e.printStackTrace(pw);
-        if (e instanceof HttpRequestMethodNotSupportedException) {
-            return new ResponseEntity<>(JSONObject.toJSONString(BaseResponseDto.SYSTEM_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append("url:[").append(request.getContextPath()).append("]")
-                .append("<br/>")
-                .append("ip:[").append(JwUtil.getRealIpAddress(httpServletRequest)).append("]")
-                .append("<br/>").append(sw);
-        try {
-            String isExceptionEmailNotify = webconfBizService.queryWebconfByKey(WebConfDataConfig.EXCEPTION_EMAIL_NOTIFY);
-            if (Constants.TRUE.equals(isExceptionEmailNotify)) {
-                TaskDataD0099BO taskDataD0099BO = new TaskDataD0099BO();
-                taskDataD0099BO.setExcepionMsg(sb.toString());
-                createTask(taskDataD0099BO);
-            }
-        } catch (JwBlogException ex) {
-            log.error("ExceptionAOPHandler.sendExceptionByMail.queryWebconfByKey error:", ex);
-        }
-        return new ResponseEntity<>(JSONObject.toJSONString(BaseResponseDto.SYSTEM_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
 
     private void createTask(TaskDataD0099BO taskDataD0099BO) {
         transactionUtils.afterCompletion(() -> {
@@ -97,18 +70,40 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         });
 
     }
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public void noHandleFoundException(HttpServletRequest request, HttpServletResponse response, NoHandlerFoundException e) throws ServletException, IOException {
+        log.error("GlobalDefaultExceptionHandler.noHandleFoundException catch exception.", e);
+        RequestDispatcher rd = request.getRequestDispatcher(CommAdminPageUrlConfig.URL_NOT_FOUND);
+        rd.forward(request, response);
+    }
 
-    @ExceptionHandler
+
+    @ExceptionHandler(Exception.class)
     @ResponseBody
     public String defaultExceptionHandler(HttpServletRequest request, Throwable e) {
-        log.error("GlobalDefaultExceptionHandler catch exception.", e);
+        log.error("GlobalDefaultExceptionHandler.defaultExceptionHandler catch exception.", e);
         log(e, request);
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         e.printStackTrace(pw);
-        TaskDataD0099BO taskDataD0099BO = new TaskDataD0099BO();
-        taskDataD0099BO.setExcepionMsg(sw.toString());
-        createTask(taskDataD0099BO);
+        if (e instanceof HttpRequestMethodNotSupportedException) {
+            return JSONObject.toJSONString(BaseResponseDto.SYSTEM_ERROR);
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("url:[").append(request.getContextPath()).append("]")
+                .append("<br/>")
+                .append("ip:[").append(JwUtil.getRealIpAddress(httpServletRequest)).append("]")
+                .append("<br/>").append(sw);
+        try {
+            String isExceptionEmailNotify = webconfBizService.queryWebconfByKey(WebConfDataConfig.EXCEPTION_EMAIL_NOTIFY);
+            if (Constants.TRUE.equals(isExceptionEmailNotify)) {
+                TaskDataD0099BO taskDataD0099BO = new TaskDataD0099BO();
+                taskDataD0099BO.setExcepionMsg(sb.toString());
+                createTask(taskDataD0099BO);
+            }
+        } catch (JwBlogException ex) {
+            log.error("defaultExceptionHandler.sendExceptionByMail.queryWebconfByKey error:", ex);
+        }
 
         return JSON.toJSONString(BaseResponseDto.SYSTEM_ERROR);
     }

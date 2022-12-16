@@ -252,7 +252,7 @@ a.more-link {
 
 h1 {
     text-align: center;
-    color: rgba(190, 10, 193, 0.98);
+    color: var(--theme_color_dark);
 }
 
 </style>

@@ -1,6 +1,6 @@
 package cn.jianwoo.blog.task;
 
-import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.exception.JwBlogTaskException;
 import com.alibaba.fastjson.JSONObject;
 
 /**
@@ -18,5 +18,5 @@ public interface AsyncAutoTaskService {
      * @return
      * @author gulihua
      */
-    JSONObject doProc(Long taskId, String taskData) throws JwBlogException;
+    JSONObject doProc(Long taskId, String taskData) throws JwBlogTaskException;
 }

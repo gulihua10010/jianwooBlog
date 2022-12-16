@@ -4,7 +4,7 @@
             <ul>
                 <li><a href="/" :class="{'menu-activity': !this.currMenu}" >首页</a></li>
                 <li v-for="(item,idx) in menulist">
-                    <a :href="item.url" v-if="item.isCategory === false" :class="{'menu-activity': currMenu && item.ids.indexOf(currMenu) !== -1 }" >{{item.title}}</a>
+                    <a :href="item.url" v-if="item.isCategory === false" @click="jumpOther(item.id)" :class="{'menu-activity': currMenu && item.ids.indexOf(currMenu) !== -1 }" >{{item.title}}</a>
                     <span v-if="item.isCategory === true" @click="jump1(item.id)" :class="{'menu-activity': currMenu && item.ids.indexOf(currMenu) !== -1 }" >{{item.title}}</span>
                     <ul class="submenu" v-for="(subMenu,idx) in item.subList">
                         <li>
@@ -57,6 +57,16 @@ export default {
             this.currMenu = Number(this.$route.query.category2);
 
         }
+        var meta = this.$route.meta;
+        if (meta){
+            for (let k in meta)
+            {
+                if (meta[k].menuOid){
+                    this.currMenu = Number(meta[k].menuOid);
+                    break;
+                }
+            }
+        }
         this.getMenuList();
     },
     methods: {
@@ -84,7 +94,9 @@ export default {
             });
 
         },
-
+        jumpOther:function (id) {
+            this.currMenu = id;
+        },
         jump1:function (id) {
             this.searchForm.category1 = id;
             this.currMenu = id;
@@ -107,7 +119,6 @@ export default {
                     category2: this.searchForm.category2,
                 }
             });
-            this.$parent.search(this.searchForm);
         },
     },
     watch: {}
@@ -117,22 +128,22 @@ export default {
 <style scoped>
 .search-btn{
     height: 40px;
-    background-color: #B40BB7;
-    border-color: #B40BB7;
+    background-color: var(--theme_color);
+    border-color: var(--theme_color);
     display: inline-block;
     width:70px;
 }
 .search-btn:hover{
-    background-color: #A52581;
-    border-color: #A52581;
+    background-color: var(--theme_color_dark);
+    border-color: var(--theme_color_dark);
 }
 .search-btn:active{
-    background-color: #A52581;
-    border-color: #A52581;
+    background-color: var(--theme_color_dark);
+    border-color: var(--theme_color_dark);
 }
 .search-btn:focus{
-    background-color: #A52581;
-    border-color: #A52581;
+    background-color: var(--theme_color_dark);
+    border-color: var(--theme_color_dark);
 }
 .search-input{
     height: 40px;

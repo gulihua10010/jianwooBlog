@@ -1,5 +1,5 @@
 <template>
-    <div class="art-box">
+    <div class="art-box right-side">
         <div class="artb-title">
             <span :class="this.showTab === 1?'art-titlehover':''" @mousemove="mouseTabmove($event, 1)"
                   @mouseleave="mouseTableave($event)">最新文章</span>
@@ -12,7 +12,7 @@
             <ul>
                 <li v-for="(item,idx) in this.newestList"><span
                         :class="idx===0 ? 'li-no-one' : (idx===1 ? 'li-no-two' : (idx===2 ? 'li-no-three' : 'li-no-othor'))">{{ idx + 1 }}</span><a
-                        :href="'/#/detail?id=' + item.oid" @mousemove="mousemove($event, item.oid)"  @mouseleave="mouseleave($event)">{{ substr(item.title, 18) }}</a>
+                        :href="'/detail?id=' + item.oid" @mousemove="mousemove($event, item.oid)"  @mouseleave="mouseleave($event)">{{ substr(item.title, 18) }}</a>
                     <a :style="'position: absolute;left:' + titleAltLeft + 'px;top:'+titleAltTop+'px;'" class="tit_alt"
                        v-if="this.showTitleAlt === item.oid">{{ item.title }}</a>
                 </li>
@@ -22,7 +22,7 @@
             <ul>
                 <li v-for="(item,idx) in this.randomList"><span
                         :class="idx===0 ? 'li-no-one' : (idx===1 ? 'li-no-two' : (idx===2 ? 'li-no-three' : 'li-no-othor'))">{{ idx + 1 }}</span>
-                    <a :href="'/#/detail?id=' + item.oid" @mousemove="mousemove($event, item.oid)" @mouseleave="mouseleave($event)">{{ substr(item.title, 18) }}</a>
+                    <a :href="'/detail?id=' + item.oid" @mousemove="mousemove($event, item.oid)" @mouseleave="mouseleave($event)">{{ substr(item.title, 18) }}</a>
                     <a :style="'position: absolute;left:' + titleAltLeft + 'px;top:'+titleAltTop+'px;'" class="tit_alt"
                        v-if="this.showTitleAlt === item.oid">{{ item.title }}</a>
                 </li>
@@ -32,7 +32,7 @@
             <ul>
                 <li v-for="(item,idx) in this.hotList"><span
                         :class="idx===0 ? 'li-no-one' : (idx===1 ? 'li-no-two' : (idx===2 ? 'li-no-three' : 'li-no-othor'))">{{ idx + 1 }}</span><a
-                        :href="'/#/detail?id=' + item.oid" @mousemove="mousemove($event, item.oid)" @mouseleave="mouseleave($event)">{{ substr(item.title, 18) }}</a>
+                        :href="'/detail?id=' + item.oid" @mousemove="mousemove($event, item.oid)" @mouseleave="mouseleave($event)">{{ substr(item.title, 18) }}</a>
                     <a class="tit_alt" v-if="this.showTitleAlt === item.oid">{{ item.title }}</a>
                 </li>
             </ul>

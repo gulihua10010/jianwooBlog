@@ -1,12 +1,60 @@
-<!doctype html><html lang=""><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"><link rel="icon" href="/favicon.ico"><title>简窝世界</title><meta name="renderer" content="webkit"><meta name="apple-mobile-web-app-capable" content="yes"/><meta name="format-detection" content="telephone=no"/><meta name="applicable-device" content="pc,mobile"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="keywords" content="简窝世界 简窝  简窝个人博客 开源博客"><meta name="author" content="梨花"><meta itemprop="name" content="简窝世界"/><meta itemprop="image" content=""/><meta name="description" content="简窝世界"><meta property="og:title" content="简窝世界"><meta property="og:author" content="梨花"><meta property="og:url" content="https://jianwoo.cn"><meta property="og:site_name" content="简窝世界"><meta property="og:description" content="简窝世界"><script>(function(){
-            var bp = document.createElement('script');
-            var curProtocol = window.location.protocol.split(':')[0];
-            if (curProtocol === 'https') {
-                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+<!doctype html><html lang=""><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"><link rel="icon" href="/favicon.ico"><title>简窝世界</title><meta name="renderer" content="webkit"><meta name="apple-mobile-web-app-capable" content="yes"/><meta name="format-detection" content="telephone=no"/><meta name="applicable-device" content="pc,mobile"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="keywords" content="简窝世界 简窝  简窝个人博客 开源博客"><meta name="author" content="梨花"><meta itemprop="name" content="简窝世界"/><meta itemprop="image" content=""/><meta name="description" content="简窝世界"><meta property="og:title" content="简窝世界"><meta property="og:author" content="梨花"><meta property="og:url" content="https://jianwoo.cn"><meta property="og:site_name" content="简窝世界"><meta property="og:description" content="简窝世界"><script src="https://l2dwidget.js.org/lib/L2Dwidget.min.js"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css"><script defer="defer" src="/js/chunk-vendors.0e068ab8.js"></script><script defer="defer" src="/js/app.5320bab5.js"></script><link href="/css/app.6562800c.css" rel="stylesheet"></head><body><div id="app"></div><script>(function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+
+        // 解决L2Dwidget组件初始化时导致 css 加载两遍，从而使得页面一闪，出现未加载 css 时的杂乱布局
+        var linkSources = document.getElementsByTagName("link");
+        var linkSource = linkSources[linkSources.length - 1];
+        if (linkSource.href.startsWith(location.protocol + "//" + location.host + "/css")) {
+            var linkTarget = document.createElement('link');
+            linkTarget.rel = 'stylesheet'
+            linkTarget.href = linkSource.href
+            var app = document.getElementById("app");
+            app.parentNode.insertBefore(linkTarget, app)
+            linkSource.remove();
+        }
+        if (location.port === '' || location.port === '80'){
+            loadScript("https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js");
+            loadScript("https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js");
+        }
+
+
+    })();
+
+
+    /**
+     * 异步加载 js 文件
+     * @param url URL
+     * @param callback 回调函数
+     */
+    function loadScript(url, callback) {
+        //url是按需加载的js文件
+        //callback是按需加载的js文件中某个函数
+
+        // 1. 创建一个script标签
+        var script = document.createElement('script');
+        // 处理ie的兼容
+        if (script.readyState) {
+            script.onreadystatechange = function () {
+                // 如果script已经下载完成
+                if (script.readyState == 'complete' || script.readyState == 'loaded') {
+                    typeof callback === 'function' && callback() ;
+                }
             }
-            else {
-                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        } else {
+            // 监听script的下载的状态 当状态变为下载完成后 再执行callback
+            script.onload = function () {
+                typeof callback === 'function' && callback() ;
             }
-            var s = document.getElementsByTagName("script")[0];
-            s.parentNode.insertBefore(bp, s);
-        })();</script><script defer="defer" src="/js/chunk-vendors.d1fb88a5.js"></script><script defer="defer" src="/js/app.e771e3fe.js"></script><link href="/css/app.d387d5f8.css" rel="stylesheet"></head><body><div id="app"></div></body></html>
+        }
+        script.src = url;
+        // 3. 追加到body
+        document.body.appendChild(script);
+    }</script></body></html>

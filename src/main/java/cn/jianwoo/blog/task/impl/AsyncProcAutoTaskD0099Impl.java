@@ -2,6 +2,7 @@ package cn.jianwoo.blog.task.impl;
 
 import cn.jianwoo.blog.constants.TaskConstants;
 import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.exception.JwBlogTaskException;
 import cn.jianwoo.blog.service.biz.AdminBizService;
 import cn.jianwoo.blog.service.biz.EmailBizService;
 import cn.jianwoo.blog.service.bo.AdminBO;
@@ -32,7 +33,7 @@ public class AsyncProcAutoTaskD0099Impl implements AsyncAutoTaskService {
     private String adminName;
 
     @Override
-    public JSONObject doProc(Long taskId, String taskData) throws JwBlogException {
+    public JSONObject doProc(Long taskId, String taskData) throws JwBlogTaskException {
 
         log.info(">> start D0099 task({}) which data is {} <<", taskId, taskData);
 

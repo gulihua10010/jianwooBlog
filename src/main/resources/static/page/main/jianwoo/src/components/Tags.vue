@@ -1,12 +1,12 @@
 <template>
-    <div class="art-tags">
+    <div class="art-tags right-side">
         <p>标签云集</p>
         <div>
             <span v-for="(item,idx) in this.tagsList"
                   :style="'border: 1px rgba('+item.r+','+item.g+','+item.b+',1) solid;background-color: rgba('+item.r+','+item.g+','+item.b+',.1)'"
                   >
                 <span @mousemove="mousemove($event, item.id)" @mouseleave="mouseleave($event)">
-                    <a :href="'/#/index?tag='+item.id">{{ item.name + " (" + item.count + ")" }}</a>
+                    <a :href="'/index?tag='+item.id">{{ item.name + " (" + item.count + ")" }}</a>
                 </span>
                 <a :style="'position: absolute;left:' + titleAltLeft + 'px;top:'+titleAltTop+'px;'" class="tit_alt"
                    v-if="this.showTitleAlt === item.id">{{ item.count + '篇文章'}}</a>

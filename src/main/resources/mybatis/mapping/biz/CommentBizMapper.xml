@@ -27,6 +27,7 @@
         <result column="AVATAR_SRC" jdbcType="VARCHAR" property="avatarSrc"/>
         <result column="ART_DEL_STATUS" jdbcType="VARCHAR" property="artDelStatus"/>
         <result column="READ_STATUS" jdbcType="VARCHAR" property="readStatus"/>
+        <result column="FLAG_ADMIN" jdbcType="VARCHAR" property="flagAdmin" />
         <result column="IS_DELETE" jdbcType="CHAR" property="isDelete" />
         <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
@@ -53,7 +54,7 @@
         C.PARENT_OID, C.PRAISE_COUNT, C.FLOOR_NUMBER, C.REPLY_COUNT, C.TOTAL_REPLY_COUNT, C.REPLY_ROOT_OID, C.REPLY_TO_USER_ID,C.REPLY_TO_USER_NAME,
         C.REPLY_TO_USER_NICK, C.CONTACT_QQ, C.CONTACT_WECHAT, C.CONTACT_WEIBO,
         C.CONTACT_TEL, C.CONTACT_EMAIL, C.AVATAR_SRC, C.ART_DEL_STATUS, C.READ_STATUS, C.CREATE_TIME, C.UPDATE_TIME,
-        C.CONTENT, C.IS_DELETE
+        C.CONTENT, C.FLAG_ADMIN, C.IS_DELETE
     </sql>
     <select id="selectLastComment" resultMap="BaseResultMap">
         select
@@ -219,7 +220,7 @@
             C.COMMENT_TIME DESC
         </if>
         <if test="orderByClause != null">
-            ORDER BY #{orderByClause}
+            ORDER BY ${orderByClause}
         </if>
     </select>
     <select id="selectCommentExtByOid" resultMap="ResultMapWithExt" parameterType="java.lang.Long">

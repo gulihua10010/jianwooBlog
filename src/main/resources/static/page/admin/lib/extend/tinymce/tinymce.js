@@ -188,10 +188,12 @@ layui.define(['jquery'], function (exports) {
             ' indent2em alignleft aligncenter alignright alignjustify outdent indent| formatselect fontselect fontsizeselect';
 
         option.toolbar2 = isset(option.toolbar2) ? option.toolbar2 : 'blockquote | link unlink |table | hr removeformat |' +
-            ' importword  layout lineheight letterspacing inserttime uploadfile link image uploadvideo| codesample code';
+            ' importword  layout lineheight letterspacing inserttime uploadfile link image uploadvideo| codesample code | fullscreen';
 
 
         option.resize = isset(option.resize) ? option.resize : false;
+
+        option.fullscreen_native = isset(option.fullscreen_native) ? option.fullscreen_native : false;
 
         option.elementpath = isset(option.elementpath) ? option.elementpath : false;
 

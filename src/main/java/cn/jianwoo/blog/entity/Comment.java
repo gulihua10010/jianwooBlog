@@ -60,6 +60,8 @@ public class Comment implements Serializable {
 
     private Long totalReplyCount;
 
+    private Boolean flagAdmin;
+
     private Boolean isDelete;
 
     private Date createTime;
@@ -294,6 +296,14 @@ public class Comment implements Serializable {
         this.totalReplyCount = totalReplyCount;
     }
 
+    public Boolean getFlagAdmin() {
+        return flagAdmin;
+    }
+
+    public void setFlagAdmin(Boolean flagAdmin) {
+        this.flagAdmin = flagAdmin;
+    }
+
     public Boolean getIsDelete() {
         return isDelete;
     }
@@ -360,6 +370,7 @@ public class Comment implements Serializable {
         sb.append(", floorNumber=").append(floorNumber);
         sb.append(", replyCount=").append(replyCount);
         sb.append(", totalReplyCount=").append(totalReplyCount);
+        sb.append(", flagAdmin=").append(flagAdmin);
         sb.append(", isDelete=").append(isDelete);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);

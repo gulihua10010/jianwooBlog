@@ -1,4 +1,4 @@
--- 系统必要数据初始化
+-- 系统必要数据的初始化, 部署网站需要执行!!!!!!
 
 INSERT INTO `ADMIN` (`OID`, `USERNAME`, `PASSWORD`, `USER_NICK`, `USER_PHONE`, `USER_EMAIL`, `USER_SEX`, `REGISTER_IP`, `REGISTER_REGION`, `AVATAR_SRC`, `LAST_LOGIN_IP`, `LAST_LOGIN_REGION`, `LAST_LOGIN_TIME`, `CREATE_TIME`, `UPDATE_TIME`) VALUES (1, 'admin', 'aa787bc9cc97ba5d27cc042ecffe1489', '简窝', '123456789', '1729846470@qq.com', '20', '127.0.0.1', '内网IP 内网IP', 'https://cdn.jianwoo.cn/jwblog/upload/202205/3138a1ac01274071b5fb4078b79165c0_20220517154847450.png', '127.0.0.1', '内网IP', '2022-08-22 09:33:16', NOW(), NOW());
 

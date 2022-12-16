@@ -40,7 +40,7 @@ public class WebconfQueryDaoImpl implements WebconfQueryDao {
     @Override
     public Webconf queryWebconfByKey(String key) throws JwBlogException {
         WebconfExample example = new WebconfExample();
-        example.createCriteria().andKeyEqualTo(key);
+        example.createCriteria().andValidEqualTo(true).andKeyEqualTo(key);
         List<Webconf> webconfList = webconfMapper.selectByExample(example);
         if (CollectionUtils.isEmpty(webconfList)) {
             throw new ValidationException(ExceptionConstants.VALIDATION_FAILED_NULL,

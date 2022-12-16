@@ -228,6 +228,7 @@ public class ArticleApiMainController extends BaseController {
      * --id<br/>
      * --title<br/>
      * --author<br/>
+     * --desc<br/>
      * --publishDate<br/>
      * --publishRegion<br/>
      * --modifiedDate<br/>

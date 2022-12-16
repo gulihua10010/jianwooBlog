@@ -1,9 +1,9 @@
 <template>
     <div>
-        <el-card class="box-card" id="comment">
+        <el-card class="box-card comment-user-info" id="comment">
             <div class="title">
                 用户信息
-                <span style="font-weight: 400;font-size: 12px;">(IP属地: {{
+                <span style="font-weight: 400;font-size: 12px;"  class="position-ip">(IP属地: {{
                         !userInfo.userRegion ? '未知' : userInfo.userRegion
                     }})</span>
             </div>
@@ -19,7 +19,7 @@
                     </el-form-item>
                 </div>
                 <div>
-                    <el-form-item label="&nbsp;&nbsp;QQ" style="width: 40%" prop="contactQq">
+                    <el-form-item label="&nbsp;&nbsp;&nbsp;&nbsp;QQ" style="width: 40%" prop="contactQq">
                         <el-input v-model="userInfo.contactQq"/>
                     </el-form-item>
                     <el-form-item label="&nbsp;&nbsp;微信" style="width: 40%" prop="contactWechat">
@@ -60,7 +60,7 @@
             <span>
                 <el-switch
                         v-model="commentQueryParam.orderWay" @change="order"
-                        style="float: right;--el-switch-on-color: #B40BB7; --el-switch-off-color: #ddd"
+                        style="float: right;--el-switch-on-color: var(--theme_color); --el-switch-off-color: #ddd"
                         active-text="默认" active-value="10"
                         inactive-text="最新评论" inactive-value="20"
                         v-if="!this.$route.query.commOid"
@@ -80,10 +80,13 @@
                     <div class="pad-btm">
                     <span class="fontColor">
                         <a href="javascript:">{{ comm.userNick }}</a>
+                        <a href="javascript:" v-if="comm.flagAdmin"><span class="flag_admin_info">博主</span></a>
+
                          &nbsp;&nbsp;
                         <span v-if="comm.floorNumber">{{ comm.floorNumber }}楼</span>
                          &nbsp;&nbsp;
-                        <a href="javascript:" style="color:#777">
+                         <br class="mobile_br">
+                        <a href="javascript:" style="color:#777" class="position-ip">
                             <svg class="icon" aria-hidden="true">
                                     <use xlink:href="#icon-position"></use>
                             </svg>
@@ -101,31 +104,32 @@
                               style="color:red">
                         <svg class="icon" aria-hidden="true">
                                     <use xlink:href="#icon-dianzan_kuai"></use>
-                        </svg>&nbsp;赞({{ comm.praiseCount }})
+                        </svg><span class="comm-btn-word" style="color:red">&nbsp;赞</span>({{ comm.praiseCount }})
                             </span>
                         <span class="before-goods jwhover" @click="doPraise(comm)" v-else>
                             <svg class="icon" aria-hidden="true">
                                     <use xlink:href="#icon-zan"></use>
-                            </svg>&nbsp;赞({{ comm.praiseCount }})
+                            </svg><span class="comm-btn-word">&nbsp;赞</span>({{ comm.praiseCount }})
                         </span>
                         &nbsp;&nbsp;
                         <span @click="replyClick(comm, index)" class="jwhover">
                             <svg class="icon" aria-hidden="true">
                                     <use xlink:href="#icon-pinglunxiao"></use>
-                                </svg>&nbsp;{{
+                                </svg>&nbsp;
+                            <span class="comm-btn-word">{{
                                 this.showReply && this.showReplyOid === comm.oid
                                         ? "取消回复"
-                                        : ("评论(" + comm.replyCount + ")")
-                            }}
+                                        : ("评论")
+                            }}</span>{{"(" + comm.replyCount + ")"}}
                         </span>
                         &nbsp;&nbsp;
                         <span @click="editClick(comm, index)" class="jwhover" v-if="comm.flagEdit && !comm.flagDelete">
                             <svg class="icon" aria-hidden="true">
                                     <use xlink:href="#icon-bianji1"></use>
-                                </svg>&nbsp;{{
+                                </svg>&nbsp;<span class="comm-btn-word">{{
                                 this.showEdit && this.showEditOid === comm.oid
                                         ? "取消编辑" : "编辑"
-                            }}
+                            }}</span>
                         </span>
 
                         &nbsp;&nbsp;
@@ -133,7 +137,7 @@
                               v-if="comm.flagEdit && !comm.flagDelete">
                             <svg class="icon" aria-hidden="true">
                                     <use xlink:href="#icon-shanchu"></use>
-                                </svg>&nbsp;删除
+                                </svg>&nbsp;<span class="comm-btn-word" style="color:red">删除</span>
                         </span>
 
                     </div>
@@ -197,8 +201,10 @@
                             <span class="fontColor">
                                 <a href="javascript:">{{ rep.userNick }}</a>
                                 <a href="javascript:">&nbsp;回复&nbsp;@{{ rep.parentUserName }}</a>
+                                <a href="javascript:" v-if="rep.flagAdmin"><span class="flag_admin_info">博主</span></a>
                                 &nbsp;&nbsp;
-                                 <a href="javascript:" style="color:#777">
+                                 <br class="mobile_br">
+                                 <a href="javascript:" style="color:#777" class="position-ip">
                                     <svg class="icon" aria-hidden="true">
                                             <use xlink:href="#icon-position"></use>
                                     </svg>
@@ -216,32 +222,32 @@
                                 <svg class="icon" aria-hidden="true">
                                     <use xlink:href="#icon-dianzan_kuai"></use>
                                 </svg>
-                                &nbsp;赞({{ rep.praiseCount }})
+                                <span class="comm-btn-word" style="color:red">&nbsp;赞</span>({{ rep.praiseCount }})
                                 </span>
                                 <span class="before-goods jwhover" @click="doPraise(rep)" v-else>
                                     <svg class="icon" aria-hidden="true">
                                     <use xlink:href="#icon-zan"></use>
-                                    </svg>&nbsp;赞({{ rep.praiseCount }})
+                                    </svg><span class="comm-btn-word">&nbsp;赞</span>({{ rep.praiseCount }})
                                 </span>
                                 &nbsp;&nbsp;
                                 <span @click="replyClick(rep, repIndex)" class="jwhover">
                                     <svg class="icon" aria-hidden="true">
                                     <use xlink:href="#icon-pinglunxiao"></use>
-                                    </svg>&nbsp;{{
+                                    </svg>&nbsp;<span class="comm-btn-word">{{
                                         this.showReply && this.showReplyOid === rep.oid
                                                 ? "取消回复"
-                                                : ("评论(" + rep.replyCount + ")")
-                                    }}
+                                                : "评论"
+                                    }}</span>{{"(" + rep.replyCount + ")"}}
                                 </span>
                                 &nbsp;&nbsp;
                                 <span @click="editClick(rep, repIndex)" class="jwhover"
                                       v-if="rep.flagEdit && !rep.flagDelete">
                                     <svg class="icon" aria-hidden="true">
                                     <use xlink:href="#icon-bianji1"></use>
-                                    </svg>&nbsp;{{
+                                    </svg>&nbsp;<span class="comm-btn-word">{{
                                         this.showEdit && this.showEditOid === rep.oid
                                                 ? "取消编辑" : "编辑"
-                                    }}
+                                    }}</span>
                                 </span>
                                 &nbsp;&nbsp;
                                 <span @click="delClick(rep, repIndex, comm.replyList, false, comm)" class="jwhover"
@@ -249,7 +255,7 @@
                                       v-if="rep.flagEdit && !rep.flagDelete">
                                     <svg class="icon" aria-hidden="true">
                                          <use xlink:href="#icon-shanchu"></use>
-                                    </svg>&nbsp;删除
+                                    </svg>&nbsp;<span class="comm-btn-word" style="color:red">删除</span>
                                 </span>
 
                             </div>
@@ -479,6 +485,12 @@ export default {
 
             })
 
+            if (that.$route.query.jump === 'comment') {
+                if (document.getElementById('comment')) {
+                    document.getElementById('comment').scrollIntoView()
+                }
+            }
+
         });
 
 
@@ -526,7 +538,7 @@ export default {
         },
         getCanBeComment: function (param) {
             postJson("/config/query", {key: 'GLOBAL_COMMENT_ALLOW'}).then((res) => {
-                this.canBeCommentGlobal = res.data.value === 'TRUE';
+                this.canBeCommentGlobal = res.data && res.data.value === 'TRUE';
                 if (this.canBeComment) {
                     this.canBeComment = this.canBeCommentGlobal;
                 }
@@ -622,9 +634,9 @@ export default {
                             commList.splice(index, 1);
 
                         }
-                        if (isRootComm){
+                        if (isRootComm) {
                             this.count = this.count - 1
-                        }else {
+                        } else {
                             comm.replyCount = comm.replyCount - 1
                             this.count = this.count - 1
                         }
@@ -1228,7 +1240,7 @@ export default {
 
 .comment-content-btns button {
     margin-left: auto;
-    background-color: rgba(166, 10, 169, .98);
+    background-color: var(--theme_color);
     border: none;
     color: white;
     padding: 5px 15px;
@@ -1237,18 +1249,18 @@ export default {
 }
 
 .comment-content-btns button:hover {
-    background-color: #A52581;
-    border-color: #A52581;
+    background-color: var(--theme_color_dark);
+    border-color: var(--theme_color_dark);
 }
 
 .comment-content-btns button:active {
-    background-color: #A52581;
-    border-color: #A52581;
+    background-color: var(--theme_color_dark);
+    border-color: var(--theme_color_dark);
 }
 
 /*.comment-content-btns button:focus{*/
-/*    background-color: #A52581;*/
-/*    border-color: #A52581;*/
+/*    background-color: var(--theme_color_dark);*/
+/*    border-color: var(--theme_color_dark);*/
 /*}*/
 
 [id^=reply-input-] {
@@ -1289,7 +1301,7 @@ export default {
 
 .comment-reply-btns button {
     margin-left: auto;
-    background-color: rgba(166, 10, 169, .98);
+    background-color: var(--theme_color);
     border: none;
     color: white;
     padding: 5px 15px;
@@ -1298,13 +1310,13 @@ export default {
 }
 
 .comment-reply-btns button:hover {
-    background-color: #A52581;
-    border-color: #A52581;
+    background-color: var(--theme_color_dark);
+    border-color: var(--theme_color_dark);
 }
 
 .comment-reply-btns button:active {
-    background-color: #A52581;
-    border-color: #A52581;
+    background-color: var(--theme_color_dark);
+    border-color: var(--theme_color_dark);
 }
 
 
@@ -1317,7 +1329,20 @@ export default {
 .comment-list {
     margin-top: 10px;
 }
+
 .comm-btn {
     height: 35px;
+}
+
+.flag_admin_info {
+    display: inline-block;
+    color: white !important;
+    background: var(--theme_color_light);
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -o-border-radius: 3px;
+    -moz-border-radius: 3px;
+    padding: 1px 2px;
+    margin-left: 5px;
 }
 </style>

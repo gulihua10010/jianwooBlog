@@ -812,10 +812,10 @@
             window.requestAnimationFrame(function () {
                 editorContainer.on(function (container) {
                     return setAll(container, {
-                        top: visualViewport.offsetTop + 'px',
-                        left: visualViewport.offsetLeft + 'px',
-                        height: visualViewport.height + 'px',
-                        width: visualViewport.width + 'px'
+                        top: 50 + 'px',
+                        left: 60 + 'px',
+                        height: (visualViewport.height - 50)+ 'px',
+                        width: (visualViewport.width - 60) + 'px'
                     });
                 });
             });
@@ -843,6 +843,7 @@
         };
     });
     var toggleFullscreen = function (editor, fullscreenState) {
+        layui.admin.sideFlexible(null)
         var body = document.body;
         var documentElement = document.documentElement;
         var editorContainer = editor.getContainer();
@@ -907,6 +908,7 @@
             }
             fireFullscreenStateChanged(editor, true);
         } else {
+            layui.admin.sideFlexible('spread')
             fullscreenInfo.fullscreenChangeHandler.unbind();
             if (getFullscreenNative(editor) && isFullscreenElement(fullscreenRoot)) {
                 exitFullscreen(owner(fullscreenRoot));

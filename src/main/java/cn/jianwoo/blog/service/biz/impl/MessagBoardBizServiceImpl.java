@@ -210,6 +210,7 @@ public class MessagBoardBizServiceImpl implements MessagBoardBizService {
                 .with(MessageBoard::setUserId, tmpBO.getUserId())
                 .with(MessageBoard::setUserName, tmpBO.getUsername())
                 .with(MessageBoard::setUserNick, tmpBO.getNickname())
+                .with(MessageBoard::setFlagAdmin, isAdmin)
                 .with(MessageBoard::setPushTime, now)
                 .with(MessageBoard::setCreateTime, now)
                 .with(MessageBoard::setUpdateTime, now)

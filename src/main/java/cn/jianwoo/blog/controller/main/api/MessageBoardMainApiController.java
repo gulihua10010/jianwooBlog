@@ -87,6 +87,7 @@ public class MessageBoardMainApiController extends BaseController {
      * --floorNumber<br/>
      * --isPraise<br/>
      * --flagEdit<br/>
+     * --flagAdmin<br/>
      * --praiseCount<br/>
      * --oid<br/>
      * --replyCount<br/>
@@ -108,6 +109,7 @@ public class MessageBoardMainApiController extends BaseController {
      * ----replyToUserNick<br/>
      * ----isPraise<br/>
      * ----flagEdit<br/>
+     * ----flagAdmin<br/>
      * ----flagDelete<br/>
      * ----praiseCount<br/>
      * ----oid<br/>
@@ -157,6 +159,7 @@ public class MessageBoardMainApiController extends BaseController {
                     vo.setIsPraise(messageBO.getIsPraise());
                     vo.setPraiseCount(messageBO.getPraiseCount());
                     vo.setFlagEdit(messageBO.getFlagEdit());
+                    vo.setFlagAdmin(messageBO.getFlagAdmin());
                     vo.setFlagDelete(messageBO.getIsDelete());
                     vo.setReplyCount(messageBO.getReplyCount());
                     List<MessageBoardListVO> replyList = new ArrayList<>();
@@ -183,6 +186,7 @@ public class MessageBoardMainApiController extends BaseController {
                             replyVo.setPraiseCount(rep.getPraiseCount());
                             replyVo.setReplyCount(rep.getReplyCount());
                             replyVo.setFlagEdit(rep.getFlagEdit());
+                            replyVo.setFlagAdmin(rep.getFlagAdmin());
                             replyVo.setFlagDelete(rep.getIsDelete());
                             replyList.add(replyVo);
                         }

@@ -177,6 +177,7 @@ layui.define('view', function (exports) {
                     }
 
                     app.removeClass(SIDE_SHRINK)
+                    $('.tox-fullscreen').css('left','220px')
                 } else {
                     //切换到搜索状态的 icon，箭头：→
                     iconElem.removeClass(ICON_SHRINK).addClass(ICON_SPREAD);
@@ -189,6 +190,7 @@ layui.define('view', function (exports) {
                     }
 
                     app.removeClass(APP_SPREAD_SM)
+                    $('.tox-fullscreen').css('left','60px')
                 }
 
                 layui.event.call(this, setter.MOD_NAME, 'side({*})', {
@@ -375,6 +377,7 @@ layui.define('view', function (exports) {
     var events = admin.events = {
         //伸缩
         flexible: function (othis) {
+            othis = othis === undefined ? $(this) : othis;
             var iconElem = othis.find('#' + APP_FLEXIBLE)
                 , isSpread = iconElem.hasClass(ICON_SPREAD);
             admin.sideFlexible(isSpread ? 'spread' : null); //控制伸缩
@@ -863,7 +866,7 @@ layui.define('view', function (exports) {
 
         if (!resizeSystem.lock) {
             setTimeout(function () {
-                admin.sideFlexible(admin.screen() < 2 ? '' : 'spread');
+                // admin.sideFlexible(admin.screen() < 2 ? '' : 'spread');
                 delete resizeSystem.lock;
             }, 100);
         }

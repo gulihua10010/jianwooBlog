@@ -2308,7 +2308,7 @@ body.tox-dialog__disable-scroll {
 }
 
 .tox.tox-tinymce.tox-fullscreen {
-    z-index: 1200;
+    z-index: 1200!important;
 }
 
 .tox-shadowhost.tox-fullscreen {

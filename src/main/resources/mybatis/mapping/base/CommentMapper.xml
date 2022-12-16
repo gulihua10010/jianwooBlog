@@ -30,6 +30,7 @@
     <result column="FLOOR_NUMBER" jdbcType="BIGINT" property="floorNumber" />
     <result column="REPLY_COUNT" jdbcType="BIGINT" property="replyCount" />
     <result column="TOTAL_REPLY_COUNT" jdbcType="BIGINT" property="totalReplyCount" />
+    <result column="FLAG_ADMIN" jdbcType="VARCHAR" property="flagAdmin" />
     <result column="IS_DELETE" jdbcType="CHAR" property="isDelete" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
     <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
@@ -100,7 +101,8 @@
     USER_NICK, CLIENT_IP, USER_REGION, COMMENT_TIME, PARENT_OID, REPLY_ROOT_OID, REPLY_TO_USER_ID, 
     REPLY_TO_USER_NAME, REPLY_TO_USER_NICK, PRAISE_COUNT, CONTACT_QQ, CONTACT_WECHAT, 
     CONTACT_WEIBO, CONTACT_TEL, CONTACT_EMAIL, AVATAR_SRC, ART_DEL_STATUS, READ_STATUS, 
-    FLOOR_NUMBER, REPLY_COUNT, TOTAL_REPLY_COUNT, IS_DELETE, CREATE_TIME, UPDATE_TIME
+    FLOOR_NUMBER, REPLY_COUNT, TOTAL_REPLY_COUNT, FLAG_ADMIN, IS_DELETE, CREATE_TIME, 
+    UPDATE_TIME
   </sql>
   <sql id="Blob_Column_List">
     CONTENT
@@ -164,8 +166,8 @@
       CONTACT_WEIBO, CONTACT_TEL, CONTACT_EMAIL, 
       AVATAR_SRC, ART_DEL_STATUS, READ_STATUS, 
       FLOOR_NUMBER, REPLY_COUNT, TOTAL_REPLY_COUNT, 
-      IS_DELETE, CREATE_TIME, UPDATE_TIME, 
-      CONTENT)
+      FLAG_ADMIN, IS_DELETE, CREATE_TIME, 
+      UPDATE_TIME, CONTENT)
     values (#{articleOid,jdbcType=BIGINT}, #{articleTitle,jdbcType=VARCHAR}, #{articleAuthor,jdbcType=VARCHAR}, 
       #{articlePushBy,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
       #{userNick,jdbcType=VARCHAR}, #{clientIp,jdbcType=VARCHAR}, #{userRegion,jdbcType=VARCHAR}, 
@@ -175,8 +177,8 @@
       #{contactWeibo,jdbcType=VARCHAR}, #{contactTel,jdbcType=VARCHAR}, #{contactEmail,jdbcType=VARCHAR}, 
       #{avatarSrc,jdbcType=VARCHAR}, #{artDelStatus,jdbcType=VARCHAR}, #{readStatus,jdbcType=VARCHAR}, 
       #{floorNumber,jdbcType=BIGINT}, #{replyCount,jdbcType=BIGINT}, #{totalReplyCount,jdbcType=BIGINT}, 
-      #{isDelete,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{content,jdbcType=LONGVARCHAR})
+      #{flagAdmin,jdbcType=VARCHAR}, #{isDelete,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="OID" keyProperty="oid" parameterType="cn.jianwoo.blog.entity.Comment" useGeneratedKeys="true">
     insert into COMMENTS
@@ -261,6 +263,9 @@
       </if>
       <if test="totalReplyCount != null">
         TOTAL_REPLY_COUNT,
+      </if>
+      <if test="flagAdmin != null">
+        FLAG_ADMIN,
       </if>
       <if test="isDelete != null">
         IS_DELETE,
@@ -356,6 +361,9 @@
       </if>
       <if test="totalReplyCount != null">
         #{totalReplyCount,jdbcType=BIGINT},
+      </if>
+      <if test="flagAdmin != null">
+        #{flagAdmin,jdbcType=VARCHAR},
       </if>
       <if test="isDelete != null">
         #{isDelete,jdbcType=CHAR},
@@ -464,6 +472,9 @@
       <if test="record.totalReplyCount != null">
         TOTAL_REPLY_COUNT = #{record.totalReplyCount,jdbcType=BIGINT},
       </if>
+      <if test="record.flagAdmin != null">
+        FLAG_ADMIN = #{record.flagAdmin,jdbcType=VARCHAR},
+      </if>
       <if test="record.isDelete != null">
         IS_DELETE = #{record.isDelete,jdbcType=CHAR},
       </if>
@@ -511,6 +522,7 @@
       FLOOR_NUMBER = #{record.floorNumber,jdbcType=BIGINT},
       REPLY_COUNT = #{record.replyCount,jdbcType=BIGINT},
       TOTAL_REPLY_COUNT = #{record.totalReplyCount,jdbcType=BIGINT},
+      FLAG_ADMIN = #{record.flagAdmin,jdbcType=VARCHAR},
       IS_DELETE = #{record.isDelete,jdbcType=CHAR},
       CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP},
@@ -549,6 +561,7 @@
       FLOOR_NUMBER = #{record.floorNumber,jdbcType=BIGINT},
       REPLY_COUNT = #{record.replyCount,jdbcType=BIGINT},
       TOTAL_REPLY_COUNT = #{record.totalReplyCount,jdbcType=BIGINT},
+      FLAG_ADMIN = #{record.flagAdmin,jdbcType=VARCHAR},
       IS_DELETE = #{record.isDelete,jdbcType=CHAR},
       CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP}
@@ -640,6 +653,9 @@
       <if test="totalReplyCount != null">
         TOTAL_REPLY_COUNT = #{totalReplyCount,jdbcType=BIGINT},
       </if>
+      <if test="flagAdmin != null">
+        FLAG_ADMIN = #{flagAdmin,jdbcType=VARCHAR},
+      </if>
       <if test="isDelete != null">
         IS_DELETE = #{isDelete,jdbcType=CHAR},
       </if>
@@ -684,6 +700,7 @@
       FLOOR_NUMBER = #{floorNumber,jdbcType=BIGINT},
       REPLY_COUNT = #{replyCount,jdbcType=BIGINT},
       TOTAL_REPLY_COUNT = #{totalReplyCount,jdbcType=BIGINT},
+      FLAG_ADMIN = #{flagAdmin,jdbcType=VARCHAR},
       IS_DELETE = #{isDelete,jdbcType=CHAR},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
@@ -719,6 +736,7 @@
       FLOOR_NUMBER = #{floorNumber,jdbcType=BIGINT},
       REPLY_COUNT = #{replyCount,jdbcType=BIGINT},
       TOTAL_REPLY_COUNT = #{totalReplyCount,jdbcType=BIGINT},
+      FLAG_ADMIN = #{flagAdmin,jdbcType=VARCHAR},
       IS_DELETE = #{isDelete,jdbcType=CHAR},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}

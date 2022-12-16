@@ -1,5 +1,5 @@
 <template>
-    <div class="calendar">
+    <div class="calendar right-side">
         <table>
             <thead>
             <tr>
@@ -22,7 +22,7 @@
                        >{{ jItem.day }}</a>
                     <a v-if="jItem.day && jItem.isPublish" :class="jItem.isPublish ? 'cal-artpub': ''"
                        @mousemove="mousemove($event, jItem.day)" @mouseleave="mouseleave($event)"
-                       :href="'/#/index?publishDate=' + jItem.publishDate">{{ jItem.day }}</a>
+                       :href="'/index?publishDate=' + jItem.publishDate">{{ jItem.day }}</a>
                     <span :style="'position: absolute;left:' + titleAltLeft + 'px;top:'+titleAltTop+'px;'" class="tit_alt"
                        v-if="this.showTitleAlt === jItem.day">{{ jItem.count + '篇文章'}}</span>
                 </td>

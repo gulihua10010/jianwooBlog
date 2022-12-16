@@ -115,10 +115,10 @@
         </if>
 
         <if test="orderByClause == null">
-            ORDER BY MODIFIED_TIME DESC
+            ORDER BY PUSH_TIME DESC
         </if>
         <if test="orderByClause != null">
-            ORDER BY #{orderByClause}
+            ORDER BY ${orderByClause}
         </if>
 
     </select>

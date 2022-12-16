@@ -56,6 +56,9 @@ public class BaseQuery implements Serializable {
 
     public String getOrderByClause() {
         if (StringUtils.isEmpty(orderByClause) && StringUtils.isNotEmpty(sortField) && StringUtils.isNotEmpty(sortOrder)) {
+            if (!"asc".equalsIgnoreCase(sortOrder) && !"desc".equalsIgnoreCase(sortOrder)) {
+                sortOrder = "ASC";
+            }
             orderByClause = sortField + " " + sortOrder;
         }
         // 暂时不设置默认值

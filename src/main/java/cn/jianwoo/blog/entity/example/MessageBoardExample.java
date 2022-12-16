@@ -1595,6 +1595,76 @@ public class MessageBoardExample {
             return (Criteria) this;
         }
 
+        public Criteria andFlagAdminIsNull() {
+            addCriterion("FLAG_ADMIN is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagAdminIsNotNull() {
+            addCriterion("FLAG_ADMIN is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagAdminEqualTo(Boolean value) {
+            addCriterion("FLAG_ADMIN =", value, "flagAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagAdminNotEqualTo(Boolean value) {
+            addCriterion("FLAG_ADMIN <>", value, "flagAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagAdminGreaterThan(Boolean value) {
+            addCriterion("FLAG_ADMIN >", value, "flagAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagAdminGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("FLAG_ADMIN >=", value, "flagAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagAdminLessThan(Boolean value) {
+            addCriterion("FLAG_ADMIN <", value, "flagAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagAdminLessThanOrEqualTo(Boolean value) {
+            addCriterion("FLAG_ADMIN <=", value, "flagAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagAdminLike(Boolean value) {
+            addCriterion("FLAG_ADMIN like", value, "flagAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagAdminNotLike(Boolean value) {
+            addCriterion("FLAG_ADMIN not like", value, "flagAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagAdminIn(List<Boolean> values) {
+            addCriterion("FLAG_ADMIN in", values, "flagAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagAdminNotIn(List<Boolean> values) {
+            addCriterion("FLAG_ADMIN not in", values, "flagAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagAdminBetween(Boolean value1, Boolean value2) {
+            addCriterion("FLAG_ADMIN between", value1, value2, "flagAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlagAdminNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("FLAG_ADMIN not between", value1, value2, "flagAdmin");
+            return (Criteria) this;
+        }
+
         public Criteria andIsDeleteIsNull() {
             addCriterion("IS_DELETE is null");
             return (Criteria) this;

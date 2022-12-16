@@ -15,7 +15,7 @@ public class CommMainPageUrlConfig extends UrlConfig {
 
     public static final String URL_OLD_PHP_DETAIL = "/detail/id/{id}.html";
 
-    public static final String URL_NEW_VUE_DETAIL_ROUTE = "redirect:/#/detail?id=%s";
+    public static final String URL_NEW_VUE_DETAIL_ROUTE = "redirect:/detail?id=%s";
 
 
     /**

@@ -3,6 +3,7 @@ package cn.jianwoo.blog.task.impl;
 import cn.jianwoo.blog.constants.Constants;
 import cn.jianwoo.blog.constants.TaskConstants;
 import cn.jianwoo.blog.exception.JwBlogException;
+import cn.jianwoo.blog.exception.JwBlogTaskException;
 import cn.jianwoo.blog.service.notify.NotifyMsgService;
 import cn.jianwoo.blog.task.AsyncAutoTaskService;
 import cn.jianwoo.blog.task.bo.TaskDataD0010BO;
@@ -26,14 +27,19 @@ public class AsyncProcAutoTaskD0010Impl implements AsyncAutoTaskService {
     private NotifyMsgService emailNotifyService;
 
     @Override
-    public JSONObject doProc(Long taskId, String taskData) throws JwBlogException {
+    public JSONObject doProc(Long taskId, String taskData) throws JwBlogTaskException {
 
         log.info(">> start D0010 task({}) which data is {} <<", taskId, taskData);
 
         // read parameter taskData
         TaskDataD0010BO data = JSON.parseObject(taskData, TaskDataD0010BO.class);
         String[] recipients = data.getRecipient().split(Constants.COMMA_SEPARATOR);
-        emailNotifyService.doSend(data.getEmailTplCode(), data.getParam(), recipients);
+        try {
+            emailNotifyService.doSend(data.getEmailTplCode(), data.getParam(), recipients);
+        } catch (JwBlogException e) {
+            log.error("AsyncProcAutoTaskD0010Impl.doProc exec failed, e:", e);
+            throw new JwBlogTaskException(TaskConstants.FAILED_CODE, e.getMsg());
+        }
         return returnSuccessJsonResult();
     }
 

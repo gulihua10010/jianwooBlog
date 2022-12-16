@@ -18,6 +18,8 @@
  * @license MIT
  */
 
+/*! Element Plus Icons Vue v2.0.10 */
+
 /**
  * Checks if an event is supported in the current execution environment.
  *

@@ -1,8 +1,8 @@
 <template>
-    <div>
+    <div class="footer">
         <div v-html="footHtml"></div>
         <span id="copyright">Copyright © 2018-{{ year }}<span></span></span>
-        <span><a :href="domain">{{ name }}</a> </span>
+        <span><a :href="domain">{{ name }}</a> {{version}} </span>
         <br/>
         <span>
                 <a target="_blank" :href="recordUrl"
@@ -15,6 +15,7 @@
 <script>
 import {getJson} from "@/common/js/getJson";
 import {postJson} from "@/common/js/postJson";
+import config from "@/common/js/config";
 
 export default {
     name: "Footer",
@@ -26,6 +27,7 @@ export default {
             domain: '',
             name: '',
             year: new Date().getFullYear(),
+            version : 'v' + config.VERSION,
 
         }
     },

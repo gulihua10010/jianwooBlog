@@ -3,6 +3,7 @@ package cn.jianwoo.blog.enums;
 import cn.jianwoo.blog.entity.Admin;
 import cn.jianwoo.blog.entity.Article;
 import cn.jianwoo.blog.entity.ArticleAccess;
+import cn.jianwoo.blog.entity.ArticleWithBLOBs;
 import cn.jianwoo.blog.entity.Comment;
 import cn.jianwoo.blog.entity.LoginLog;
 import cn.jianwoo.blog.entity.MessageBoard;
@@ -49,7 +50,7 @@ public enum AsyncIpEnum {
     /**
      * 文章
      */
-    ARTICLE("Article", "articleTransDao", "oid", "pushRegion", Article.class),
+    ARTICLE("ArticleWithBLOBs", "articleTransDao", "oid", "pushRegion", ArticleWithBLOBs.class),
 
     ;
 

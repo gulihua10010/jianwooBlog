@@ -6,7 +6,7 @@ prohibitOpenConsole.js
 
 !function () {
     function ProhibitOpenConsole() {}
-
+    var open = false;
     ProhibitOpenConsole.prototype.keyF12 = function () {
         document.addEventListener("keydown", function (e) {
             var ev = e || window.event;
@@ -25,11 +25,14 @@ prohibitOpenConsole.js
 
     ProhibitOpenConsole.prototype.debuggerOpen = function () {
         var timer = setInterval(() => {
-
             var before = new Date().getTime();
             debugger;
             var after = new Date().getTime();
             if (Math.abs(after - before) > 100) {
+
+                window.stop();
+                alert('没啥好看的，赶紧忙正事去吧');
+                document.body.innerHTML = "<h1>再看, 再看就把你吃掉!!</h1>";
                 clearInterval(timer)
             }
         }, 1000);

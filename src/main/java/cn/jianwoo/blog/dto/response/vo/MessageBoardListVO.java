@@ -97,6 +97,11 @@ public class MessageBoardListVO implements Serializable {
      * 是否可以编辑
      */
     private Boolean flagEdit;
+
+    /**
+     * 是否是管理员发布
+     */
+    private Boolean flagAdmin;
     /**
      * 是否已经删除
      */

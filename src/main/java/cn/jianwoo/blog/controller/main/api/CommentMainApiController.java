@@ -89,6 +89,7 @@ public class CommentMainApiController extends BaseController {
      * --floorNumber<br/>
      * --isPraise<br/>
      * --flagEdit<br/>
+     * --flagAdmin<br/>
      * --praiseCount<br/>
      * --oid<br/>
      * --replyCount<br/>
@@ -110,6 +111,7 @@ public class CommentMainApiController extends BaseController {
      * ----replyToUserNick<br/>
      * ----isPraise<br/>
      * ----flagEdit<br/>
+     * ----flagAdmin<br/>
      * ----flagDelete<br/>
      * ----praiseCount<br/>
      * ----oid<br/>
@@ -162,6 +164,7 @@ public class CommentMainApiController extends BaseController {
                     vo.setIsPraise(commentBO.getIsPraise());
                     vo.setPraiseCount(commentBO.getPraiseCount());
                     vo.setFlagEdit(commentBO.getFlagEdit());
+                    vo.setFlagAdmin(commentBO.getFlagAdmin());
                     vo.setFlagDelete(commentBO.getIsDelete());
                     vo.setReplyCount(commentBO.getReplyCount());
                     List<ArticleCommentListVO> replyList = new ArrayList<>();
@@ -188,6 +191,7 @@ public class CommentMainApiController extends BaseController {
                             replyVo.setPraiseCount(rep.getPraiseCount());
                             replyVo.setReplyCount(rep.getReplyCount());
                             replyVo.setFlagEdit(rep.getFlagEdit());
+                            replyVo.setFlagAdmin(rep.getFlagAdmin());
                             replyVo.setFlagDelete(rep.getIsDelete());
                             replyList.add(replyVo);
                         }

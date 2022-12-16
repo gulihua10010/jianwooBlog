@@ -1,33 +1,29 @@
 <template>
     <div>
-        <div class="index-position" v-if="this.nav.navTags.length > 0 || this.nav.breakNav1.name !== ''">
-        <span>当前位置:<a href="/index">首页>></a>
-            <span v-if="this.nav.navTags.length > 0">
-                标签>> <span v-for="(item,idx) in this.nav.navTags">
-                <a :href="item.url">{{ item.name }}</a>
-                      </span>
-            </span>
-            <span v-if="this.nav.breakNav1.name !== ''">
-                <a :href="this.nav.breakNav1.url">{{ this.nav.breakNav1.name }}</a>  >>
-            </span>
-            <span v-if="this.nav.breakNav2.name !== ''">
-                <a :href="this.nav.breakNav2.url">{{ this.nav.breakNav2.name }}</a>  >>
-            </span>
-            <span v-if="this.nav.breakNav3.name !== ''">
-                <a :href="this.nav.breakNav3.url">{{ this.nav.breakNav3.name }}</a>  >>
-            </span>
-        </span>
+        <div class="breadcrumb-position" v-if="this.nav.navTags.length > 0 || this.nav.breakNav1.name !== ''">
+            <el-breadcrumb separator-class="el-icon-arrow-right">
+                <el-breadcrumb-item :to="{ path: '/index' }">首页</el-breadcrumb-item>
+                <el-breadcrumb-item  v-if="this.nav.navTags.length > 0">标签</el-breadcrumb-item>
+                <el-breadcrumb-item  v-if="this.nav.navTags.length > 0">
+                    <span v-for="(item,idx) in this.nav.navTags">
+                         <a :href="item.url">{{ item.name }}</a>
+                    </span>
+                </el-breadcrumb-item>
+                <el-breadcrumb-item v-if="this.nav.breakNav1.name !== ''" :to="{ path: this.nav.breakNav1.url }">{{ this.nav.breakNav1.name }}</el-breadcrumb-item>
+                <el-breadcrumb-item v-if="this.nav.breakNav2.name !== ''" :to="{ path: this.nav.breakNav2.url }">{{ this.nav.breakNav2.name }}</el-breadcrumb-item>
+                <el-breadcrumb-item v-if="this.nav.breakNav3.name !== ''" :to="{ path: this.nav.breakNav3.url }">{{ this.nav.breakNav3.name }}</el-breadcrumb-item>
+            </el-breadcrumb>
         </div>
         <div class="index-main">
 
             <div class="article-list">
-                <div class="article-breviary" v-for="(item,idx) in this.articleList">
+                <div class="article-breviary" v-for="(item, idx) in this.articleList">
                     <div class="art-bre-tit">
                         <div class="art-bre-tit-info">
                             <span class="art-top" v-if="item.topPlaceFlag === true">置顶</span>
                             <span class="art-type" v-if="item.category">{{ item.category }}</span>
                             <span class="art-password" v-if="item.permission === '11'">需要密码</span>
-                            <a class="art-title" :href="'/#/detail?id=' + item.oid" @mousemove="mousemove($event,item.oid)"
+                            <a class="art-title" :href="'/detail?id=' + item.oid" @mousemove="mousemove($event,item.oid)"
                                @mouseleave="mouseleave($event,item.oid)"> {{ item.title }}</a>
                         </div>
                         <span v-if="showTitleAlt === item.oid"
@@ -37,10 +33,10 @@
                     <div class="art-bre-top">
                         <div class="art-bre-left"
                              @click="jump(item.oid)">
-                            <el-image :src="item.imgSrc ? item.imgSrc : 'https://cdn.jianwoo.cn/static%2Fjianwoo%2Fjw.jpg'" :alt="item.title" lazy>
+                            <el-image :src="item.imgSrc ? item.imgSrc : '/static/comm/img/jw.jpg'" :alt="item.title" lazy>
                                 <template #error>
                                     <div class="image-slot">
-                                       <img src="https://cdn.jianwoo.cn/static%2Fjianwoo%2Fjw.jpg" :alt="item.title">
+                                       <img src="/static/comm/img/jw.jpg" :alt="item.title">
                                     </div>
                                 </template>
                             </el-image>
@@ -62,12 +58,13 @@
                                     <use xlink:href="#icon-24gl-calendar"></use>
                                 </svg>&nbsp;{{ item.publishTimeDesc }}
                             </span>
+                            <br class="mobile_br">
                             <span class="art-readers">
                                 <svg class="icon" aria-hidden="true">
                                     <use xlink:href="#icon-yuedu1"></use>
                                 </svg>&nbsp;{{ item.readCount }}</span>
                             <a class="art-comment"
-                               :href="'/#/detail?id=' + item.oid + '&jump=comment'">
+                               :href="'/detail?id=' + item.oid + '&jump=comment'">
                                 <svg class="icon" aria-hidden="true">
                                     <use xlink:href="#icon-pinglunxiao"></use>
                                 </svg>&nbsp;{{ item.commentCount }}条评论</a>
@@ -85,7 +82,7 @@
                             <span style="display: none" class="artid">{{ item.oid }}</span>
 
                         </div>
-                        <div><a :href="'/#/detail?id=' + item.oid">阅读全文>></a></div>
+                        <div class="view-detail"><a :href="'/detail?id=' + item.oid">阅读全文>></a></div>
                     </div>
                 </div>
                 <div style="text-align: center;">
@@ -182,7 +179,7 @@ export default {
                     for (let i = 0; i < res.conditions.length; i++) {
                         var tag = {};
                         tag.name = res.conditions[i].condition
-                        tag.url = "/#/index?tag=" + res.conditions[i].conditionId;
+                        tag.url = "/index?tag=" + res.conditions[i].conditionId;
                         this.nav.navTags.push(tag)
                     }
                 } else {
@@ -199,7 +196,7 @@ export default {
                                 value = res.condition1.condition.replace('搜索结果: ','');
                             }
                         }
-                        this.nav.breakNav1.url = "/#/index?" + key + "=" + value;
+                        this.nav.breakNav1.url = "/index?" + key + "=" + value;
                     }
                     if (res.condition2) {
                         this.nav.breakNav2.name = res.condition2.condition;
@@ -207,7 +204,7 @@ export default {
                         if (res.condition2.conditionType === 'CATEGORY2') {
                             key = 'category2';
                         }
-                        this.nav.breakNav2.url = "/#/index?" + key + "=" + res.condition2.conditionId;
+                        this.nav.breakNav2.url = "/index?" + key + "=" + res.condition2.conditionId;
                     }
                 }
 
@@ -235,6 +232,21 @@ export default {
         },
         clearParams: function () {
             this.searchForm = {};
+            this.nav =  {
+                breakNav1: {
+                    name: '',
+                    url: '',
+                },
+                breakNav2: {
+                    name: '',
+                    url: '',
+                },
+                breakNav3: {
+                    name: '',
+                    url: '',
+                },
+                navTags: [],
+            };
         },
         initQueryParams: function () {
             if (this.$route.query.keywords) {
@@ -302,7 +314,7 @@ export default {
             this.showTitleAlt = 0
         },
         jump: function (oid) {
-            window.location.href = '/#/detail?id=' + oid
+            window.location.href = '/detail?id=' + oid
         },
         hasPraise:function () {
             this.$message({
@@ -327,16 +339,16 @@ export default {
 .el-pagination.is-background .el-pager li:not(.disabled) {
     background-color: #fff;
     color: #000;
-    border: 1px solid #B40BB7;
+    border: 1px solid var(--theme_color);
 }
 
 .el-pagination.is-background .el-pager li:not(.disabled).active {
-    background-color: #B40BB7 !important;
+    background-color: var(--theme_color) !important;
     color: #fff;
 }
 
 .el-pagination.is-background .el-pager li:not(.disabled):hover {
-    background-color: #A52581;
+    background-color: var(--theme_color_dark);
     color: #fff;
 }
 </style>

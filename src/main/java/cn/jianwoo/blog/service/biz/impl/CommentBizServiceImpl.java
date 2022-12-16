@@ -247,6 +247,7 @@ public class CommentBizServiceImpl implements CommentBizService {
                 .with(Comment::setUserId, tmpBO.getUserId())
                 .with(Comment::setUserName, tmpBO.getUsername())
                 .with(Comment::setUserNick, tmpBO.getNickname())
+                .with(Comment::setFlagAdmin, isAdmin)
                 .with(Comment::setCommentTime, now)
                 .with(Comment::setCreateTime, now)
                 .with(Comment::setUpdateTime, now)
